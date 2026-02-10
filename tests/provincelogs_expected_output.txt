@@ -1,0 +1,52 @@
+Summary of Province Log Events
+----------------------------------------
+
+Thievery Summary:
+Propaganda:
+ 100 elites
+ 30 specialist troops
+9 Arson for a total of 85 acres
+7 Bribe Generals ops
+5 Incite Riots for a total of 24 days
+3 Assassinate Wizards for a total of 306 wizards
+3 Kidnapping for a total of 336 peasants
+2 Bribe Thieves ops
+1 Sabotage Wizards for a total of 1 day
+
+Resources Stolen:
+1,404,731 gold coins stolen
+597,907 bushels stolen
+746,273 runes stolen
+50 war horses stolen
+
+Spell Summary:
+62 Meteor Showers for a total of 493 days
+50 Mystic Vortex for a total of 95 active spells
+33 Chastity for a total of 185 days
+10 Pitfalls for a total of 119 days
+4 Amnesia for a total of 322,673 books
+4 Droughts for a total of 53 days
+4 Lightning Strike for a total of 14,884 runes
+4 Nightmares for a total of 1,450 troops
+3 Fireball for a total of 3,639 peasants
+3 Gluttony for a total of 45 days
+3 Greed for a total of 28 days
+3 Land Lust for a total of 81 acres
+3 Tornadoes for a total of 1,025 acres of buildings
+2 Expose Thieves for a total of 12 days
+1 Explosions for a total of 12 days
+
+Aid Summary:
+5,072,494 gold coins
+349,977 runes
+246,000 bushels
+16,572 soldiers
+2 explore pool acres
+
+Dragon Summary:
+1,965,315 gold coins donated
+881,611 bushels donated
+7,693 troops sent and weakened by 94,633 points
+
+Ritual Summary:
+37 successful ritual casts

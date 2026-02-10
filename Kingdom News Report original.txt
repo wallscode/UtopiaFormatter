@@ -1,0 +1,145 @@
+Utopia Intel Site
+Wol
+
+Gen
+
+Parse News
+News text
+Paste your news items here
+
+KD
+
+Province
+
+Kingdom News Report
+February 2, YR0 - March 6, YR0 (29 days)
+Total Attacks Made: 144 (4088 acres)
+Uniques: 56
+Trad March: 138 (3965 acres)
+Ambush: 4 (114 acres)
+Conquest: 1 (9 acres)
+Raze: 1 (38 acres)
+Learn: 0
+Massacre: 0
+Plunder: 0
+Bounces: 0
+DragonsStarted: 1
+DragonsCompleted: 2
+Enemy Dragons Killed: 1
+Rituals Started: 0
+Rituals Completed: 0
+Total Attacks Suffered: 112 (3998 acres)
+Uniques: 49
+Trad March: 102 (3856 acres)
+Ambush: 6 (142 acres)
+Conquest: 0
+Raze: 1 (70 acres)
+Learn: 0
+Massacre: 0
+Plunder: 0
+Bounces: 3
+Dragons Started: 1
+Dragons Completed: 1
+Own Kingdom 5:1
+Total Acres: 90 (144/112)
+245 | 10 - Timeless Rock Band (12/3)
+136 | 11 - Stewies Time Machine (8/0)
+100 | 17 - Pee Time (11/3)
+73 | 4 - Waste of Time (7/2)
+71 | 9 - Fun times (6/0)
+69 | 2 - your time is up Give in (3/1)
+53 | 16 - Ill be there in a tick (5/1)
+42 | 23 - Time Manipulator (6/4)
+40 | 6 - Slack Time (6/3)
+28 | 20 - Its 5 OClock Somewhere (5/4)
+26 | 1 - Time to Shine (9/12)
+19 | 14 - About time dude (2/0)
+6 | 8 - No Better Time (5/4)
+-35 | 12 - Misstress Of Time (8/6)
+-41 | 13 - Time (1/1)
+-44 | 22 - Age of time (6/6)
+-47 | 21 - ticking time (2/4)
+-49 | 5 - Time to play (5/6)
+-62 | 19 - Tea time (7/4)
+-75 | 3 - RazorclawTime (9/6)
+-100 | 15 - Father time (8/7)
+-162 | 7 - Slow Attack times (6/8)
+-203 | 18 - Sushi Sampo Time (7/27)
+The Kingdom of 4:1
+Total Acres: -90 (112/144)
+162 | 15 - FutureState (9/4)
+137 | 3 - Clampy (7/2)
+111 | 18 - Crimson (7/4)
+82 | 9 - The Resurected (5/2)
+73 | 14 - Aimia (9/6)
+58 | 17 - Solo (7/4)
+45 | 21 - Gilead (3/4)
+36 | 10 - Longtimeago (7/5)
+32 | 5 - Briz (4/3)
+25 | 6 - Ajarin (2/1)
+24 | An unknown province (1/0)
+20 | 2 - Crash (5/4)
+4 | 7 - Jedimonk (2/2)
+-6 | 22 - Thor (10/22)
+-19 | 16 - Enslaver (6/4)
+-52 | 11 - Jalubie (6/6)
+-59 | 4 - Legion ROC (2/3)
+-77 | 19 - Alchemaria (6/10)
+-86 | 20 - Fist (0/2)
+-110 | 1 - Holo Wolf (0/3)
+-149 | 13 - Phoria Scapes (4/12)
+-153 | 12 - Pong (6/23)
+-188 | 23 - Blitzwaaagh (4/18)
+Uniques for 5:1
+3 - RazorclawTime 4
+10 - Timeless Rock Band 3
+11 - Stewies Time Machine 3
+17 - Pee Time 3
+9 - Fun times 3
+16 - Ill be there in a tick 3
+6 - Slack Time 3
+1 - Time to Shine 3
+8 - No Better Time 3
+12 - Misstress Of Time 3
+5 - Time to play 3
+19 - Tea time 3
+4 - Waste of Time 2
+2 - your time is up Give in 2
+23 - Time Manipulator 2
+20 - Its 5 OClock Somewhere 2
+22 - Age of time 2
+15 - Father time 2
+7 - Slow Attack times 2
+18 - Sushi Sampo Time 2
+14 - About time dude 1
+13 - Time 1
+21 - ticking time 1
+Uniques for 4:1
+19 - Alchemaria 4
+15 - FutureState 3
+3 - Clampy 3
+18 - Crimson 3
+14 - Aimia 3
+17 - Solo 3
+10 - Longtimeago 3
+22 - Thor 3
+16 - Enslaver 3
+9 - The Resurected 2
+21 - Gilead 2
+5 - Briz 2
+6 - Ajarin 2
+2 - Crash 2
+11 - Jalubie 2
+4 - Legion ROC 2
+13 - Phoria Scapes 2
+12 - Pong 2
+23 - Blitzwaaagh 2
+7 - Jedimonk 1
+Highlights
+Most land gained in a single trad march - 1 - Time to Shine: 67
+Most land lost in a single trad march - 19 - Tea time: 69
+Most land gained in a single ambush - 17 - Pee Time: 34
+Most land lost in a single ambush - 1 - Time to Shine: 29
+Most bounces made - : 0
+Most bounces received - 20 - Its 5 OClock Somewhere, 1 - Time to Shine, 6 - Slack Time: 1
+Enemy

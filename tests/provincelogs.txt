@@ -1,0 +1,1171 @@
+May 1 of YR8	Your wizards gather 2,570 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 14 days!
+May 1 of YR8	You have given orders to commence work on 50 forts.
+May 1 of YR8	Your wizards gather 2,827 runes and begin casting, and the spell succeeds. Our army has been inspired to train harder. We expect maintenance costs to be reduced for 18 days!
+May 1 of YR8	You have ordered that 600 thieves be trained.
+May 1 of YR8	12,960 books allocated to TOOLS
+May 1 of YR8	9,120 books allocated to STRATEGY
+May 1 of YR8	12,480 books allocated to CHANNELING
+May 2 of YR8	You have ordered that 13 Elf Lords be trained.
+May 2 of YR8	You have ordered that 190 Archers be trained.
+May 2 of YR8	Your wizards gather 899 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Glynnenda (3:6))
+May 2 of YR8	Your wizards gather 899 runes and begin casting, but the spell fails. (Bikini Bottom (3:6))
+May 2 of YR8	Your wizards gather 899 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Bikini Bottom (3:6))
+May 2 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Bikini Bottom (3:6), sent 602)
+May 2 of YR8	We lost 7 thieves in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have bribed members of our enemies' guild! (Bikini Bottom (3:6), sent 2602)
+May 2 of YR8	We lost 1 thief in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 117,211 gold coins. (Bikini Bottom (3:6), sent 3900)
+May 2 of YR8	We lost 1 thief in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 113,408 gold coins. (Bikini Bottom (3:6), sent 3800)
+May 2 of YR8	We lost 15 thieves in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 108,093 gold coins. (Bikini Bottom (3:6), sent 3600)
+May 2 of YR8	We lost 17 thieves in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 103,683 gold coins. (Bikini Bottom (3:6), sent 3500)
+May 2 of YR8	We lost 15 thieves in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 99,170 gold coins. (Bikini Bottom (3:6), sent 3400)
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 94,806 gold coins. (Bikini Bottom (3:6), sent 3300)
+May 2 of YR8	Sources have indicated the mission was foiled. We lost 27 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Bikini Bottom (3:6), sent 3000)
+May 2 of YR8	Sources have indicated the mission was foiled. We lost 53 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Bikini Bottom (3:6), sent 3000)
+May 2 of YR8	We lost 8 thieves in the operation.
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 90,029 gold coins. (Bikini Bottom (3:6), sent 3000)
+May 2 of YR8	Early indications show that our operation was a success. Our thieves have returned with 84,002 gold coins. (Bikini Bottom (3:6), sent 2800)
+May 2 of YR8	You have set your draft rate to Emergency.
+May 2 of YR8	You will draft up to 69% of your population.
+May 3 of YR8	You have ordered that 410 thieves be trained.
+May 4 of YR8	You have ordered that 409 Archers be trained.
+May 5 of YR8	You have ordered that 398 Archers be trained.
+May 6 of YR8	You have set your draft rate to Reservist.
+May 6 of YR8	You have ordered that 385 Archers be trained.
+May 6 of YR8	8,100 books allocated to TOOLS
+May 6 of YR8	5,700 books allocated to VALOR
+May 6 of YR8	7,800 books allocated to FINESSE
+May 6 of YR8	Your wizards gather 899 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 22 days!
+May 6 of YR8	Your wizards gather 3,341 runes and begin casting, and the spell succeeds. A magical aura surrounds our troops reducing casualties in battle for 11 days!
+May 7 of YR8	You have ordered that 93 Archers be trained.
+May 7 of YR8	1,640 books allocated to TOOLS
+May 7 of YR8	1,140 books allocated to VALOR
+May 7 of YR8	1,560 books allocated to FINESSE
+May 8 of YR8	1,640 books allocated to TOOLS
+May 8 of YR8	1,160 books allocated to STRATEGY
+May 8 of YR8	1,560 books allocated to FINESSE
+May 9 of YR8	Your wizards gather 4,370 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 6 days from attacks against us!
+May 9 of YR8	Your wizards gather 7,712 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 9 of YR8	Your wizards gather 7,722 runes and begin casting, and the spell succeeds. Our mages created 6 acres more land for us to use.
+May 9 of YR8	Your wizards gather 7,739 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 9 of YR8	Your wizards gather 7,749 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 9 of YR8	Your wizards gather 7,763 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 9 of YR8	You have given orders to commence work on 24 forts.
+May 9 of YR8	You have ordered that 185 Archers be trained.
+May 9 of YR8	Your wizards gather 1,296 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 18 days!
+May 9 of YR8	Your wizards gather 3,499 runes and begin casting, and the spell succeeds. Your magic will smite attackers for 13 days!
+May 9 of YR8	Your wizards gather 3,823 runes and begin casting, and the spell succeeds. Your guilds will produce extra wizards for 16 days!
+May 17 of YR8	Lord Benni, to explore 67 acres, we have sent out an expedition of 469 soldiers at a cost of 131,119 gold coins. We expect all of the land to be settled by June 18 of YR8.
+May 17 of YR8	You have donated 300,000 bushels to the quest of launching a dragon.
+May 17 of YR8	You have donated 400,000 gold coins to the quest of launching a dragon.
+May 17 of YR8	Your wizards gather 817 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (to hell and back (3:9))
+May 17 of YR8	Your wizards gather 1,168 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 23 days!
+May 17 of YR8	Your wizards gather 3,972 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 7 days from attacks against us!
+May 17 of YR8	We lost 1 thief in the operation.
+May 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Back From The Edge (4:8), sent 653)
+May 17 of YR8	Your wizards gather 7,010 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,023 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,037 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,050 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,064 runes and begin casting, and the spell succeeds. Our mages created 6 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,080 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,091 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,104 runes and begin casting, and the spell succeeds. Our mages created 6 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,120 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 2,378 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 13 days!
+May 17 of YR8	Your wizards gather 7,134 runes and begin casting, and the spell succeeds. Our mages created 3 acres more land for us to use.
+May 17 of YR8	You have given orders to commence work on 5 farms.
+May 17 of YR8	You have given orders to commence work on 22 forts.
+May 17 of YR8	You have given orders to commence work on 11 libraries.
+May 17 of YR8	You have given orders to commence work on 11 thieves' dens.
+May 17 of YR8	We lost 2 thieves in the operation.
+May 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (to hell and back (3:9), sent 653)
+May 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 62,168 runes. (to hell and back (3:9), sent 6530)
+May 17 of YR8	We lost 7 thieves in the operation.
+May 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 55,218 runes. (to hell and back (3:9), sent 5800)
+May 17 of YR8	We lost 14 thieves in the operation.
+May 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 47,605 runes. (to hell and back (3:9), sent 5000)
+May 17 of YR8	Your wizards gather 7,142 runes and begin casting, and the spell succeeds. Our mages created 3 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,150 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,161 runes and begin casting, and the spell succeeds. Our mages created 5 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,174 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 72 wizards were killed in an explosion!
+May 17 of YR8	Your wizards gather 7,174 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 17 of YR8	Your wizards gather 7,185 runes and begin casting, and the spell succeeds. Our mages created 4 acres more land for us to use.
+May 17 of YR8	Drawing from the ancient Mana Well, you restore 49% of your mana, ready to unleash your magic anew.
+May 17 of YR8	The power of Mana Well surges through your forces!
+May 17 of YR8	Lord Benni, to explore 35 acres, we have sent out an expedition of 245 soldiers at a cost of 78,470 gold coins. We expect all of the land to be settled by June 18 of YR8.
+May 17 of YR8	You have given orders to commence work on 2 forts, 7 thieves' dens and 2 libraries.
+May 17 of YR8	You have given orders to commence work on 9 towers.
+May 19 of YR8	Lord Benni, to explore 82 acres, we have sent out an expedition of 656 soldiers at a cost of 190,322 gold coins. We expect all of the land to be settled by June 20 of YR8.
+May 19 of YR8	Your wizards gather 842 runes and begin casting, and the spell succeeds. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Haxe (4:8))
+May 19 of YR8	Your wizards gather 842 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (ARRROT (4:8))
+May 19 of YR8	We lost 1 thief in the operation.
+May 19 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (ARRROT (4:8), sent 652)
+May 19 of YR8	We lost 2 thieves in the operation.
+May 19 of YR8	Early indications show that our operation was a success. Our thieves have returned with 35,202 gold coins. (ARRROT (4:8), sent 1000)
+May 19 of YR8	You have given orders to commence work on 1 fort, 2 thieves' dens and 1 library.
+May 19 of YR8	You have given orders to commence work on 5 towers.
+May 19 of YR8	We lost 5 thieves in the operation.
+May 19 of YR8	Early indications show that our operation was a success. Our thieves have returned with 35,211 gold coins. (ARRROT (4:8), sent 1000)
+May 19 of YR8	Early indications show that our operation was a success. Our thieves have returned with 34,901 gold coins. (ARRROT (4:8), sent 1000)
+May 19 of YR8	We lost 1 thief in the operation.
+May 19 of YR8	Early indications show that our operation was a success. Our thieves have returned with 33,127 gold coins. (ARRROT (4:8), sent 1000)
+May 19 of YR8	Sources have indicated the mission was foiled. We lost 14 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (ARRROT (4:8), sent 1000)
+May 19 of YR8	We lost 4 thieves in the operation.
+May 19 of YR8	Early indications show that our operation was a success. Our thieves have returned with 31,435 gold coins. (ARRROT (4:8), sent 1000)
+May 19 of YR8	Lord Benni, to explore 45 acres, we have sent out an expedition of 360 soldiers at a cost of 113,040 gold coins. We expect all of the land to be settled by June 20 of YR8.
+May 19 of YR8	18,040 books allocated to BOOKKEEPING
+May 19 of YR8	12,760 books allocated to STRATEGY
+May 19 of YR8	17,160 books allocated to CRIME
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 19 of YR8	Your wizards gather 14,441 runes and begin casting, and the spell succeeds.
+May 19 of YR8	We are now closer to completing our ritual project!
+May 20 of YR8	Lord Benni, to explore 2 acres, we have sent out an expedition of 16 soldiers at a cost of 5,242 gold coins. We expect all of the land to be settled by June 21 of YR8.
+May 20 of YR8	You have given orders to commence work on 2 forts, 2 thieves' dens and 2 libraries.
+May 20 of YR8	You have given orders to commence work on 2 farms.
+May 21 of YR8	You have given orders to commence work on 11 towers.
+May 23 of YR8	You have given orders to commence work on 1 home, 13 farms, 2 forts, 2 towers and 2 thieves' dens.
+May 23 of YR8	Your wizards gather 854 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Vulpecula (3:10))
+May 23 of YR8	Your wizards gather 854 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Last Theme (5:8))
+May 23 of YR8	Your wizards gather 2,686 runes and begin casting, and the spell succeeds. Our army has been inspired to train harder. We expect maintenance costs to be reduced for 15 days!
+May 24 of YR8	8,200 books allocated to HOUSING
+May 24 of YR8	5,800 books allocated to STRATEGY
+May 24 of YR8	7,800 books allocated to CHANNELING
+June 1 of YR8	Your wizards gather 875 runes and begin casting, and the spell succeeds. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Wheel of Time - Winters Fart (1:5))
+June 1 of YR8	You have given orders to commence work on 9 homes, 4 farms, 7 forts, 13 towers, 11 thieves' dens and 9 libraries.
+June 1 of YR8	6,560 books allocated to BOOKKEEPING
+June 1 of YR8	4,640 books allocated to VALOR
+June 1 of YR8	6,240 books allocated to FINESSE
+June 1 of YR8	Your wizards gather 875 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Hempa (3:10))
+June 1 of YR8	Your wizards gather 875 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Black Hole (3:10))
+June 1 of YR8	We lost 2 thieves in the operation.
+June 1 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Black Hole (3:10), sent 650)
+June 1 of YR8	Sources have indicated the mission was foiled. We lost 41 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Black Hole (3:10), sent 4074)
+June 1 of YR8	Sources have indicated the mission was foiled. We lost 79 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Black Hole (3:10), sent 4074)
+June 1 of YR8	We lost 15 thieves in the operation.
+June 1 of YR8	Early indications show that our operation was a success. Our thieves have returned with 69,310 gold coins. (Black Hole (3:10), sent 4074)
+June 1 of YR8	You have ordered that 200 thieves be trained.
+June 1 of YR8	Your wizards gather 875 runes and begin casting, and the spell succeeds. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Vampa (3:10))
+June 1 of YR8	Your wizards gather 1,751 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 21 days!
+June 1 of YR8	You have given orders to commence work on 14 watch towers.
+June 2 of YR8	You have destroyed 220 banks.
+June 2 of YR8	You have given orders to commence work on 230 watch towers.
+June 3 of YR8	You have given orders to commence work on 3 homes, 1 farm, 2 forts, 2 thieves' dens and 2 libraries.
+June 3 of YR8	Your wizards gather 3,717 runes and begin casting, and the spell succeeds. Your guilds will produce extra wizards for 17 days!
+June 3 of YR8	3,280 books allocated to PRODUCTION
+June 3 of YR8	2,320 books allocated to VALOR
+June 3 of YR8	3,120 books allocated to CHANNELING
+June 4 of YR8	You have given orders to commence work on 1 fort, 1 tower, 2 thieves' dens, 4 watch towers and 1 library.
+June 4 of YR8	You have given orders to commence work on 1 home and 1 farm.
+June 4 of YR8	Lord Benni, to explore 16 acres, we have sent out an expedition of 144 soldiers at a cost of 44,656 gold coins. We expect all of the land to be settled by July 5 of YR8.
+June 4 of YR8	Your wizards gather 885 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 23 days!
+June 7 of YR8	You have given orders to commence work on 4 homes, 1 farm, 3 forts, 12 towers, 4 thieves' dens, 3 watch towers and 3 libraries.
+June 8 of YR8	Your wizards gather 2,566 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 19 days!
+June 8 of YR8	You have given orders to commence work on 1 home, 1 farm, 1 fort, 2 guilds, 2 towers, 2 thieves' dens and 1 watch tower.
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 8 of YR8	8,200 books allocated to BOOKKEEPING
+June 8 of YR8	5,800 books allocated to VALOR
+June 8 of YR8	7,800 books allocated to FINESSE
+June 8 of YR8	Your wizards gather 15,397 runes and begin casting, and the spell succeeds.
+June 8 of YR8	We are now closer to completing our ritual project!
+June 9 of YR8	Your wizards gather 3,347 runes and begin casting, and the spell succeeds. A magical aura surrounds our troops reducing casualties in battle for 19 days!
+June 9 of YR8	Your wizards gather 1,287 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 22 days!
+June 9 of YR8	Early indications show that our operation was a success. Our thieves have returned with 32,300 gold coins. (Back From The Edge (4:8), sent 1000)
+June 9 of YR8	We lost 4 thieves in the operation.
+June 9 of YR8	Early indications show that our operation was a success. Our thieves have returned with 38,763 gold coins. (Back From The Edge (4:8), sent 1200)
+June 9 of YR8	Lord Benni, to explore 10 acres, we have sent out an expedition of 90 soldiers at a cost of 29,240 gold coins. We expect all of the land to be settled by July 10 of YR8.
+June 9 of YR8	You have given orders to commence work on 2 homes, 1 farm, 1 fort, 2 guilds, 2 towers, 1 thieves' den and 1 watch tower.
+June 9 of YR8	Your wizards gather 4,377 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 6 days from attacks against us!
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. The fire of Mage's Fury burns in our wizards' eyes for 8 days!
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, but the spell fails. (ARRROT (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, but the spell fails. (ARRROT (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 42 wizards were killed in an explosion! (ARRROT (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of ARRROT (4:8) for 9 days. (ARRROT (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of SafeHaven (4:8), negating 2 active spells (Inspire Army and Minor Protection). (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 38 wizards were killed in an explosion! (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of SafeHaven (4:8), negating 2 active spells (Love and Peace and Magic Shield). (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of SafeHaven (4:8) for 6 days. (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 4,774 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of SafeHaven (4:8) for 10 days. They will suffer increased defensive losses during battle. (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of SafeHaven (4:8) have taken a vow of chastity for 8 days! (SafeHaven (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of greybear (4:8) for 6 days. (greybear (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Our mages have illuminated the lands of our enemies and exposed the thieves that walk through the lands of UnKnown ReBel (4:8) for 5 days. (UnKnown ReBel (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 38 wizards were killed in an explosion! (Ta the daddy pirate (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, but the spell fails. (Ta the daddy pirate (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of aaaaaargh (4:8) have taken a vow of chastity for 5 days! (aaaaaargh (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of MAGGOT BASTARD (4:8) have taken a vow of chastity for 4 days! (MAGGOT BASTARD (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (Tintagel (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Tintagel (4:8) have taken a vow of chastity for 7 days! (Tintagel (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of mystic (4:8), negating 2 active spells (Nature's Blessing and Minor Protection). (mystic (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, but the spell fails. (mystic (4:8))
+June 17 of YR8	Your wizards gather 8,289 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of mystic (4:8) for 9 days. (mystic (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (mystic (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Our mages have illuminated the lands of our enemies and exposed the thieves that walk through the lands of mystic (4:8) for 7 days. (mystic (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of mystic (4:8) have taken a vow of chastity for 8 days! (mystic (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (BroadSword (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (BroadSword (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of BroadSword (4:8) have taken a vow of chastity for 4 days! (BroadSword (4:8))
+June 17 of YR8	Your wizards gather 1,326 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 20 days!
+June 17 of YR8	Your wizards gather 2,917 runes and begin casting, and the spell succeeds. Our army has been inspired to train harder. We expect maintenance costs to be reduced for 19 days!
+June 17 of YR8	You have given orders to commence work on 11 homes, 5 farms, 8 forts, 14 guilds, 17 towers, 12 thieves' dens, 8 watch towers and 10 libraries.
+June 17 of YR8	You have given orders to commence work on 1 thieves' den.
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 38 wizards were killed in an explosion! (Hairy nipple nebula force (4:8))
+June 17 of YR8	Your wizards gather 7,427 runes and begin casting, but the spell fails. (Hairy nipple nebula force (4:8))
+June 17 of YR8	15,300 books allocated to BOOKKEEPING
+June 17 of YR8	10,620 books allocated to VALOR
+June 17 of YR8	14,040 books allocated to CRIME
+June 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (mystic (4:8), sent 653)
+June 17 of YR8	Sources have indicated the mission was foiled. We lost 22 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (mystic (4:8), sent 1653)
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 30,636 runes. (mystic (4:8), sent 1653)
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 25 war horses. (mystic (4:8), sent 1653)
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 25 war horses. (mystic (4:8), sent 1653)
+June 17 of YR8	We lost 2 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 30,636 runes. (mystic (4:8), sent 1653)
+June 17 of YR8	Sources have indicated the mission was foiled. We lost 23 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (mystic (4:8), sent 1653)
+June 17 of YR8	We lost 4 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 23,100 runes. (mystic (4:8), sent 1300)
+June 17 of YR8	Sources have indicated the mission was foiled. We lost 15 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (mystic (4:8), sent 1300)
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 16,695 runes. (mystic (4:8), sent 1300)
+June 17 of YR8	Sources have indicated the mission was foiled. We lost 23 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (mystic (4:8), sent 1300)
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 12,066 runes. (mystic (4:8), sent 1300)
+June 17 of YR8	We lost 2 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Walk The Plank (4:8), sent 649)
+June 17 of YR8	You have ordered that 100 thieves be trained.
+June 17 of YR8	You have ordered that 864 Archers be trained.
+June 17 of YR8	Your wizards gather 4,111 runes and begin casting, and the spell succeeds. Lightning strikes the Towers in shiver me timbers (4:8) and incinerates 28,313 runes! (shiver me timbers (4:8))
+June 17 of YR8	Your wizards gather 4,111 runes and begin casting, and the spell succeeds. Lightning strikes the Towers in shiver me timbers (4:8) and incinerates 16,549 runes! (shiver me timbers (4:8))
+June 17 of YR8	We lost 2 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (wayshegoes (4:8), sent 649)
+June 17 of YR8	We lost 4 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 14,117 runes. (wayshegoes (4:8), sent 1000)
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (UnKnown ReBel (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, but the spell fails. (UnKnown ReBel (4:8))
+June 17 of YR8	Your wizards gather 3,713 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of UnKnown ReBel (4:8) have taken a vow of chastity for 4 days! (UnKnown ReBel (4:8))
+June 17 of YR8	Your wizards gather 4,774 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of aaaaaargh (4:8) for 10 days. They will suffer increased defensive losses during battle. (aaaaaargh (4:8))
+June 17 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Back From The Edge (4:8), sent 649)
+June 17 of YR8	We lost 6 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves have returned with 49,055 gold coins. (Back From The Edge (4:8), sent 1000)
+June 17 of YR8	We lost 4 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves have returned with 47,273 gold coins. (Back From The Edge (4:8), sent 1000)
+June 17 of YR8	We lost 2 thieves in the operation.
+June 17 of YR8	Early indications show that our operation was a success. Our thieves have returned with 43,913 gold coins. (Back From The Edge (4:8), sent 1000)
+June 17 of YR8	Sources have indicated the mission was foiled. We lost 18 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 1000)
+June 17 of YR8	You have ordered that 280 thieves be trained.
+June 18 of YR8	Drawing from the ancient Mana Well, you restore 50% of your mana, ready to unleash your magic anew.
+June 18 of YR8	The power of Mana Well surges through your forces!
+June 18 of YR8	1,700 books allocated to TOOLS
+June 18 of YR8	1,180 books allocated to VALOR
+June 18 of YR8	1,560 books allocated to FINESSE
+June 18 of YR8	We have sent 200 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 20,000 gold coins to our aid surplus.
+June 18 of YR8	You have given orders to commence work on 1 home, 1 fort, 2 guilds, 1 tower, 1 watch tower and 1 library.
+June 18 of YR8	Your wizards gather 5,317 runes and begin casting, and the spell succeeds. Our people are excited about the military and will signup more quickly for 13 days!
+June 18 of YR8	You have ordered that 90 Archers be trained.
+June 20 of YR8	We have sent 596 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 59,600 gold coins to our aid surplus.
+June 20 of YR8	You have set your draft rate to Normal.
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of aaaaaargh (4:8), negating 6 active spells (Nature's Blessing, Inspire Army, Fertile Lands, Chastity, Pitfalls and Gluttony). (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of aaaaaargh (4:8), negating 1 active spell (Magic Shield). (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of aaaaaargh (4:8), negating 2 active spells (Minor Protection and Meteor Showers). (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of aaaaaargh (4:8) for 15 days. They will suffer increased defensive losses during battle. (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 8,331 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of aaaaaargh (4:8) for 6 days. (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 3,199 runes and begin casting, and the spell succeeds. The gluttony of aaaaaargh (4:8) has increased for 19 days. (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 2,666 runes and begin casting, and the spell succeeds. A drought will reign over the lands of aaaaaargh (4:8) for 16 days! (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 3,465 runes and begin casting, and the spell succeeds. Our mages have caused our enemy's soldiers to turn greedy for 7 days. (aaaaaargh (4:8))
+June 20 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked extremely badly in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (aaaaaargh (4:8), sent 651)
+June 20 of YR8	We lost 3 thieves in the operation.
+June 20 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (aaaaaargh (4:8), sent 651)
+June 20 of YR8	We lost 1 thief in the operation.
+June 20 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (aaaaaargh (4:8), sent 651)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (aaaaaargh (4:8), sent 2650)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (aaaaaargh (4:8), sent 991)
+June 20 of YR8	We lost 2 thieves in the operation.
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 73,699 bushels. (aaaaaargh (4:8), sent 991)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 13 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (aaaaaargh (4:8), sent 991)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 10 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (aaaaaargh (4:8), sent 991)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (aaaaaargh (4:8), sent 991)
+June 20 of YR8	We lost 2 thieves in the operation.
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 53,309 bushels. (aaaaaargh (4:8), sent 800)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 38,538 bushels. (aaaaaargh (4:8), sent 600)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 27,860 bushels. (aaaaaargh (4:8), sent 400)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 20,141 bushels. (aaaaaargh (4:8), sent 400)
+June 20 of YR8	We lost 1 thief in the operation.
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 14,561 bushels. (aaaaaargh (4:8), sent 400)
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Explosions will rock aid shipments to and from aaaaaargh (4:8) for 12 days! (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, but the spell fails. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of wayshegoes (4:8), negating 2 active spells (Fertile Lands and Minor Protection). (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of wayshegoes (4:8), but evaporates as it was unable to negate any spells.. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of wayshegoes (4:8), negating 2 active spells (Inspire Army and Wrath). (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of wayshegoes (4:8), but evaporates as it was unable to negate any spells.. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 7,465 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of wayshegoes (4:8), negating 1 active spell (Magic Shield). (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of wayshegoes (4:8) for 12 days. They will suffer increased defensive losses during battle. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 8,331 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of wayshegoes (4:8) for 7 days. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 3,465 runes and begin casting, and the spell succeeds. Our mages have caused our enemy's soldiers to turn greedy for 9 days. (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 2,666 runes and begin casting, and the spell succeeds. A drought will reign over the lands of wayshegoes (4:8) for 14 days! (wayshegoes (4:8))
+June 20 of YR8	Your wizards gather 3,199 runes and begin casting, and the spell succeeds. The gluttony of wayshegoes (4:8) has increased for 11 days. (wayshegoes (4:8))
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 4 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (wayshegoes (4:8), sent 500)
+June 20 of YR8	We lost 2 thieves in the operation.
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 34,301 bushels. (wayshegoes (4:8), sent 500)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 24,469 bushels. (wayshegoes (4:8), sent 500)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have returned with 17,454 bushels. (wayshegoes (4:8), sent 500)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 5 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (wayshegoes (4:8), sent 500)
+June 20 of YR8	Sources have indicated the mission was foiled. We lost 5 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (wayshegoes (4:8), sent 500)
+June 20 of YR8	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (wayshegoes (4:8), sent 2647)
+June 20 of YR8	We lost 3 thieves in the operation.
+June 20 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our thieves have infiltrated the Thieves' Guilds of wayshegoes (4:8). They appear to have about 4,158 thieves employed across their lands. (wayshegoes (4:8), sent 647)
+June 20 of YR8	Your wizards gather 3,732 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of ZePirateCaptnAFAU (4:8) have taken a vow of chastity for 4 days! (ZePirateCaptnAFAU (4:8))
+June 20 of YR8	Your wizards gather 3,732 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Plague Pirate Pete (4:8) have taken a vow of chastity for 8 days! (Plague Pirate Pete (4:8))
+June 21 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (An Emerald Dragon from (4:8), sent 648)
+June 21 of YR8	Your wizards gather 3,732 runes and begin casting, but the spell fails. (Back From The Edge (4:8))
+June 21 of YR8	Your wizards gather 3,732 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Back From The Edge (4:8) have taken a vow of chastity for 7 days! (Back From The Edge (4:8))
+June 21 of YR8	We have sent 229 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 22,900 gold coins to our aid surplus.
+June 21 of YR8	We have sent 30,000 gold coins to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 30,000 gold coins to our aid surplus.
+June 21 of YR8	We have sent 30,000 bushels to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 1,500 gold coins to our aid surplus.
+June 22 of YR8	We have sent 233 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 23,300 gold coins to our aid surplus.
+June 22 of YR8	We lost 13 thieves in the operation.
+June 22 of YR8	Early indications show that our operation was a success. Our thieves have disrupted the enemy Wizards' ability to regain their mana. It is expected to last 1 day. (BroadSword (4:8), sent 3650)
+June 22 of YR8	You have set your draft rate to Aggressive.
+June 22 of YR8	We have sent 20,000 runes to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 60,000 gold coins to our aid surplus.
+June 22 of YR8	Your wizards gather 8,334 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 42 wizards were killed in an explosion! (Frost (4:8))
+June 22 of YR8	Your wizards gather 8,334 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Frost (4:8) for 7 days. (Frost (4:8))
+June 22 of YR8	Your wizards gather 8,334 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 41 wizards were killed in an explosion! (Undead Demonic Pirate (4:8))
+June 22 of YR8	Your wizards gather 8,334 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Undead Demonic Pirate (4:8) for 8 days. (Undead Demonic Pirate (4:8))
+June 22 of YR8	Your wizards gather 3,733 runes and begin casting, but the spell fails. (BroadSword (4:8))
+June 22 of YR8	Your wizards gather 3,733 runes and begin casting, but the spell fails. (BroadSword (4:8))
+June 22 of YR8	We lost 4 thieves in the operation.
+June 22 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (BroadSword (4:8), sent 649)
+June 22 of YR8	We lost 1 thief in the operation.
+June 22 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our thieves have infiltrated the Thieves' Guilds of BroadSword (4:8). They appear to have about 8,906 thieves employed across their lands. (BroadSword (4:8), sent 649)
+June 23 of YR8	We have sent 354 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 35,400 gold coins to our aid surplus.
+June 23 of YR8	8,500 books allocated to TOOLS
+June 23 of YR8	5,900 books allocated to HEROISM
+June 23 of YR8	7,800 books allocated to FINESSE
+June 23 of YR8	Your wizards gather 8,340 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Haxe (4:8) for 7 days. (Haxe (4:8))
+June 23 of YR8	Your wizards gather 3,936 runes and begin casting, and the spell succeeds. Your guilds will produce extra wizards for 17 days!
+June 24 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked extremely badly in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (aaaaaargh (4:8), sent 651)
+June 24 of YR8	Your wizards gather 8,340 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of shiver me timbers (4:8) for 8 days. (shiver me timbers (4:8))
+June 24 of YR8	Your wizards gather 3,736 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of shiver me timbers (4:8) have taken a vow of chastity for 7 days! (shiver me timbers (4:8))
+June 24 of YR8	Your wizards gather 8,340 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of SafeHaven (4:8) for 10 days. (SafeHaven (4:8))
+June 24 of YR8	Your wizards gather 8,340 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Back From The Edge (4:8) for 9 days. (Back From The Edge (4:8))
+June 24 of YR8	Your wizards gather 8,340 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of An Emerald Dragon from (4:8) for 8 days. (An Emerald Dragon from (4:8))
+June 24 of YR8	We have sent 357 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 35,700 gold coins to our aid surplus.
+July 2 of YR8	You have given orders to commence work on 8 homes, 4 farms, 7 forts, 10 guilds, 13 towers, 9 thieves' dens, 7 watch towers and 6 libraries.
+July 2 of YR8	Your wizards gather 1,901 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 11 days!
+July 2 of YR8	We have sent 703 soldiers to I was sick (4:1). It should arrive shortly! This aid shipment has added 70,300 gold coins to our aid surplus.
+July 2 of YR8	10,200 books allocated to BOOKKEEPING
+July 2 of YR8	7,080 books allocated to HEROISM
+July 2 of YR8	9,360 books allocated to FINESSE
+July 2 of YR8	Your wizards gather 8,489 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of MAGGOT BASTARD (4:8) for 9 days. (MAGGOT BASTARD (4:8))
+July 2 of YR8	Your wizards gather 8,489 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 41 wizards were killed in an explosion! (UnKnown ReBel (4:8))
+July 2 of YR8	Your wizards gather 8,489 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of UnKnown ReBel (4:8) for 7 days. (UnKnown ReBel (4:8))
+July 3 of YR8	We have sent 50,000 bushels to Brad Pitt Came 2 My Town (4:1). It should arrive shortly! This aid shipment has added 2,500 gold coins to our aid surplus.
+July 3 of YR8	We have sent 349 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 34,900 gold coins to our aid surplus.
+July 3 of YR8	You have given orders to commence work on 1 guild.
+July 3 of YR8	You have donated 200,000 bushels to the quest of launching a dragon.
+July 3 of YR8	Your wizards gather 5,163 runes and begin casting, and the spell succeeds. Our lands are blessed with Shadowlight. The next time thieves enter our lands their identities will be revealed.
+July 3 of YR8	We have sent 103,000 gold coins to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 103,000 gold coins to our aid surplus.
+July 3 of YR8	We have sent 30,000 gold coins to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 30,000 gold coins to our aid surplus.
+July 3 of YR8	Your wizards gather 8,491 runes and begin casting, but the spell fails. (ARRROT (4:8))
+July 3 of YR8	Your wizards gather 8,491 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of ARRROT (4:8) for 11 days. (ARRROT (4:8))
+July 3 of YR8	1,700 books allocated to BOOKKEEPING
+July 3 of YR8	1,180 books allocated to HEROISM
+July 3 of YR8	1,560 books allocated to FINESSE
+July 4 of YR8	1,700 books allocated to BOOKKEEPING
+July 4 of YR8	1,180 books allocated to HEROISM
+July 4 of YR8	1,560 books allocated to FINESSE
+July 4 of YR8	We have sent 348 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 34,800 gold coins to our aid surplus.
+July 4 of YR8	You have given orders to commence work on 1 library.
+July 4 of YR8	Your wizards gather 4,892 runes and begin casting, but the spell fails. (mystic (4:8))
+July 4 of YR8	Your wizards gather 4,892 runes and begin casting, but the spell fails. (mystic (4:8))
+July 4 of YR8	Your wizards gather 4,892 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of mystic (4:8) for 13 days. They will suffer increased defensive losses during battle. (mystic (4:8))
+July 4 of YR8	We lost 14 thieves in the operation.
+July 4 of YR8	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (mystic (4:8), sent 2656)
+July 4 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (mystic (4:8), sent 2656)
+July 4 of YR8	Your wizards gather 951 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 12 days!
+July 4 of YR8	We have sent 100,000 gold coins to This is my first time (4:1). It should arrive shortly! This aid shipment has added 100,000 gold coins to our aid surplus.
+July 4 of YR8	We have sent 30,000 runes to This is my first time (4:1). It should arrive shortly! This aid shipment has added 90,000 gold coins to our aid surplus.
+July 5 of YR8	We have sent 349 soldiers to I was sick (4:1). It should arrive shortly! This aid shipment has added 34,900 gold coins to our aid surplus.
+July 5 of YR8	1,700 books allocated to BOOKKEEPING
+July 5 of YR8	1,180 books allocated to HEROISM
+July 5 of YR8	1,560 books allocated to FINESSE
+July 5 of YR8	Your wizards gather 8,494 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Tintagel (4:8) for 10 days. (Tintagel (4:8))
+July 6 of YR8	We have sent 350 soldiers to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 35,000 gold coins to our aid surplus.
+July 7 of YR8	We lost 3 thieves in the operation.
+July 7 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (ARRROT (4:8), sent 659)
+July 7 of YR8	We have sent 353 soldiers to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 35,300 gold coins to our aid surplus.
+July 7 of YR8	We have sent 187,908 gold coins to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 187,908 gold coins to our aid surplus.
+July 8 of YR8	We have sent 354 soldiers to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 35,400 gold coins to our aid surplus.
+July 9 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Frost (4:8) for 7 days. (Frost (4:8))
+July 9 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of An Emerald Dragon from (4:8) for 10 days. (An Emerald Dragon from (4:8))
+July 9 of YR8	Your wizards gather 7,616 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Back From The Edge (4:8), negating 5 active spells (Meteor Showers, Builders Boon, Minor Protection, Inspire Army and Miner's Mystique). (Back From The Edge (4:8))
+July 9 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Back From The Edge (4:8) have taken a vow of chastity for 5 days! (Back From The Edge (4:8))
+July 9 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Back From The Edge (4:8) for 7 days. (Back From The Edge (4:8))
+July 9 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Haxe (4:8) for 9 days. (Haxe (4:8))
+July 9 of YR8	Your wizards gather 3,808 runes and begin casting, but the spell fails. (ZePirateCaptnAFAU (4:8))
+July 9 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of ZePirateCaptnAFAU (4:8) have taken a vow of chastity for 6 days! (ZePirateCaptnAFAU (4:8))
+July 9 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of UnKnown ReBel (4:8) have taken a vow of chastity for 4 days! (UnKnown ReBel (4:8))
+July 9 of YR8	Your wizards gather 1,360 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 15 days!
+July 9 of YR8	Your wizards gather 5,440 runes and begin casting, and the spell succeeds. Our people are excited about the military and will signup more quickly for 13 days!
+July 9 of YR8	We have sent 229 soldiers to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 22,900 gold coins to our aid surplus.
+July 9 of YR8	We have sent 47 soldiers to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 4,700 gold coins to our aid surplus.
+July 10 of YR8	We have sent 364 soldiers to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 36,400 gold coins to our aid surplus.
+July 15 of YR8	We have sent 30,000 gold coins and 1,817 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 211,700 gold coins to our aid surplus.
+July 15 of YR8	17,320 books allocated to BOOKKEEPING
+July 15 of YR8	11,800 books allocated to HEROISM
+July 15 of YR8	15,600 books allocated to CHANNELING
+July 15 of YR8	Your wizards gather 1,360 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 26 days!
+July 15 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. The fire of Mage's Fury burns in our wizards' eyes for 4 days!
+July 15 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of wayshegoes (4:8) for 6 days. (wayshegoes (4:8))
+July 15 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of SafeHaven (4:8) for 6 days. (SafeHaven (4:8))
+July 15 of YR8	Your wizards gather 8,500 runes and begin casting, but the spell fails. (ARRROT (4:8))
+July 15 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of ARRROT (4:8) for 6 days. (ARRROT (4:8))
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 10 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (ZePirateCaptnAFAU (4:8), sent 661)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (ZePirateCaptnAFAU (4:8), sent 661)
+July 16 of YR8	We lost 2 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (ZePirateCaptnAFAU (4:8), sent 661)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 26 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (ZePirateCaptnAFAU (4:8), sent 1661)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 15 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (ZePirateCaptnAFAU (4:8), sent 1661)
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 27,079 runes. (ZePirateCaptnAFAU (4:8), sent 1661)
+July 16 of YR8	We have sent 40,000 runes to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 120,000 gold coins to our aid surplus.
+July 16 of YR8	You have given orders to commence work on 1 home and 1 tower.
+July 16 of YR8	We have sent 163,297 gold coins to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 163,297 gold coins to our aid surplus.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Tintagel (4:8), sent 658)
+July 16 of YR8	We lost 9 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 34,344 runes. (Tintagel (4:8), sent 2200)
+July 16 of YR8	We lost 5 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 26,540 runes. (Tintagel (4:8), sent 1700)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Tintagel (4:8), sent 1350)
+July 16 of YR8	We lost 7 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 20,877 runes. (Tintagel (4:8), sent 1350)
+July 16 of YR8	We have sent 46,779 runes to Instructions Were Unclear (4:1). It should arrive shortly! This aid shipment has added 140,337 gold coins to our aid surplus.
+July 16 of YR8	We lost 2 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Plague Pirate Pete (4:8), sent 656)
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Ta the daddy pirate (4:8), sent 656)
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked extremely badly in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Frost (4:8), sent 656)
+July 16 of YR8	We have sent 60,000 runes to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 180,000 gold coins to our aid surplus.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Back From The Edge (4:8), sent 656)
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Walk The Plank (4:8), sent 656)
+July 16 of YR8	We lost 2 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (UnKnown ReBel (4:8), sent 656)
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked pretty heavily in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (ARRROT (4:8), sent 656)
+July 16 of YR8	Your wizards gather 1,904 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 20 days!
+July 16 of YR8	We lost 3 thieves in the operation.
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Haxe (4:8), sent 656)
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 16,968 runes. (Haxe (4:8), sent 1373)
+July 16 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 16,002 runes. (Tintagel (4:8), sent 1050)
+July 16 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Plague Pirate Pete (4:8) for 10 days. (Plague Pirate Pete (4:8))
+July 16 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Ta the daddy pirate (4:8) for 8 days. (Ta the daddy pirate (4:8))
+July 16 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Tintagel (4:8) for 7 days. (Tintagel (4:8))
+July 16 of YR8	You have donated 60,000 bushels to the quest of launching a dragon.
+July 16 of YR8	You have donated 21,611 bushels to the quest of launching a dragon.
+July 16 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of ZePirateCaptnAFAU (4:8) have taken a vow of chastity for 7 days! (ZePirateCaptnAFAU (4:8))
+July 16 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of UnKnown ReBel (4:8) have taken a vow of chastity for 5 days! (UnKnown ReBel (4:8))
+July 16 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Back From The Edge (4:8), sent 656)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 13 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 1064)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 10 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 1064)
+July 16 of YR8	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 1064)
+July 16 of YR8	Early indications show that our operation was a success. Our thieves have returned with 46,490 gold coins. (Back From The Edge (4:8), sent 1064)
+July 16 of YR8	1,740 books allocated to PRODUCTION
+July 16 of YR8	1,180 books allocated to HEROISM
+July 16 of YR8	1,560 books allocated to FINESSE
+July 18 of YR8	Your wizards gather 952 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 17 days!
+July 18 of YR8	Your wizards gather 4,012 runes and begin casting, and the spell succeeds. Your guilds will produce extra wizards for 16 days!
+July 18 of YR8	3,480 books allocated to BOOKKEEPING
+July 18 of YR8	2,360 books allocated to HEROISM
+July 18 of YR8	3,120 books allocated to FINESSE
+July 18 of YR8	We have sent 1,087 soldiers to Its My neighbors Fault (4:1). It should arrive shortly! This aid shipment has added 108,700 gold coins to our aid surplus.
+July 18 of YR8	Drawing from the ancient Mana Well, you restore 50% of your mana, ready to unleash your magic anew.
+July 18 of YR8	The power of Mana Well surges through your forces!
+July 18 of YR8	We have sent 84,623 gold coins to I was sick (4:1). It should arrive shortly! This aid shipment has added 84,623 gold coins to our aid surplus.
+July 18 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of MAGGOT BASTARD (4:8) have taken a vow of chastity for 4 days! (MAGGOT BASTARD (4:8))
+July 18 of YR8	Your wizards gather 7,616 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Back From The Edge (4:8), negating 4 active spells (Nature's Blessing, Fertile Lands, War Spoils and Miner's Mystique). (Back From The Edge (4:8))
+July 18 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Back From The Edge (4:8) for 9 days. (Back From The Edge (4:8))
+July 18 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Back From The Edge (4:8) have taken a vow of chastity for 8 days! (Back From The Edge (4:8))
+July 18 of YR8	Your wizards gather 2,720 runes and begin casting, and the spell succeeds. A drought will reign over the lands of Back From The Edge (4:8) for 10 days! (Back From The Edge (4:8))
+July 19 of YR8	We have sent 19,971 gold coins to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 19,971 gold coins to our aid surplus.
+July 19 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Plague Pirate Pete (4:8) have taken a vow of chastity for 7 days! (Plague Pirate Pete (4:8))
+July 19 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Undead Demonic Pirate (4:8) have taken a vow of chastity for 7 days! (Undead Demonic Pirate (4:8))
+July 19 of YR8	Your wizards gather 8,500 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 41 wizards were killed in an explosion! (Undead Demonic Pirate (4:8))
+July 19 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Undead Demonic Pirate (4:8) for 10 days. (Undead Demonic Pirate (4:8))
+July 19 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Tintagel (4:8) have taken a vow of chastity for 5 days! (Tintagel (4:8))
+July 19 of YR8	Sources have indicated the mission was foiled. We lost 22 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (bornagainboot (4:8), sent 1930)
+July 19 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 28,880 runes. (bornagainboot (4:8), sent 1930)
+July 19 of YR8	We lost 8 thieves in the operation.
+July 19 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 22,380 runes. (bornagainboot (4:8), sent 1930)
+July 19 of YR8	We lost 4 thieves in the operation.
+July 19 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 17,345 runes. (bornagainboot (4:8), sent 1200)
+July 19 of YR8	Sources have indicated the mission was foiled. We lost 12 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (bornagainboot (4:8), sent 1200)
+July 19 of YR8	We lost 1 thief in the operation.
+July 19 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 13,443 runes. (bornagainboot (4:8), sent 900)
+July 19 of YR8	Your wizards gather 8,500 runes and begin casting, but the spell fails. (ZePirateCaptnAFAU (4:8))
+July 19 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of ZePirateCaptnAFAU (4:8) for 9 days. (ZePirateCaptnAFAU (4:8))
+July 19 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Frost (4:8) for 7 days. (Frost (4:8))
+July 20 of YR8	Your wizards gather 5,331 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 1 active spell (Blizzard). (My Dog Ate It (4:1))
+July 20 of YR8	Your wizards gather 5,331 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 1 active spell (Gluttony). (My Dog Ate It (4:1))
+July 20 of YR8	We have sent 20,000 runes to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 60,000 gold coins to our aid surplus.
+July 20 of YR8	We have sent 19,749 gold coins to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 19,749 gold coins to our aid surplus.
+July 20 of YR8	Your wizards gather 7,616 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Back From The Edge (4:8), negating 5 active spells (Minor Protection, Love and Peace, Fanaticism, Meteor Showers and Chastity). (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 7,616 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Back From The Edge (4:8), negating 3 active spells (Magic Shield, Builders Boon and Drought). (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 8,500 runes and begin casting, but the spell fails. (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Back From The Edge (4:8) for 9 days. (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 3,264 runes and begin casting, and the spell succeeds. The gluttony of Back From The Edge (4:8) has increased for 15 days. (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 2,720 runes and begin casting, and the spell succeeds. A drought will reign over the lands of Back From The Edge (4:8) for 13 days! (Back From The Edge (4:8))
+July 20 of YR8	Your wizards gather 4,896 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of Back From The Edge (4:8) for 13 days. They will suffer increased defensive losses during battle. (Back From The Edge (4:8))
+July 20 of YR8	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (Back From The Edge (4:8), sent 3652)
+July 20 of YR8	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Haxe (4:8), sent 1169)
+July 20 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 14,526 runes. (Haxe (4:8), sent 1169)
+July 20 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 11,809 runes. (Haxe (4:8), sent 1169)
+July 20 of YR8	We lost 6 thieves in the operation.
+July 20 of YR8	Early indications show that our operation was a success. Our thieves were able to steal 9,602 runes. (Haxe (4:8), sent 1169)
+July 21 of YR8	We have sent 19,911 gold coins to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 19,911 gold coins to our aid surplus.
+July 21 of YR8	Your topic was created successfully.
+July 21 of YR8	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked extremely badly in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Back From The Edge (4:8), sent 651)
+July 21 of YR8	Sources have indicated the mission was foiled. We lost 9 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 800)
+July 21 of YR8	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Back From The Edge (4:8), sent 800)
+July 21 of YR8	Early indications show that our operation was a success. Our thieves have returned with 44,354 bushels. (Back From The Edge (4:8), sent 800)
+July 21 of YR8	Early indications show that our operation was a success. Our thieves have returned with 35,014 bushels. (Back From The Edge (4:8), sent 800)
+July 21 of YR8	Early indications show that our operation was a success. Our thieves have returned with 27,641 bushels. (Back From The Edge (4:8), sent 800)
+July 21 of YR8	We have sent 432 soldiers to Its My neighbors Fault (4:1). It should arrive shortly! This aid shipment has added 43,200 gold coins to our aid surplus.
+July 21 of YR8	You have donated 120,000 bushels to the quest of launching a dragon.
+July 21 of YR8	We have sent 658 soldiers to Its My neighbors Fault (4:1). It should arrive shortly! This aid shipment has added 65,800 gold coins to our aid surplus.
+July 22 of YR8	6,960 books allocated to BOOKKEEPING
+July 22 of YR8	4,720 books allocated to HEROISM
+July 22 of YR8	6,240 books allocated to FINESSE
+July 22 of YR8	We have sent 20,858 gold coins to Men Should Work 24-7 (4:1). It should arrive shortly! This aid shipment has added 20,858 gold coins to our aid surplus.
+July 22 of YR8	We have sent 369 soldiers to Its My neighbors Fault (4:1). It should arrive shortly! This aid shipment has added 36,900 gold coins to our aid surplus.
+July 22 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of UnKnown ReBel (4:8) have taken a vow of chastity for 4 days! (UnKnown ReBel (4:8))
+July 22 of YR8	Your wizards gather 8,500 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 41 wizards were killed in an explosion! (An Emerald Dragon from (4:8))
+July 22 of YR8	Your wizards gather 8,500 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of An Emerald Dragon from (4:8) for 8 days. (An Emerald Dragon from (4:8))
+July 22 of YR8	Your wizards gather 3,808 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of An Emerald Dragon from (4:8) have taken a vow of chastity for 5 days! (An Emerald Dragon from (4:8))
+July 23 of YR8	We have sent 21,250 gold coins to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 21,250 gold coins to our aid surplus.
+July 1 of YR7	You have given orders to commence work on 114 banks.
+July 1 of YR7	We have sent 407 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 40,700 gold coins to our aid surplus.
+July 1 of YR7	You have donated 100,000 gold coins to the quest of launching a dragon.
+July 1 of YR7	You have donated 7,000 gold coins to the quest of launching a dragon.
+July 1 of YR7	You have donated 10,000 gold coins to the quest of launching a dragon.
+July 1 of YR7	Your wizards gather 1,323 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 11 days!
+July 1 of YR7	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Resius Caesar (4:11), sent 481)
+July 1 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Resius Caesar (4:11), sent 481)
+July 1 of YR7	Early indications show that our operation was a success. Our thieves have returned with 74,510 bushels. (Resius Caesar (4:11), sent 1200)
+July 1 of YR7	We have sent 40,000 bushels to Im Tired (4:1). It should arrive shortly! This aid shipment has added 2,000 gold coins to our aid surplus.
+July 2 of YR7	We have sent 30,000 bushels to Bingpot (4:1). It should arrive shortly! This aid shipment has added 1,500 gold coins to our aid surplus.
+July 2 of YR7	We have sent 10,000 bushels to Brad Pitt Came 2 My Town (4:1). It should arrive shortly! This aid shipment has added 500 gold coins to our aid surplus.
+July 4 of YR7	Your wizards gather 2,646 runes and begin casting, and the spell succeeds. The fire of Mage's Fury burns in our wizards' eyes for 6 days!
+July 4 of YR7	Your wizards gather 5,292 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of muguiying (4:11), negating 1 active spell (Minor Protection). (muguiying (4:11))
+July 4 of YR7	Your wizards gather 5,292 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of muguiying (4:11), but evaporates as it was unable to negate any spells.. (muguiying (4:11))
+July 4 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. (muguiying (4:11))
+July 4 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of muguiying (4:11) for 5 days. (muguiying (4:11))
+July 4 of YR7	Your wizards gather 2,646 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of muguiying (4:11) have taken a vow of chastity for 4 days! (muguiying (4:11))
+July 4 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Resius Caesar (4:11) for 8 days. (Resius Caesar (4:11))
+July 4 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Cao Cao (4:11) for 10 days. (Cao Cao (4:11))
+July 4 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Alchemia (4:11) for 7 days. (Alchemia (4:11))
+July 4 of YR7	Your wizards gather 5,292 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of FutureState (4:11), but evaporates as it was unable to negate any spells.. (FutureState (4:11))
+July 4 of YR7	Your wizards gather 5,292 runes and begin casting, but the spell fails. (FutureState (4:11))
+July 4 of YR7	You have donated 70,000 gold coins to the quest of launching a dragon.
+July 5 of YR7	Your wizards gather 3,213 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 6 days from attacks against us!
+July 5 of YR7	Your wizards gather 2,457 runes and begin casting, and the spell succeeds. A magical aura surrounds our troops reducing casualties in battle for 12 days!
+July 5 of YR7	Your wizards gather 945 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 18 days!
+July 5 of YR7	You have donated 1,989 gold coins to the quest of launching a dragon.
+July 5 of YR7	You have donated 17,909 gold coins to the quest of launching a dragon.
+July 9 of YR7	We have sent 6,000 runes to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 18,000 gold coins to our aid surplus.
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Jal the Putrid (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Jal the Putrid (4:11) for 9 days. (Jal the Putrid (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. (Legion Maverick (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Legion Maverick (4:11) for 9 days. (Legion Maverick (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Mat Phoria Salleh (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Mat Phoria Salleh (4:11) for 10 days. (Mat Phoria Salleh (4:11))
+July 9 of YR7	Your wizards gather 945 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 24 days!
+July 9 of YR7	We lost 3 thieves in the operation.
+July 9 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Resius Caesar (4:11), sent 481)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have returned with 62,363 bushels. (Resius Caesar (4:11), sent 1000)
+July 9 of YR7	We have sent 20,000 bushels to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 1,000 gold coins to our aid surplus.
+July 9 of YR7	We have sent 15,000 bushels to Brad Pitt Came 2 My Town (4:1). It should arrive shortly! This aid shipment has added 750 gold coins to our aid surplus.
+July 9 of YR7	We have sent 10,000 bushels to Bingpot (4:1). It should arrive shortly! This aid shipment has added 500 gold coins to our aid surplus.
+July 9 of YR7	We lost 2 thieves in the operation.
+July 9 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Mat Phoria Salleh (4:11), sent 481)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 15 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 800)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 800)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 7,074 runes. (Mat Phoria Salleh (4:11), sent 800)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 16 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 800)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 6,654 runes. (Mat Phoria Salleh (4:11), sent 800)
+July 9 of YR7	You have given orders to commence work on 71 banks.
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Napoleon Pongaparte (4:11) for 6 days. (Napoleon Pongaparte (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Pisot Bbm Gen Thorre (4:11) for 9 days. (Pisot Bbm Gen Thorre (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Ragnar Crashbrok (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. (Ragnar Crashbrok (4:11))
+July 9 of YR7	Your wizards gather 5,907 runes and begin casting, but the spell fails. (Ragnar Crashbrok (4:11))
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 36 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (GengBriz Khan (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 20 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (GengBriz Khan (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 26 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Alchemia (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 38 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Ragnar Crashbrok (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 34 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Ragnar Crashbrok (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 22 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (muguiying (4:11), sent 2000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 49 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (muguiying (4:11), sent 2000)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have caused rioting. It is expected to last 2 days. (Willaimia Sherman (4:11), sent 2000)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have caused rioting. It is expected to last 6 days. (Legion Maverick (4:11), sent 4000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 68 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 4000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 77 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 4000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 91 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Resius Caesar (4:11), sent 4000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 50 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Cao Cao (4:11), sent 4000)
+July 9 of YR7	We lost 24 thieves in the operation.
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have caused rioting. It is expected to last 6 days. (Cao Cao (4:11), sent 4000)
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have caused rioting. It is expected to last 5 days. (Jal the Putrid (4:11), sent 4000)
+July 9 of YR7	Sources have indicated the mission was foiled. We lost 77 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (FutureState (4:11), sent 4000)
+July 9 of YR7	We lost 19 thieves in the operation.
+July 9 of YR7	Early indications show that our operation was a success. Our thieves have caused rioting. It is expected to last 5 days. (FutureState (4:11), sent 4000)
+July 9 of YR7	We lost 3 thieves in the operation.
+July 9 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (muguiying (4:11), sent 447)
+July 9 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our thieves have infiltrated the Thieves' Guilds of muguiying (4:11). They appear to have about 9,272 thieves employed across their lands. (muguiying (4:11), sent 447)
+July 9 of YR7	Your wizards gather 2,646 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of muguiying (4:11) have taken a vow of chastity for 3 days! (muguiying (4:11))
+July 9 of YR7	You will draft up to 0% of your population.
+July 10 of YR7	We lost 3 thieves in the operation.
+July 10 of YR7	Early indications show that our operation was a success. Our thieves have returned with 49,693 bushels. (Resius Caesar (4:11), sent 800)
+July 11 of YR7	You will pay 20% of military wages.
+July 11 of YR7	You have ordered that 22,354 Archers be released from duty.
+July 11 of YR7	You have destroyed 144 forts and 201 thieves' dens.
+July 11 of YR7	You have given orders to commence work on 63 banks.
+July 11 of YR7	You have given orders to commence work on 282 universities.
+July 11 of YR7	Lord Benni, to explore 28 acres, we have sent out an expedition of 364 soldiers at a cost of 97,664 gold coins. We expect all of the land to be settled by July 24 of YR7.
+July 11 of YR7	You have ordered that 12,856 soldiers be released from duty.
+July 11 of YR7	60,840 books allocated to HOUSING
+July 11 of YR7	34,320 books allocated to STRATEGY
+July 11 of YR7	60,840 books allocated to CRIME
+July 17 of YR7	Lord Benni, to explore 236 acres, we have sent out an expedition of 3,304 soldiers at a cost of 850,308 gold coins. We expect all of the land to be settled by January 6 of YR8.
+July 17 of YR7	Your wizards gather 1,823 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 21 days!
+July 17 of YR7	9,360 books allocated to PRODUCTION
+July 17 of YR7	5,360 books allocated to STRATEGY
+July 17 of YR7	9,360 books allocated to CRIME
+July 17 of YR7	You have given orders to commence work on 14 banks.
+July 18 of YR7	You have given orders to commence work on 22 banks.
+July 18 of YR7	Lord Benni, to explore 34 acres, we have sent out an expedition of 578 soldiers at a cost of 159,494 gold coins. We expect all of the land to be settled by January 7 of YR8.
+July 19 of YR7	Lord Benni, to explore 34 acres, we have sent out an expedition of 578 soldiers at a cost of 165,546 gold coins. We expect all of the land to be settled by January 8 of YR8.
+July 20 of YR7	Lord Benni, to explore 36 acres, we have sent out an expedition of 648 soldiers at a cost of 179,676 gold coins. We expect all of the land to be settled by January 9 of YR8.
+July 20 of YR7	You have given orders to commence work on 10 farms and 43 universities.
+July 21 of YR7	Lord Benni, to explore 35 acres, we have sent out an expedition of 630 soldiers at a cost of 181,510 gold coins. We expect all of the land to be settled by January 10 of YR8.
+July 21 of YR7	You have given orders to commence work on 1 farm and 30 universities.
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, but the spell fails.
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, and the spell succeeds.
+July 21 of YR7	We are now closer to completing our ritual project!
+July 21 of YR7	Your wizards gather 11,514 runes and begin casting, but the spell fails.
+July 21 of YR7	6,240 books allocated to ALCHEMY
+July 21 of YR7	3,840 books allocated to STRATEGY
+July 21 of YR7	6,240 books allocated to CRIME
+July 21 of YR7	Post edited successfully.
+July 21 of YR7	Your reply was posted successfully.
+July 22 of YR7	Your wizards gather 11,692 runes and begin casting, and the spell succeeds.
+July 22 of YR7	We are now closer to completing our ritual project!
+July 22 of YR7	Your wizards gather 11,692 runes and begin casting, and the spell succeeds.
+July 22 of YR7	We are now closer to completing our ritual project!
+July 22 of YR7	Your wizards gather 11,692 runes and begin casting, and the spell succeeds.
+July 22 of YR7	We are now closer to completing our ritual project!
+July 22 of YR7	Lord Benni, to explore 39 acres, we have sent out an expedition of 741 soldiers at a cost of 209,898 gold coins. We expect all of the land to be settled by January 11 of YR8.
+July 23 of YR7	Lord Benni, to explore 39 acres, we have sent out an expedition of 741 soldiers at a cost of 218,634 gold coins. We expect all of the land to be settled by January 12 of YR8.
+July 23 of YR7	You have given orders to commence work on 4 farms, 20 banks and 8 guilds.
+July 23 of YR7	You have given orders to commence work on 37 banks.
+July 23 of YR7	Your wizards gather 11,887 runes and begin casting, and the spell succeeds.
+July 23 of YR7	We are now closer to completing our ritual project!
+July 24 of YR7	Lord Benni, to explore 40 acres, we have sent out an expedition of 800 soldiers at a cost of 233,600 gold coins. We expect all of the land to be settled by January 13 of YR8.
+July 24 of YR7	You have given orders to commence work on 39 towers.
+July 24 of YR7	Your wizards gather 12,097 runes and begin casting, and the spell succeeds.
+July 24 of YR7	We are now closer to completing our ritual project!
+June 1 of YR7	Your wizards gather 2,190 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 15 days!
+June 1 of YR7	You have given orders to commence work on 7 homes, 3 farms, 4 forts, 9 guilds and 22 towers.
+June 1 of YR7	You have donated 150,000 gold coins to the quest of launching a dragon.
+June 1 of YR7	Post edited successfully.
+June 1 of YR7	You have given orders to commence work on 13 homes, 5 farms, 8 forts, 16 guilds and 42 towers.
+June 1 of YR7	We have sent 310 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 31,000 gold coins to our aid surplus.
+June 1 of YR7	We have sent 10,799 gold coins to My cat pooped on my homework (4:1). It should arrive shortly! This aid shipment has added 10,799 gold coins to our aid surplus.
+June 3 of YR7	You send out 3,000 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 33505 points.
+June 3 of YR7	You have ordered that 220 Archers be trained.
+June 3 of YR7	Your wizards gather 3,723 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 6 days from attacks against us!
+June 3 of YR7	Your wizards gather 2,847 runes and begin casting, and the spell succeeds. A magical aura surrounds our troops reducing casualties in battle for 19 days!
+June 3 of YR7	Your wizards gather 2,956 runes and begin casting, and the spell succeeds. Your magic will smite attackers for 13 days!
+June 3 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Alchemia (4:11), negating 3 active spells (Magic Shield, Love and Peace and Fertile Lands). (Alchemia (4:11))
+June 3 of YR7	Your wizards gather 6,843 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Alchemia (4:11) for 10 days. (Alchemia (4:11))
+June 3 of YR7	Your wizards gather 3,066 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Alchemia (4:11) have taken a vow of chastity for 6 days! (Alchemia (4:11))
+June 3 of YR7	Your wizards gather 2,847 runes and begin casting, and the spell succeeds. Our mages have caused our enemy's soldiers to turn greedy for 12 days. (Alchemia (4:11))
+June 3 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of muguiying (4:11), negating 1 active spell (Nature's Blessing). (muguiying (4:11))
+June 3 of YR7	Your wizards gather 6,132 runes and begin casting, but the spell fails. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 6,132 runes and begin casting, but the spell fails. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of muguiying (4:11), but evaporates as it was unable to negate any spells.. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 6,843 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of muguiying (4:11) for 5 days. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 3,066 runes and begin casting, but the spell fails. (muguiying (4:11))
+June 3 of YR7	Your wizards gather 3,066 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of muguiying (4:11) have taken a vow of chastity for 6 days! (muguiying (4:11))
+June 4 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 1,362 runes. (GengBriz Khan (4:11), sent 600)
+June 4 of YR7	We lost 3 thieves in the operation.
+June 4 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 5,493 runes. (FutureState (4:11), sent 600)
+June 4 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. (Gordon Granger (4:11))
+June 4 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 4,497 runes. (FutureState (4:11), sent 488)
+June 4 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Gordon Granger (4:11))
+June 4 of YR7	You send out 1,000 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 11168 points.
+June 4 of YR7	We have sent 602 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 60,200 gold coins to our aid surplus.
+June 5 of YR7	We have sent 18 soldiers to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 1,800 gold coins to our aid surplus.
+June 5 of YR7	You have ordered that 246 Archers be trained.
+June 5 of YR7	Your wizards gather 4,292 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 5 active spells (Minor Protection, Chastity, Pitfalls, Inspire Army and Meteor Showers). (My Dog Ate It (4:1))
+June 5 of YR7	Your wizards gather 4,292 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 3 active spells (Builders Boon, Greed and Clear Sight). (My Dog Ate It (4:1))
+June 5 of YR7	We have sent 12,240 runes to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 36,720 gold coins to our aid surplus.
+June 6 of YR7	We have sent 17,311 gold coins to My cat pooped on my homework (4:1). It should arrive shortly! This aid shipment has added 17,311 gold coins to our aid surplus.
+June 6 of YR7	We have sent 16,000 bushels to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 800 gold coins to our aid surplus.
+June 7 of YR7	Your wizards gather 766 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 14 days!
+June 7 of YR7	Your wizards gather 1,095 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 18 days!
+June 7 of YR7	You have set your draft rate to Aggressive.
+June 7 of YR7	You have ordered that 401 Archers be trained.
+June 7 of YR7	We have sent 199 soldiers to Hangery (4:1). It should arrive shortly! This aid shipment has added 19,900 gold coins to our aid surplus.
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Alchemia (4:11), negating 2 active spells (Builders Boon and Greed). (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, but the spell fails. (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Alchemia (4:11), negating 1 active spell (Meteor Showers). (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Alchemia (4:11), negating 2 active spells (Miner's Mystique and Chastity). (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, but the spell fails. (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, but the spell fails. (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 6,132 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Alchemia (4:11), negating 1 active spell (Inspire Army). (Alchemia (4:11))
+June 7 of YR7	Your wizards gather 3,942 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of Alchemia (4:11) for 13 days. They will suffer increased defensive losses during battle. (Alchemia (4:11))
+June 7 of YR7	We lost 1 thief in the operation.
+June 7 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 4,671 runes. (FutureState (4:11), sent 488)
+June 7 of YR7	Sources have indicated the mission was foiled. We lost 6 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (FutureState (4:11), sent 488)
+June 7 of YR7	We lost 1 thief in the operation.
+June 7 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 3,828 runes. (FutureState (4:11), sent 488)
+June 7 of YR7	Your wizards gather 6,843 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Alchemia (4:11) for 9 days. (Alchemia (4:11))
+June 7 of YR7	We lost 4 thieves in the operation.
+June 7 of YR7	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (Alchemia (4:11), sent 2000)
+June 8 of YR7	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (Alchemia (4:11), sent 2000)
+June 8 of YR7	23,400 books allocated to PRODUCTION
+June 8 of YR7	12,600 books allocated to HEROISM
+June 8 of YR7	23,400 books allocated to CRIME
+June 8 of YR7	You have ordered that 157 Archers be trained.
+June 8 of YR7	Early indications show that our operation was a success. Our thieves have bribed an enemy general! (Alchemia (4:11), sent 2000)
+June 8 of YR7	Sources have indicated the mission was foiled. We lost 9 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Alchemia (4:11), sent 488)
+June 8 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Alchemia (4:11), sent 488)
+June 8 of YR7	We have sent 229 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 22,900 gold coins to our aid surplus.
+June 8 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Ragnar Crashbrok (4:11))
+June 8 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. (Ragnar Crashbrok (4:11))
+June 8 of YR7	Your wizards gather 6,843 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Ragnar Crashbrok (4:11) for 7 days. (Ragnar Crashbrok (4:11))
+June 8 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Legion Maverick (4:11))
+June 8 of YR7	Your wizards gather 6,843 runes and begin casting, but the spell fails. (Legion Maverick (4:11))
+June 8 of YR7	Your wizards gather 1,533 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 11 days!
+June 10 of YR7	You have ordered that 319 Archers be trained.
+June 10 of YR7	We have sent 400 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 40,000 gold coins to our aid surplus.
+June 10 of YR7	We have sent 69 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 6,900 gold coins to our aid surplus.
+June 10 of YR7	3,120 books allocated to PRODUCTION
+June 10 of YR7	1,680 books allocated to STRATEGY
+June 10 of YR7	3,120 books allocated to CRIME
+June 10 of YR7	Your wizards gather 1,095 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 22 days!
+June 10 of YR7	Your wizards gather 4,380 runes and begin casting, and the spell succeeds. Our people are excited about the military and will signup more quickly for 12 days!
+June 11 of YR7	We have sent 300 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 30,000 gold coins to our aid surplus.
+June 11 of YR7	You have donated 59,000 gold coins to the quest of launching a dragon.
+June 11 of YR7	We lost 2 thieves in the operation.
+June 11 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (muguiying (4:11), sent 487)
+June 11 of YR7	Your wizards gather 6,843 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of muguiying (4:11) for 5 days. (muguiying (4:11))
+June 11 of YR7	Your wizards gather 3,066 runes and begin casting, but the spell fails. (muguiying (4:11))
+June 11 of YR7	Your wizards gather 3,066 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of muguiying (4:11) have taken a vow of chastity for 4 days! (muguiying (4:11))
+June 11 of YR7	Your wizards gather 3,942 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of Ragnar Crashbrok (4:11) for 11 days. They will suffer increased defensive losses during battle. (Ragnar Crashbrok (4:11))
+June 17 of YR7	You have donated 345,784 gold coins to the quest of launching a dragon.
+June 17 of YR7	We have sent 369 soldiers to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 36,900 gold coins to our aid surplus.
+June 17 of YR7	Your message was successfully sent.
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 34 wizards were killed in an explosion! (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 34 wizards were killed in an explosion! (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 6 active spells (Builders Boon, Inspire Army, Fertile Lands, Bloodlust, Greed and Magic Shield). (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 3 active spells (Wrath, Love and Peace and Minor Protection). (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), but evaporates as it was unable to negate any spells.. (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 34 wizards were killed in an explosion! (Busy With Bonnie Blue (4:1))
+June 17 of YR7	Your wizards gather 3,625 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 1 active spell (Meteor Showers). (Busy With Bonnie Blue (4:1))
+June 17 of YR7	We have sent 7,000 runes to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 21,000 gold coins to our aid surplus.
+June 18 of YR7	We have sent 68,603 runes to Instructions Were Unclear (4:1). It should arrive shortly! This aid shipment has added 205,809 gold coins to our aid surplus.
+June 18 of YR7	Sources have indicated the mission was foiled. We lost 26 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Jal the Putrid (4:11), sent 1500)
+June 18 of YR7	Sources have indicated the mission was foiled. We lost 22 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Jal the Putrid (4:11), sent 1500)
+June 18 of YR7	We lost 4 thieves in the operation.
+June 18 of YR7	Early indications show that our operation was a success. Our thieves have bribed members of our enemies' guild! (Jal the Putrid (4:11), sent 1500)
+June 18 of YR7	We lost 1 thief in the operation.
+June 18 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Jal the Putrid (4:11), sent 484)
+June 18 of YR7	Early indications show that our operation was a success. Our thieves have returned with 33,373 gold coins. (Jal the Putrid (4:11), sent 1000)
+June 18 of YR7	Early indications show that our operation was a success. Our thieves have returned with 31,645 gold coins. (Jal the Putrid (4:11), sent 1000)
+June 18 of YR7	We lost 4 thieves in the operation.
+June 18 of YR7	Early indications show that our operation was a success. Our thieves have returned with 30,011 gold coins. (Jal the Putrid (4:11), sent 1000)
+June 18 of YR7	We have sent 25,000 bushels to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 1,250 gold coins to our aid surplus.
+June 18 of YR7	You have set your draft rate to Reservist.
+June 18 of YR7	12,480 books allocated to PRODUCTION
+June 18 of YR7	6,880 books allocated to STRATEGY
+June 18 of YR7	12,480 books allocated to CRIME
+June 19 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Alchemia (4:11), sent 484)
+June 19 of YR7	We have sent 1,500 soldiers to Its My neighbors Fault (4:1). It should arrive shortly! This aid shipment has added 150,000 gold coins to our aid surplus.
+June 19 of YR7	We have sent 539 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 53,900 gold coins to our aid surplus.
+June 19 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Cao Cao (4:11), sent 484)
+June 19 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Mat Phoria Salleh (4:11), sent 484)
+June 19 of YR7	We have sent 40,000 gold coins to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 40,000 gold coins to our aid surplus.
+June 20 of YR7	Your wizards gather 1,849 runes and begin casting, and the spell succeeds. Our builders have been blessed with unnatural speed for 16 days!
+June 20 of YR7	You have given orders to commence work on 69 banks.
+June 22 of YR7	6,240 books allocated to PRODUCTION
+June 22 of YR7	3,520 books allocated to STRATEGY
+June 22 of YR7	6,240 books allocated to CRIME
+June 22 of YR7	Your wizards gather 647 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 18 days!
+June 22 of YR7	You have donated 170,000 gold coins to the quest of launching a dragon.
+June 23 of YR7	You have donated 19,303 gold coins to the quest of launching a dragon.
+June 23 of YR7	1,560 books allocated to PRODUCTION
+June 23 of YR7	880 books allocated to STRATEGY
+June 23 of YR7	1,560 books allocated to CRIME
+June 24 of YR7	Post edited successfully.
+June 24 of YR7	Drawing from the ancient Mana Well, you restore 50% of your mana, ready to unleash your magic anew.
+June 24 of YR7	The power of Mana Well surges through your forces!
+June 24 of YR7	We lost 3 thieves in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (FutureState (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Jal the Putrid (4:11), sent 484)
+June 24 of YR7	We lost 1 thief in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Willaimia Sherman (4:11), sent 484)
+June 24 of YR7	We lost 2 thieves in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (GengBriz Khan (4:11), sent 484)
+June 24 of YR7	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Maj Gen Robert Ross (4:11), sent 484)
+June 24 of YR7	We lost 2 thieves in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Maj Gen Robert Ross (4:11), sent 484)
+June 24 of YR7	We lost 2 thieves in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (VercingetoFist (4:11), sent 484)
+June 24 of YR7	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Resius Caesar (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Resius Caesar (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked pretty heavily in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Crimson Dwight Eisenhower (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Cao Cao (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked pretty heavily in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Gordon Granger (4:11), sent 484)
+June 24 of YR7	We lost 1 thief in the operation.
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Mat Phoria Salleh (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked pretty heavily in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Pisot Bbm Gen Thorre (4:11), sent 484)
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 7,135 runes. (Crimson Dwight Eisenhower (4:11), sent 600)
+June 24 of YR7	We lost 1 thief in the operation.
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 6,318 runes. (Crimson Dwight Eisenhower (4:11), sent 600)
+June 24 of YR7	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Crimson Dwight Eisenhower (4:11), sent 600)
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 5,194 runes. (Crimson Dwight Eisenhower (4:11), sent 600)
+June 24 of YR7	We lost 1 thief in the operation.
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 4,271 runes. (Crimson Dwight Eisenhower (4:11), sent 600)
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 7,958 runes. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 6,662 runes. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	We lost 1 thief in the operation.
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 5,340 runes. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	Sources have indicated the mission was foiled. We lost 13 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	Sources have indicated the mission was foiled. We lost 6 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 3,617 runes. (VercingetoFist (4:11), sent 600)
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, but the spell fails. (GengBriz Khan (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 37 wizards were killed in an explosion! (GengBriz Khan (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of GengBriz Khan (4:11) for 11 days. (GengBriz Khan (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Pisot Bbm Gen Thorre (4:11) for 6 days. (Pisot Bbm Gen Thorre (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, but the spell fails. (Maj Gen Robert Ross (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Maj Gen Robert Ross (4:11) for 7 days. (Maj Gen Robert Ross (4:11))
+June 24 of YR7	Your wizards gather 5,179 runes and begin casting, but the spell fails. (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,179 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Legion Maverick (4:11), negating 5 active spells (Minor Protection, Love and Peace, Wrath, Builders Boon and Fanaticism). (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,179 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 34 wizards were killed in an explosion! (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,179 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Legion Maverick (4:11), negating 2 active spells (Nature's Blessing and Magic Shield). (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, but the spell fails. (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 36 wizards were killed in an explosion! (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 5,780 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Legion Maverick (4:11) for 8 days. (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 2,589 runes and begin casting, but the spell fails. (Legion Maverick (4:11))
+June 24 of YR7	Your wizards gather 2,589 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Legion Maverick (4:11) have taken a vow of chastity for 6 days! (Legion Maverick (4:11))
+June 24 of YR7	You have donated 10,697 gold coins to the quest of launching a dragon.
+May 1 of YR7	You have given orders to commence work on 19 homes, 8 farms, 13 forts, 23 guilds and 18 thieves' dens.
+May 1 of YR7	You have given orders to commence work on 44 towers.
+May 1 of YR7	6,240 books allocated to VALOR
+May 1 of YR7	12,320 books allocated to BOOKKEEPING
+May 1 of YR7	12,480 books allocated to CRIME
+May 1 of YR7	You send out 1,308 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 23351 points.
+May 1 of YR7	You send out 1,000 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 11157 points.
+May 1 of YR7	You have ordered that 282 Archers be trained.
+May 1 of YR7	You send out 1,000 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 11157 points.
+May 1 of YR7	You send out 385 troops to fight the dragon. All are lost in the fight, but the dragon is weakened by 4295 points.
+May 2 of YR7	Your wizards gather 1,504 runes and begin casting, but the spell fails.
+May 2 of YR7	Your wizards gather 1,504 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 14 days!
+May 2 of YR7	You have ordered that 96 Archers be trained.
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Cao Cao (4:11), sent 483)
+May 2 of YR7	We lost 1 thief in the operation.
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Crimson Dwight Eisenhower (4:11), sent 483)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Willaimia Sherman (4:11), sent 483)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Mat Phoria Salleh (4:11), sent 483)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Mat Phoria Salleh (4:11), sent 483)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 14 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 21 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 34 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 25 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 16 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 28 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 15 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1420)
+May 2 of YR7	Your wizards gather 3,331 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 30 wizards were killed in an explosion! (Mat Phoria Salleh (4:11))
+May 2 of YR7	Your wizards gather 3,331 runes and begin casting, and the spell succeeds. Lightning strikes the Towers in Mat Phoria Salleh (4:11) and incinerates 37,874 runes! (Mat Phoria Salleh (4:11))
+May 2 of YR7	Your wizards gather 3,331 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 29 wizards were killed in an explosion! (Mat Phoria Salleh (4:11))
+May 2 of YR7	Your wizards gather 3,331 runes and begin casting, but the spell fails. (Mat Phoria Salleh (4:11))
+May 2 of YR7	Your wizards gather 3,331 runes and begin casting, but the spell fails. (Mat Phoria Salleh (4:11))
+May 2 of YR7	We lost 2 thieves in the operation.
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Jal the Putrid (4:11), sent 475)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (GengBriz Khan (4:11), sent 475)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Legion Maverick (4:11), sent 475)
+May 2 of YR7	We lost 3 thieves in the operation.
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Alchemia (4:11), sent 475)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 5 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Resius Caesar (4:11), sent 475)
+May 2 of YR7	Sources have indicated the mission was foiled. We lost 8 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Resius Caesar (4:11), sent 475)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Resius Caesar (4:11), sent 475)
+May 2 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Jal the Putrid (4:11), sent 475)
+May 2 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 5,726 runes. (Jal the Putrid (4:11), sent 441)
+May 2 of YR7	We have sent 36,489 runes to Instructions Were Unclear (4:1). It should arrive shortly! This aid shipment has added 109,467 gold coins to our aid surplus.
+May 2 of YR7	You have set your draft rate to Normal.
+May 2 of YR7	You will pay 100% of military wages.
+May 3 of YR7	You will pay 200% of military wages.
+May 3 of YR7	Your wizards gather 3,654 runes and begin casting, and the spell succeeds. Our lands are protected by a sacred mist for 8 days from attacks against us!
+May 3 of YR7	You have ordered that 192 Archers be trained.
+May 3 of YR7	3,080 books allocated to PRODUCTION
+May 3 of YR7	1,560 books allocated to VALOR
+May 3 of YR7	3,120 books allocated to CRIME
+May 3 of YR7	We lost 2 thieves in the operation.
+May 3 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Ragnar Crashbrok (4:11), sent 476)
+May 3 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Ragnar Crashbrok (4:11), sent 476)
+May 3 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our thieves have infiltrated the Thieves' Guilds of Ragnar Crashbrok (4:11). They appear to have about 2,746 thieves employed across their lands. (Ragnar Crashbrok (4:11), sent 476)
+May 3 of YR7	We lost 2 thieves in the operation.
+May 3 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. (Ragnar Crashbrok (4:11), sent 476)
+May 3 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 8,487 runes. (Ragnar Crashbrok (4:11), sent 684)
+May 3 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 6,901 runes. (Ragnar Crashbrok (4:11), sent 684)
+May 3 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 5,611 runes. (Ragnar Crashbrok (4:11), sent 684)
+May 3 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Alchemia (4:11) have taken a vow of chastity for 4 days! (Alchemia (4:11))
+May 3 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Legion Maverick (4:11) have taken a vow of chastity for 7 days! (Legion Maverick (4:11))
+May 3 of YR7	Your wizards gather 3,009 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 30 wizards were killed in an explosion! (Cao Cao (4:11))
+May 3 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of Cao Cao (4:11) have taken a vow of chastity for 5 days! (Cao Cao (4:11))
+May 4 of YR7	You have ordered that 193 Archers be trained.
+May 6 of YR7	Your wizards gather 1,074 runes and begin casting, and the spell succeeds. The magical auras within our province will protect us from the black magic of our enemies for 22 days!
+May 6 of YR7	Your wizards gather 4,299 runes and begin casting, and the spell succeeds. Our people are excited about the military and will signup more quickly for 11 days!
+May 6 of YR7	You have ordered that 347 Archers be trained.
+May 6 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. The fire of Mage's Fury burns in our wizards' eyes for 7 days!
+May 6 of YR7	Your wizards gather 6,018 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Gordon Granger (4:11), negating 5 active spells (Minor Protection, Aggression, Magic Shield, Illuminate Shadows and Divine Shield). (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 6,018 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Gordon Granger (4:11), negating 3 active spells (Fertile Lands, Builders Boon and Gluttony). (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 6,018 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Gordon Granger (4:11), negating 1 active spell (Pitfalls). (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 3,869 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of Gordon Granger (4:11) for 9 days. They will suffer increased defensive losses during battle. (Gordon Granger (4:11))
+May 6 of YR7	Sources have indicated the mission was foiled. We lost 7 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Gordon Granger (4:11), sent 600)
+May 6 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 3,627 runes. (Gordon Granger (4:11), sent 600)
+May 6 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 3,228 runes. (Gordon Granger (4:11), sent 400)
+May 6 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Gordon Granger (4:11) for 7 days. (Gordon Granger (4:11))
+May 6 of YR7	We have sent 14,787 gold coins to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 14,787 gold coins to our aid surplus.
+May 6 of YR7	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Gordon Granger (4:11), sent 1000)
+May 6 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Willaimia Sherman (4:11), sent 482)
+May 6 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 11,844 runes. (Willaimia Sherman (4:11), sent 600)
+May 6 of YR7	Sources have indicated the mission was foiled. We lost 9 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Willaimia Sherman (4:11), sent 600)
+May 6 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 9,510 runes. (Willaimia Sherman (4:11), sent 600)
+May 6 of YR7	We lost 2 thieves in the operation.
+May 6 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 6,702 runes. (Willaimia Sherman (4:11), sent 600)
+May 6 of YR7	Your wizards gather 5,911 runes and begin casting, and the spell succeeds. You have caused the scientists of Gordon Granger (4:11) become forgetful! They have forgotten 83,489 books of knowledge! This knowledge will be returned over time. (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 5,911 runes and begin casting, and the spell succeeds. You have caused the scientists of Gordon Granger (4:11) become forgetful! They have forgotten 81,195 books of knowledge! This knowledge will be returned over time. (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 5,911 runes and begin casting, and the spell succeeds. You have caused the scientists of Gordon Granger (4:11) become forgetful! They have forgotten 82,936 books of knowledge! This knowledge will be returned over time. (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 5,911 runes and begin casting, and the spell succeeds. You have caused the scientists of Gordon Granger (4:11) become forgetful! They have forgotten 75,053 books of knowledge! This knowledge will be returned over time. (Gordon Granger (4:11))
+May 6 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 6 active spells (Inspire Army, Minor Protection, Fertile Lands, Love and Peace, Fanaticism and Chastity). (My Dog Ate It (4:1))
+May 7 of YR7	We have sent 20,000 gold coins to Busy With Bonnie Blue (4:1). It should arrive shortly! This aid shipment has added 20,000 gold coins to our aid surplus.
+May 7 of YR7	Your wizards gather 4,213 runes and begin casting, but the spell fails. Something went terribly wrong with our spell. 33 wizards were killed in an explosion! (My Dog Ate It (4:1))
+May 7 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 2 active spells (Magic Shield and Nature's Blessing). (My Dog Ate It (4:1))
+May 7 of YR7	We have sent 202 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 20,200 gold coins to our aid surplus.
+May 7 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 2 active spells (Builders Boon and Meteor Showers). (My Dog Ate It (4:1))
+May 8 of YR7	You have ordered that 205 Archers be trained.
+May 8 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Maj Gen Robert Ross (4:11) for 10 days. (Maj Gen Robert Ross (4:11))
+May 8 of YR7	You have donated 10,007 gold coins to the quest of launching a dragon.
+May 8 of YR7	You have donated 100,000 bushels to the quest of launching a dragon.
+May 8 of YR7	You have donated 60,000 bushels to the quest of launching a dragon.
+May 9 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (muguiying (4:11))
+May 9 of YR7	Your wizards gather 752 runes and begin casting, and the spell succeeds. Our realm is now under a sphere of protection for 20 days!
+May 9 of YR7	You have ordered that 157 Archers be trained.
+May 16 of YR7	Your wizards gather 2,364 runes and begin casting, and the spell succeeds. Our army has been inspired to train harder. We expect maintenance costs to be reduced for 18 days!
+May 16 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. The fire of Mage's Fury burns in our wizards' eyes for 7 days!
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Gordon Granger (4:11) for 9 days. (Gordon Granger (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (muguiying (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of muguiying (4:11) for 8 days. (muguiying (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of William Wallace (4:11) for 8 days. (William Wallace (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (Cao Cao (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Cao Cao (4:11) for 8 days. (Cao Cao (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Pisot Bbm Gen Thorre (4:11) for 6 days. (Pisot Bbm Gen Thorre (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Jal the Putrid (4:11) for 10 days. (Jal the Putrid (4:11))
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (GengBriz Khan (4:11), sent 495)
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Mat Phoria Salleh (4:11), sent 495)
+May 16 of YR7	We lost 2 thieves in the operation.
+May 16 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 8,322 runes. (Mat Phoria Salleh (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 17 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1000)
+May 16 of YR7	We lost 5 thieves in the operation.
+May 16 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 8,320 runes. (Mat Phoria Salleh (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 16 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 14 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Mat Phoria Salleh (4:11), sent 1000)
+May 16 of YR7	Your wizards gather 3,331 runes and begin casting, but the spell fails. (Mat Phoria Salleh (4:11))
+May 16 of YR7	Your wizards gather 3,331 runes and begin casting, and the spell succeeds. Lightning strikes the Towers in Mat Phoria Salleh (4:11) and incinerates 38,355 runes! (Mat Phoria Salleh (4:11))
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked moderately in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (William Wallace (4:11), sent 492)
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Clampy (4:11), sent 492)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 6 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 492)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 4 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 492)
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (VercingetoFist (4:11), sent 492)
+May 16 of YR7	We lost 2 thieves in the operation.
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Resius Caesar (4:11), sent 492)
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Jal the Putrid (4:11), sent 492)
+May 16 of YR7	We lost 1 thief in the operation.
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has not been attacked much in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (FutureState (4:11), sent 492)
+May 16 of YR7	You have donated 20,000 bushels to the quest of launching a dragon.
+May 16 of YR7	You have donated 200,000 gold coins to the quest of launching a dragon.
+May 16 of YR7	You have ordered that 572 Archers be trained.
+May 16 of YR7	We lost 1 thief in the operation.
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (Crimson Dwight Eisenhower (4:11), sent 492)
+May 16 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 12,077 runes. (Crimson Dwight Eisenhower (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 18 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (Crimson Dwight Eisenhower (4:11), sent 1000)
+May 16 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 10,114 runes. (Crimson Dwight Eisenhower (4:11), sent 1000)
+May 16 of YR7	Early indications show that our operation was a success and we have 100% confidence in the information retrieved. Our report shows that this province has been attacked a little in the last month. Remember, there are few rewards for attacking a badly hit province, as the easily captured resources have already been taken. (muguiying (4:11), sent 491)
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (Alchemia (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Alchemia (4:11) for 7 days. (Alchemia (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Legion Maverick (4:11) for 6 days. (Legion Maverick (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (Maj Gen Robert Ross (4:11))
+May 16 of YR7	Your wizards gather 6,717 runes and begin casting, and the spell succeeds. Meteors will rain across the lands of Maj Gen Robert Ross (4:11) for 8 days. (Maj Gen Robert Ross (4:11))
+May 16 of YR7	We have sent 2,866 runes and 200 soldiers to Hangery (4:1). It should arrive shortly! This aid shipment has added 28,598 gold coins to our aid surplus.
+May 16 of YR7	We have sent 500 soldiers to My Dog Ate It (4:1). It should arrive shortly! This aid shipment has added 50,000 gold coins to our aid surplus.
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 14 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 18 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 1000)
+May 16 of YR7	Sources have indicated the mission was foiled. We lost 11 thieves. If we are lucky, they will not rat on who sent them. I am sorry, we will train harder for the next mission. (VercingetoFist (4:11), sent 1000)
+May 16 of YR7	Early indications show that our operation was a success. Our thieves were able to steal 13,694 runes. (VercingetoFist (4:11), sent 1000)
+May 17 of YR7	Your wizards gather 1,504 runes and begin casting, and the spell succeeds. Our peasantry is influenced by a magical calm. We expect birth rates to be higher for 14 days!
+May 17 of YR7	Your wizards gather 1,074 runes and begin casting, and the spell succeeds. We have made our lands extraordinarily fertile for 16 days!
+May 17 of YR7	You have donated 60,000 gold coins to the quest of launching a dragon.
+May 17 of YR7	You have donated 0 bushels to the quest of launching a dragon.
+May 17 of YR7	Your topic was created successfully.
+May 17 of YR7	Your wizards gather 3,009 runes and begin casting, but the spell fails. (GengBriz Khan (4:11))
+May 17 of YR7	Your wizards gather 3,009 runes and begin casting, and the spell succeeds. Much to the chagrin of their men, the womenfolk of GengBriz Khan (4:11) have taken a vow of chastity for 7 days! (GengBriz Khan (4:11))
+May 17 of YR7	You have donated 7 gold coins to the quest of launching a dragon.
+May 17 of YR7	We lost 2 thieves in the operation.
+May 17 of YR7	Early indications show that our operation was a success. Our thieves have returned with 2,320 gold coins. (Willaimia Sherman (4:11), sent 567)
+May 18 of YR7	We have sent 799 soldiers to Hangery (4:1). It should arrive shortly! This aid shipment has added 79,900 gold coins to our aid surplus.
+May 18 of YR7	Your wizards gather 4,299 runes and begin casting, and the spell succeeds. Our people are excited about the military and will signup more quickly for 15 days!
+May 19 of YR7	We have sent 246 soldiers to Hangery (4:1). It should arrive shortly! This aid shipment has added 24,600 gold coins to our aid surplus.
+May 19 of YR7	You have donated 140,000 gold coins to the quest of launching a dragon.
+May 19 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of My Dog Ate It (4:1), negating 5 active spells (Nature's Blessing, Greed, Builders Boon, Chastity and Meteor Showers). (My Dog Ate It (4:1))
+May 20 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy at work (4:1), but evaporates as it was unable to negate any spells.. (Busy at work (4:1))
+May 20 of YR7	Your wizards gather 4,213 runes and begin casting, but the spell fails. (Busy at work (4:1))
+May 20 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy at work (4:1), but evaporates as it was unable to negate any spells.. (Busy at work (4:1))
+May 20 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy at work (4:1), but evaporates as it was unable to negate any spells.. (Busy at work (4:1))
+May 20 of YR7	We have sent 251 soldiers to Hangery (4:1). It should arrive shortly! This aid shipment has added 25,100 gold coins to our aid surplus.
+May 20 of YR7	You have donated 52,000 gold coins to the quest of launching a dragon.
+May 20 of YR7	26,300 books allocated to PRODUCTION
+May 20 of YR7	13,560 books allocated to HEROISM
+May 20 of YR7	26,520 books allocated to CRIME
+May 21 of YR7	You have donated 70,000 gold coins to the quest of launching a dragon.
+May 21 of YR7	You have donated 619 gold coins to the quest of launching a dragon.
+May 21 of YR7	Your wizards gather 6,018 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Resius Caesar (4:11), negating 1 active spell (Minor Protection). (Resius Caesar (4:11))
+May 21 of YR7	Your wizards gather 6,018 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Resius Caesar (4:11), negating 1 active spell (Love and Peace). (Resius Caesar (4:11))
+May 21 of YR7	Your wizards gather 6,717 runes and begin casting, but the spell fails. (Resius Caesar (4:11))
+May 22 of YR7	We have sent 70,642 gold coins to I was up late reading (4:1). It should arrive shortly! This aid shipment has added 70,642 gold coins to our aid surplus.
+May 22 of YR7	We have sent 515 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 51,500 gold coins to our aid surplus.
+May 23 of YR7	We have sent 261 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 26,100 gold coins to our aid surplus.
+May 23 of YR7	You have donated 71,000 gold coins to the quest of launching a dragon.
+May 24 of YR7	Drawing from the ancient Mana Well, you restore 49% of your mana, ready to unleash your magic anew.
+May 24 of YR7	The power of Mana Well surges through your forces!
+May 24 of YR7	We have sent 68,388 gold coins to My cat pooped on my homework (4:1). It should arrive shortly! This aid shipment has added 68,388 gold coins to our aid surplus.
+May 24 of YR7	We have sent 217 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 21,700 gold coins to our aid surplus.
+May 24 of YR7	Your wizards gather 3,869 runes and begin casting, but the spell fails. (Gordon Granger (4:11))
+May 24 of YR7	Your wizards gather 3,869 runes and begin casting, and the spell succeeds. Pitfalls will haunt the lands of Gordon Granger (4:11) for 13 days. They will suffer increased defensive losses during battle. (Gordon Granger (4:11))
+May 24 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 2 active spells (Inspire Army and Love and Peace). (Busy With Bonnie Blue (4:1))
+May 24 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 2 active spells (Greed and Chastity). (Busy With Bonnie Blue (4:1))
+May 24 of YR7	Your wizards gather 4,213 runes and begin casting, and the spell succeeds. A magic vortex overcomes the province of Busy With Bonnie Blue (4:1), negating 2 active spells (Meteor Showers and Minor Protection). (Busy With Bonnie Blue (4:1))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. During the night, 361 of the men in the armies and thieves' guilds of Back From The Edge (4:8) had nightmares. Some were forced into rehabilitation, but the soldiers simply quit the army! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. During the night, 362 of the men in the armies and thieves' guilds of Back From The Edge (4:8) had nightmares. Some were forced into rehabilitation, but the soldiers simply quit the army! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. During the night, 363 of the men in the armies and thieves' guilds of Back From The Edge (4:8) had nightmares. Some were forced into rehabilitation, but the soldiers simply quit the army! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. During the night, 364 of the men in the armies and thieves' guilds of Back From The Edge (4:8) had nightmares. Some were forced into rehabilitation, but the soldiers simply quit the army! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. Our Land Lust over MAGGOT BASTARD (4:8) has given us another 28 acres of land! (MAGGOT BASTARD (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. Our Land Lust over MAGGOT BASTARD (4:8) has given us another 27 acres of land! (MAGGOT BASTARD (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. Our Land Lust over MAGGOT BASTARD (4:8) has given us another 26 acres of land! (MAGGOT BASTARD (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. A fireball burns through the skies of Back From The Edge (4:8) 1,213 peasants were killed in the destruction! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. A fireball burns through the skies of Back From The Edge (4:8) 1,213 peasants were killed in the destruction! (Back From The Edge (4:8))
+May 24 of YR7	Your wizards begin casting, and the spell succeeds. A fireball burns through the skies of Back From The Edge (4:8) 1,213 peasants were killed in the destruction! (Back From The Edge (4:8))
+May 1 of YR9	We have sent 678 soldiers to I was playing with you (4:1). It should arrive shortly! This aid shipment has added 67,800 gold coins to our aid surplus.
+May 1 of YR9	16,160 books allocated to ALCHEMY
+May 1 of YR9	9,600 books allocated to STRATEGY
+May 1 of YR9	12,480 books allocated to FINESSE
+May 2 of YR9	We have sent 4,000,000 gold coins to RelaxShesMyStepMomLisaAnn (4:1). It should arrive shortly! This aid shipment has added 4,000,000 gold coins to our aid surplus.
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 11 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 watch towers.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 11 homes.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 11 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves assassinated 102 wizards of the enemy's guilds!.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves assassinated 102 wizards of the enemy's guilds!.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves assassinated 102 wizards of the enemy's guilds!.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves assassinated 12 enemy troops!.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves assassinated 12 enemy troops!.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 acres of Homes.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 11 acres of Homes.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of Watch Towers.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of Watch Towers.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 acres of Hospitals.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 11 acres of Hospitals.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 12 acres of Hospitals.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves kidnapped many people, but were able to return with 112 of them.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves kidnapped many people, but were able to return with 112 of them.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves kidnapped many people, but were able to return with 112 of them.  (Willaimia Sherman (4:11), sent 567)
+May 8 of YR9	We have sent 2 explore pool acres (1 acre lost!) to Im Tired (4:1). It should arrive shortly! This aid shipment has added 4,500 gold coins to our aid surplus.
+May 17 of YR7	Early indications show that our operation was a success. We have converted 9 of the enemy's specialist troops to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 32 wizards from the enemy to our guild.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 12 thieves from the enemy to our guild.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 21 of the enemy's specialist troops to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 17 wizards from the enemy to our guild.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 11 thieves from the enemy to our guild.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 7 Ogres from the enemy to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 1 Ogre from the enemy to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 5 Beastmasters from the enemy to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 1 Elf Lord from the enemy to our army.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. We have converted 14 Elf Lords from the enemy to our army.  (Willaimia Sherman (4:11), sent 567)
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Tornadoes scour the lands of aaaaaargh (4:8), laying waste to 15 acres of buildings. (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Tornadoes scour the lands of aaaaaargh (4:8), laying waste to 10 acres of buildings. (aaaaaargh (4:8))
+June 20 of YR8	Your wizards gather 4,798 runes and begin casting, and the spell succeeds. Tornadoes scour the lands of aaaaaargh (4:8), laying waste to 1,000 acres of buildings. (aaaaaargh (4:8))
+May 17 of YR7	Early indications show that our operation was a success. Our thieves attempted to burn down 6 buildings however they only managed to torch 5 acres. (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 4 acres of buildings.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 8 banks.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 9 guilds.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 4 banks.  (Willaimia Sherman (4:11), sent 567)
+May 17 of YR7	Early indications show that our operation was a success. Our thieves burned down 8 guilds.  (Willaimia Sherman (4:11), sent 567)

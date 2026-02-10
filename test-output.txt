@@ -1,0 +1,131 @@
+Kingdom News Report
+
+Own Kingdom 5:1
+February 2, YR0 - February 24, YR0 (23 days)
+Total Attacks Made: 118 (3462 acres)
+Uniques: 46
+Trad March: 114 (3367 acres)
+Ambush: 3 (86 acres)
+Conquest: 1 (9 acres)
+Raze: 0
+Learn: 0
+Massacre: 0
+Plunder: 0
+Bounces: 0
+DragonsStarted: 1
+DragonsCompleted: 1
+Enemy Dragons Killed: 1
+Rituals Started: 0
+Rituals Completed: 0
+
+The Kingdom of of 4:1
+Total Attacks Made: 84 (3180 acres)
+Uniques: 39
+Trad March: 78 (3060 acres)
+Ambush: 5 (120 acres)
+Conquest: 0
+Raze: 0
+Learn: 0
+Massacre: 0
+Plunder: 0
+Bounces: 1
+Dragons Started: 1
+Dragons Completed: 1
+
+Own Kingdom 5:1
+Total Acres: 282 (118/84)
+139 | 10 - Timeless Rock Band (8/3)
+128 | 2 - your time is up Give in (3/0)
+101 | 11 - Stewies Time Machine (5/0)
+100 | 17 - Pee Time (11/3)
+98 | 23 - Time Manipulator (6/3)
+46 | 16 - Ill be there in a tick (3/1)
+46 | 9 - Fun times (3/0)
+43 | 3 - RazorclawTime (6/2)
+28 | 20 - Its 5 OClock Somewhere (5/3)
+25 | 19 - Tea time (7/2)
+19 | 14 - About time dude (2/0)
+5 | 12 - Misstress Of Time (8/5)
+-26 | 6 - Slack Time (4/3)
+-36 | 15 - Father time (8/5)
+-38 | 1 - Time to Shine (5/9)
+-44 | 22 - Age of time (6/6)
+-45 | 4 - Waste of Time (4/2)
+-47 | 21 - ticking time (2/4)
+-48 | 13 - Time (0/1)
+-49 | 5 - Time to play (5/6)
+-49 | 7 - Slow Attack times (6/5)
+-52 | 8 - No Better Time (4/4)
+-62 | 18 - Sushi Sampo Time (7/17)
+
+Uniques for 5:1
+17 - Pee Time 3
+3 - RazorclawTime 3
+19 - Tea time 3
+12 - Misstress Of Time 3
+5 - Time to play 3
+10 - Timeless Rock Band 2
+2 - your time is up Give in 2
+11 - Stewies Time Machine 2
+23 - Time Manipulator 2
+16 - Ill be there in a tick 2
+9 - Fun times 2
+20 - Its 5 OClock Somewhere 2
+6 - Slack Time 2
+15 - Father time 2
+1 - Time to Shine 2
+22 - Age of time 2
+7 - Slow Attack times 2
+8 - No Better Time 2
+18 - Sushi Sampo Time 2
+14 - About time dude 1
+4 - Waste of Time 1
+21 - ticking time 1
+
+The Kingdom of of 4:1
+Total Acres: -282 (84/118)
+147 | 15 - FutureState (5/2)
+109 | 3 - Clampy (5/1)
+82 | 9 - The Resurected (5/2)
+81 | 5 - Briz (4/2)
+67 | 18 - Crimson (5/3)
+58 | 17 - Solo (4/2)
+55 | 2 - Crash (5/3)
+48 | 14 - Aimia (6/3)
+25 | 6 - Ajarin (2/1)
+24 | An unknown province (1/0)
+14 | 10 - Longtimeago (6/5)
+4 | 7 - Jedimonk (2/2)
+-14 | 21 - Gilead (2/4)
+-26 | 16 - Enslaver (4/4)
+-59 | 4 - Legion ROC (2/3)
+-77 | 11 - Jalubie (2/4)
+-86 | 20 - Fist (0/2)
+-89 | 22 - Thor (6/17)
+-93 | 19 - Alchemaria (4/8)
+-110 | 1 - Holo Wolf (0/3)
+-131 | 12 - Pong (6/20)
+-149 | 13 - Phoria Scapes (4/12)
+-162 | 23 - Blitzwaaagh (4/15)
+
+Uniques for of 4:1
+10 - Longtimeago 3
+19 - Alchemaria 3
+15 - FutureState 2
+3 - Clampy 2
+9 - The Resurected 2
+5 - Briz 2
+18 - Crimson 2
+17 - Solo 2
+2 - Crash 2
+14 - Aimia 2
+6 - Ajarin 2
+16 - Enslaver 2
+4 - Legion ROC 2
+22 - Thor 2
+12 - Pong 2
+13 - Phoria Scapes 2
+23 - Blitzwaaagh 2
+7 - Jedimonk 1
+21 - Gilead 1
+11 - Jalubie 1

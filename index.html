@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utopia Formatter - Text Formatter for Utopia Forum</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1>Utopia News & Logs Parser</h1>
+        <p>Clean, summarize, and format text for the Utopia Kingdom Forum</p>
+    </header>
+
+    <main class="container">
+        <section class="mode-section">
+            <h2>Parsing Mode</h2>
+            <p>Select the type of text you want to parse:</p>
+            <div class="mode-selector">
+                <label>
+                    <input type="radio" name="parsing-mode" value="kingdom-news" checked>
+                    <span>Kingdom News Report from Intel Site</span>
+                </label>
+                <label>
+                    <input type="radio" name="parsing-mode" value="province-logs">
+                    <span>Province Logs (summarize events)</span>
+                </label>
+                <label>
+                    <input type="radio" name="parsing-mode" value="clean">
+                    <span>Clean Text (remove HTML/entities)</span>
+                </label>
+            </div>
+        </section>
+
+        <section class="input-section">
+            <h2>Input Text</h2>
+            <p id="input-description">Paste your Kingdom News Report from the Intel Site below to have it cleaned up for the KD forum:</p>
+            <textarea 
+                id="input-text" 
+                placeholder="Paste your text here..."
+                rows="10"
+                cols="80"
+            ></textarea>
+            <div class="button-group">
+                <button id="parse-btn">Parse Text</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+        </section>
+
+        <section class="output-section">
+            <h2>Formatted Output</h2>
+            <p>Copy this cleaned text to paste into the Utopia forum:</p>
+            <textarea 
+                id="output-text" 
+                readonly
+                rows="10"
+                cols="80"
+                placeholder="Formatted text will appear here..."
+            ></textarea>
+            <div class="button-group">
+                <button id="copy-btn">Copy to Clipboard</button>
+            </div>
+            <div id="copy-feedback" class="feedback hidden">Copied to clipboard!</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 UtopiaFormatter - Built for improving collaboration in the Utopia Kingdom Forum</p>
+    </footer>
+
+    <script src="js/parser.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
