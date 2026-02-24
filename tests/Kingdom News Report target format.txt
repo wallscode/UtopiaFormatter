@@ -1,63 +1,57 @@
 Kingdom News Report
 February 1, YR0 - April 2, YR0 (50 days)
 
-Own Kingdom 5:1
+** Own Kingdom 5:1 Summary **
 Total Attacks Made: 279 (8091 acres)
-Uniques: 108
-Trad March: 267 (7959 acres)
-Ambush: 4 (114 acres)
-Conquest: 2 (18 acres)
-Raze: 2 (90 acres)
-Learn: 0
-Massacre: 3 (965 people)
-Plunder: 0
-Bounces: 1
-Dragons Started: 3
-Dragons Completed: 2
-Enemy Dragons Killed: 1
-Rituals Started: 2
-Rituals Completed: 1
-
+-- Uniques: 108
+-- Trad March: 267 (7959 acres)
+-- Ambush: 4 (114 acres)
+-- Conquest: 2 (18 acres)
+-- Raze: 2 (90 acres)
+-- Massacre: 3 (965 people)
+-- Bounces: 1
+-- Dragons Started: 3
+-- Dragons Completed: 2
+-- Enemy Dragons Killed: 1
+-- Rituals Started: 2
+-- Rituals Completed: 1
 Total Attacks Suffered: 196 (6959 acres)
-Uniques: 86
-Trad March: 181 (6800 acres)
-Ambush: 7 (159 acres)
-Conquest: 0
-Raze: 1 (70 acres)
-Learn: 0
-Massacre: 0
-Plunder: 3
-Bounces: 4
-Dragons Started: 2
-Dragons Completed: 1
+-- Uniques: 86
+-- Trad March: 181 (6800 acres)
+-- Ambush: 7 (159 acres)
+-- Raze: 1 (70 acres)
+-- Plunder: 3
+-- Bounces: 4
+-- Dragons Started: 2
+-- Dragons Completed: 1
 
-Own Kingdom 5:1
-Total Acres: 1132 (279/196)
-219 | 2 - your time is up Give in (8/2)
-216 | 4 - Waste of Time (11/2)
-160 | 9 - Fun times (10/0)
-150 | 11 - Stewies Time Machine (12/1)
-138 | 14 - About time dude (6/0)
-123 | 7 - Slow Attack times (19/11)
-105 | 6 - Slack Time (8/3)
-99 | 10 - Timeless Rock Band (20/10)
-80 | 16 - Ill be there in a tick (8/1)
-76 | 1 - Time to Shine (17/25)
-54 | 17 - Pee Time (19/9)
-27 | 19 - Tea time (14/5)
-23 | 12 - Misstress Of Time (15/12)
-21 | 15 - Father time (14/9)
-17 | 23 - Time Manipulator (11/10)
-1 | 8 - No Better Time (6/5)
--17 | 20 - Its 5 OClock Somewhere (10/9)
--19 | 3 - RazorclawTime (15/9)
--26 | 5 - Time to play (11/9)
--28 | 22 - Age of time (14/12)
--41 | 21 - ticking time (10/10)
--92 | 18 - Sushi Sampo Time (19/39)
--154 | 13 - Time (2/3)
+** Own Kingdom 5:1 **
+Total land exchanged: +1132 (279/196)
+   219 | 2 - your time is up Give in (8/2)
+   216 | 4 - Waste of Time (11/2)
+   160 | 9 - Fun times (10/0)
+   150 | 11 - Stewies Time Machine (12/1)
+   138 | 14 - About time dude (6/0)
+   123 | 7 - Slow Attack times (19/11)
+   105 | 6 - Slack Time (8/3)
+    99 | 10 - Timeless Rock Band (20/10)
+    80 | 16 - Ill be there in a tick (8/1)
+    76 | 1 - Time to Shine (17/25)
+    54 | 17 - Pee Time (19/9)
+    27 | 19 - Tea time (14/5)
+    23 | 12 - Misstress Of Time (15/12)
+    21 | 15 - Father time (14/9)
+    17 | 23 - Time Manipulator (11/10)
+     1 | 8 - No Better Time (6/5)
+   -17 | 20 - Its 5 OClock Somewhere (10/9)
+   -19 | 3 - RazorclawTime (15/9)
+   -26 | 5 - Time to play (11/9)
+   -28 | 22 - Age of time (14/12)
+   -41 | 21 - ticking time (10/10)
+   -92 | 18 - Sushi Sampo Time (19/39)
+  -154 | 13 - Time (2/3)
 
-Uniques for 5:1
+** Uniques for 5:1 **
 12 - Misstress Of Time 7
 7 - Slow Attack times 6
 17 - Pee Time 6
@@ -82,37 +76,33 @@ Uniques for 5:1
 21 - ticking time 3
 13 - Time 2
 
-The Kingdom of 4:1
-Total Acres: -1194 (193/279)
-74 | 15 - FutureState (14/9)
-60 | 10 - Longtimeago (14/11)
-53 | 9 - The Resurected (10/6)
-24 | 21 - Gilead (7/9)
-24 | An unknown province (1/0)
-6 | 17 - Solo (10/8)
-2 | 5 - Briz (8/8)
--2 | 6 - Ajarin (4/3)
--11 | 19 - Alchemaria (10/16)
--19 | 7 - Jedimonk (9/8)
--33 | 2 - Crash (10/11)
--34 | 3 - Clampy (9/7)
--51 | 4 - Legion ROC (5/7)
--52 | 11 - Jalubie (12/15)
--71 | 14 - Aimia (13/17)
--96 | 16 - Enslaver (7/7)
--105 | 12 - Pong (9/32)
--128 | 13 - Phoria Scapes (10/17)
--130 | 20 - Fist (0/6)
--155 | 1 - Holo Wolf (0/4)
--157 | 18 - Crimson (10/18)
--166 | 23 - Blitzwaaagh (11/26)
--227 | 22 - Thor (10/34)
-The Kingdom of 6:1
-Total Acres: 62 (3/0)
-62 | 20 - LEEROY JENKINS (2/0)
-0 | 6 - THAT IS NOT MY COW (1/0)
+** The Kingdom of 4:1 **
+Total land exchanged: -1194 (193/279)
+    74 | 15 - FutureState (14/9)
+    60 | 10 - Longtimeago (14/11)
+    53 | 9 - The Resurected (10/6)
+    24 | 21 - Gilead (7/9)
+    24 | An unknown province (1/0)
+     6 | 17 - Solo (10/8)
+     2 | 5 - Briz (8/8)
+    -2 | 6 - Ajarin (4/3)
+   -11 | 19 - Alchemaria (10/16)
+   -19 | 7 - Jedimonk (9/8)
+   -33 | 2 - Crash (10/11)
+   -34 | 3 - Clampy (9/7)
+   -51 | 4 - Legion ROC (5/7)
+   -52 | 11 - Jalubie (12/15)
+   -71 | 14 - Aimia (13/17)
+   -96 | 16 - Enslaver (7/7)
+  -105 | 12 - Pong (9/32)
+  -128 | 13 - Phoria Scapes (10/17)
+  -130 | 20 - Fist (0/6)
+  -155 | 1 - Holo Wolf (0/4)
+  -157 | 18 - Crimson (10/18)
+  -166 | 23 - Blitzwaaagh (11/26)
+  -227 | 22 - Thor (10/34)
 
-Uniques for 4:1
+** Uniques for 4:1 **
 19 - Alchemaria 7
 10 - Longtimeago 5
 4 - Legion ROC 5
@@ -134,11 +124,16 @@ Uniques for 4:1
 12 - Pong 3
 22 - Thor 3
 
-Uniques for 6:1
+** The Kingdom of 6:1 **
+Total land exchanged: 62 (3/0)
+    62 | 20 - LEEROY JENKINS (2/0)
+     0 | 6 - THAT IS NOT MY COW (1/0)
+
+** Uniques for 6:1 **
 20 - LEEROY JENKINS 1
 6 - THAT IS NOT MY COW 1
 
-Highlights
+** Highlights **
 Most land gained in a single trad march - 1 - Time to Shine: 67
 Most land lost in a single trad march - 10 - Timeless Rock Band: 81
 Most land gained in a single ambush - 17 - Pee Time: 34

@@ -497,5 +497,3 @@ April 2 of YR0	Unnamed kingdom (4:1) has cancelled their dragon project targeted
 April 2 of YR0	Our kingdom has cancelled the dragon project to Unnamed kingdom (4:1).
 April 2 of YR0	Unnamed kingdom (4:1) has withdrawn from war. Our people rejoice at our victory!
 April 2 of YR0	Our kingdom is now in a post-war period which will expire on January 3 of YR1.
-April 4 of YR0	We have started developing a ritual! (Expedient)!
-May 10 of YR0	A ritual is covering our lands! (Expedient)
