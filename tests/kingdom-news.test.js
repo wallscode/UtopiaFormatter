@@ -11,11 +11,11 @@ const parser = require('../js/parser.js');
 
 // Read test files
 const originalText = fs.readFileSync(
-    path.join(__dirname, '../Kingdom News Report original.txt'), 
+    path.join(__dirname, 'Kingdom News Report original.txt'), 
     'utf8'
 );
 const expectedText = fs.readFileSync(
-    path.join(__dirname, '../Kingdom News Report modified.txt'), 
+    path.join(__dirname, 'Kingdom News Report modified.txt'), 
     'utf8'
 );
 

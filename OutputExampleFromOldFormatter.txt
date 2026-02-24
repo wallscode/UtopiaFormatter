@@ -1,0 +1,116 @@
+** Kingdom news report **
+For the time from April 4 of YR0 till May 18 of YR0 - 39 hours
+
+** Summary **
+Total attacks made: 144 (4,702 acres)
+-- Traditional march: 133 (4,571 acres)
+-- Ambush: 4 (80 acres)
+-- Conquest: 2 (51 acres)
+-- Raze: 2 (0 acres)
+-- Failed: 3 (2.1% failure)
+-- Uniques: 74
+Total attacks suffered: 112 (4,566 acres)
+-- Traditional march: 102 (4,368 acres)
+-- Ambush: 8 (198 acres)
+-- Raze: 2 (0 acres)
+-- Uniques: 57
+
+** The kingdom of 5:12 **
+Total land exchanged: +136 (144/112)
+ +266  5 - Sorry I Overslept for Attack (8/2)
+ +110  22 - Set wrong kd (7/2)
+  +91  17 - Sorry forgot we were at war (11/7)
+  +62  10 - I Was Washing The Cat (8/4)
+  +56  13 - Dont Disturb Me Im Pooping (8/10)
+  +38  An unknown province (1/0)
+  +37  19 - Ofcourse i understood the plan (3/1)
+  +29  4 - Aint here to shag spiders (3/1)
+  +20  6 - Careful your the target (5/4)
+  +18  12 - Sorry Was with a patient (3/1)
+  +14  2 - Thought it is the wrong theme (10/9)
+   +4  21 - Miscalculation (8/5)
+   -2  8 - My bad thought max gains (9/10)
+   -8  3 - it wasnt me who got us hostile (10/4)
+  -24  14 - I Donated To The Dragon (4/4)
+  -27  11 - I wasnt paying attention (4/2)
+  -47  18 - You know me I would never (6/3)
+  -54  7 - Had to chase the wife around (6/5)
+  -54  16 - Why DID you do that (6/7)
+  -59  15 - I thought you said attack them (1/2)
+  -76  9 - Didnt read Throne Page b4 hit (5/5)
+ -111  20 - I hit the wrong kingdom (12/11)
+ -147  1 - Wolfenklien (6/13)
+
+
+** The kingdom of 4:1 **
+Total land exchanged: -136 (112/144)
+ +154  6 - Red red Wine (7/2)
+ +137  12 - Macallan 25 (6/3)
+ +130  17 - Bottles on the wall (5/3)
+ +114  11 - Hotel Whiskey (3/0)
+ +114  20 - Ginger Beer (6/3)
+ +104  21 - Pisco Sour (4/2)
+ +103  19 - Helan gar (3/0)
+ +101  15 - Happy (7/3)
+  +98  An unknown province (2/0)
+  +86  8 - Beer thirty (3/1)
+  +82  7 - Because I Got High (7/6)
+  +56  22 - Buffalo Bourbon (5/3)
+  +42  16 - Rum Till I Die (6/7)
+  -35  3 - One Margarita (7/6)
+  -46  23 - Harvey Wallbanger (8/14)
+  -60  14 - Tequila Sunrise (5/5)
+  -62  18 - Beer Beer (6/6)
+  -91  4 - Old fashioned pub (6/9)
+ -169  1 - water monitor monitor (0/5)
+ -171  9 - Espresso Negroni (4/15)
+ -214  10 - Drunken Lullabies (0/8)
+ -303  5 - Whiskey in the Jar (7/15)
+ -306  13 - Duck Fart (5/28)
+
+
+** Uniques for 5:12 **
+18 - You know me I would never - 5
+2 - Thought it is the wrong theme - 4
+5 - Sorry I Overslept for Attack - 4
+8 - My bad thought max gains - 4
+11 - I wasnt paying attention - 4
+6 - Careful your the target - 4
+7 - Had to chase the wife around - 4
+17 - Sorry forgot we were at war - 4
+20 - I hit the wrong kingdom - 4
+13 - Dont Disturb Me Im Pooping - 4
+14 - I Donated To The Dragon - 4
+1 - Wolfenklien - 3
+16 - Why DID you do that - 3
+21 - Miscalculation - 3
+10 - I Was Washing The Cat - 3
+22 - Set wrong kd - 3
+3 - it wasnt me who got us hostile - 3
+19 - Ofcourse i understood the plan - 3
+12 - Sorry Was with a patient - 3
+4 - Aint here to shag spiders - 2
+9 - Didnt read Throne Page b4 hit - 2
+15 - I thought you said attack them - 1
+
+** Uniques for 4:1 **
+6 - Red red Wine - 4
+16 - Rum Till I Die - 3
+22 - Buffalo Bourbon - 3
+3 - One Margarita - 3
+18 - Beer Beer - 3
+5 - Whiskey in the Jar - 3
+4 - Old fashioned pub - 3
+14 - Tequila Sunrise - 3
+7 - Because I Got High - 3
+11 - Hotel Whiskey - 3
+17 - Bottles on the wall - 3
+12 - Macallan 25 - 3
+8 - Beer thirty - 3
+20 - Ginger Beer - 3
+15 - Happy - 3
+21 - Pisco Sour - 3
+13 - Duck Fart - 2
+19 - Helan gar - 2
+23 - Harvey Wallbanger - 2
+9 - Espresso Negroni - 2

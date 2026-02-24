@@ -26,12 +26,12 @@ const testCases = [
     {
         name: 'Line break normalization',
         input: 'Line 1\r\nLine 2\rLine 3\n\n\nLine 4',
-        expected: 'Line 1\nLine 2\nLine 3\n\nLine 4'
+        expected: 'Line 1\nLine 2 Line 3\n\n\nLine 4'
     },
     {
         name: 'Complex real-world example',
         input: '<div class="content">\n  <h1>Title</h1>\n  <p>Some &amp; text with <em>formatting</em></p>\n  <p>Multiple   spaces</p>\n</div>',
-        expected: 'Title\n Some & text with formatting\n Multiple spaces'
+        expected: '\nTitle\nSome & text with formatting\nMultiple spaces\n'
     },
     {
         name: 'Empty string',
@@ -42,6 +42,16 @@ const testCases = [
         name: 'Smart quotes conversion',
         input: '"Hello" \'world\' and "test"',
         expected: '"Hello" \'world\' and "test"'
+    },
+    {
+        name: 'Mobile to WYSIWYG forum line breaks',
+        input: 'Attack on 5:2\n\nOur forces attacked the enemy kingdom.\n\nResults:\n• 500 acres captured\n• 200 troops lost\n\nSuccess!',
+        expected: 'Attack on 5:2\n\nOur forces attacked the enemy kingdom.\n\nResults:\n• 500 acres captured\n• 200 troops lost\n\nSuccess!'
+    },
+    {
+        name: 'Mobile copy-paste with mixed line breaks',
+        input: 'Kingdom News Report\r\n\r\nOur kingdom: 12:34\r\nEnemy: 5:2\r\n\r\nHighlights:\r\n• Successful attacks\r\n• Defense held\r\n\r\nCasualties minimal.',
+        expected: 'Kingdom News Report\n\nOur kingdom: 12:34\nEnemy: 5:2\n\nHighlights:\n• Successful attacks\n• Defense held\n\nCasualties minimal.'
     }
 ];
 

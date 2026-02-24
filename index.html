@@ -8,8 +8,18 @@
 </head>
 <body>
     <header>
-        <h1>Utopia News & Logs Parser</h1>
-        <p>Clean, summarize, and format text for the Utopia Kingdom Forum</p>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>Utopia News & Logs Parser</h1>
+                <p>Clean, summarize, and format text for the Utopia Kingdom Forum</p>
+            </div>
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-text">Dark</span>
+                </button>
+            </div>
+        </div>
     </header>
 
     <main class="container">
@@ -22,12 +32,12 @@
                     <span>Kingdom News Report from Intel Site</span>
                 </label>
                 <label>
-                    <input type="radio" name="parsing-mode" value="province-logs">
-                    <span>Province Logs (summarize events)</span>
+                    <input type="radio" name="parsing-mode" value="kingdom-news-log">
+                    <span>Kingdom News</span>
                 </label>
                 <label>
-                    <input type="radio" name="parsing-mode" value="clean">
-                    <span>Clean Text (remove HTML/entities)</span>
+                    <input type="radio" name="parsing-mode" value="province-logs">
+                    <span>Province Logs (summarize events)</span>
                 </label>
             </div>
         </section>
@@ -68,6 +78,7 @@
         <p>&copy; 2026 UtopiaFormatter - Built for improving collaboration in the Utopia Kingdom Forum</p>
     </footer>
 
+    <script src="js/theme.js"></script>
     <script src="js/parser.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>

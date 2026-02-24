@@ -78,10 +78,13 @@ function handleParse(elements) {
         let parsedText;
         if (selectedMode === 'kingdom-news') {
             parsedText = parseKingdomNewsReport(inputText);
+        } else if (selectedMode === 'kingdom-news-log') {
+            parsedText = parseKingdomNewsLog(inputText);
         } else if (selectedMode === 'province-logs') {
             parsedText = formatProvinceLogs(inputText);
         } else {
-            parsedText = parseText(inputText);
+            // This should not happen with current options, but handle gracefully
+            throw new Error('Invalid parsing mode selected');
         }
         
         // Display the result
@@ -91,10 +94,13 @@ function handleParse(elements) {
         let modeName;
         if (selectedMode === 'kingdom-news') {
             modeName = 'Kingdom News Report';
+        } else if (selectedMode === 'kingdom-news-log') {
+            modeName = 'Kingdom News';
         } else if (selectedMode === 'province-logs') {
             modeName = 'Province Logs';
         } else {
-            modeName = 'text';
+            // This should not happen with current options
+            modeName = 'Unknown';
         }
         showMessage(elements.outputText, `${modeName} parsed successfully!`, 'success');
         
@@ -206,10 +212,13 @@ function updateInputDescription(elements) {
     
     if (selectedMode === 'kingdom-news') {
         elements.inputDescription.textContent = 'Paste your Kingdom News Report (from war) from the Intel Site below to have it cleaned up for the KD forum:';
+    } else if (selectedMode === 'kingdom-news-log') {
+        elements.inputDescription.textContent = 'Paste your full Kingdom News log below to have it parsed and summarized. The parser will find the first date line and start parsing from there:';
     } else if (selectedMode === 'province-logs') {
-        elements.inputDescription.textContent = 'Paste your Province Logs below to have them summarized and organized:';
+        elements.inputDescription.textContent = 'Paste your Province Logs below to have them summarized and organized. Currently supports parsing of Offensive Spells, Offensive Thievery Ops, Aid Sent, Dragon Contributions, and Ritual Contributions ';
     } else {
-        elements.inputDescription.textContent = 'Paste raw text from any website below to have all formatting removed:';
+        // This should not happen with current options
+        elements.inputDescription.textContent = 'Select a parsing mode above:';
     }
 }
 

@@ -1,0 +1,501 @@
+some random text that can be ignored
+
+February 1 of YR0	15 - Father time (5:1) captured 44 acres of land from 20 - Fist (4:1).
+February 1 of YR0	7 - Slow Attack times (5:1) captured 50 acres of land from 22 - Thor (4:1).
+February 1 of YR0	7 - Slow Attack times (5:1) captured 50 acres of land from 14 - Aimia (4:1).
+February 1 of YR0	7 - Slow Attack times (5:1) captured 50 acres of land from 11 - Jalubie (4:1).
+February 1 of YR0	18 - Sushi Sampo Time (5:1) captured 30 acres of land from 14 - Aimia (4:1).
+February 1 of YR0	We have started developing a ritual! (Barrier)!
+February 1 of YR0	18 - Sushi Sampo Time (5:1) captured 17 acres of land from 14 - Aimia (4:1).
+February 1 of YR0	11 - Jalubie (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 54 acres of land.
+February 1 of YR0	20 - LEEROY JENKINS (6:1) attacked and pillaged the lands of 21 - ticking time (5:1).
+February 1 of YR0	20 - LEEROY JENKINS (6:1) invaded 13 - Time (5:1) and captured 62 acres of land.
+February 1 of YR0	7 - Slow Attack times (5:1), captured 9 acres of land from 23 - Blitzwaaagh (4:1).
+February 1 of YR0	11 - Jalubie (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 33 acres of land.
+February 1 of YR0	18 - Sushi Sampo Time (5:1) captured 47 acres of land from 23 - Blitzwaaagh (4:1).
+February 1 of YR0	11 - Jalubie (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 19 acres of land.
+February 1 of YR0	11 - Jalubie (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 58 acres of land.
+February 1 of YR0	18 - Sushi Sampo Time (5:1) captured 52 acres of land from 2 - Crash (4:1).
+February 1 of YR0	4 - Legion ROC (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 30 acres of land.
+February 1 of YR0	2 - your time is up Give in (5:1) captured 52 acres of land from 9 - The Resurected (4:1).
+February 1 of YR0	7 - Jedimonk (4:1) invaded 7 - Slow Attack times (5:1) and captured 51 acres of land.
+February 1 of YR0	15 - FutureState (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 10 acres of land.
+February 1 of YR0	7 - Jedimonk (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 16 acres of land.
+February 1 of YR0	4 - Waste of Time (5:1) captured 45 acres of land from 1 - Holo Wolf (4:1).
+February 1 of YR0	4 - Waste of Time (5:1) captured 48 acres of land from 3 - Clampy (4:1).
+February 1 of YR0	6 - THAT IS NOT MY COW (6:1) attacked and pillaged the lands of 20 - Its 5 OClock Somewhere (5:1).
+February 1 of YR0	21 - Gilead (4:1) invaded 13 - Time (5:1) and captured 62 acres of land.
+February 1 of YR0	Unnamed kingdom (4:1) has begun the Topaz Dragon project, Spot, against us!
+February 1 of YR0	14 - About time dude (5:1) captured 56 acres of land from 15 - FutureState (4:1).
+February 1 of YR0	19 - Tea time (5:1) captured 12 acres of land from 14 - Aimia (4:1).
+February 1 of YR0	23 - Blitzwaaagh (4:1) invaded 2 - your time is up Give in (5:1) and captured 44 acres of land.
+February 1 of YR0	Our kingdom has begun the Ruby Dragon project, Im first, targeted at Unnamed kingdom (4:1).
+February 2 of YR0	Unnamed kingdom (4:1) has declared WAR with our kingdom!
+February 2 of YR0	15 - FutureState (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 48 acres of land.
+February 2 of YR0	3 - RazorclawTime (5:1) captured 38 acres of land from 1 - Holo Wolf (4:1).
+February 2 of YR0	18 - Crimson (4:1) invaded 1 - Time to Shine (5:1) and captured 43 acres of land.
+February 2 of YR0	8 - No Better Time (5:1) captured 40 acres of land from 22 - Thor (4:1).
+February 2 of YR0	8 - No Better Time (5:1) captured 27 acres of land from 22 - Thor (4:1).
+February 2 of YR0	12 - Misstress Of Time (5:1) captured 50 acres of land from 5 - Briz (4:1).
+February 2 of YR0	18 - Crimson (4:1) invaded 21 - ticking time (5:1) and captured 52 acres of land.
+February 2 of YR0	12 - Misstress Of Time (5:1) captured 41 acres of land from 5 - Briz (4:1).
+February 2 of YR0	15 - FutureState (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 34 acres of land.
+February 2 of YR0	16 - Ill be there in a tick (5:1) captured 49 acres of land from 12 - Pong (4:1).
+February 2 of YR0	1 - Time to Shine (5:1) captured 58 acres of land from 16 - Enslaver (4:1).
+February 2 of YR0	1 - Time to Shine (5:1) captured 58 acres of land from 6 - Ajarin (4:1).
+February 3 of YR0	14 - Aimia (4:1) invaded 13 - Time (5:1) and captured 48 acres of land.
+February 3 of YR0	12 - Pong (4:1) ambushed armies from 16 - Ill be there in a tick (5:1) and took 24 acres of land.
+February 3 of YR0	19 - Tea time (5:1) captured 42 acres of land from 18 - Crimson (4:1).
+February 3 of YR0	14 - Aimia (4:1) invaded 5 - Time to play (5:1) and captured 56 acres of land.
+February 3 of YR0	12 - Pong (4:1) invaded 6 - Slack Time (5:1) and captured 61 acres of land.
+February 3 of YR0	9 - Fun times (5:1) captured 22 acres of land from 22 - Thor (4:1).
+February 3 of YR0	12 - Pong (4:1) invaded 15 - Father time (5:1) and captured 54 acres of land.
+February 3 of YR0	22 - Thor (4:1) invaded 8 - No Better Time (5:1) and captured 56 acres of land.
+February 3 of YR0	22 - Thor (4:1) invaded 8 - No Better Time (5:1) and captured 48 acres of land.
+February 3 of YR0	22 - Thor (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 33 acres of land.
+February 4 of YR0	17 - Solo (4:1) invaded 4 - Waste of Time (5:1) and captured 53 acres of land.
+February 4 of YR0	6 - Ajarin (4:1) invaded 1 - Time to Shine (5:1) and captured 37 acres of land.
+February 4 of YR0	17 - Solo (4:1) invaded 15 - Father time (5:1) and captured 42 acres of land.
+February 4 of YR0	16 - Enslaver (4:1) invaded 22 - Age of time (5:1) and captured 53 acres of land.
+February 4 of YR0	16 - Enslaver (4:1) ambushed armies from 1 - Time to Shine (5:1) and took 29 acres of land.
+February 4 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 44 acres of land from 23 - Blitzwaaagh (4:1).
+February 4 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 33 acres of land from 23 - Blitzwaaagh (4:1).
+February 4 of YR0	5 - Time to play (5:1) captured 50 acres of land from 4 - Legion ROC (4:1).
+February 4 of YR0	11 - Stewies Time Machine (5:1) captured 18 acres of land from 23 - Blitzwaaagh (4:1).
+February 4 of YR0	5 - Time to play (5:1) captured 50 acres of land from 13 - Phoria Scapes (4:1).
+February 4 of YR0	11 - Stewies Time Machine (5:1) captured 39 acres of land from 11 - Jalubie (4:1).
+February 4 of YR0	6 - Slack Time (5:1) captured 43 acres of land from 12 - Pong (4:1).
+February 4 of YR0	9 - The Resurected (4:1) invaded 17 - Pee Time (5:1) and captured 52 acres of land.
+February 4 of YR0	9 - The Resurected (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 32 acres of land.
+February 4 of YR0	23 - Time Manipulator (5:1) captured 58 acres of land from 17 - Solo (4:1).
+February 4 of YR0	23 - Time Manipulator (5:1) captured 48 acres of land from 10 - Longtimeago (4:1).
+February 4 of YR0	22 - Age of time (5:1) captured 58 acres of land from 7 - Jedimonk (4:1).
+February 4 of YR0	22 - Age of time (5:1) captured 58 acres of land from 19 - Alchemaria (4:1).
+February 4 of YR0	17 - Pee Time (5:1) captured 38 acres of land from 9 - The Resurected (4:1).
+February 4 of YR0	17 - Pee Time (5:1) captured 38 acres of land from 18 - Crimson (4:1).
+February 4 of YR0	17 - Pee Time (5:1) recaptured 26 acres of land from 9 - The Resurected (4:1).
+February 5 of YR0	10 - Timeless Rock Band (5:1) captured 32 acres of land from 1 - Holo Wolf (4:1).
+February 5 of YR0	10 - Timeless Rock Band (5:1) captured 41 acres of land from 2 - Crash (4:1).
+February 5 of YR0	10 - Timeless Rock Band (5:1) captured 42 acres of land from 3 - Clampy (4:1).
+February 5 of YR0	10 - Timeless Rock Band (5:1) captured 42 acres of land from 15 - FutureState (4:1).
+February 5 of YR0	Misstress Of Time has completed our dragon, Im first, and it sets flight to ravage Unnamed kingdom (4:1)!
+February 5 of YR0	3 - Clampy (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 40 acres of land.
+February 5 of YR0	3 - Clampy (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 33 acres of land.
+February 5 of YR0	2 - Crash (4:1) invaded 5 - Time to play (5:1) and captured 55 acres of land.
+February 5 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 21 acres of land.
+February 6 of YR0	19 - Alchemaria (4:1) invaded 12 - Misstress Of Time (5:1) and captured 53 acres of land.
+February 6 of YR0	An unknown province from Unnamed kingdom (4:1) ambushed armies from 23 - Time Manipulator (5:1) and took 24 acres of land.
+February 6 of YR0	10 - Longtimeago (4:1) invaded 5 - Time to play (5:1) and captured 45 acres of land.
+February 6 of YR0	10 - Longtimeago (4:1) invaded 5 - Time to play (5:1) and captured 37 acres of land.
+February 6 of YR0	A Topaz Dragon, Spot, from Unnamed kingdom (4:1) has begun ravaging our lands!
+February 7 of YR0	13 - Phoria Scapes (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 31 acres of land.
+February 7 of YR0	13 - Phoria Scapes (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 25 acres of land.
+February 7 of YR0	5 - Briz (4:1) invaded 23 - Time Manipulator (5:1) and captured 53 acres of land.
+February 7 of YR0	5 - Briz (4:1) invaded 15 - Father time (5:1) and captured 35 acres of land.
+February 8 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 40 acres of land.
+February 8 of YR0	15 - Father time (5:1) captured 24 acres of land from 23 - Blitzwaaagh (4:1).
+February 8 of YR0	15 - Father time (5:1) captured 19 acres of land from 23 - Blitzwaaagh (4:1).
+February 9 of YR0	Slow Attack times has slain the dragon, Spot, ravaging our lands!
+February 9 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 39 acres of land.
+February 9 of YR0	Our kingdom has begun the Topaz Dragon project, Times Ticking, targeted at Unnamed kingdom (4:1).
+February 10 of YR0	19 - Alchemaria (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 31 acres of land.
+February 10 of YR0	4 - Legion ROC (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 22 acres of land.
+February 10 of YR0	Unnamed kingdom (4:1) has begun the Topaz Dragon project, Trying, against us!
+February 10 of YR0	3 - RazorclawTime (5:1) captured 34 acres of land from 19 - Alchemaria (4:1).
+February 10 of YR0	18 - Sushi Sampo Time (5:1) captured 53 acres of land from 13 - Phoria Scapes (4:1).
+February 10 of YR0	18 - Sushi Sampo Time (5:1) captured 43 acres of land from 14 - Aimia (4:1).
+February 10 of YR0	18 - Sushi Sampo Time (5:1) captured 40 acres of land from 1 - Holo Wolf (4:1).
+February 11 of YR0	21 - ticking time (5:1) captured 49 acres of land from 16 - Enslaver (4:1).
+February 11 of YR0	21 - ticking time (5:1) captured 42 acres of land from 10 - Longtimeago (4:1).
+February 12 of YR0	7 - Slow Attack times (5:1) captured 36 acres of land from 7 - Jedimonk (4:1).
+February 12 of YR0	7 - Slow Attack times (5:1) captured 20 acres of land from 22 - Thor (4:1).
+February 12 of YR0	7 - Slow Attack times (5:1), captured 9 acres of land from 23 - Blitzwaaagh (4:1).
+February 13 of YR0	12 - Misstress Of Time (5:1) captured 33 acres of land from 12 - Pong (4:1).
+February 13 of YR0	12 - Misstress Of Time (5:1) captured 25 acres of land from 12 - Pong (4:1).
+February 13 of YR0	12 - Misstress Of Time (5:1) captured 27 acres of land from 13 - Phoria Scapes (4:1).
+February 13 of YR0	15 - Father time (5:1) captured 21 acres of land from 12 - Pong (4:1).
+February 13 of YR0	15 - Father time (5:1) captured 18 acres of land from 12 - Pong (4:1).
+February 13 of YR0	19 - Tea time (5:1) captured 11 acres of land from 12 - Pong (4:1).
+February 13 of YR0	19 - Tea time (5:1) captured 10 acres of land from 12 - Pong (4:1).
+February 13 of YR0	19 - Tea time (5:1) captured 10 acres of land from 12 - Pong (4:1).
+February 13 of YR0	19 - Tea time (5:1) captured 8 acres of land from 12 - Pong (4:1).
+February 14 of YR0	2 - your time is up Give in (5:1) captured 41 acres of land from 4 - Legion ROC (4:1).
+February 14 of YR0	5 - Time to play (5:1) captured 35 acres of land from 4 - Legion ROC (4:1).
+February 14 of YR0	5 - Time to play (5:1) captured 37 acres of land from 15 - FutureState (4:1).
+February 15 of YR0	17 - Pee Time (5:1) captured 17 acres of land from 13 - Phoria Scapes (4:1).
+February 15 of YR0	17 - Pee Time (5:1) captured 14 acres of land from 13 - Phoria Scapes (4:1).
+February 15 of YR0	17 - Pee Time (5:1) captured 12 acres of land from 13 - Phoria Scapes (4:1).
+February 15 of YR0	17 - Pee Time (5:1) captured 11 acres of land from 13 - Phoria Scapes (4:1).
+February 15 of YR0	15 - FutureState (4:1) invaded 12 - Misstress Of Time (5:1) and captured 57 acres of land.
+February 15 of YR0	15 - FutureState (4:1) invaded 7 - Slow Attack times (5:1) and captured 61 acres of land.
+February 15 of YR0	15 - FutureState (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 26 acres of land.
+February 15 of YR0	11 - Jalubie (4:1) invaded 19 - Tea time (5:1) and captured 69 acres of land.
+February 15 of YR0	11 - Jalubie (4:1) invaded 19 - Tea time (5:1) and captured 53 acres of land.
+February 15 of YR0	10 - Longtimeago (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 20 acres of land.
+February 16 of YR0	4 - Waste of Time (5:1) captured 15 acres of land from 23 - Blitzwaaagh (4:1).
+February 16 of YR0	4 - Waste of Time (5:1) captured 13 acres of land from 23 - Blitzwaaagh (4:1).
+February 16 of YR0	16 - Ill be there in a tick (5:1) captured 13 acres of land from 23 - Blitzwaaagh (4:1).
+February 16 of YR0	4 - Waste of Time (5:1) captured 27 acres of land from 16 - Enslaver (4:1).
+February 16 of YR0	16 - Ill be there in a tick (5:1) captured 8 acres of land from 12 - Pong (4:1).
+February 16 of YR0	21 - Gilead (4:1) invaded 17 - Pee Time (5:1) and captured 68 acres of land.
+February 16 of YR0	21 - Gilead (4:1) invaded 17 - Pee Time (5:1) and captured 53 acres of land.
+February 16 of YR0	4 - Waste of Time (5:1) captured 10 acres of land from 13 - Phoria Scapes (4:1).
+February 16 of YR0	9 - Fun times (5:1) captured 8 acres of land from 12 - Pong (4:1).
+February 16 of YR0	9 - Fun times (5:1) captured 16 acres of land from 22 - Thor (4:1).
+February 16 of YR0	18 - Crimson (4:1) invaded 7 - Slow Attack times (5:1) and captured 53 acres of land.
+February 16 of YR0	18 - Crimson (4:1) invaded 7 - Slow Attack times (5:1) and captured 41 acres of land.
+February 16 of YR0	18 - Crimson (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 12 acres of land.
+February 16 of YR0	1 - Time to Shine (5:1) captured 67 acres of land from 11 - Jalubie (4:1).
+February 16 of YR0	1 - Time to Shine (5:1) captured 52 acres of land from 11 - Jalubie (4:1).
+February 16 of YR0	1 - Time to Shine (5:1) captured 41 acres of land from 11 - Jalubie (4:1).
+February 16 of YR0	17 - Solo (4:1) invaded 4 - Waste of Time (5:1) and captured 57 acres of land.
+February 16 of YR0	17 - Solo (4:1) invaded 21 - ticking time (5:1) and captured 26 acres of land.
+February 16 of YR0	16 - Enslaver (4:1) ambushed armies from 21 - ticking time (5:1) and took 24 acres of land.
+February 17 of YR0	19 - Alchemaria (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 15 acres of land.
+February 17 of YR0	14 - Aimia (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 14 acres of land.
+February 17 of YR0	14 - Aimia (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 11 acres of land.
+February 17 of YR0	4 - Legion ROC (4:1) invaded 12 - Misstress Of Time (5:1) and captured 45 acres of land.
+February 17 of YR0	10 - Timeless Rock Band (5:1) captured 18 acres of land from 22 - Thor (4:1).
+February 17 of YR0	6 - Ajarin (4:1) invaded 1 - Time to Shine (5:1) and captured 46 acres of land.
+February 17 of YR0	10 - Timeless Rock Band (5:1) captured 17 acres of land from 23 - Blitzwaaagh (4:1).
+February 17 of YR0	14 - Aimia (4:1) attempted to invade 6 - Slack Time (5:1).
+February 17 of YR0	10 - Timeless Rock Band (5:1) captured 14 acres of land from 23 - Blitzwaaagh (4:1).
+February 17 of YR0	10 - Timeless Rock Band (5:1) captured 21 acres of land from 12 - Pong (4:1).
+February 17 of YR0	14 - Aimia (4:1) invaded 1 - Time to Shine (5:1) and captured 38 acres of land.
+February 17 of YR0	6 - Slack Time (5:1) captured 16 acres of land from 12 - Pong (4:1).
+February 17 of YR0	6 - Slack Time (5:1) captured 14 acres of land from 12 - Pong (4:1).
+February 17 of YR0	6 - Slack Time (5:1) captured 13 acres of land from 12 - Pong (4:1).
+February 17 of YR0	22 - Thor (4:1) invaded 8 - No Better Time (5:1) and captured 51 acres of land.
+February 17 of YR0	22 - Thor (4:1) invaded 8 - No Better Time (5:1) and captured 40 acres of land.
+February 17 of YR0	22 - Thor (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 13 acres of land.
+February 17 of YR0	23 - Time Manipulator (5:1) captured 62 acres of land from 17 - Solo (4:1).
+February 17 of YR0	23 - Time Manipulator (5:1) captured 28 acres of land from 22 - Thor (4:1).
+February 17 of YR0	23 - Time Manipulator (5:1) captured 23 acres of land from 22 - Thor (4:1).
+February 17 of YR0	3 - Clampy (4:1) invaded 5 - Time to play (5:1) and captured 42 acres of land.
+February 17 of YR0	3 - Clampy (4:1) invaded 5 - Time to play (5:1) and captured 31 acres of land.
+February 17 of YR0	3 - Clampy (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 5 acres of land.
+February 17 of YR0	23 - Time Manipulator (5:1) captured 12 acres of land from 12 - Pong (4:1).
+February 17 of YR0	22 - Age of time (5:1) captured 54 acres of land from 18 - Crimson (4:1).
+February 17 of YR0	22 - Age of time (5:1) captured 18 acres of land from 22 - Thor (4:1).
+February 17 of YR0	22 - Age of time (5:1) captured 16 acres of land from 22 - Thor (4:1).
+February 17 of YR0	22 - Age of time (5:1) captured 14 acres of land from 22 - Thor (4:1).
+February 18 of YR0	16 - Enslaver (4:1) invaded 7 - Slow Attack times (5:1) and captured 38 acres of land.
+February 18 of YR0	11 - Stewies Time Machine (5:1) captured 29 acres of land from 21 - Gilead (4:1).
+February 18 of YR0	11 - Stewies Time Machine (5:1) captured 8 acres of land from 22 - Thor (4:1).
+February 18 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 19 acres of land from 22 - Thor (4:1).
+February 18 of YR0	11 - Stewies Time Machine (5:1) captured 7 acres of land from 22 - Thor (4:1).
+February 18 of YR0	8 - No Better Time (5:1) captured 42 acres of land from 14 - Aimia (4:1).
+February 18 of YR0	8 - No Better Time (5:1) captured 34 acres of land from 14 - Aimia (4:1).
+February 18 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 16 acres of land from 13 - Phoria Scapes (4:1).
+February 18 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 37 acres of land from 19 - Alchemaria (4:1).
+February 19 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
+February 19 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
+February 19 of YR0	2 - Crash (4:1) invaded 22 - Age of time (5:1) and captured 61 acres of land.
+February 19 of YR0	7 - Jedimonk (4:1) invaded 3 - RazorclawTime (5:1) and captured 62 acres of land.
+February 19 of YR0	7 - Jedimonk (4:1) invaded 21 - ticking time (5:1) and captured 36 acres of land.
+February 19 of YR0	19 - Alchemaria (4:1) invaded 6 - Slack Time (5:1) and captured 51 acres of land.
+February 20 of YR0	9 - The Resurected (4:1) invaded 22 - Age of time (5:1) and captured 49 acres of land.
+February 20 of YR0	9 - The Resurected (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
+February 20 of YR0	9 - The Resurected (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 6 acres of land.
+February 20 of YR0	14 - About time dude (5:1) captured 9 acres of land from 12 - Pong (4:1).
+February 20 of YR0	14 - About time dude (5:1) captured 10 acres of land from 13 - Phoria Scapes (4:1).
+February 20 of YR0	3 - RazorclawTime (5:1) captured 30 acres of land from 19 - Alchemaria (4:1).
+February 20 of YR0	3 - RazorclawTime (5:1) captured 23 acres of land from 19 - Alchemaria (4:1).
+February 20 of YR0	3 - RazorclawTime (5:1) captured 19 acres of land from 19 - Alchemaria (4:1).
+February 20 of YR0	3 - RazorclawTime (5:1) captured 17 acres of land from 19 - Alchemaria (4:1).
+February 20 of YR0	10 - Longtimeago (4:1) invaded 22 - Age of time (5:1) and captured 43 acres of land.
+February 20 of YR0	10 - Longtimeago (4:1) invaded 3 - RazorclawTime (5:1) and captured 56 acres of land.
+February 20 of YR0	12 - Pong (4:1) invaded 12 - Misstress Of Time (5:1) and captured 43 acres of land.
+February 20 of YR0	12 - Pong (4:1) invaded 12 - Misstress Of Time (5:1) and captured 37 acres of land.
+February 20 of YR0	13 - Phoria Scapes (4:1) invaded 15 - Father time (5:1) and captured 32 acres of land.
+February 20 of YR0	12 - Pong (4:1) invaded 15 - Father time (5:1) and captured 30 acres of land.
+February 20 of YR0	13 - Phoria Scapes (4:1) invaded 22 - Age of time (5:1) and captured 28 acres of land.
+February 21 of YR0	15 - Father time (5:1) captured 18 acres of land from 23 - Blitzwaaagh (4:1).
+February 21 of YR0	15 - Father time (5:1) captured 15 acres of land from 23 - Blitzwaaagh (4:1).
+February 21 of YR0	5 - Briz (4:1) invaded 23 - Time Manipulator (5:1) and captured 56 acres of land.
+February 21 of YR0	5 - Briz (4:1) invaded 22 - Age of time (5:1) and captured 28 acres of land.
+February 21 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 30 acres of land.
+February 21 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 27 acres of land.
+February 21 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 24 acres of land.
+February 21 of YR0	18 - Sushi Sampo Time (5:1) captured 31 acres of land from 12 - Pong (4:1).
+February 21 of YR0	18 - Sushi Sampo Time (5:1) captured 34 acres of land from 13 - Phoria Scapes (4:1).
+February 21 of YR0	18 - Sushi Sampo Time (5:1) captured 29 acres of land from 22 - Thor (4:1).
+February 21 of YR0	18 - Sushi Sampo Time (5:1) captured 24 acres of land from 12 - Pong (4:1).
+February 21 of YR0	7 - Slow Attack times (5:1) captured 45 acres of land from 10 - Longtimeago (4:1).
+February 21 of YR0	7 - Slow Attack times (5:1) captured 38 acres of land from 10 - Longtimeago (4:1).
+February 21 of YR0	7 - Slow Attack times (5:1) captured 15 acres of land from 23 - Blitzwaaagh (4:1).
+February 21 of YR0	10 - Longtimeago (4:1) ambushed armies from 7 - Slow Attack times (5:1) and took 19 acres of land.
+February 22 of YR0	12 - Misstress Of Time (5:1) captured 33 acres of land from 10 - Longtimeago (4:1).
+February 22 of YR0	12 - Misstress Of Time (5:1) captured 15 acres of land from 22 - Thor (4:1).
+February 22 of YR0	12 - Misstress Of Time (5:1) captured 16 acres of land from 23 - Blitzwaaagh (4:1).
+February 23 of YR0	19 - Tea time (5:1) captured 25 acres of land from 19 - Alchemaria (4:1).
+February 23 of YR0	5 - Time to play (5:1) captured 45 acres of land from 20 - Fist (4:1).
+February 24 of YR0	15 - Father time (5:1) captured 6 acres of land from 12 - Pong (4:1).
+February 24 of YR0	15 - Father time (5:1) captured 36 acres of land from 16 - Enslaver (4:1).
+February 24 of YR0	2 - your time is up Give in (5:1) captured 50 acres of land from 2 - Crash (4:1).
+February 24 of YR0	2 - your time is up Give in (5:1) captured 37 acres of land from 2 - Crash (4:1).
+February 24 of YR0	19 - Tea time (5:1) captured 41 acres of land from 20 - Fist (4:1).
+February 24 of YR0	19 - Tea time (5:1) captured 10 acres of land from 22 - Thor (4:1).
+February 24 of YR0	17 - Pee Time (5:1) captured 46 acres of land from 21 - Gilead (4:1).
+February 24 of YR0	17 - Pee Time (5:1) recaptured 26 acres of land from 21 - Gilead (4:1).
+February 24 of YR0	17 - Pee Time (5:1) recaptured 34 acres of land from 21 - Gilead (4:1).
+February 24 of YR0	17 - Pee Time (5:1) captured 11 acres of land from 13 - Phoria Scapes (4:1).
+March 2 of YR0	15 - FutureState (4:1) invaded 15 - Father time (5:1) and captured 37 acres of land.
+March 2 of YR0	15 - FutureState (4:1) invaded 15 - Father time (5:1) and captured 27 acres of land.
+March 3 of YR0	9 - Fun times (5:1) captured 9 acres of land from 23 - Blitzwaaagh (4:1).
+March 3 of YR0	9 - Fun times (5:1) captured 8 acres of land from 12 - Pong (4:1).
+March 3 of YR0	1 - Time to Shine (5:1) captured 63 acres of land from 15 - FutureState (4:1).
+March 3 of YR0	9 - Fun times (5:1) captured 8 acres of land from 22 - Thor (4:1).
+March 3 of YR0	11 - Stewies Time Machine (5:1) captured 24 acres of land from 15 - FutureState (4:1).
+March 3 of YR0	11 - Stewies Time Machine (5:1) captured 6 acres of land from 23 - Blitzwaaagh (4:1).
+March 3 of YR0	1 - Time to Shine (5:1) captured 37 acres of land from 14 - Aimia (4:1).
+March 3 of YR0	1 - Time to Shine (5:1) captured 28 acres of land from 14 - Aimia (4:1).
+March 3 of YR0	11 - Stewies Time Machine (5:1) captured 5 acres of land from 22 - Thor (4:1).
+March 3 of YR0	1 - Time to Shine (5:1) captured 11 acres of land from 23 - Blitzwaaagh (4:1).
+March 3 of YR0	15 - FutureState (4:1) invaded 1 - Time to Shine (5:1) and captured 38 acres of land.
+March 3 of YR0	15 - FutureState (4:1) attempted to invade 1 - Time to Shine (5:1).
+March 3 of YR0	13 - Time (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 3 of YR0	4 - Waste of Time (5:1) recaptured 28 acres of land from 17 - Solo (4:1).
+March 3 of YR0	4 - Waste of Time (5:1) captured 49 acres of land from 5 - Briz (4:1).
+March 3 of YR0	4 - Waste of Time (5:1) captured 41 acres of land from 17 - Solo (4:1).
+March 3 of YR0	16 - Ill be there in a tick (5:1) captured 7 acres of land from 22 - Thor (4:1).
+March 3 of YR0	16 - Ill be there in a tick (5:1) invaded 22 - Thor (4:1) and razed 38 acres of land.
+March 3 of YR0	3 - RazorclawTime (5:1) captured 35 acres of land from 2 - Crash (4:1).
+March 3 of YR0	3 - RazorclawTime (5:1) captured 16 acres of land from 19 - Alchemaria (4:1).
+March 3 of YR0	3 - RazorclawTime (5:1) captured 14 acres of land from 19 - Alchemaria (4:1).
+March 3 of YR0	Misstress Of Time has completed our dragon, Times Ticking, and it sets flight to ravage Unnamed kingdom (4:1)!
+March 4 of YR0	11 - Jalubie (4:1) invaded 7 - Slow Attack times (5:1) and captured 54 acres of land.
+March 4 of YR0	11 - Jalubie (4:1) invaded 7 - Slow Attack times (5:1) and captured 37 acres of land.
+March 4 of YR0	3 - Clampy (4:1) invaded 19 - Tea time (5:1) and captured 48 acres of land.
+March 4 of YR0	11 - Jalubie (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 20 acres of land.
+March 4 of YR0	11 - Jalubie (4:1) razed 70 acres of 18 - Sushi Sampo Time (5:1).
+March 4 of YR0	3 - Clampy (4:1) invaded 19 - Tea time (5:1) and captured 39 acres of land.
+March 4 of YR0	21 - Gilead (4:1) invaded 2 - your time is up Give in (5:1) and captured 59 acres of land.
+March 4 of YR0	10 - Timeless Rock Band (5:1) captured 49 acres of land from 11 - Jalubie (4:1).
+March 4 of YR0	10 - Timeless Rock Band (5:1) captured 13 acres of land from 14 - Aimia (4:1).
+March 4 of YR0	10 - Timeless Rock Band (5:1) captured 37 acres of land from 11 - Jalubie (4:1).
+March 4 of YR0	10 - Timeless Rock Band (5:1) captured 7 acres of land from 22 - Thor (4:1).
+March 4 of YR0	18 - Crimson (4:1) invaded 3 - RazorclawTime (5:1) and captured 57 acres of land.
+March 4 of YR0	18 - Crimson (4:1) invaded 3 - RazorclawTime (5:1) and captured 45 acres of land.
+March 4 of YR0	6 - Slack Time (5:1) captured 59 acres of land from 3 - Clampy (4:1).
+March 4 of YR0	6 - Slack Time (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 5 of YR0	14 - Aimia (4:1) invaded 3 - RazorclawTime (5:1) and captured 43 acres of land.
+March 5 of YR0	14 - Aimia (4:1) invaded 3 - RazorclawTime (5:1) and captured 38 acres of land.
+March 5 of YR0	14 - Aimia (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 22 acres of land.
+March 5 of YR0	19 - Alchemaria (4:1) invaded 1 - Time to Shine (5:1) and captured 37 acres of land.
+March 5 of YR0	22 - Thor (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 28 acres of land.
+March 5 of YR0	22 - Thor (4:1) invaded 12 - Misstress Of Time (5:1) and captured 40 acres of land.
+March 5 of YR0	22 - Thor (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 24 acres of land.
+March 5 of YR0	17 - Solo (4:1) invaded 23 - Time Manipulator (5:1) and captured 56 acres of land.
+March 5 of YR0	17 - Solo (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 8 acres of land.
+March 5 of YR0	22 - Thor (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 18 acres of land.
+March 5 of YR0	19 - Alchemaria (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 9 acres of land.
+March 5 of YR0	16 - Enslaver (4:1) attempted to invade 20 - Its 5 OClock Somewhere (5:1).
+March 6 of YR0	16 - Enslaver (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
+March 6 of YR0	17 - Solo (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 5 acres of land.
+March 6 of YR0	10 - Longtimeago (4:1) ambushed armies from 7 - Slow Attack times (5:1) and took 22 acres of land.
+March 6 of YR0	8 - No Better Time (5:1) captured 58 acres of land from 18 - Crimson (4:1).
+March 6 of YR0	21 - ticking time (5:1) captured 25 acres of land from 14 - Aimia (4:1).
+March 6 of YR0	21 - ticking time (5:1) captured 19 acres of land from 14 - Aimia (4:1).
+March 6 of YR0	21 - ticking time (5:1) captured 24 acres of land from 19 - Alchemaria (4:1).
+March 6 of YR0	21 - ticking time (5:1) captured 19 acres of land from 19 - Alchemaria (4:1).
+March 6 of YR0	6 - Ajarin (4:1) invaded 22 - Age of time (5:1) and captured 42 acres of land.
+March 6 of YR0	14 - About time dude (5:1) killed 312 people within 20 - Fist (4:1).
+March 6 of YR0	7 - Slow Attack times (5:1) captured 48 acres of land from 3 - Clampy (4:1).
+March 6 of YR0	7 - Slow Attack times (5:1) captured 46 acres of land from 7 - Jedimonk (4:1).
+March 6 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 49 acres of land from 15 - FutureState (4:1).
+March 6 of YR0	7 - Slow Attack times (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 6 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 11 acres of land from 19 - Alchemaria (4:1).
+March 7 of YR0	2 - Crash (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 53 acres of land.
+March 7 of YR0	2 - Crash (4:1) invaded 22 - Age of time (5:1) and captured 36 acres of land.
+March 7 of YR0	4 - Legion ROC (4:1) invaded 17 - Pee Time (5:1) and captured 58 acres of land.
+March 7 of YR0	17 - Pee Time (5:1) attempted an invasion of 4 - Legion ROC (4:1), but was repelled.
+March 7 of YR0	7 - Jedimonk (4:1) invaded 23 - Time Manipulator (5:1) and captured 53 acres of land.
+March 7 of YR0	7 - Jedimonk (4:1) invaded 23 - Time Manipulator (5:1) and captured 43 acres of land.
+March 7 of YR0	23 - Time Manipulator (5:1) captured 58 acres of land from 7 - Jedimonk (4:1).
+March 7 of YR0	23 - Time Manipulator (5:1) captured 63 acres of land from 6 - Ajarin (4:1).
+March 7 of YR0	23 - Time Manipulator (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 7 of YR0	7 - Jedimonk (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 6 acres of land.
+March 7 of YR0	22 - Age of time (5:1) captured 54 acres of land from 18 - Crimson (4:1).
+March 7 of YR0	22 - Age of time (5:1) captured 43 acres of land from 18 - Crimson (4:1).
+March 7 of YR0	22 - Age of time (5:1) captured 34 acres of land from 18 - Crimson (4:1).
+March 7 of YR0	22 - Age of time (5:1) captured 28 acres of land from 18 - Crimson (4:1).
+March 7 of YR0	12 - Misstress Of Time (5:1) captured 21 acres of land from 18 - Crimson (4:1).
+March 8 of YR0	12 - Misstress Of Time (5:1) captured 39 acres of land from 15 - FutureState (4:1).
+March 8 of YR0	22 - Age of time (5:1) captured 18 acres of land from 19 - Alchemaria (4:1).
+March 8 of YR0	12 - Misstress Of Time (5:1) captured 20 acres of land from 18 - Crimson (4:1).
+March 8 of YR0	13 - Phoria Scapes (4:1) invaded 15 - Father time (5:1) and captured 27 acres of land.
+March 8 of YR0	13 - Phoria Scapes (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 6 acres of land.
+March 8 of YR0	13 - Phoria Scapes (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 5 acres of land.
+March 8 of YR0	19 - Alchemaria (4:1) invaded 12 - Misstress Of Time (5:1) and captured 41 acres of land.
+March 8 of YR0	10 - Longtimeago (4:1) invaded 23 - Time Manipulator (5:1) and captured 45 acres of land.
+March 8 of YR0	18 - Sushi Sampo Time (5:1) captured 34 acres of land from 23 - Blitzwaaagh (4:1).
+March 8 of YR0	10 - Longtimeago (4:1) invaded 23 - Time Manipulator (5:1) and captured 36 acres of land.
+March 8 of YR0	18 - Sushi Sampo Time (5:1) captured 37 acres of land from 22 - Thor (4:1).
+March 8 of YR0	10 - Longtimeago (4:1) invaded 23 - Time Manipulator (5:1) and captured 23 acres of land.
+March 8 of YR0	18 - Sushi Sampo Time (5:1) captured 24 acres of land from 14 - Aimia (4:1).
+March 8 of YR0	18 - Sushi Sampo Time (5:1) captured 23 acres of land from 14 - Aimia (4:1).
+March 9 of YR0	5 - Time to play (5:1) captured 48 acres of land from 16 - Enslaver (4:1).
+March 9 of YR0	5 - Time to play (5:1) captured 38 acres of land from 16 - Enslaver (4:1).
+March 9 of YR0	5 - Time to play (5:1) captured 28 acres of land from 16 - Enslaver (4:1).
+March 9 of YR0	9 - The Resurected (4:1) invaded 17 - Pee Time (5:1) and captured 48 acres of land.
+March 9 of YR0	9 - The Resurected (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 12 acres of land.
+March 9 of YR0	9 - The Resurected (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 11 acres of land.
+March 9 of YR0	5 - Briz (4:1) invaded 17 - Pee Time (5:1) and captured 36 acres of land.
+March 9 of YR0	5 - Briz (4:1) invaded 17 - Pee Time (5:1) and captured 28 acres of land.
+March 9 of YR0	15 - Father time (5:1) captured 43 acres of land from 6 - Ajarin (4:1).
+March 9 of YR0	15 - Father time (5:1) captured 10 acres of land from 22 - Thor (4:1).
+March 9 of YR0	15 - Father time (5:1) invaded 22 - Thor (4:1) and razed 52 acres of land.
+March 9 of YR0	Our kingdom has begun the Topaz Dragon project, Dangerous Times, targeted at Unnamed kingdom (4:1).
+March 9 of YR0	17 - Pee Time (5:1) captured 54 acres of land from 5 - Briz (4:1).
+March 9 of YR0	17 - Pee Time (5:1) captured 44 acres of land from 5 - Briz (4:1).
+March 10 of YR0	17 - Pee Time (5:1) captured 10 acres of land from 23 - Blitzwaaagh (4:1).
+March 10 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 22 acres of land.
+March 10 of YR0	23 - Blitzwaaagh (4:1) attacked and pillaged the lands of 1 - Time to Shine (5:1).
+March 11 of YR0	2 - your time is up Give in (5:1) captured 45 acres of land from 21 - Gilead (4:1).
+March 11 of YR0	2 - your time is up Give in (5:1) captured 34 acres of land from 21 - Gilead (4:1).
+March 11 of YR0	11 - Stewies Time Machine (5:1) captured 20 acres of land from 10 - Longtimeago (4:1).
+March 11 of YR0	11 - Stewies Time Machine (5:1) captured 7 acres of land from 18 - Crimson (4:1).
+March 11 of YR0	11 - Stewies Time Machine (5:1) captured 7 acres of land from 18 - Crimson (4:1).
+March 14 of YR0	1 - Time to Shine (5:1) captured 56 acres of land from 17 - Solo (4:1).
+March 14 of YR0	1 - Time to Shine (5:1) captured 44 acres of land from 17 - Solo (4:1).
+March 14 of YR0	1 - Time to Shine (5:1) captured 35 acres of land from 17 - Solo (4:1).
+March 14 of YR0	15 - FutureState (4:1) invaded 1 - Time to Shine (5:1) and captured 48 acres of land.
+March 14 of YR0	15 - FutureState (4:1) invaded 1 - Time to Shine (5:1) and captured 35 acres of land.
+March 14 of YR0	15 - FutureState (4:1) invaded 1 - Time to Shine (5:1) and captured 28 acres of land.
+March 14 of YR0	12 - Pong (4:1) invaded 21 - ticking time (5:1) and captured 43 acres of land.
+March 14 of YR0	12 - Pong (4:1) invaded 21 - ticking time (5:1) and captured 39 acres of land.
+March 14 of YR0	12 - Pong (4:1) invaded 12 - Misstress Of Time (5:1) and captured 39 acres of land.
+March 14 of YR0	19 - Tea time (5:1) killed 334 people within 20 - Fist (4:1).
+March 14 of YR0	19 - Tea time (5:1) captured 35 acres of land from 10 - Longtimeago (4:1).
+March 14 of YR0	19 - Tea time (5:1) captured 8 acres of land from 19 - Alchemaria (4:1).
+March 14 of YR0	15 - FutureState (4:1) invaded 21 - ticking time (5:1) and captured 20 acres of land.
+March 15 of YR0	16 - Ill be there in a tick (5:1) captured 10 acres of land from 12 - Pong (4:1).
+March 15 of YR0	16 - Ill be there in a tick (5:1) captured 10 acres of land from 12 - Pong (4:1).
+March 15 of YR0	16 - Ill be there in a tick (5:1) captured 9 acres of land from 12 - Pong (4:1).
+March 15 of YR0	16 - Ill be there in a tick (5:1) captured 8 acres of land from 12 - Pong (4:1).
+March 15 of YR0	10 - Longtimeago (4:1) ambushed armies from 19 - Tea time (5:1) and took 17 acres of land.
+March 15 of YR0	10 - Timeless Rock Band (5:1) captured 41 acres of land from 9 - The Resurected (4:1).
+March 15 of YR0	10 - Timeless Rock Band (5:1) captured 8 acres of land from 18 - Crimson (4:1).
+March 15 of YR0	10 - Timeless Rock Band (5:1) captured 7 acres of land from 19 - Alchemaria (4:1).
+March 15 of YR0	10 - Timeless Rock Band (5:1) captured 8 acres of land from 12 - Pong (4:1).
+March 16 of YR0	11 - Jalubie (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 81 acres of land.
+March 16 of YR0	11 - Jalubie (4:1) invaded 17 - Pee Time (5:1) and captured 42 acres of land.
+March 16 of YR0	3 - Clampy (4:1) invaded 3 - RazorclawTime (5:1) and captured 38 acres of land.
+March 16 of YR0	3 - Clampy (4:1) invaded 3 - RazorclawTime (5:1) and captured 29 acres of land.
+March 16 of YR0	12 - Misstress Of Time (5:1) captured 53 acres of land from 3 - Clampy (4:1).
+March 16 of YR0	12 - Misstress Of Time (5:1) captured 47 acres of land from 15 - FutureState (4:1).
+March 16 of YR0	9 - Fun times (5:1) captured 38 acres of land from 11 - Jalubie (4:1).
+March 16 of YR0	9 - Fun times (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 16 of YR0	9 - Fun times (5:1) captured 7 acres of land from 12 - Pong (4:1).
+March 16 of YR0	18 - Crimson (4:1) invaded 12 - Misstress Of Time (5:1) and captured 44 acres of land.
+March 16 of YR0	18 - Crimson (4:1) invaded 12 - Misstress Of Time (5:1) and captured 36 acres of land.
+March 17 of YR0	18 - Crimson (4:1) attempted to invade 12 - Misstress Of Time (5:1).
+March 17 of YR0	4 - Waste of Time (5:1) captured 35 acres of land from 4 - Legion ROC (4:1).
+March 17 of YR0	4 - Waste of Time (5:1) captured 15 acres of land from 13 - Phoria Scapes (4:1).
+March 17 of YR0	6 - Slack Time (5:1) captured 45 acres of land from 21 - Gilead (4:1).
+March 17 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 47 acres of land from 2 - Crash (4:1).
+March 17 of YR0	6 - Slack Time (5:1) captured 20 acres of land from 18 - Crimson (4:1).
+March 17 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 19 acres of land from 13 - Phoria Scapes (4:1).
+March 17 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 16 acres of land from 13 - Phoria Scapes (4:1).
+March 17 of YR0	7 - Slow Attack times (5:1) captured 44 acres of land from 7 - Jedimonk (4:1).
+March 17 of YR0	7 - Slow Attack times (5:1) captured 40 acres of land from 10 - Longtimeago (4:1).
+March 17 of YR0	7 - Slow Attack times (5:1) captured 12 acres of land from 13 - Phoria Scapes (4:1).
+March 17 of YR0	19 - Alchemaria (4:1) invaded 21 - ticking time (5:1) and captured 37 acres of land.
+March 17 of YR0	19 - Alchemaria (4:1) invaded 12 - Misstress Of Time (5:1) and captured 32 acres of land.
+March 17 of YR0	17 - Solo (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 54 acres of land.
+March 17 of YR0	17 - Solo (4:1) invaded 7 - Slow Attack times (5:1) and captured 58 acres of land.
+March 18 of YR0	14 - About time dude (5:1) captured 35 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	14 - About time dude (5:1) captured 28 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	21 - ticking time (5:1) captured 50 acres of land from 3 - Clampy (4:1).
+March 18 of YR0	21 - ticking time (5:1) captured 23 acres of land from 13 - Phoria Scapes (4:1).
+March 18 of YR0	21 - ticking time (5:1) captured 15 acres of land from 23 - Blitzwaaagh (4:1).
+March 18 of YR0	17 - Pee Time (5:1) captured 38 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	21 - ticking time (5:1) captured 12 acres of land from 23 - Blitzwaaagh (4:1).
+March 18 of YR0	5 - Time to play (5:1) captured 26 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	5 - Time to play (5:1) captured 22 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	5 - Time to play (5:1) captured 19 acres of land from 11 - Jalubie (4:1).
+March 18 of YR0	6 - Ajarin (4:1) invaded 15 - Father time (5:1) and captured 37 acres of land.
+March 18 of YR0	3 - RazorclawTime (5:1) captured 27 acres of land from 22 - Thor (4:1).
+March 18 of YR0	3 - RazorclawTime (5:1) captured 21 acres of land from 22 - Thor (4:1).
+March 18 of YR0	3 - RazorclawTime (5:1) captured 17 acres of land from 22 - Thor (4:1).
+March 18 of YR0	3 - RazorclawTime (5:1) captured 15 acres of land from 22 - Thor (4:1).
+March 19 of YR0	14 - Aimia (4:1) invaded 1 - Time to Shine (5:1) and captured 36 acres of land.
+March 19 of YR0	14 - Aimia (4:1) invaded 21 - ticking time (5:1) and captured 42 acres of land.
+March 19 of YR0	14 - Aimia (4:1) invaded 17 - Pee Time (5:1) and captured 41 acres of land.
+March 19 of YR0	14 - Aimia (4:1) invaded 3 - RazorclawTime (5:1) and captured 37 acres of land.
+March 19 of YR0	22 - Age of time (5:1) captured 54 acres of land from 9 - The Resurected (4:1).
+March 19 of YR0	22 - Age of time (5:1) captured 37 acres of land from 9 - The Resurected (4:1).
+March 19 of YR0	4 - Legion ROC (4:1) invaded 11 - Stewies Time Machine (5:1) and captured 56 acres of land.
+March 19 of YR0	22 - Age of time (5:1) captured 18 acres of land from 18 - Crimson (4:1).
+March 19 of YR0	23 - Time Manipulator (5:1) captured 57 acres of land from 4 - Legion ROC (4:1).
+March 19 of YR0	23 - Time Manipulator (5:1) captured 44 acres of land from 4 - Legion ROC (4:1).
+March 19 of YR0	17 - Pee Time (5:1) captured 38 acres of land from 15 - FutureState (4:1).
+March 19 of YR0	17 - Pee Time (5:1) captured 12 acres of land from 22 - Thor (4:1).
+March 19 of YR0	17 - Pee Time (5:1) captured 11 acres of land from 22 - Thor (4:1).
+March 19 of YR0	2 - Crash (4:1) invaded 22 - Age of time (5:1) and captured 60 acres of land.
+March 19 of YR0	2 - Crash (4:1) invaded 22 - Age of time (5:1) and captured 48 acres of land.
+March 19 of YR0	13 - Time (5:1) captured 11 acres of land from 22 - Thor (4:1).
+March 19 of YR0	2 - Crash (4:1) invaded 1 - Time to Shine (5:1) and captured 17 acres of land.
+March 19 of YR0	21 - Gilead (4:1) invaded 5 - Time to play (5:1) and captured 72 acres of land.
+March 19 of YR0	21 - Gilead (4:1) invaded 5 - Time to play (5:1) and captured 55 acres of land.
+March 19 of YR0	21 - Gilead (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 13 acres of land.
+March 19 of YR0	13 - Phoria Scapes (4:1) invaded 1 - Time to Shine (5:1) and captured 25 acres of land.
+March 19 of YR0	13 - Phoria Scapes (4:1) invaded 1 - Time to Shine (5:1) and captured 22 acres of land.
+March 19 of YR0	13 - Phoria Scapes (4:1) invaded 1 - Time to Shine (5:1) and captured 21 acres of land.
+March 19 of YR0	11 - Stewies Time Machine (5:1) captured 23 acres of land from 2 - Crash (4:1).
+March 19 of YR0	7 - Jedimonk (4:1) invaded 5 - Time to play (5:1) and captured 31 acres of land.
+March 19 of YR0	11 - Stewies Time Machine (5:1) captured 20 acres of land from 2 - Crash (4:1).
+March 19 of YR0	7 - Jedimonk (4:1) invaded 8 - No Better Time (5:1) and captured 55 acres of land.
+March 20 of YR0	8 - No Better Time (5:1) captured 50 acres of land from 7 - Jedimonk (4:1).
+March 20 of YR0	15 - Father time (5:1) captured 49 acres of land from 2 - Crash (4:1).
+March 20 of YR0	15 - Father time (5:1) captured 39 acres of land from 2 - Crash (4:1).
+March 20 of YR0	10 - Longtimeago (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 60 acres of land.
+March 20 of YR0	10 - Longtimeago (4:1) invaded 7 - Slow Attack times (5:1) and captured 50 acres of land.
+March 20 of YR0	10 - Longtimeago (4:1) invaded 1 - Time to Shine (5:1) and captured 5 acres of land.
+March 21 of YR0	9 - The Resurected (4:1) invaded 22 - Age of time (5:1) and captured 47 acres of land.
+March 21 of YR0	9 - The Resurected (4:1) invaded 22 - Age of time (5:1) and captured 37 acres of land.
+March 21 of YR0	19 - Alchemaria (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 43 acres of land.
+March 21 of YR0	5 - Briz (4:1) invaded 23 - Time Manipulator (5:1) and captured 54 acres of land.
+March 21 of YR0	18 - Sushi Sampo Time (5:1) captured 29 acres of land from 18 - Crimson (4:1).
+March 21 of YR0	18 - Sushi Sampo Time (5:1) captured 24 acres of land from 18 - Crimson (4:1).
+March 21 of YR0	18 - Sushi Sampo Time (5:1) captured 22 acres of land from 18 - Crimson (4:1).
+March 21 of YR0	18 - Sushi Sampo Time (5:1) captured 20 acres of land from 18 - Crimson (4:1).
+March 21 of YR0	23 - Blitzwaaagh (4:1) invaded 1 - Time to Shine (5:1) and captured 18 acres of land.
+March 21 of YR0	23 - Blitzwaaagh (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 35 acres of land.
+March 21 of YR0	23 - Blitzwaaagh (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 30 acres of land.
+March 21 of YR0	23 - Blitzwaaagh (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 26 acres of land.
+March 21 of YR0	2 - your time is up Give in (5:1) captured 35 acres of land from 5 - Briz (4:1).
+March 21 of YR0	2 - your time is up Give in (5:1) captured 28 acres of land from 5 - Briz (4:1).
+March 21 of YR0	17 - Solo (4:1) invaded 1 - Time to Shine (5:1) and captured 7 acres of land.
+March 22 of YR0	5 - Briz (4:1) invaded 10 - Timeless Rock Band (5:1) and captured 54 acres of land.
+March 22 of YR0	19 - Tea time (5:1) killed 319 people within 20 - Fist (4:1).
+March 22 of YR0	19 - Tea time (5:1) captured 41 acres of land from 5 - Briz (4:1).
+March 22 of YR0	19 - Tea time (5:1) captured 10 acres of land from 22 - Thor (4:1).
+March 23 of YR0	16 - Enslaver (4:1) invaded 20 - Its 5 OClock Somewhere (5:1) and captured 37 acres of land.
+March 24 of YR0	1 - Time to Shine (5:1) captured 54 acres of land from 21 - Gilead (4:1).
+March 24 of YR0	1 - Time to Shine (5:1) captured 45 acres of land from 21 - Gilead (4:1).
+March 24 of YR0	1 - Time to Shine (5:1) captured 42 acres of land from 14 - Aimia (4:1).
+March 24 of YR0	10 - Timeless Rock Band (5:1) captured 48 acres of land from 10 - Longtimeago (4:1).
+March 24 of YR0	1 - Time to Shine (5:1) captured 32 acres of land from 14 - Aimia (4:1).
+March 24 of YR0	10 - Timeless Rock Band (5:1) captured 36 acres of land from 17 - Solo (4:1).
+March 24 of YR0	1 - Time to Shine (5:1) captured 26 acres of land from 14 - Aimia (4:1).
+March 24 of YR0	10 - Timeless Rock Band (5:1) captured 9 acres of land from 12 - Pong (4:1).
+March 24 of YR0	10 - Timeless Rock Band (5:1) captured 8 acres of land from 12 - Pong (4:1).
+April 1 of YR0	12 - Misstress Of Time (5:1) captured 39 acres of land from 3 - Clampy (4:1).
+April 1 of YR0	12 - Misstress Of Time (5:1) captured 31 acres of land from 11 - Jalubie (4:1).
+April 1 of YR0	9 - Fun times (5:1) captured 31 acres of land from 10 - Longtimeago (4:1).
+April 1 of YR0	9 - Fun times (5:1) captured 13 acres of land from 23 - Blitzwaaagh (4:1).
+April 2 of YR0	Sadly, we have failed summoning the ritual to cover our lands!
+April 2 of YR0	7 - Slow Attack times (5:1) captured 38 acres of land from 10 - Longtimeago (4:1).
+April 2 of YR0	7 - Slow Attack times (5:1) captured 37 acres of land from 2 - Crash (4:1).
+April 2 of YR0	7 - Slow Attack times (5:1) captured 38 acres of land from 10 - Longtimeago (4:1).
+April 2 of YR0	7 - Slow Attack times (5:1) captured 13 acres of land from 23 - Blitzwaaagh (4:1).
+April 2 of YR0	3 - RazorclawTime (5:1) captured 43 acres of land from 7 - Jedimonk (4:1).
+April 2 of YR0	3 - RazorclawTime (5:1) captured 37 acres of land from 7 - Jedimonk (4:1).
+April 2 of YR0	Unnamed kingdom (4:1) has cancelled their dragon project targeted at us.
+April 2 of YR0	Our kingdom has cancelled the dragon project to Unnamed kingdom (4:1).
+April 2 of YR0	Unnamed kingdom (4:1) has withdrawn from war. Our people rejoice at our victory!
+April 2 of YR0	Our kingdom is now in a post-war period which will expire on January 3 of YR1.
+April 4 of YR0	We have started developing a ritual! (Expedient)!
+May 10 of YR0	A ritual is covering our lands! (Expedient)

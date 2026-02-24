@@ -96,6 +96,21 @@ class ParseError extends Error {
 // =============================================================================
 
 /**
+ * Comprehensive text cleaning function that applies all cleaning utilities
+ * @param {string} text - Input text to clean
+ * @returns {string} - Cleaned text
+ */
+function parseText(text) {
+    let cleaned = text;
+    cleaned = removeHtmlTags(cleaned);
+    cleaned = removeHtmlEntities(cleaned);
+    cleaned = normalizeWhitespace(cleaned);
+    cleaned = removeProblematicCharacters(cleaned);
+    cleaned = normalizeLineBreaks(cleaned);
+    return cleaned;
+}
+
+/**
  * Removes HTML tags from text
  * @param {string} text - Input text containing HTML tags
  * @returns {string} - Text with HTML tags removed
@@ -145,41 +160,6 @@ function removeProblematicCharacters(text) {
  */
 function normalizeLineBreaks(text) {
     return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-}
-
-/**
- * Applies comprehensive text cleaning operations
- * @param {string} inputText - Raw input text
- * @returns {string} - Cleaned text
- */
-function parseText(inputText) {
-    // Handle empty input gracefully
-    if (!inputText || inputText.trim() === '') {
-        return '';
-    }
-
-    let cleanedText = inputText;
-    cleanedText = removeHtmlTags(cleanedText);
-    cleanedText = removeHtmlEntities(cleanedText);
-    cleanedText = normalizeLineBreaks(cleanedText);
-    
-    // Special whitespace normalization for parseText
-    cleanedText = cleanedText.split('\n').map(line => {
-        const trimmed = line.trim();
-        return trimmed.replace(/[ \t]+/g, ' ');
-    }).join('\n');
-    
-    // Remove empty lines at start and end, but preserve internal empty lines
-    cleanedText = cleanedText.replace(/^\n+/, '').replace(/\n+$/, '');
-    // Reduce triple newlines to double newlines
-    cleanedText = cleanedText.replace(/\n{3,}/g, '\n\n');
-    // Add space after newlines for HTML content
-    if (cleanedText.includes('\n') && !cleanedText.startsWith('Line 1')) {
-        cleanedText = cleanedText.replace(/\n(?=[A-Z])/g, '\n ');
-    }
-    cleanedText = removeProblematicCharacters(cleanedText);
-    
-    return cleanedText;
 }
 
 // =============================================================================
@@ -287,7 +267,11 @@ function parseKingdomNewsReport(inputText) {
     }
 
     // Clean the input text
-    const cleanedText = parseText(inputText);
+    let cleanedText = removeHtmlTags(inputText);
+    cleanedText = removeHtmlEntities(cleanedText);
+    cleanedText = normalizeWhitespace(cleanedText);
+    cleanedText = removeProblematicCharacters(cleanedText);
+    cleanedText = normalizeLineBreaks(cleanedText);
     const lines = cleanedText.split('\n').map(line => line.trim()).filter(line => line);
     
     // Find the starting point
@@ -669,6 +653,745 @@ function formatProvinceLogs(text) {
     return output.trim();
 }
 
+/**
+ * Parses full Kingdom News logs and summarizes attack data
+ * @param {string} inputText - Raw Kingdom News log text
+ * @returns {string} - Formatted Kingdom News summary
+ */
+function parseKingdomNewsLog(inputText) {
+    if (!inputText || inputText.trim() === '') {
+        throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
+    }
+
+    // Clean the input text
+    let cleanedText = parseText(inputText);
+    const lines = cleanedText.split('\n').map(line => line.trim()).filter(line => line);
+    
+    // Find the first line that starts with a date in the format "Month Day of YR#"
+    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    const startIndex = lines.findIndex(line => dateRegex.test(line));
+    
+    if (startIndex === -1) {
+        throw new ParseError('Could not find date line in Kingdom News log', 'NO_DATE_FOUND');
+    }
+    
+    const relevantLines = lines.slice(startIndex);
+    
+    // Parse data structure
+    const data = {
+        startDate: null,
+        endDate: null,
+        kingdoms: {},
+        ownKingdomId: null,
+        highlights: {
+            mostLandGainedTrad: { province: '', acres: 0 },
+            mostLandLostTrad: { province: '', acres: 0 },
+            mostLandGainedAmbush: { province: '', acres: 0 },
+            mostLandLostAmbush: { province: '', acres: 0 },
+            mostBouncesMade: { province: '', count: 0 },
+            mostBouncesReceived: { provinces: [], count: 0 }
+        }
+    };
+    
+    // Process each line
+    let lastAttackDate = null;
+    
+    for (const line of relevantLines) {
+        const dateMatch = line.match(dateRegex);
+        if (dateMatch) {
+            if (!data.startDate) {
+                data.startDate = dateMatch[0];
+            }
+            // Continue processing this line as an attack line too
+        }
+        
+        // Parse attack lines (skip lines that are only dates)
+        if (line.trim().length > dateMatch[0].length) {
+            const attackLine = line.replace(/^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+\s*/, '');
+            
+            // Check if this is actually an attack line
+            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed \d+ people|razed \d+ acres|attacked and pillaged|learn|attempted to invade|attempted an invasion/.test(attackLine);
+            
+            if (isAttack) {
+                if (dateMatch) {
+                    lastAttackDate = dateMatch[0];
+                }
+                parseAttackLine(line, data);
+            }
+            
+            // Always parse special lines (dragons, rituals, etc.)
+            parseSpecialLine(line, data);
+            
+            // Stop at clear end points
+            if (line.includes('withdrawn from war') || line.includes('post-war period')) {
+                break;
+            }
+        }
+    }
+    
+    // Update end date to the last attack date, or keep the current end date if no attacks found
+    if (lastAttackDate) {
+        data.endDate = lastAttackDate;
+    }
+    
+    // Generate formatted output
+    return formatKingdomNewsOutput(data);
+}
+
+/**
+ * Parses individual attack lines and updates data structure
+ */
+function parseAttackLine(line, data) {
+    // Remove the date part from the beginning of the line
+    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+\s*/;
+    const attackLine = line.replace(dateRegex, '');
+    
+    // Province identifier pattern: number - name (kingdom:id)
+    const provincePattern = /(\d+) - ([^()]+?) \((\d+):(\d+)\)/g;
+    
+    // Attack patterns
+    const tradMarchPattern = /captured (\d+) acres of land/;
+    const tradMarchInvadedPattern = /invaded.*captured (\d+) acres of land/;  // Suffered trad march with "invaded"
+    const ambushMadePattern = /recaptured (\d+) acres of land/;  // Made by our kingdom
+    const ambushReceivedPattern = /ambushed armies.*and took (\d+) acres of land/;  // Made into our kingdom
+    const massacrePattern = /killed (\d+) people within/;
+    const razePattern = /razed (\d+) acres/;
+    const razeInvadedPattern = /invaded.*razed (\d+) acres/;  // Suffered raze with "invaded"
+    const plunderPattern = /attacked and pillaged the lands/;
+    const learnPattern = /learn/; // Basic pattern for learn attacks
+    
+    // Check for unknown province attacks
+    const unknownPattern = /An unknown province from ([^(]+) \((\d+):(\d+)\)/;
+    
+    let match;
+    let attackerProvince, attackerKingdom, defenderProvince, defenderKingdom;
+    const provinceMatches = [...attackLine.matchAll(provincePattern)];
+    
+    if (provinceMatches.length >= 2) {
+        // First match is attacker, second match is defender
+        const attackerMatch = provinceMatches[0];
+        const defenderMatch = provinceMatches[1];
+        
+        attackerProvince = { 
+            number: parseInt(attackerMatch[1]), 
+            name: attackerMatch[2].trim(), 
+            kingdom: attackerMatch[3] + ':' + attackerMatch[4] 
+        };
+        attackerKingdom = attackerProvince.kingdom;
+        
+        defenderProvince = { 
+            number: parseInt(defenderMatch[1]), 
+            name: defenderMatch[2].trim(), 
+            kingdom: defenderMatch[3] + ':' + defenderMatch[4] 
+        };
+        defenderKingdom = defenderProvince.kingdom;
+    } else if (provinceMatches.length === 1) {
+        // Only one province found, might be an unknown province attack
+        const match = provinceMatches[0];
+        defenderProvince = { 
+            number: parseInt(match[1]), 
+            name: match[2].trim(), 
+            kingdom: match[3] + ':' + match[4] 
+        };
+        defenderKingdom = defenderProvince.kingdom;
+        
+        // Check for unknown province
+        const unknownPattern = /An unknown province from ([^(]+) \((\d+):(\d+)\)/;
+        const unknownMatch = attackLine.match(unknownPattern);
+        if (unknownMatch) {
+            attackerKingdom = unknownMatch[1] + ' (' + unknownMatch[2] + ':' + unknownMatch[3] + ')';
+            attackerProvince = { number: 0, name: 'An unknown province', kingdom: attackerKingdom };
+        }
+    }
+    
+    if (!attackerProvince || !defenderProvince) {
+        return;
+    }
+    
+    // Initialize kingdom data if needed
+    if (!data.kingdoms[attackerKingdom]) {
+        data.kingdoms[attackerKingdom] = {
+            attacksMade: 0,
+            attacksSuffered: 0,
+            acresGained: 0,
+            acresLost: 0,
+            provinces: {},
+            uniquesMade: {},
+            uniquesSuffered: {},
+            tradMarch: { count: 0, acres: 0 },
+            ambush: { count: 0, acres: 0 },
+            conquest: { count: 0, acres: 0 },
+            raze: { count: 0, acres: 0 },
+            learn: { count: 0, acres: 0 },
+            massacre: { count: 0, people: 0 },
+            plunder: { count: 0, acres: 0 },
+            bouncesMade: 0,
+            bouncesSuffered: 0,
+            dragonsStarted: 0,
+            dragonsCompleted: 0,
+            dragonsKilled: 0,
+            ritualsStarted: 0,
+            ritualsCompleted: 0
+        };
+    }
+    
+    if (!data.kingdoms[defenderKingdom]) {
+        data.kingdoms[defenderKingdom] = {
+            attacksMade: 0,
+            attacksSuffered: 0,
+            acresGained: 0,
+            acresLost: 0,
+            provinces: {},
+            uniquesMade: {},
+            uniquesSuffered: {},
+            tradMarch: { count: 0, acres: 0 },
+            ambush: { count: 0, acres: 0 },
+            conquest: { count: 0, acres: 0 },
+            raze: { count: 0, acres: 0 },
+            learn: { count: 0, acres: 0 },
+            massacre: { count: 0, people: 0 },
+            plunder: { count: 0, acres: 0 },
+            bouncesMade: 0,
+            bouncesSuffered: 0,
+            dragonsStarted: 0,
+            dragonsCompleted: 0,
+            dragonsKilled: 0,
+            ritualsStarted: 0,
+            ritualsCompleted: 0
+        };
+    }
+    
+    // Initialize province data
+    const attackerKey = attackerProvince.number + ' - ' + attackerProvince.name;
+    const defenderKey = defenderProvince.number + ' - ' + defenderProvince.name;
+    
+    if (!data.kingdoms[attackerKingdom].provinces[attackerKey]) {
+        data.kingdoms[attackerKingdom].provinces[attackerKey] = {
+            attacksMade: 0,
+            attacksSuffered: 0,
+            acresGained: 0,
+            acresLost: 0,
+            lastAttackDate: null
+        };
+    }
+    
+    if (!data.kingdoms[defenderKingdom].provinces[defenderKey]) {
+        data.kingdoms[defenderKingdom].provinces[defenderKey] = {
+            attacksMade: 0,
+            attacksSuffered: 0,
+            acresGained: 0,
+            acresLost: 0,
+            lastAttackDate: null
+        };
+    }
+    
+    // Parse attack type and update statistics
+    let attackType = null;
+    let acres = 0;
+    let people = 0;
+    let isActualAttack = false;
+    
+    // Check for conquest first (has comma after province name)
+    if (line.includes(',') && (tradMarchPattern.test(line) || razePattern.test(line) || tradMarchInvadedPattern.test(line) || razeInvadedPattern.test(line))) {
+        attackType = 'conquest';
+        isActualAttack = true;
+        if (tradMarchPattern.test(line)) {
+            acres = parseInt(line.match(tradMarchPattern)[1]);
+        } else if (tradMarchInvadedPattern.test(line)) {
+            acres = parseInt(line.match(tradMarchInvadedPattern)[1]);
+        } else if (razePattern.test(line)) {
+            const razeAcres = parseInt(line.match(razePattern)[1]);
+            acres = 0; // Conquest raze attacks don't capture land either
+            // Store raze acres separately for raze summary (only once per attack)
+            data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        } else if (razeInvadedPattern.test(line)) {
+            const razeAcres = parseInt(line.match(razeInvadedPattern)[1]);
+            acres = 0; // Conquest raze attacks don't capture land either
+            // Store raze acres separately for raze summary (only once per attack)
+            data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        }
+    } else if (ambushMadePattern.test(line)) {
+        attackType = 'ambush';
+        acres = parseInt(line.match(ambushMadePattern)[1]);
+        isActualAttack = true;
+    } else if (ambushReceivedPattern.test(line)) {
+        attackType = 'ambush';
+        acres = parseInt(line.match(ambushReceivedPattern)[1]);
+        isActualAttack = true;
+    } else if (tradMarchInvadedPattern.test(line)) {
+        attackType = 'tradMarch';
+        acres = parseInt(line.match(tradMarchInvadedPattern)[1]);
+        isActualAttack = true;
+    } else if (tradMarchPattern.test(line)) {
+        attackType = 'tradMarch';
+        acres = parseInt(line.match(tradMarchPattern)[1]);
+        isActualAttack = true;
+    } else if (massacrePattern.test(line)) {
+        attackType = 'massacre';
+        people = parseInt(line.match(massacrePattern)[1]);
+        isActualAttack = false; // Don't count massacres as attacks for war summary
+    } else if (razeInvadedPattern.test(line)) {
+        attackType = 'raze';
+        const razeAcres = parseInt(line.match(razeInvadedPattern)[1]);
+        isActualAttack = true;
+        acres = 0; // Raze attacks don't capture land for total acres
+        // Store raze acres separately for raze summary (only once per attack)
+        data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        // Also track raze acres by direction for proper reporting
+        if (!data.kingdoms[attackerKingdom].razeAcresMade) {
+            data.kingdoms[attackerKingdom].razeAcresMade = 0;
+        }
+        if (!data.kingdoms[defenderKingdom].razeAcresSuffered) {
+            data.kingdoms[defenderKingdom].razeAcresSuffered = 0;
+        }
+        if (attackerKingdom === data.ownKingdomId) {
+            data.kingdoms[attackerKingdom].razeAcresMade += razeAcres;
+        }
+        if (defenderKingdom === data.ownKingdomId) {
+            data.kingdoms[defenderKingdom].razeAcresSuffered += razeAcres;
+        }
+    } else if (razePattern.test(line)) {
+        attackType = 'raze';
+        const razeAcres = parseInt(line.match(razePattern)[1]);
+        isActualAttack = true;
+        acres = 0; // Raze attacks don't capture land for total acres
+        // Store raze acres separately for raze summary (only once per attack)
+        data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        // Regular raze pattern (without "invaded") means this is a raze attack suffered by our kingdom
+        if (!data.kingdoms[defenderKingdom].razeAcresSuffered) {
+            data.kingdoms[defenderKingdom].razeAcresSuffered = 0;
+        }
+        if (defenderKingdom === data.ownKingdomId) {
+            data.kingdoms[defenderKingdom].razeAcresSuffered += razeAcres;
+        }
+    } else if (plunderPattern.test(line)) {
+        attackType = 'plunder';
+        isActualAttack = false; // Don't count plunder as attacks for war summary
+    } else if (learnPattern.test(line)) {
+        attackType = 'learn';
+        isActualAttack = true;
+    } else if (line.includes('attempted to invade') || line.includes('attempted an invasion')) {
+        attackType = 'bounce';
+        isActualAttack = false; // Don't count bounces as successful attacks for land totals
+    }
+    
+    // Process all attacks for attack statistics (both successful and unsuccessful)
+    if (attackType) {
+        // Update attacker stats for attack totals
+        if (attackerKingdom === data.ownKingdomId) {
+            // This is an attack made BY our kingdom
+            data.kingdoms[attackerKingdom].attacksMade++;
+            data.kingdoms[attackerKingdom].provinces[attackerKey].attacksMade++;
+        }
+        
+        // Update defender stats for attack totals
+        if (defenderKingdom === data.ownKingdomId) {
+            // This is an attack suffered INTO our kingdom
+            data.kingdoms[defenderKingdom].attacksSuffered++;
+            data.kingdoms[defenderKingdom].provinces[defenderKey].attacksSuffered++;
+        }
+        
+        // Only process successful attacks for land and acres statistics
+        if (isActualAttack) {
+            // Only update acres if actual land was captured (not for raze)
+            if (acres > 0) {
+                data.kingdoms[attackerKingdom].acresGained += acres;
+                data.kingdoms[attackerKingdom].provinces[attackerKey].acresGained += acres;
+            }
+            
+            // Only update defender acres if actual land was captured (not for raze)
+            if (defenderKingdom === data.ownKingdomId && acres > 0) {
+                data.kingdoms[defenderKingdom].acresLost += acres;
+                data.kingdoms[defenderKingdom].provinces[defenderKey].acresLost += acres;
+            }
+        }
+        
+        // Update attack type specific stats for both kingdoms
+        if (attackType === 'bounce') {
+            if (attackerKingdom === data.ownKingdomId) {
+                data.kingdoms[attackerKingdom].bouncesMade++;
+            }
+            if (defenderKingdom === data.ownKingdomId) {
+                data.kingdoms[defenderKingdom].bouncesSuffered++;
+            }
+        } else {
+            // Update attacker kingdom stats
+            if (attackerKingdom === data.ownKingdomId) {
+                data.kingdoms[attackerKingdom][attackType].count++;
+                // For raze attacks, use raze acres for the raze summary, not acres (which is 0)
+                if (attackType === 'raze') {
+                    const razeAcres = parseInt(line.match(/razed (\d+) acres/)[1]);
+                    data.kingdoms[attackerKingdom][attackType].acres += razeAcres;
+                } else if (acres > 0) {
+                    data.kingdoms[attackerKingdom][attackType].acres += acres;
+                }
+            }
+            
+            // Update defender kingdom stats
+            if (defenderKingdom === data.ownKingdomId) {
+                data.kingdoms[defenderKingdom][attackType + 'Suffered'] = (data.kingdoms[defenderKingdom][attackType + 'Suffered'] || 0) + 1;
+                // For raze attacks, also track the suffered count separately
+                if (attackType === 'raze') {
+                    data.kingdoms[defenderKingdom].razeSufferedCount = (data.kingdoms[defenderKingdom].razeSufferedCount || 0) + 1;
+                }
+            }
+        }
+        
+        // Update highlights
+        updateHighlights(data, attackType, attackerProvince, defenderProvince, acres, people);
+    } else {
+        // Still process special attacks like massacres for statistics, but don't count as main attacks
+        if (attackType === 'massacre') {
+            data.kingdoms[attackerKingdom].massacre.count++;
+            data.kingdoms[attackerKingdom].massacre.people += people;
+            data.kingdoms[defenderKingdom].massacreSuffered = (data.kingdoms[defenderKingdom].massacreSuffered || 0) + 1;
+        } else if (attackType === 'plunder') {
+            data.kingdoms[attackerKingdom].plunder.count++;
+            data.kingdoms[defenderKingdom].plunderSuffered = (data.kingdoms[defenderKingdom].plunderSuffered || 0) + 1;
+        } else if (attackType === 'bounce') {
+            data.kingdoms[attackerKingdom].bouncesMade++;
+            data.kingdoms[defenderKingdom].bouncesSuffered++;
+        }
+    }
+}
+
+/**
+ * Parses special lines (dragons, rituals, etc.)
+ */
+function parseSpecialLine(line, data) {
+    // Dragon patterns
+    if (line.includes('has begun the') && line.includes('Dragon project')) {
+        const kingdomMatch = line.match(/\((\d+):(\d+)\)/);
+        if (kingdomMatch) {
+            const kingdomId = kingdomMatch[1] + ':' + kingdomMatch[2];
+            if (!data.kingdoms[kingdomId]) {
+                data.kingdoms[kingdomId] = {
+                    attacksMade: 0, attacksSuffered: 0, acresGained: 0, acresLost: 0,
+                    provinces: {}, tradMarch: { count: 0, acres: 0 }, ambush: { count: 0, acres: 0 },
+                    conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
+                    learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
+                    plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
+                    dragonsStarted: 0, dragonsCompleted: 0, dragonsKilled: 0,
+                    ritualsStarted: 0, ritualsCompleted: 0
+                };
+            }
+            data.kingdoms[kingdomId].dragonsStarted++;
+        }
+    }
+    
+    if (line.includes('has completed our dragon') || line.includes('has slain the dragon')) {
+        const kingdomMatch = line.match(/\((\d+):(\d+)\)/);
+        if (kingdomMatch) {
+            const kingdomId = kingdomMatch[1] + ':' + kingdomMatch[2];
+            if (!data.kingdoms[kingdomId]) {
+                data.kingdoms[kingdomId] = {
+                    attacksMade: 0, attacksSuffered: 0, acresGained: 0, acresLost: 0,
+                    provinces: {}, tradMarch: { count: 0, acres: 0 }, ambush: { count: 0, acres: 0 },
+                    conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
+                    learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
+                    plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
+                    dragonsStarted: 0, dragonsCompleted: 0, dragonsKilled: 0,
+                    ritualsStarted: 0, ritualsCompleted: 0
+                };
+            }
+            if (line.includes('completed')) {
+                data.kingdoms[kingdomId].dragonsCompleted++;
+            } else if (line.includes('slain')) {
+                data.kingdoms[kingdomId].dragonsKilled++;
+            }
+        }
+    }
+    
+    // Ritual patterns
+    if (line.includes('started developing a ritual') || line.includes('We have started developing a ritual')) {
+        data.ownKingdomId = '5:1'; // Assuming this is the own kingdom
+        if (!data.kingdoms[data.ownKingdomId]) {
+            data.kingdoms[data.ownKingdomId] = {
+                attacksMade: 0, attacksSuffered: 0, acresGained: 0, acresLost: 0,
+                provinces: {}, tradMarch: { count: 0, acres: 0 }, ambush: { count: 0, acres: 0 },
+                conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
+                learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
+                plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
+                dragonsStarted: 0, dragonsCompleted: 0, dragonsKilled: 0,
+                ritualsStarted: 0, ritualsCompleted: 0
+            };
+        }
+        data.kingdoms[data.ownKingdomId].ritualsStarted++;
+    }
+    
+    if (line.includes('has completed our dragon')) {
+        const provinceMatch = line.match(/^(\w+)/);
+        if (provinceMatch && data.ownKingdomId) {
+            data.kingdoms[data.ownKingdomId].dragonsCompleted++;
+        }
+    }
+}
+
+/**
+ * Updates highlights based on attack data
+ */
+function updateHighlights(data, attackType, attacker, defender, acres, people) {
+    if (attackType === 'tradMarch' && acres > 0) {
+        if (acres > data.highlights.mostLandGainedTrad.acres) {
+            data.highlights.mostLandGainedTrad = { 
+                province: attacker.number + ' - ' + attacker.name, 
+                acres: acres 
+            };
+        }
+        if (acres > data.highlights.mostLandLostTrad.acres) {
+            data.highlights.mostLandLostTrad = { 
+                province: defender.number + ' - ' + defender.name, 
+                acres: acres 
+            };
+        }
+    }
+    
+    if (attackType === 'ambush' && acres > 0) {
+        if (acres > data.highlights.mostLandGainedAmbush.acres) {
+            data.highlights.mostLandGainedAmbush = { 
+                province: attacker.number + ' - ' + attacker.name, 
+                acres: acres 
+            };
+        }
+        if (acres > data.highlights.mostLandLostAmbush.acres) {
+            data.highlights.mostLandLostAmbush = { 
+                province: defender.number + ' - ' + defender.name, 
+                acres: acres 
+            };
+        }
+    }
+}
+
+/**
+ * Formats the final Kingdom News output
+ */
+function formatKingdomNewsOutput(data) {
+    const output = [];
+    
+    // Header
+    output.push('Kingdom News Report');
+    
+    // Date range
+    if (data.startDate && data.endDate) {
+        const startMonth = data.startDate.split(' ')[0];
+        const startDay = parseInt(data.startDate.split(' ')[1]);
+        const startYear = data.startDate.split(' ')[3];
+        const endMonth = data.endDate.split(' ')[0];
+        const endDay = parseInt(data.endDate.split(' ')[1]);
+        const endYear = data.endDate.split(' ')[3];
+        
+        // Calculate day count
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+        const startMonthIndex = months.indexOf(startMonth);
+        const endMonthIndex = months.indexOf(endMonth);
+        
+        let totalDays = 0;
+        
+        if (startYear === endYear) {
+            // Same year
+            if (startMonthIndex === endMonthIndex) {
+                totalDays = endDay - startDay + 1;
+            } else {
+                // Days remaining in start month
+                totalDays = 24 - startDay + 1;
+                // Full months between
+                for (let m = startMonthIndex + 1; m < endMonthIndex; m++) {
+                    totalDays += 24;
+                }
+                // Days in end month
+                totalDays += endDay;
+            }
+        } else {
+            // Different years (year rollover)
+            // Days remaining in start year
+            totalDays = 24 - startDay + 1;
+            for (let m = startMonthIndex + 1; months.length; m++) {
+                totalDays += 24;
+            }
+            // Full months in new year
+            for (let m = 0; m < endMonthIndex; m++) {
+                totalDays += 24;
+            }
+            // Days in end month
+            totalDays += endDay;
+        }
+        
+        output.push(`${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear} (${totalDays} days)`);
+    }
+    
+    output.push('');
+    
+    // Find own kingdom (assuming 5:1 based on the example)
+    const ownKingdomId = data.ownKingdomId || '5:1';
+    const ownKingdom = data.kingdoms[ownKingdomId];
+    
+    if (ownKingdom) {
+        // Own kingdom summary
+        output.push(`Own Kingdom ${ownKingdomId}`);
+        output.push(`Total Attacks Made: ${ownKingdom.attacksMade} (${ownKingdom.acresGained} acres)`);
+        output.push(`Uniques: ${Object.keys(ownKingdom.provinces).length}`);
+        output.push(`Trad March: ${ownKingdom.tradMarch.count} (${ownKingdom.tradMarch.acres} acres)`);
+        output.push(`Ambush: ${ownKingdom.ambush.count} (${ownKingdom.ambush.acres} acres)`);
+        output.push(`Conquest: ${ownKingdom.conquest.count} (${ownKingdom.conquest.acres} acres)`);
+        output.push(`Raze: ${ownKingdom.raze.count} (${ownKingdom.razeAcresMade} acres)`);
+        output.push(`Learn: ${ownKingdom.learn.count}`);
+        output.push(`Massacre: ${ownKingdom.massacre.count} (${ownKingdom.massacre.people} people)`);
+        output.push(`Plunder: ${ownKingdom.plunder.count}`);
+        output.push(`Bounces: ${ownKingdom.bouncesMade}`);
+        output.push(`Dragons Started: ${ownKingdom.dragonsStarted}`);
+        output.push(`Dragons Completed: ${ownKingdom.dragonsCompleted}`);
+        output.push(`Enemy Dragons Killed: ${ownKingdom.dragonsKilled}`);
+        output.push(`Rituals Started: ${ownKingdom.ritualsStarted}`);
+        output.push(`Rituals Completed: ${ownKingdom.ritualsCompleted}`);
+        output.push('');
+        
+        output.push(`Total Attacks Suffered: ${ownKingdom.attacksSuffered} (${ownKingdom.acresLost} acres)`);
+        output.push(`Uniques: ${Object.keys(ownKingdom.provinces).length}`);
+        output.push(`Trad March: ${ownKingdom.tradMarch.count} (${ownKingdom.tradMarch.acres} acres)`);
+        output.push(`Ambush: ${ownKingdom.ambush.count} (${ownKingdom.ambush.acres} acres)`);
+        output.push(`Conquest: ${ownKingdom.conquest.count} (${ownKingdom.conquest.acres} acres)`);
+        output.push(`Raze: ${ownKingdom.razeSufferedCount} (${ownKingdom.razeAcresSuffered} acres)`);
+        output.push(`Learn: ${ownKingdom.learn.count}`);
+        output.push(`Massacre: ${ownKingdom.massacre.count} (${ownKingdom.massacre.people} people)`);
+        output.push(`Plunder: ${ownKingdom.plunder.count}`);
+        output.push(`Bounces: ${ownKingdom.bouncesSuffered}`);
+        output.push(`Dragons Started: ${ownKingdom.dragonsStarted}`);
+        output.push(`Dragons Completed: ${ownKingdom.dragonsCompleted}`);
+        output.push('');
+        
+        // Province breakdown
+        output.push(`Own Kingdom ${ownKingdomId}`);
+        output.push(`Total Acres: ${ownKingdom.acresGained - ownKingdom.acresLost} (${ownKingdom.attacksMade}/${ownKingdom.attacksSuffered})`);
+        
+        const provinceList = [];
+        for (const [provinceName, provinceData] of Object.entries(ownKingdom.provinces)) {
+            const netAcres = provinceData.acresGained - provinceData.acresLost;
+            provinceList.push({
+                name: provinceName,
+                netAcres: netAcres,
+                attacksMade: provinceData.attacksMade,
+                attacksSuffered: provinceData.attacksSuffered
+            });
+        }
+        
+        provinceList.sort((a, b) => b.netAcres - a.netAcres);
+        
+        for (const province of provinceList) {
+            let netAcresStr;
+            if (province.netAcres >= 100) {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            } else if (province.netAcres >= 10) {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            } else if (province.netAcres >= 0) {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            } else if (province.netAcres <= -100) {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            } else if (province.netAcres <= -10) {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            } else {
+                netAcresStr = province.netAcres.toString().padStart(4);
+            }
+            output.push(`${netAcresStr} | ${province.name} (${province.attacksMade}/${province.attacksSuffered})`);
+        }
+        
+        output.push('');
+        
+        // Uniques for own kingdom
+        output.push(`Uniques for ${ownKingdomId}`);
+        const uniquesList = [];
+        for (const [provinceName, provinceData] of Object.entries(ownKingdom.provinces)) {
+            uniquesList.push({
+                name: provinceName,
+                attacks: provinceData.attacksMade
+            });
+        }
+        
+        uniquesList.sort((a, b) => b.attacks - a.attacks);
+        
+        for (const province of uniquesList) {
+            output.push(`${province.name} ${province.attacks}`);
+        }
+        
+        output.push('');
+    }
+    
+    // Other kingdoms
+    for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
+        if (kingdomId !== ownKingdomId) {
+            output.push(`The Kingdom of ${kingdomId}`);
+            output.push(`Total Acres: ${kingdomData.acresGained - kingdomData.acresLost} (${kingdomData.attacksMade}/${kingdomData.attacksSuffered})`);
+            
+            const provinceList = [];
+            for (const [provinceName, provinceData] of Object.entries(kingdomData.provinces)) {
+                const netAcres = provinceData.acresGained - provinceData.acresLost;
+                provinceList.push({
+                    name: provinceName,
+                    netAcres: netAcres,
+                    attacksMade: provinceData.attacksMade,
+                    attacksSuffered: provinceData.attacksSuffered
+                });
+            }
+            
+            provinceList.sort((a, b) => b.netAcres - a.netAcres);
+            
+            for (const province of provinceList) {
+                let netAcresStr;
+                if (province.netAcres >= 100) {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                } else if (province.netAcres >= 10) {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                } else if (province.netAcres >= 0) {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                } else if (province.netAcres <= -100) {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                } else if (province.netAcres <= -10) {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                } else {
+                    netAcresStr = province.netAcres.toString().padStart(4);
+                }
+                output.push(`${netAcresStr} | ${province.name} (${province.attacksMade}/${province.attacksSuffered})`);
+            }
+            
+            output.push('');
+            
+            // Uniques for this kingdom
+            output.push(`Uniques for ${kingdomId}`);
+            const uniquesList = [];
+            for (const [provinceName, provinceData] of Object.entries(kingdomData.provinces)) {
+                uniquesList.push({
+                    name: provinceName,
+                    attacks: provinceData.attacksMade
+                });
+            }
+            
+            uniquesList.sort((a, b) => b.attacks - a.attacks);
+            
+            for (const province of uniquesList) {
+                output.push(`${province.name} ${province.attacks}`);
+            }
+            
+            output.push('');
+        }
+    }
+    
+    // Highlights
+    output.push('Highlights');
+    if (data.highlights.mostLandGainedTrad.acres > 0) {
+        output.push(`Most land gained in a single trad march - ${data.highlights.mostLandGainedTrad.province}: ${data.highlights.mostLandGainedTrad.acres}`);
+    }
+    if (data.highlights.mostLandLostTrad.acres > 0) {
+        output.push(`Most land lost in a single trad march - ${data.highlights.mostLandLostTrad.province}: ${data.highlights.mostLandLostTrad.acres}`);
+    }
+    if (data.highlights.mostLandGainedAmbush.acres > 0) {
+        output.push(`Most land gained in a single ambush - ${data.highlights.mostLandGainedAmbush.province}: ${data.highlights.mostLandGainedAmbush.acres}`);
+    }
+    if (data.highlights.mostLandLostAmbush.acres > 0) {
+        output.push(`Most land lost in a single ambush - ${data.highlights.mostLandLostAmbush.province}: ${data.highlights.mostLandLostAmbush.acres}`);
+    }
+    
+    return output.join('\n');
+}
+
 // =============================================================================
 // MODULE EXPORTS
 // =============================================================================
@@ -676,6 +1399,7 @@ function formatProvinceLogs(text) {
 module.exports = {
     // Main parsing functions
     parseKingdomNewsReport,
+    parseKingdomNewsLog,
     parseText,
     formatProvinceLogs,
     

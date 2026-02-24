@@ -11,6 +11,11 @@ function initializeApp() {
     console.log('NewsParser initializing...');
     
     try {
+        // Initialize theme system first
+        if (window.themeManager) {
+            window.themeManager.initializeTheme();
+        }
+        
         // Get all DOM elements we need
         const elements = getDomElements();
         
