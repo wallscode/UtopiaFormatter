@@ -1,7 +1,7 @@
 Kingdom News Report
 February 2, YR0 - March 6, YR0 (29 days)
 
-Own Kingdom 5:1
+** Own Kingdom 5:1 **
 Total Attacks Made: 144 (4088 acres)
 Uniques: 56
 Trad March: 138 (3965 acres)
@@ -18,7 +18,7 @@ Enemy Dragons Killed: 1
 Rituals Started: 0
 Rituals Completed: 0
 
-The Kingdom of 4:1
+** The Kingdom of 4:1 **
 Total Attacks Made: 112 (3998 acres)
 Uniques: 49
 Trad March: 102 (3856 acres)
@@ -32,7 +32,7 @@ Bounces: 3
 Dragons Started: 1
 Dragons Completed: 1
 
-Own Kingdom 5:1
+** Own Kingdom 5:1 **
 Total Acres: 90 (144/112)
   245 | 10 - Timeless Rock Band (12/3)
   136 | 11 - Stewies Time Machine (8/0)

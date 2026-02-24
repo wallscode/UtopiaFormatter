@@ -11,7 +11,14 @@
 
 ## Overview of Kingdom News Parser Functionality
 
-The parser will serve two initial functions.  It will be used to parse the Kingdom (often shortened to KD in this game) News Report and extract and summarize information in a specific format.  It will also be used to parse the province news and separately province logs and extract and summarize information in a specific format but that will be detailed later in the Province News Parser section.
+The parser will parse raw kingdom news text copied directly from the Utopia game interface and extract detailed attack information, generating comprehensive reports and summaries.
+
+### Input Format
+
+* Raw text copied from Utopia game interface containing individual news entries
+* Each entry starts with a date prefix (e.g., "February 2, YR0")
+* Contains unformatted attack descriptions and game events
+* Requires parsing of attack types, provinces, and impacts to generate structured reports
 
 ### Date Details
 
@@ -26,6 +33,7 @@ The parser will serve two initial functions.  It will be used to parse the Kingd
 * Kingdoms in this game are made up of up to 25 provinces.
 * When represented in the game the province number is immediately followed by a dash and then the province name.  For example "1 - Holo Wolf (4:1)" would be province 1 named Holo Wolf in kingdom 4:1.
 * Actions in this game are always reported with the attacking province first and the defending province second.
+* Anonymous attacks use the format "An unknown province from Odd-lympics (3:7)" and should be attributed to "An unknown province"
 
 ### Attack Details
 
@@ -148,13 +156,153 @@ Starting with the kingdom from which the news was copied this section will list 
   * List of provinces sorted by highest unique attacks count (based on the unique attack logic described above)
   * For each province show the province name and the number of unique attacks
 
+#### Highlights Section
+
+This section provides notable highlights and extreme values from the parsed kingdom news data, focusing on record-breaking performances and unusual occurrences. The highlights section should only be shown for the kingdom from which the news was copied (the "own kingdom").
+
+##### Attack Performance Highlights
+
+* **Most land gained in a single trad march**
+  * Format: "Most land gained in a single trad march - [province number] - [province name]: [acres]"
+  * Shows the province that achieved the highest land capture in a single traditional march attack
+  * If no trad march attacks were made, this should not be shown
+
+* **Most land lost in a single trad march**
+  * Format: "Most land lost in a single trad march - [province number] - [province name]: [acres]"
+  * Shows the province that suffered the highest land loss in a single traditional march attack
+  * If no trad march attacks were suffered, this should not be shown
+
+* **Most land gained in a single ambush**
+  * Format: "Most land gained in a single ambush - [province number] - [province name]: [acres]"
+  * Shows the province that achieved the highest land recapture in a single ambush attack
+  * If no ambush attacks were made, this should not be shown
+
+* **Most land lost in a single ambush**
+  * Format: "Most land lost in a single ambush - [province number] - [province name]: [acres]"
+  * Shows the province that suffered the highest land loss in a single ambush attack
+  * If no ambush attacks were suffered, this should not be shown
+
+##### Bounce Performance Highlights
+
+* **Most bounces made**
+  * Format: "Most bounces made - [province number] - [province name]: [count]"
+  * Shows the province with the highest number of failed/bounced attacks made
+  * If multiple provinces tie for the highest count, list all of them separated by commas
+  * If no bounces were made, show "Most bounces made - : 0"
+
+* **Most bounces received**
+  * Format: "Most bounces received - [province number] - [province name], [province number] - [province name]: [count]"
+  * Shows the province(s) that caused the most enemy attacks to bounce (i.e., enemies failed when attacking them)
+  * If multiple provinces tie for the highest count, list all of them separated by commas before the colon
+  * If no bounces were received, this should not be shown
+
+##### Output Formatting Rules
+
+* The highlights section should be titled "Highlights"
+* Each highlight should be on its own line
+* Province names should be shown exactly as they appear in the original text
+* If a specific highlight category has no data (e.g., no ambush attacks), that highlight line should be omitted entirely
+* The section should only include highlights that have actual data to report
+
+
 ## Overview of Province News Requirements
 
 Will be added later
 
 ## Overview of Province Logs Requirements
 
-Will be added later
+The province logs parser will parse individual province log entries and extract and summarize various types of actions and events that occur within a province. Unlike kingdom news which shows interactions between provinces, province logs show the internal and external actions performed by or affecting a single province.
+
+### Input Format
+
+* Province logs consist of individual lines that start with a date prefix in the format "Month Day, YR##" followed by the log entry
+* Each line should be parsed by removing the date prefix up to and including "YR" and the following number
+* Lines that begin with a timestamp in "00:00" format (two-digit hour and two-digit minute) should be skipped
+* Empty lines should be ignored
+
+### Supported Event Types
+
+#### Spell Casting
+
+* The parser detects spells that begin casting by looking for the phrase "begin casting" in the log entry
+* Each spell has specific text that identifies it and may have an impact value (such as duration, resources affected, etc.)
+* Supported spells include:
+  * **Offensive Spells**: Fireball, Lightning Strike, Amnesia, Land Lust, Tornadoes, Vermin, Fool's Gold, Nightmares, Blizzard, Explosions, Droughts, Pitfalls, Storms, Meteor Showers, Nightfall, Gluttony, Greed, Chastity, Mystic Vortex, Expose Thieves, Abolish Ritual
+* For spells with impacts, the parser extracts the numerical value and unit (e.g., "493 days", "14,884 runes", "3,639 peasants")
+
+#### Thievery Operations
+
+* The parser detects successful thievery operations by looking for the phrase "Early indications show that our operation was a success"
+* Each operation has specific identifying text and may track impacts such as acres burned, wizards assassinated, or duration of effects
+* Supported operations include:
+  * **Standard Operations**: Arson, Assassinate Wizards, Destabilize Guilds, Free Prisoners, Incite Riots, Kidnapping, Night Strike, Sabotage Wizards
+  * **Special Operations**:
+    * **Arson**: Tracks acres of buildings burned
+    * **Bribe Generals**: Counts successful bribery operations
+    * **Bribe Thieves**: Counts successful bribery operations
+    * **Propaganda**: Tracks conversion of different troop types (thieves, soldiers, wizards, specialist troops, elites)
+
+#### Resource Management
+
+* **Aid Sent**: Parses lines containing "We have sent" to track resources sent to other provinces
+  * Tracks: gold coins, bushels, runes, soldiers, explore pool acres
+* **Resources Stolen**: Parses lines containing "Our thieves have returned with" or "Our thieves were able to steal"
+  * Tracks: gold coins, bushels, runes, war horses
+
+#### Special Events
+
+* **Dragon Project**:
+  * Tracks donations to dragon projects via "to the quest of launching a dragon" (gold coins and bushels)
+  * Tracks troops sent to fight dragons via "the dragon is weakened by" (troops and points)
+* **Rituals**: Counts successful ritual casts via "We are now closer to completing our ritual project"
+
+### Output Requirements for Province Logs
+
+The expected format for outputting results from Province Logs is as follows:
+
+The text "Summary of Province Log Events"
+
+A separator line of dashes (40 characters)
+
+#### Thievery Summary
+
+* Lists all thievery operations in descending order by frequency
+* For operations with impacts, shows the count and total impact (e.g., "9 Arson for a total of 85 acres")
+* For special operations:
+  * **Propaganda**: Shows as "Propaganda:" with indented list of converted troop types and counts
+  * **Bribe Operations**: Shows as "X Bribe Generals ops" or "X Bribe Thieves ops"
+* Operations with zero count are omitted from the output
+
+#### Resources Stolen
+
+* Lists all stolen resources in descending order by value
+* Format: "X,XXX resource stolen" (e.g., "1,404,731 gold coins stolen")
+* Resources with zero count are omitted from the output
+
+#### Spell Summary
+
+* Lists all cast spells in descending order by frequency
+* For spells with impacts, shows the count and total impact (e.g., "62 Meteor Showers for a total of 493 days")
+* Spells with zero count are omitted from the output
+
+#### Aid Summary
+
+* Lists all sent aid resources in descending order by value
+* Format: "X,XXX resource" (e.g., "5,072,494 gold coins")
+* Resources with zero count are omitted from the output
+
+#### Dragon Summary
+
+* Shows gold coins donated (if any)
+* Shows bushels donated (if any)
+* Shows troops sent and points weakened (if any troops were sent)
+* Format: "X,XXX troops sent and weakened by X,XXX points"
+
+#### Ritual Summary
+
+* Shows the total count of successful ritual casts
+* Format: "X successful ritual casts"
+* If no ritual casts are detected, this section should not be shown
 
 ## Overview of UI Requirements
 

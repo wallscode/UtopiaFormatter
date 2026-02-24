@@ -8,16 +8,9 @@
 // CONSTANTS & CONFIGURATION
 // =============================================================================
 
-// Parsing patterns and identifiers
-const PARSE_PATTERNS = {
-    KINGDOM_NEWS_HEADER: 'Kingdom News Report',
-    HIGHLIGHTS_HEADER: 'Highlights',
-    OWN_KINGDOM_PREFIX: 'Own Kingdom',
-    ENEMY_KINGDOM_PREFIX: 'The Kingdom of',
-    UNIQUES_PREFIX: 'Uniques for',
-    TOTAL_ATTACKS_MADE: 'Total Attacks Made:',
-    TOTAL_ATTACKS_SUFFERED: 'Total Attacks Suffered:',
-    TOTAL_ACRES: 'Total Acres:'
+// Error messages
+const ERROR_MESSAGES = {
+    EMPTY_INPUT: 'Input text cannot be empty'
 };
 
 // Province Logs configuration
@@ -70,13 +63,6 @@ const PROVINCE_LOGS_CONFIG = {
     PROPAGANDA_TROOPS: ["thieves", "soldiers", "wizards", "specialist troops"],
     
     AID_RESOURCES: ["soldiers", "gold coins", "bushels", "runes", "explore pool acres"]
-};
-
-// Error messages
-const ERROR_MESSAGES = {
-    NO_KINGDOM_NEWS_HEADER: 'Could not find "Kingdom News Report" header in the input text',
-    NO_KINGDOM_IDENTIFIERS: 'Could not find kingdom identifiers in the input text',
-    EMPTY_INPUT: 'Input text cannot be empty'
 };
 
 // =============================================================================
@@ -160,202 +146,6 @@ function removeProblematicCharacters(text) {
  */
 function normalizeLineBreaks(text) {
     return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-}
-
-// =============================================================================
-// KINGDOM NEWS REPORT PARSING
-// =============================================================================
-
-/**
- * Extracts kingdom identifier from a kingdom line
- * @param {string} kingdomLine - Line containing kingdom information
- * @returns {string} - Kingdom identifier (e.g., "5:1")
- */
-function extractKingdomId(kingdomLine) {
-    return kingdomLine.split(' ').slice(-1)[0];
-}
-
-/**
- * Finds section indices in the relevant lines array
- * @param {string[]} relevantLines - Array of relevant lines from the report
- * @param {string} ownKingdomId - Own kingdom identifier
- * @param {string} enemyKingdomId - Enemy kingdom identifier
- * @returns {Object} - Object containing section indices
- */
-function findSectionIndices(relevantLines, ownKingdomId, enemyKingdomId) {
-    return {
-        attacksMade: relevantLines.findIndex(line => line.startsWith(PARSE_PATTERNS.TOTAL_ATTACKS_MADE)),
-        attacksSuffered: relevantLines.findIndex(line => line.startsWith(PARSE_PATTERNS.TOTAL_ATTACKS_SUFFERED)),
-        ownKingdom: relevantLines.findIndex(line => line.startsWith(PARSE_PATTERNS.OWN_KINGDOM_PREFIX)),
-        enemyKingdom: relevantLines.findIndex(line => line.startsWith(PARSE_PATTERNS.ENEMY_KINGDOM_PREFIX)),
-        uniquesOwn: relevantLines.findIndex(line => line.startsWith(`${PARSE_PATTERNS.UNIQUES_PREFIX} ${ownKingdomId}`)),
-        uniquesEnemy: relevantLines.findIndex(line => line.startsWith(`${PARSE_PATTERNS.UNIQUES_PREFIX} ${enemyKingdomId}`))
-    };
-}
-
-/**
- * Extracts province list from lines between specified indices
- * @param {string[]} relevantLines - Array of relevant lines
- * @param {number} startIndex - Start index for extraction
- * @param {number} endIndex - End index for extraction
- * @returns {string[]} - Array of province lines
- */
-function extractProvinceList(relevantLines, startIndex, endIndex) {
-    const provinces = [];
-    let foundTotalAcres = false;
-    
-    for (let i = startIndex; i <= endIndex; i++) {
-        const line = relevantLines[i];
-        if (line.startsWith(PARSE_PATTERNS.TOTAL_ACRES)) {
-            foundTotalAcres = true;
-            continue;
-        }
-        if (foundTotalAcres && line && line.match(/^-?\d+ \|/)) {
-            provinces.push(line);
-        }
-    }
-    
-    return provinces;
-}
-
-/**
- * Extracts uniques list from lines between specified indices
- * @param {string[]} relevantLines - Array of relevant lines
- * @param {number} startIndex - Start index for extraction
- * @param {number} endIndex - End index for extraction
- * @returns {string[]} - Array of unique lines
- */
-function extractUniquesList(relevantLines, startIndex, endIndex) {
-    const uniques = [];
-    
-    for (let i = startIndex; i < endIndex; i++) {
-        const line = relevantLines[i];
-        if (line && line.match(/^\d+ -/)) {
-            uniques.push(line);
-        }
-    }
-    
-    return uniques;
-}
-
-/**
- * Extracts highlights section from relevant lines
- * @param {string[]} relevantLines - Array of relevant lines
- * @returns {string[]} - Array of highlights lines (filtered)
- */
-function extractHighlightsSection(relevantLines) {
-    const highlightsIndex = relevantLines.findIndex(line => line === PARSE_PATTERNS.HIGHLIGHTS_HEADER);
-    
-    if (highlightsIndex === -1) {
-        return [];
-    }
-    
-    const highlights = relevantLines.slice(highlightsIndex);
-    // Filter out unwanted lines like 'Enemy'
-    return highlights.filter(line => line !== 'Enemy' && line.trim() !== '');
-}
-
-/**
- * Parses and reorganizes Kingdom News Report format
- * @param {string} inputText - Raw Kingdom News Report text
- * @returns {string} - Reorganized Kingdom News Report
- * @throws {ParseError} - When parsing fails due to missing required elements
- */
-function parseKingdomNewsReport(inputText) {
-    if (!inputText || inputText.trim() === '') {
-        throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
-    }
-
-    // Clean the input text
-    let cleanedText = removeHtmlTags(inputText);
-    cleanedText = removeHtmlEntities(cleanedText);
-    cleanedText = normalizeWhitespace(cleanedText);
-    cleanedText = removeProblematicCharacters(cleanedText);
-    cleanedText = normalizeLineBreaks(cleanedText);
-    const lines = cleanedText.split('\n').map(line => line.trim()).filter(line => line);
-    
-    // Find the starting point
-    const headerIndex = lines.findIndex(line => line === PARSE_PATTERNS.KINGDOM_NEWS_HEADER);
-    if (headerIndex === -1) {
-        throw new ParseError(ERROR_MESSAGES.NO_KINGDOM_NEWS_HEADER, 'NO_HEADER');
-    }
-    
-    const relevantLines = lines.slice(headerIndex);
-    
-    // Extract basic information
-    const header = relevantLines[0];
-    const dateRange = relevantLines[1];
-    
-    // Find kingdom identifiers
-    const ownKingdomMatch = relevantLines.find(line => line.startsWith(PARSE_PATTERNS.OWN_KINGDOM_PREFIX));
-    const enemyKingdomMatch = relevantLines.find(line => line.startsWith(PARSE_PATTERNS.ENEMY_KINGDOM_PREFIX));
-    
-    if (!ownKingdomMatch || !enemyKingdomMatch) {
-        throw new ParseError(ERROR_MESSAGES.NO_KINGDOM_IDENTIFIERS, 'NO_KINGDOMS');
-    }
-    
-    const ownKingdomId = extractKingdomId(ownKingdomMatch);
-    const enemyKingdomId = extractKingdomId(enemyKingdomMatch);
-    
-    // Find section indices
-    const indices = findSectionIndices(relevantLines, ownKingdomId, enemyKingdomId);
-    
-    // Extract sections
-    const ownKingdomAttacks = relevantLines.slice(indices.attacksMade, indices.attacksSuffered);
-    const enemyKingdomAttacks = relevantLines.slice(indices.attacksSuffered, indices.ownKingdom);
-    
-    // Convert enemy attacks to show as "Made" instead of "Suffered"
-    const enemyKingdomAttacksFixed = enemyKingdomAttacks.map(line => 
-        line.replace('Total Attacks Suffered:', 'Total Attacks Made:')
-    );
-    
-    // Extract province lists
-    const ownKingdomProvinces = extractProvinceList(relevantLines, indices.ownKingdom + 1, indices.enemyKingdom);
-    const enemyKingdomProvinces = extractProvinceList(relevantLines, indices.enemyKingdom + 1, indices.uniquesOwn);
-    
-    // Extract uniques
-    const ownKingdomUniques = extractUniquesList(relevantLines, indices.uniquesOwn + 1, indices.uniquesEnemy);
-    const enemyKingdomUniques = extractUniquesList(relevantLines, indices.uniquesEnemy + 1, relevantLines.length);
-    
-    // Extract highlights
-    const highlights = extractHighlightsSection(relevantLines);
-    
-    // Extract Total Acres values dynamically
-    const ownTotalAcres = relevantLines[indices.ownKingdom + 1];
-    const enemyTotalAcres = relevantLines[indices.enemyKingdom + 1];
-    
-    // Build reorganized report
-    const result = [
-        header,
-        dateRange,
-        '',
-        ownKingdomMatch,
-        ...ownKingdomAttacks,
-        '',
-        enemyKingdomMatch,
-        ...enemyKingdomAttacksFixed,
-        '',
-        ownKingdomMatch,
-        ownTotalAcres,
-        ...ownKingdomProvinces,
-        '',
-        `${PARSE_PATTERNS.UNIQUES_PREFIX} ${ownKingdomId}`,
-        ...ownKingdomUniques,
-        '',
-        enemyKingdomMatch,
-        enemyTotalAcres,
-        ...enemyKingdomProvinces,
-        '',
-        `${PARSE_PATTERNS.UNIQUES_PREFIX} ${enemyKingdomId}`,
-        ...enemyKingdomUniques
-    ];
-    
-    // Add highlights section if it exists
-    if (highlights.length > 0) {
-        result.push('', ...highlights);
-    }
-    
-    return result.join('\n');
 }
 
 // =============================================================================
@@ -1398,7 +1188,6 @@ function formatKingdomNewsOutput(data) {
 
 module.exports = {
     // Main parsing functions
-    parseKingdomNewsReport,
     parseKingdomNewsLog,
     parseText,
     formatProvinceLogs,
@@ -1414,11 +1203,7 @@ module.exports = {
     escapeRegExp,
     formatNumber,
     
-    // Error classes
-    ParseError,
-    
     // Constants (for testing)
-    PARSE_PATTERNS,
     ERROR_MESSAGES,
     PROVINCE_LOGS_CONFIG
 };
