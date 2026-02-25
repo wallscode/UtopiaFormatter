@@ -42,8 +42,8 @@
         <section class="output-section">
             <h2>Formatted Output</h2>
             <label for="output-text" class="textarea-label">Formatted output — copy and paste into the Utopia forum:</label>
-            <textarea 
-                id="output-text" 
+            <textarea
+                id="output-text"
                 readonly
                 rows="10"
                 cols="80"
@@ -53,6 +53,14 @@
                 <button id="copy-btn">Copy to Clipboard</button>
             </div>
             <div id="copy-feedback" class="feedback hidden">Copied to clipboard!</div>
+        </section>
+
+        <section id="advanced-settings" class="adv-panel hidden" aria-label="Advanced settings">
+            <button id="adv-toggle" class="adv-toggle-btn" aria-expanded="false" aria-controls="adv-content">
+                <span class="adv-toggle-icon" aria-hidden="true">▶</span>
+                Advanced Settings
+            </button>
+            <div id="adv-content" hidden></div>
         </section>
     </main>
 

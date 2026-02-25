@@ -193,8 +193,8 @@ section h2 {
     transition: color 0.3s ease;
 }
 
-section p,
-section label {
+section > p,
+section > label {
     color: #a89880;
     margin-bottom: 1rem;
     display: block;
@@ -211,8 +211,8 @@ body.light-mode section h2 {
     color: #7a5c14;
 }
 
-body.light-mode section p,
-body.light-mode section label {
+body.light-mode section > p,
+body.light-mode section > label {
     color: #5c4a30;
 }
 
@@ -226,9 +226,214 @@ body.dark-mode section h2 {
     color: #c8a84b;
 }
 
-body.dark-mode section p,
-body.dark-mode section label {
+body.dark-mode section > p,
+body.dark-mode section > label {
     color: #a89880;
+}
+
+/* =====================================================
+   Advanced Settings Panel
+   ===================================================== */
+
+.adv-panel {
+    grid-column: 1 / -1;
+    padding: 0;
+    overflow: hidden;
+}
+
+.adv-toggle-btn {
+    background: none;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 1rem 2rem;
+    color: #c8a84b;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transform: none;
+    box-shadow: none;
+}
+
+.adv-toggle-btn:hover {
+    background: rgba(200, 168, 75, 0.08);
+    transform: none;
+    box-shadow: none;
+}
+
+.adv-toggle-icon {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+.adv-toggle-btn[aria-expanded="true"] .adv-toggle-icon {
+    transform: rotate(90deg);
+}
+
+#adv-content {
+    padding: 0 2rem 1.5rem;
+    border-top: 1px solid #3d3224;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0 2rem;
+}
+
+.adv-group-title {
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #a89880;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 1rem 0 0.5rem;
+}
+
+.adv-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.adv-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e8dcc8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.adv-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #c8a84b;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.adv-group input[type="number"] {
+    width: 56px;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid #3d3224;
+    border-radius: 4px;
+    background: #12100d;
+    color: #e8dcc8;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Section order list (Province Logs) */
+.section-order-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    grid-column: 1 / -1;
+}
+
+.section-order-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+    color: #e8dcc8;
+    font-size: 0.9rem;
+}
+
+.section-order-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #c8a84b;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.order-btn {
+    background: rgba(200, 168, 75, 0.12);
+    border: 1px solid rgba(200, 168, 75, 0.3);
+    border-radius: 4px;
+    color: #c8a84b;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    transform: none;
+    box-shadow: none;
+    min-width: unset;
+    min-height: unset;
+    line-height: 1;
+}
+
+.order-btn:hover {
+    background: rgba(200, 168, 75, 0.22);
+    transform: none;
+    box-shadow: none;
+}
+
+.order-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Light mode overrides */
+body.light-mode .adv-toggle-btn {
+    color: #7a5c14;
+}
+
+body.light-mode .adv-toggle-btn:hover {
+    background: rgba(160, 120, 32, 0.08);
+}
+
+body.light-mode #adv-content {
+    border-top-color: #d4c4a0;
+}
+
+body.light-mode .adv-group-title {
+    color: #7a6248;
+}
+
+body.light-mode .adv-group label,
+body.light-mode .section-order-item {
+    color: #2c2416;
+}
+
+body.light-mode .adv-group input[type="number"] {
+    background: #fffbf2;
+    color: #2c2416;
+    border-color: #d4c4a0;
+}
+
+body.light-mode .order-btn {
+    background: rgba(160, 120, 32, 0.1);
+    border-color: rgba(160, 120, 32, 0.3);
+    color: #a07820;
+}
+
+body.light-mode .order-btn:hover {
+    background: rgba(160, 120, 32, 0.2);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .adv-toggle-btn {
+        padding: 1rem 1.5rem;
+    }
+
+    #adv-content {
+        padding: 0 1.5rem 1.5rem;
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Auto-detect badge */
