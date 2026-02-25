@@ -117,7 +117,6 @@ February 13 of YR0	15 - Father time (5:1) captured 21 acres of land from 12 - Po
 February 13 of YR0	15 - Father time (5:1) captured 18 acres of land from 12 - Pong (4:1).
 February 13 of YR0	19 - Tea time (5:1) captured 11 acres of land from 12 - Pong (4:1).
 February 13 of YR0	19 - Tea time (5:1) captured 10 acres of land from 12 - Pong (4:1).
-February 13 of YR0	19 - Tea time (5:1) captured 10 acres of land from 12 - Pong (4:1).
 February 13 of YR0	19 - Tea time (5:1) captured 8 acres of land from 12 - Pong (4:1).
 February 14 of YR0	2 - your time is up Give in (5:1) captured 41 acres of land from 4 - Legion ROC (4:1).
 February 14 of YR0	5 - Time to play (5:1) captured 35 acres of land from 4 - Legion ROC (4:1).
@@ -188,7 +187,6 @@ February 18 of YR0	8 - No Better Time (5:1) captured 42 acres of land from 14 - 
 February 18 of YR0	8 - No Better Time (5:1) captured 34 acres of land from 14 - Aimia (4:1).
 February 18 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 16 acres of land from 13 - Phoria Scapes (4:1).
 February 18 of YR0	20 - Its 5 OClock Somewhere (5:1) captured 37 acres of land from 19 - Alchemaria (4:1).
-February 19 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
 February 19 of YR0	2 - Crash (4:1) invaded 18 - Sushi Sampo Time (5:1) and captured 7 acres of land.
 February 19 of YR0	2 - Crash (4:1) invaded 22 - Age of time (5:1) and captured 61 acres of land.
 February 19 of YR0	7 - Jedimonk (4:1) invaded 3 - RazorclawTime (5:1) and captured 62 acres of land.
@@ -356,7 +354,6 @@ March 11 of YR0	2 - your time is up Give in (5:1) captured 45 acres of land from
 March 11 of YR0	2 - your time is up Give in (5:1) captured 34 acres of land from 21 - Gilead (4:1).
 March 11 of YR0	11 - Stewies Time Machine (5:1) captured 20 acres of land from 10 - Longtimeago (4:1).
 March 11 of YR0	11 - Stewies Time Machine (5:1) captured 7 acres of land from 18 - Crimson (4:1).
-March 11 of YR0	11 - Stewies Time Machine (5:1) captured 7 acres of land from 18 - Crimson (4:1).
 March 14 of YR0	1 - Time to Shine (5:1) captured 56 acres of land from 17 - Solo (4:1).
 March 14 of YR0	1 - Time to Shine (5:1) captured 44 acres of land from 17 - Solo (4:1).
 March 14 of YR0	1 - Time to Shine (5:1) captured 35 acres of land from 17 - Solo (4:1).
@@ -370,7 +367,6 @@ March 14 of YR0	19 - Tea time (5:1) killed 334 people within 20 - Fist (4:1).
 March 14 of YR0	19 - Tea time (5:1) captured 35 acres of land from 10 - Longtimeago (4:1).
 March 14 of YR0	19 - Tea time (5:1) captured 8 acres of land from 19 - Alchemaria (4:1).
 March 14 of YR0	15 - FutureState (4:1) invaded 21 - ticking time (5:1) and captured 20 acres of land.
-March 15 of YR0	16 - Ill be there in a tick (5:1) captured 10 acres of land from 12 - Pong (4:1).
 March 15 of YR0	16 - Ill be there in a tick (5:1) captured 10 acres of land from 12 - Pong (4:1).
 March 15 of YR0	16 - Ill be there in a tick (5:1) captured 9 acres of land from 12 - Pong (4:1).
 March 15 of YR0	16 - Ill be there in a tick (5:1) captured 8 acres of land from 12 - Pong (4:1).
@@ -386,7 +382,6 @@ March 16 of YR0	3 - Clampy (4:1) invaded 3 - RazorclawTime (5:1) and captured 29
 March 16 of YR0	12 - Misstress Of Time (5:1) captured 53 acres of land from 3 - Clampy (4:1).
 March 16 of YR0	12 - Misstress Of Time (5:1) captured 47 acres of land from 15 - FutureState (4:1).
 March 16 of YR0	9 - Fun times (5:1) captured 38 acres of land from 11 - Jalubie (4:1).
-March 16 of YR0	9 - Fun times (5:1) captured 7 acres of land from 12 - Pong (4:1).
 March 16 of YR0	9 - Fun times (5:1) captured 7 acres of land from 12 - Pong (4:1).
 March 16 of YR0	18 - Crimson (4:1) invaded 12 - Misstress Of Time (5:1) and captured 44 acres of land.
 March 16 of YR0	18 - Crimson (4:1) invaded 12 - Misstress Of Time (5:1) and captured 36 acres of land.
@@ -489,7 +484,6 @@ April 1 of YR0	9 - Fun times (5:1) captured 13 acres of land from 23 - Blitzwaaa
 April 2 of YR0	Sadly, we have failed summoning the ritual to cover our lands!
 April 2 of YR0	7 - Slow Attack times (5:1) captured 38 acres of land from 10 - Longtimeago (4:1).
 April 2 of YR0	7 - Slow Attack times (5:1) captured 37 acres of land from 2 - Crash (4:1).
-April 2 of YR0	7 - Slow Attack times (5:1) captured 38 acres of land from 10 - Longtimeago (4:1).
 April 2 of YR0	7 - Slow Attack times (5:1) captured 13 acres of land from 23 - Blitzwaaagh (4:1).
 April 2 of YR0	3 - RazorclawTime (5:1) captured 43 acres of land from 7 - Jedimonk (4:1).
 April 2 of YR0	3 - RazorclawTime (5:1) captured 37 acres of land from 7 - Jedimonk (4:1).

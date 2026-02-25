@@ -3,25 +3,25 @@ February 1, YR0 - April 2, YR0 (50 days)
 
 ** Own Kingdom 5:1 Summary **
 Total Attacks Made: 279 (8091 acres)
--- Uniques: 108
+-- Uniques: 105
 -- Trad March: 267 (7959 acres)
 -- Ambush: 4 (114 acres)
 -- Conquest: 2 (18 acres)
 -- Raze: 2 (90 acres)
 -- Massacre: 3 (965 people)
--- Bounces: 1
+-- Bounces: 1 (0%)
 -- Dragons Started: 3
 -- Dragons Completed: 2
 -- Enemy Dragons Killed: 1
 -- Rituals Started: 2
 -- Rituals Completed: 1
 Total Attacks Suffered: 196 (6959 acres)
--- Uniques: 86
+-- Uniques: 82
 -- Trad March: 181 (6800 acres)
 -- Ambush: 7 (159 acres)
 -- Raze: 1 (70 acres)
 -- Plunder: 3
--- Bounces: 4
+-- Bounces: 4 (2%)
 -- Dragons Started: 2
 -- Dragons Completed: 1
 
@@ -52,27 +52,27 @@ Total land exchanged: +1132 (279/196)
   -154 | 13 - Time (2/3)
 
 ** Uniques for 5:1 **
-12 - Misstress Of Time 7
-7 - Slow Attack times 6
-17 - Pee Time 6
-15 - Father time 6
+12 - Misstress Of Time 6
 3 - RazorclawTime 6
-2 - your time is up Give in 5
-9 - Fun times 5
-11 - Stewies Time Machine 5
-10 - Timeless Rock Band 5
+7 - Slow Attack times 6
 1 - Time to Shine 5
-19 - Tea time 5
-5 - Time to play 5
+10 - Timeless Rock Band 5
+11 - Stewies Time Machine 5
+15 - Father time 5
+17 - Pee Time 5
 18 - Sushi Sampo Time 5
-4 - Waste of Time 4
+19 - Tea time 5
+2 - your time is up Give in 5
+5 - Time to play 5
+9 - Fun times 5
 14 - About time dude 4
-6 - Slack Time 4
 16 - Ill be there in a tick 4
-23 - Time Manipulator 4
-8 - No Better Time 4
 20 - Its 5 OClock Somewhere 4
 22 - Age of time 4
+23 - Time Manipulator 4
+4 - Waste of Time 4
+6 - Slack Time 4
+8 - No Better Time 4
 21 - ticking time 3
 13 - Time 2
 
@@ -103,24 +103,24 @@ Total land exchanged: -1194 (193/279)
   -227 | 22 - Thor (10/34)
 
 ** Uniques for 4:1 **
-19 - Alchemaria 7
-10 - Longtimeago 5
-4 - Legion ROC 5
 23 - Blitzwaaagh 5
+4 - Legion ROC 5
+10 - Longtimeago 4
+11 - Jalubie 4
+13 - Phoria Scapes 4
+14 - Aimia 4
 15 - FutureState 4
-9 - The Resurected 4
-21 - Gilead 4
+16 - Enslaver 4
 17 - Solo 4
+18 - Crimson 4
+19 - Alchemaria 4
+2 - Crash 4
+21 - Gilead 4
+3 - Clampy 4
 5 - Briz 4
 6 - Ajarin 4
 7 - Jedimonk 4
-2 - Crash 4
-3 - Clampy 4
-11 - Jalubie 4
-14 - Aimia 4
-16 - Enslaver 4
-13 - Phoria Scapes 4
-18 - Crimson 4
+9 - The Resurected 4
 12 - Pong 3
 22 - Thor 3
 
