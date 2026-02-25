@@ -275,6 +275,10 @@ body.dark-mode section > label {
     transform: rotate(90deg);
 }
 
+#adv-content[hidden] {
+    display: none;
+}
+
 #adv-content {
     padding: 0 2rem 1.5rem;
     border-top: 1px solid #3d3224;
