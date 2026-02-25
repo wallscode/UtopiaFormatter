@@ -15,8 +15,7 @@ function getDomElements() {
         clearBtn: document.getElementById('clear-btn'),
         copyBtn: document.getElementById('copy-btn'),
         copyFeedback: document.getElementById('copy-feedback'),
-        modeRadios: document.querySelectorAll('input[name="parsing-mode"]'),
-        inputDescription: document.getElementById('input-description')
+        detectBadge: document.getElementById('detect-badge')
     };
 }
 
@@ -25,11 +24,9 @@ function getDomElements() {
  * @param {Object} elements - DOM elements object from getDomElements()
  */
 function setupEventListeners(elements) {
-    // Mode change handlers
-    elements.modeRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
-            updateInputDescription(elements);
-        });
+    // Auto-detect mode on paste
+    elements.inputText.addEventListener('paste', () => {
+        setTimeout(() => autoDetectMode(elements), 0);
     });
 
     // Parse button - processes the input text
@@ -64,47 +61,38 @@ function setupEventListeners(elements) {
  */
 function handleParse(elements) {
     const inputText = elements.inputText.value.trim();
-    
+
     if (!inputText) {
         showMessage(elements.outputText, 'Please enter some text to parse.', 'error');
         return;
     }
 
+    const detectedMode = detectInputType(inputText);
+
+    if (!detectedMode) {
+        showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error');
+        return;
+    }
+
+    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs' };
+    elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detectedMode]}`;
+    elements.detectBadge.classList.remove('hidden');
+
     try {
-        // Get selected parsing mode
-        const selectedMode = document.querySelector('input[name="parsing-mode"]:checked').value;
-        
-        // Parse the text using the selected mode
         let parsedText;
-        if (selectedMode === 'kingdom-news-log') {
+        if (detectedMode === 'kingdom-news-log') {
             parsedText = parseKingdomNewsLog(inputText);
-        } else if (selectedMode === 'province-logs') {
+        } else {
             parsedText = formatProvinceLogs(inputText);
-        } else {
-            // This should not happen with current options, but handle gracefully
-            throw new Error('Invalid parsing mode selected');
         }
-        
-        // Display the result
+
         elements.outputText.value = parsedText;
-        
-        // Show success feedback
-        let modeName;
-        if (selectedMode === 'kingdom-news-log') {
-            modeName = 'Kingdom News';
-        } else if (selectedMode === 'province-logs') {
-            modeName = 'Province Logs';
-        } else {
-            // This should not happen with current options
-            modeName = 'Unknown';
-        }
-        showMessage(elements.outputText, `${modeName} parsed successfully!`, 'success');
-        
-        // Scroll to output section on mobile
+        showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success');
+
         if (window.innerWidth < 768) {
             elements.outputText.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        
+
     } catch (error) {
         console.error('Parsing error:', error);
         showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error');
@@ -119,6 +107,7 @@ function handleClear(elements) {
     elements.inputText.value = '';
     elements.outputText.value = '';
     hideMessage(elements.outputText);
+    elements.detectBadge.classList.add('hidden');
     updateParseButtonState(elements);
     
     // Focus back to input for better UX
@@ -200,20 +189,19 @@ function fallbackCopyToClipboard(text) {
 }
 
 /**
- * Updates the input description based on selected mode
+ * Detects input type from pasted text and auto-selects the matching mode
  * @param {Object} elements - DOM elements object
  */
-function updateInputDescription(elements) {
-    const selectedMode = document.querySelector('input[name="parsing-mode"]:checked').value;
-    
-    if (selectedMode === 'kingdom-news-log') {
-        elements.inputDescription.textContent = 'Paste your full Kingdom News log below to have it parsed and summarized. The parser will find the first date line and start parsing from there:';
-    } else if (selectedMode === 'province-logs') {
-        elements.inputDescription.textContent = 'Paste your Province Logs below to have them summarized and organized. Currently supports parsing of Offensive Spells, Offensive Thievery Ops, Aid Sent, Dragon Contributions, and Ritual Contributions ';
-    } else {
-        // This should not happen with current options
-        elements.inputDescription.textContent = 'Select a parsing mode above:';
-    }
+function autoDetectMode(elements) {
+    const text = elements.inputText.value;
+    if (!text.trim()) return;
+
+    const detected = detectInputType(text);
+    if (!detected) return;
+
+    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs' };
+    elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detected]}`;
+    elements.detectBadge.classList.remove('hidden');
 }
 
 /**

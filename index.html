@@ -23,24 +23,10 @@
     </header>
 
     <main class="container">
-        <section class="mode-section">
-            <h2>Parsing Mode</h2>
-            <p>Select the type of text you want to parse:</p>
-            <div class="mode-selector">
-                <label>
-                    <input type="radio" name="parsing-mode" value="kingdom-news-log" checked>
-                    <span>Kingdom News</span>
-                </label>
-                <label>
-                    <input type="radio" name="parsing-mode" value="province-logs">
-                    <span>Province Logs (summarize events)</span>
-                </label>
-            </div>
-        </section>
-
         <section class="input-section">
             <h2>Input Text</h2>
-            <p id="input-description">Paste your Kingdom News text below to have it parsed and summarized:</p>
+            <label for="input-text" class="textarea-label">Paste your Kingdom News or Province Logs text below:</label>
+            <span id="detect-badge" class="detect-badge hidden" aria-live="polite"></span>
             <textarea 
                 id="input-text" 
                 placeholder="Paste your text here..."
@@ -55,7 +41,7 @@
 
         <section class="output-section">
             <h2>Formatted Output</h2>
-            <p>Copy this cleaned text to paste into the Utopia forum:</p>
+            <label for="output-text" class="textarea-label">Formatted output — copy and paste into the Utopia forum:</label>
             <textarea 
                 id="output-text" 
                 readonly

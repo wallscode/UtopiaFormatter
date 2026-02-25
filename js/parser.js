@@ -1183,6 +1183,52 @@ function formatKingdomNewsOutput(data) {
 }
 
 // =============================================================================
+// INPUT TYPE DETECTION
+// =============================================================================
+
+/**
+ * Detects whether pasted text is Kingdom News or Province Logs.
+ * @param {string} text - Raw input text
+ * @returns {'kingdom-news-log'|'province-logs'|null} - Detected type, or null if unknown
+ */
+function detectInputType(text) {
+    const kingdomNewsPatterns = [
+        /captured [\d,]+ acres of land/i,
+        /and captured [\d,]+ acres of land/i,
+        /recaptured [\d,]+ acres of land/i,
+        /ambushed armies from/i,
+        /and razed [\d,]+ acres/i,
+        /razed [\d,]+ acres of/i,
+        /invaded and looted/i,
+        /attacked and looted/i,
+        /killed [\d,]+ people/i,
+        /invaded and pillaged/i,
+        /attacked and pillaged/i,
+        /attempted an invasion of/i,
+        /but was repelled/i,
+    ];
+
+    const provinceLogsPatterns = [
+        /early indications show that our operation/i,
+        /your wizards gather/i,
+        /you have ordered/i,
+        /you have given orders to commence work/i,
+        /begin casting/i,
+        /we have sent/i,
+        /our thieves have returned with/i,
+        /our thieves were able to steal/i,
+    ];
+
+    const isKingdom = kingdomNewsPatterns.some(p => p.test(text));
+    const isProvince = provinceLogsPatterns.some(p => p.test(text));
+
+    if (isKingdom && !isProvince) return 'kingdom-news-log';
+    if (isProvince && !isKingdom) return 'province-logs';
+    if (isKingdom) return 'kingdom-news-log'; // kingdom takes priority if both match
+    return null;
+}
+
+// =============================================================================
 // MODULE EXPORTS
 // =============================================================================
 
@@ -1202,7 +1248,10 @@ module.exports = {
     // Helper utilities
     escapeRegExp,
     formatNumber,
-    
+
+    // Detection
+    detectInputType,
+
     // Constants (for testing)
     ERROR_MESSAGES,
     PROVINCE_LOGS_CONFIG

@@ -33,8 +33,8 @@ function getThemeElements() {
 function initializeTheme() {
     const elements = getThemeElements();
     
-    // Apply saved theme or default to light mode
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || THEMES.LIGHT;
+    // Apply saved theme or default to dark mode
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || THEMES.DARK;
     applyTheme(savedTheme);
     
     // Set up theme toggle event listener

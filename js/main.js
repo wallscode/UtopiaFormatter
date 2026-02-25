@@ -69,25 +69,12 @@ function validateDomElements(elements) {
 function initializeUIState(elements) {
     // Set initial button state
     updateParseButtonState(elements);
-    
-    // Set initial input description based on default mode
-    updateInputDescription(elements);
-    
+
     // Focus on input textarea for better UX
     elements.inputText.focus();
     
-    // Add placeholder text with helpful hints
-    elements.inputText.placeholder = 
-        'Paste your text here...\n\n' +
-        'Tips:\n' +
-        '• Text will be cleaned of HTML tags\n' +
-        '• Special characters will be normalized\n' +
-        '• Use Ctrl+Enter to parse quickly';
-    
-    elements.outputText.placeholder = 
-        'Formatted text will appear here...\n\n' +
-        'This text is ready to copy and paste\n' +
-        'into the Utopia Kingdom Forum.';
+    elements.inputText.placeholder = 'Paste your Kingdom News or Province Logs text here...';
+    elements.outputText.placeholder = 'Formatted output will appear here...';
 }
 
 /**
@@ -126,10 +113,10 @@ function addDebugUtilities() {
     // Only add debug utilities in development (not in production)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         window.NewsParserDebug = {
-            // Test the parser with sample text
+            // Test the parser with sample Kingdom News text
             testParser: function() {
-                const sampleText = '<p>Hello <strong>World</strong> &amp; Universe!</p>\n\n\tThis is   a   test.';
-                const result = parseText(sampleText);
+                const sampleText = 'February 1 of YR0\t15 - Test Province (5:1) captured 10 acres of land from 20 - Target (4:1).';
+                const result = parseKingdomNewsLog(sampleText);
                 console.log('Input:', sampleText);
                 console.log('Output:', result);
                 return result;
