@@ -6,6 +6,7 @@
 // Module-level state for advanced settings
 let lastRawInput = null;
 let lastDetectedMode = null;
+let lastRawParsed = null; // Parser output before settings are applied
 const advSettings = {
     kingdomNews: {
         showLearn: true,
@@ -123,9 +124,11 @@ function handleParse(elements) {
         let parsedText;
         if (detectedMode === 'kingdom-news-log') {
             parsedText = parseKingdomNewsLog(inputText, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
+            lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(inputText);
+            lastRawParsed = parsedText;
             parsedText = applyProvinceLogsSettings(parsedText);
         }
 
@@ -160,6 +163,7 @@ function handleClear(elements) {
     // Hide and collapse advanced settings panel
     lastRawInput = null;
     lastDetectedMode = null;
+    lastRawParsed = null;
     elements.advPanel.classList.add('hidden');
     elements.advToggle.setAttribute('aria-expanded', 'false');
     elements.advContent.setAttribute('hidden', '');
@@ -505,6 +509,18 @@ function renderKingdomNewsSettings(container, elements) {
  * @param {Object} elements - DOM elements object
  */
 function renderProvinceLogsSettings(container, elements) {
+    // Determine which sections are present in the parsed output
+    const presentSections = new Set();
+    if (lastRawParsed) {
+        for (const name of advSettings.provinceLogs.sectionOrder) {
+            if (lastRawParsed.includes('\n\n' + name + ':') || lastRawParsed.includes('\n' + name + ':')) {
+                presentSections.add(name);
+            }
+        }
+    } else {
+        advSettings.provinceLogs.sectionOrder.forEach(n => presentSections.add(n));
+    }
+
     const title = document.createElement('div');
     title.className = 'adv-group-title';
     title.textContent = 'Sections';
@@ -516,20 +532,25 @@ function renderProvinceLogsSettings(container, elements) {
 
     function renderList() {
         list.innerHTML = '';
-        const order = advSettings.provinceLogs.sectionOrder;
+        const fullOrder = advSettings.provinceLogs.sectionOrder;
+        // Only display sections that exist in the parsed output
+        const visible = fullOrder.filter(n => presentSections.has(n));
 
-        order.forEach((sectionName, index) => {
+        visible.forEach((sectionName, visIdx) => {
             const item = document.createElement('li');
             item.className = 'section-order-item';
 
             const upBtn = document.createElement('button');
             upBtn.className = 'order-btn';
             upBtn.textContent = '▲';
-            upBtn.disabled = index === 0;
+            upBtn.disabled = visIdx === 0;
             upBtn.title = 'Move up';
             upBtn.addEventListener('click', () => {
-                if (index > 0) {
-                    [order[index - 1], order[index]] = [order[index], order[index - 1]];
+                if (visIdx > 0) {
+                    const prev = visible[visIdx - 1];
+                    const idxA = fullOrder.indexOf(prev);
+                    const idxB = fullOrder.indexOf(sectionName);
+                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
                     renderList();
                     applyAndRerender(elements);
                 }
@@ -538,11 +559,14 @@ function renderProvinceLogsSettings(container, elements) {
             const downBtn = document.createElement('button');
             downBtn.className = 'order-btn';
             downBtn.textContent = '▼';
-            downBtn.disabled = index === order.length - 1;
+            downBtn.disabled = visIdx === visible.length - 1;
             downBtn.title = 'Move down';
             downBtn.addEventListener('click', () => {
-                if (index < order.length - 1) {
-                    [order[index], order[index + 1]] = [order[index + 1], order[index]];
+                if (visIdx < visible.length - 1) {
+                    const next = visible[visIdx + 1];
+                    const idxA = fullOrder.indexOf(sectionName);
+                    const idxB = fullOrder.indexOf(next);
+                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
                     renderList();
                     applyAndRerender(elements);
                 }
@@ -584,9 +608,11 @@ function applyAndRerender(elements) {
         let parsedText;
         if (lastDetectedMode === 'kingdom-news-log') {
             parsedText = parseKingdomNewsLog(lastRawInput, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
+            lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(lastRawInput);
+            lastRawParsed = parsedText;
             parsedText = applyProvinceLogsSettings(parsedText);
         }
         elements.outputText.value = parsedText;
