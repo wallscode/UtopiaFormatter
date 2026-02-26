@@ -1,6 +1,6 @@
 ---
 id: Uto-wfmn
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-24T22:35:51Z
@@ -20,3 +20,14 @@ Deliverable: Expand the 'Overview of Province News Requirements' section in 'Uto
 - Output format and section structure
 - Any special calculation rules
 
+## Completed
+
+Requirements written in `Utopia Game Parser Requirements.md` under "Overview of Province News Requirements", covering:
+
+- Input format (date-tab pattern, "of YR" distinguisher from Province Logs)
+- Auto-detection heuristics
+- 20 event types with patterns and extraction rules
+- Output format for 10 sections (header, monthly land, monthly income, scientists, aid received, resources stolen, thievery, spell attempts, attacks suffered, hazards & events, war outcomes)
+- Special parsing rules (multi-part lines, prefix stripping, meteor aggregation)
+
+Based on analysis of `ProvinceNewsExample.txt` (237 lines, YR1–YR3).

@@ -207,7 +207,269 @@ This section provides notable highlights and extreme values from the parsed king
 
 ## Overview of Province News Requirements
 
-Will be added later
+Province News is the news feed visible to a single province — a chronological log of external events affecting that province (incoming attacks, thievery, spells, aid, monthly summaries, etc.). It is distinct from Province Logs, which records actions the province itself initiates.
+
+### Input Format
+
+* Province News lines use the format `Month Day of YR##[tab]Event text` (note "of YR" with the word "of", distinguishing it from Province Logs which use "Month Day, YR##")
+* Lines that do not match the date-tab pattern should be ignored (e.g. a pasted header line)
+* The date prefix including the tab should be stripped before processing each line
+* Empty lines should be ignored
+
+### Detection
+
+Province News input can be auto-detected by the presence of lines matching `Month Day of YR[digit]` combined with phrases such as "have settled X acres of new land", "Our mages noticed a possible spell attempt", or "We have found thieves causing trouble".
+
+### Supported Event Types
+
+#### Monthly Land Exploration
+
+* Pattern: `"Our people decided to explore new territories and have settled X acres of new land."`
+* Occurs on day 1 of each in-game month
+* Extract: acres settled (integer)
+
+#### Monthly Income Summary
+
+* Pattern: `"Your people appreciate the [adjective] dedication and time devoted to them in the last month and have worked harder to generate X,XXX gold coins. Additionally, your scholars have been busy, contributing X,XXX books to your growing library of knowledge."`
+* Occurs on day 1 of each in-game month
+* Extract: gold coins generated (integer), books contributed (integer)
+
+#### New Scientist Recruited
+
+* Pattern: `"A new scientist, Recruit [Name] ([Field]), has emerged and has joined our academic ranks."`
+* Extract: scientist name, field (e.g. Economy, Arcane Arts, Military)
+
+#### Aid Received
+
+* Runes: `"We have received a shipment of X,XXX runes from [Province] ([Kingdom])."`
+* Gold coins: `"We have received a shipment of X,XXX gold coins from [Province] ([Kingdom])."`
+* Bushels: `"We have received a shipment of X,XXX bushels from [Province] ([Kingdom])."`
+* Explore pool acres: `"We have received a shipment of X acres (Y acres lost!) from [Province] ([Kingdom])."`
+  * Extract both the gross shipment and the acres-lost value separately
+* Extract for all: amount, resource type, sender province name, sender kingdom
+
+#### Resources Stolen
+
+* Runes: `"X,XXX runes of our runes were stolen!"`
+* Gold: `"X,XXX gold coins were stolen from our coffers!"`
+* Extract: amount, resource type
+
+#### Thievery Detected
+
+* Known source: `"We have found thieves from [Province] ([Kingdom]) causing trouble within our lands!"`
+* Unknown source: `"We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from."`
+* Shadowlight revealed thief (prevented): `"Shadowlight has revealed thieves from [Province] ([Kingdom]) causing trouble and prevented what may have been a successful operation within our lands!"`
+  * These operations were prevented — count them separately from successful detections
+* Extract: source province and kingdom (when known), whether it was a Shadowlight intercept
+
+#### Spell Attempts Detected
+
+* Pattern: `"Our mages noticed a possible spell attempt by [Province] ([Kingdom]) causing trouble on our lands!"`
+* Some lines are prefixed with: `"Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. "` — strip this prefix and count the spell attempt normally
+* Extract: source province and kingdom
+
+#### Shadowlight — Attacker Identified
+
+* Pattern: `"Shadowlight has revealed that [Province] ([Kingdom]) was responsible for this attack."`
+* This reveals the attacker for an otherwise anonymous attack — track separately from thief revelations
+
+#### Attacks Suffered
+
+All attack lines begin with optional modifier text followed by the core battle report. The core pattern is:
+
+`"Forces from [Province/Number - Province] ([Kingdom]) came through and ravaged our lands! They [captured X acres | looted X,XXX books]! [Savages! ]We lost [troop counts] in this battle. [optional aftermath text]"`
+
+* **Land capture**: `"They captured X acres!"`
+* **Learn attack** (books looted): `"They looted X,XXX books! Savages!"`
+* Extract: attacker province (with number prefix if present), attacker kingdom, acres captured or books looted (whichever applies), troop losses by type (soldiers, Druids, Beastmasters, Magicians, peasants)
+
+Optional modifiers that may prefix or append to the core line:
+* `"Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties."` — prefix indicating a multi-general (ambush) attack
+* `"The enemy's ferocious battle cry tore through our ranks, leaving X of our population dead in its wake."` — suffix, extract additional peasant deaths
+* `"It appears we have a turncoat General commanding our forces my Liege, his ill command of our forces has resulted in increased military casualties."` — suffix, note turncoat general involvement
+
+#### Mana Disruption
+
+* Lasting: `"Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for X days!"`
+  * Extract: duration in days
+* Instant recovery: `"Our Wizards' ability to regain their mana has been disrupted! Fortunately, our Wizards recovered quickly and remain unaffected."`
+  * Count as a disruption event but note no lasting effect (0 days affected)
+
+#### Meteor Shower
+
+* Start: `"Meteors rain across our lands, and are not expected to stop for X days."`
+  * Extract: expected duration
+* Daily damage: `"Meteors rain across the lands and kill X peasants[, X soldiers][, X Magicians] and X Beastmasters!"`
+  * Extract: peasants, soldiers, Magicians, Beastmasters killed (each optional except at least one type)
+  * Aggregate total casualties across all meteor damage lines
+
+#### Rioting
+
+* Pattern: `"Rioting has started amongst our people. Our tax collection efforts will be hampered for X days!"`
+* Extract: duration in days; count occurrences
+
+#### Pitfalls
+
+* Pattern: `"Pitfalls are haunting our lands for X days, causing increased defensive losses during battle."`
+* Extract: duration in days; count occurrences
+
+#### Soldier Upkeep Demands
+
+* Pattern: `"Enemies have convinced our soldiers to demand more money for upkeep for X days."`
+* Extract: duration in days; count occurrences
+
+#### Troop Desertion
+
+* Pattern varies by troop type:
+  * `"X wizards of our wizards abandoned us hoping for a better life!"`
+  * `"X of our specialist troops abandoned us hoping for a better life!"`
+  * `"X [TroopType] abandoned us hoping for a better life!"` (e.g. Beastmasters)
+* Extract: count and troop type; aggregate total desertions
+
+#### Turncoat General Discovered
+
+* Pattern: `"We have discovered a turncoat general leading our military. He has been executed for treason!"`
+* Count occurrences
+
+#### Failed Propaganda
+
+* Pattern: `"Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them."`
+* Count occurrences
+
+#### War Outcomes
+
+* Land penalty: `"My, Liege, as a result of our failed war we must give up some land to our enemy and to help rebuild our Kingdom we will re-allocate some of our land to assist our Kingdom's effort to rebuild. We have given up X acres of our total land. X acres has gone to our enemies as tribute from our withdrawal and X acres for our Kingdom to utilize and provide to those most in need."`
+  * Extract: total acres given up, acres to enemies, acres redistributed
+* Resource bonus: `"My, Liege, as a result of our war we have been provided an amalgam of resources. We have received X free building credits to rebuild our lands. We have received X free specialist credits to train our military. We have received X science books to further our academic research."`
+  * Extract: building credits, specialist credits, science books
+
+### Output Format
+
+The Province News output is organized into the following sections (all optional — omit any section with no data):
+
+#### Header
+
+```
+Province News Report
+[First date in log] - [Last date in log] ([N] days)
+```
+
+#### Monthly Land
+
+```
+Monthly Land:
+[Month Year]: [X] acres
+[Month Year]: [X] acres
+...
+Total: [X] acres
+```
+
+#### Monthly Income
+
+One line per month:
+
+```
+Monthly Income:
+[Month Year]: [X,XXX] gold, [X,XXX] books
+...
+```
+
+#### Scientists
+
+```
+Scientists ([N] total):
+[Name] ([Field])
+...
+```
+
+#### Aid Received
+
+```
+Aid Received:
+Runes: [X,XXX] (from [N] shipments)
+Gold: [X,XXX]
+Bushels: [X,XXX]
+Explore Pool: [X] acres ([Y] acres lost in transit)
+```
+Only show resource types with a non-zero total. List sender breakdown below each resource total if more than one sender.
+
+#### Resources Stolen
+
+```
+Resources Stolen:
+[X,XXX] runes
+[X,XXX] gold coins
+```
+Only show resource types with a non-zero total.
+
+#### Thievery
+
+```
+Thievery:
+[N] operations detected ([N] from unknown sources)
+[N] operations intercepted by Shadowlight
+```
+If any operations came from known sources, list them:
+```
+  [Province] ([Kingdom]): [N]
+  ...
+```
+
+#### Spell Attempts
+
+```
+Spell Attempts: [N]
+  [Province] ([Kingdom]): [N]
+  ...
+```
+Unknown sources omitted from breakdown.
+
+#### Shadowlight Attacker IDs
+
+```
+Shadowlight Attacker IDs:
+  [Province] ([Kingdom])
+  ...
+```
+
+#### Attacks Suffered
+
+```
+Attacks Suffered: [N] ([X] acres lost, [X,XXX] books looted)
+  [Attacker Province] ([Kingdom]): [X] acres
+  [Attacker Province] ([Kingdom]): [X,XXX] books (learn)
+  ...
+```
+Total acres and total books shown in the header line.
+
+#### Hazards & Events
+
+```
+Hazards & Events:
+Meteor shower: [N] days of damage, [X,XXX] total casualties (peasants: X, soldiers: X, Magicians: X, Beastmasters: X)
+Rioting: [N] occurrence(s), hampered tax for [X] days total
+Pitfalls: [N] occurrence(s)
+Mana disruptions: [N] (affecting [X] days total)
+Troop desertions: [X] troops ([breakdown by type if multiple types])
+Turncoat general(s) executed: [N]
+Failed propaganda attempts: [N]
+```
+Only show lines with non-zero counts.
+
+#### War Outcomes
+
+```
+War Outcomes:
+Land given up: [X] acres ([X] to enemies, [X] redistributed)
+Resources received: [X] building credits, [X] specialist credits, [X,XXX] science books
+```
+
+### Special Rules
+
+* A single log line may contain both a prefix modifier (e.g. "Multiple enemy generals...") and a core battle report — parse them as one event, not two
+* The "Your spell is disrupted..." prefix on spell attempt lines should be stripped; the spell attempt still counts
+* Meteor shower start and damage lines are part of the same event; count total casualties across all damage ticks
+* Mana disruptions with instant recovery (0 days) are counted as events but contribute 0 to the total days affected
 
 ## Overview of Province Logs Requirements
 
