@@ -27,7 +27,8 @@ const advSettings = {
             'Aid Summary': true,
             'Dragon Summary': true,
             'Ritual Summary': true
-        }
+        },
+        showAverages: false
     }
 };
 
@@ -596,6 +597,32 @@ function renderProvinceLogsSettings(container, elements) {
     }
 
     renderList();
+
+    // ── Averages ─────────────────────────────────────────────────────────────
+    const avgTitle = document.createElement('div');
+    avgTitle.className = 'adv-group-title';
+    avgTitle.textContent = 'Display Options';
+    container.appendChild(avgTitle);
+
+    const avgGroup = document.createElement('div');
+    avgGroup.className = 'adv-group';
+
+    const avgLabel = document.createElement('label');
+    avgLabel.htmlFor = 'adv-pl-showAverages';
+
+    const avgCheckbox = document.createElement('input');
+    avgCheckbox.type = 'checkbox';
+    avgCheckbox.id = 'adv-pl-showAverages';
+    avgCheckbox.checked = advSettings.provinceLogs.showAverages;
+    avgCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showAverages = avgCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    avgLabel.appendChild(avgCheckbox);
+    avgLabel.appendChild(document.createTextNode(' Show averages'));
+    avgGroup.appendChild(avgLabel);
+    container.appendChild(avgGroup);
 }
 
 /**
@@ -758,7 +785,26 @@ function applyProvinceLogsSettings(text) {
         }
     }
 
-    return result.trim();
+    let output = result.trim();
+
+    // Add or strip per-line averages
+    if (advSettings.provinceLogs.showAverages) {
+        output = output.split('\n').map(line => {
+            const m = line.match(/^(\d+) (.+) for a total of ([\d,]+) (.+)$/);
+            if (m) {
+                const count = parseInt(m[1], 10);
+                const total = parseInt(m[3].replace(/,/g, ''), 10);
+                if (count > 1) {
+                    const avg = Math.round(total / count);
+                    const avgStr = avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    return `${line} (avg ${avgStr} each)`;
+                }
+            }
+            return line;
+        }).join('\n');
+    }
+
+    return output;
 }
 
 /**
