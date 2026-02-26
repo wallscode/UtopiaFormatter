@@ -29,6 +29,22 @@ const advSettings = {
             'Ritual Summary': true
         },
         showAverages: false
+    },
+    provinceNews: {
+        sectionOrder: ['Monthly Land', 'Monthly Income', 'Scientists', 'Aid Received', 'Resources Stolen', 'Thievery', 'Spell Attempts', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'Hazards & Events', 'War Outcomes'],
+        visible: {
+            'Monthly Land': true,
+            'Monthly Income': true,
+            'Scientists': true,
+            'Aid Received': true,
+            'Resources Stolen': true,
+            'Thievery': true,
+            'Spell Attempts': true,
+            'Shadowlight Attacker IDs': true,
+            'Attacks Suffered': true,
+            'Hazards & Events': true,
+            'War Outcomes': true
+        }
     }
 };
 
@@ -117,7 +133,7 @@ function handleParse(elements) {
         return;
     }
 
-    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs' };
+    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };
     elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detectedMode]}`;
     elements.detectBadge.classList.remove('hidden');
 
@@ -127,6 +143,10 @@ function handleParse(elements) {
             parsedText = parseKingdomNewsLog(inputText, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
+        } else if (detectedMode === 'province-news') {
+            parsedText = parseProvinceNews(inputText);
+            lastRawParsed = parsedText;
+            parsedText = applyProvinceNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(inputText);
             lastRawParsed = parsedText;
@@ -258,7 +278,7 @@ function autoDetectMode(elements) {
     const detected = detectInputType(text);
     if (!detected) return;
 
-    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs' };
+    const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };
     elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detected]}`;
     elements.detectBadge.classList.remove('hidden');
 }
@@ -347,6 +367,8 @@ function renderAdvancedSettings(elements) {
     container.innerHTML = '';
     if (lastDetectedMode === 'kingdom-news-log') {
         renderKingdomNewsSettings(container, elements);
+    } else if (lastDetectedMode === 'province-news') {
+        renderProvinceNewsSettings(container, elements);
     } else {
         renderProvinceLogsSettings(container, elements);
     }
@@ -637,6 +659,10 @@ function applyAndRerender(elements) {
             parsedText = parseKingdomNewsLog(lastRawInput, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
+        } else if (lastDetectedMode === 'province-news') {
+            parsedText = parseProvinceNews(lastRawInput);
+            lastRawParsed = parsedText;
+            parsedText = applyProvinceNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(lastRawInput);
             lastRawParsed = parsedText;
@@ -805,6 +831,143 @@ function applyProvinceLogsSettings(text) {
     }
 
     return output;
+}
+
+/**
+ * Renders Province News section visibility and reorder controls.
+ * @param {HTMLElement} container - The adv-content element
+ * @param {Object} elements - DOM elements object
+ */
+function renderProvinceNewsSettings(container, elements) {
+    // Determine which sections are present in the parsed output
+    const presentSections = new Set();
+    if (lastRawParsed) {
+        for (const name of advSettings.provinceNews.sectionOrder) {
+            if (lastRawParsed.indexOf('\n\n' + name) !== -1) {
+                presentSections.add(name);
+            }
+        }
+    } else {
+        advSettings.provinceNews.sectionOrder.forEach(n => presentSections.add(n));
+    }
+
+    const title = document.createElement('div');
+    title.className = 'adv-group-title';
+    title.textContent = 'Sections';
+    container.appendChild(title);
+
+    const list = document.createElement('ul');
+    list.className = 'section-order-list';
+    container.appendChild(list);
+
+    function renderList() {
+        list.innerHTML = '';
+        const fullOrder = advSettings.provinceNews.sectionOrder;
+        const visible = fullOrder.filter(n => presentSections.has(n));
+
+        visible.forEach((sectionName, visIdx) => {
+            const item = document.createElement('li');
+            item.className = 'section-order-item';
+
+            const upBtn = document.createElement('button');
+            upBtn.className = 'order-btn';
+            upBtn.textContent = '▲';
+            upBtn.disabled = visIdx === 0;
+            upBtn.title = 'Move up';
+            upBtn.addEventListener('click', () => {
+                if (visIdx > 0) {
+                    const prev = visible[visIdx - 1];
+                    const idxA = fullOrder.indexOf(prev);
+                    const idxB = fullOrder.indexOf(sectionName);
+                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+                    renderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const downBtn = document.createElement('button');
+            downBtn.className = 'order-btn';
+            downBtn.textContent = '▼';
+            downBtn.disabled = visIdx === visible.length - 1;
+            downBtn.title = 'Move down';
+            downBtn.addEventListener('click', () => {
+                if (visIdx < visible.length - 1) {
+                    const next = visible[visIdx + 1];
+                    const idxA = fullOrder.indexOf(sectionName);
+                    const idxB = fullOrder.indexOf(next);
+                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+                    renderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const id = `adv-pn-${sectionName.replace(/ /g, '-').replace(/&/g, 'and')}`;
+            const label = document.createElement('label');
+            label.htmlFor = id;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = id;
+            checkbox.checked = advSettings.provinceNews.visible[sectionName];
+            checkbox.addEventListener('change', () => {
+                advSettings.provinceNews.visible[sectionName] = checkbox.checked;
+                applyAndRerender(elements);
+            });
+
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(' ' + sectionName));
+
+            item.appendChild(upBtn);
+            item.appendChild(downBtn);
+            item.appendChild(label);
+            list.appendChild(item);
+        });
+    }
+
+    renderList();
+}
+
+/**
+ * Reorders and filters Province News output sections based on current advSettings.
+ * @param {string} text - Parsed Province News output
+ * @returns {string} - Reordered/filtered output
+ */
+function applyProvinceNewsSettings(text) {
+    const sectionNames = advSettings.provinceNews.sectionOrder;
+
+    // Find header (everything before the first recognized section)
+    let firstSectionStart = text.length;
+    for (const name of sectionNames) {
+        const idx = text.indexOf('\n\n' + name);
+        if (idx !== -1 && idx < firstSectionStart) firstSectionStart = idx;
+    }
+    const header = text.substring(0, firstSectionStart);
+
+    // Extract each section's content
+    const sections = {};
+    for (const name of sectionNames) {
+        const marker = '\n\n' + name;
+        const start = text.indexOf(marker);
+        if (start === -1) continue;
+
+        let end = text.length;
+        for (const other of sectionNames) {
+            if (other === name) continue;
+            const otherStart = text.indexOf('\n\n' + other);
+            if (otherStart > start && otherStart < end) end = otherStart;
+        }
+        sections[name] = text.substring(start + 2, end); // skip leading \n\n
+    }
+
+    // Reconstruct in the user-defined order, skipping hidden sections
+    let result = header;
+    for (const name of advSettings.provinceNews.sectionOrder) {
+        if (advSettings.provinceNews.visible[name] && sections[name]) {
+            result += '\n\n' + sections[name];
+        }
+    }
+
+    return result.trim();
 }
 
 /**

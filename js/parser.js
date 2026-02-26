@@ -1335,13 +1335,546 @@ function formatKingdomNewsOutput(data, windowDays) {
 }
 
 // =============================================================================
+// PROVINCE NEWS PARSING
+// =============================================================================
+
+/**
+ * Converts a Province News date string to "Month YR#" label.
+ * @param {string} dateStr - e.g. "February 1 of YR1"
+ * @returns {string} - e.g. "February YR1"
+ */
+function pnMonthYear(dateStr) {
+    const m = dateStr.match(/^(\w+) \d+ of (YR\d+)$/);
+    return m ? `${m[1]} ${m[2]}` : dateStr;
+}
+
+/**
+ * Parses a single Province News event line (date prefix already stripped).
+ * Mutates the data object in-place.
+ * @param {string} ev - Event text (date prefix removed)
+ * @param {string} dateStr - Original date string e.g. "February 1 of YR1"
+ * @param {Object} data - Accumulator object
+ */
+function parseProvinceNewsLine(ev, dateStr, data) {
+    // Strip Faery leyline prefix that can prepend spell attempt lines
+    const faeryPrefix = "Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. ";
+    if (ev.startsWith(faeryPrefix)) ev = ev.slice(faeryPrefix.length);
+
+    let m;
+
+    // Monthly Land
+    m = ev.match(/Our people decided to explore new territories and have settled (\d+) acres of new land\./);
+    if (m) {
+        data.monthlyLand.push({ month: pnMonthYear(dateStr), acres: parseInt(m[1]) });
+        return;
+    }
+
+    // Monthly Income
+    m = ev.match(/generate ([\d,]+) gold coins\. Additionally, your scholars .+ contributing ([\d,]+) books/);
+    if (m) {
+        data.monthlyIncome.push({
+            month: pnMonthYear(dateStr),
+            gold: parseInt(m[1].replace(/,/g, '')),
+            books: parseInt(m[2].replace(/,/g, ''))
+        });
+        return;
+    }
+
+    // New Scientist
+    m = ev.match(/A new scientist, Recruit (.+?) \((.+?)\), has emerged/);
+    if (m) {
+        data.scientists.push({ name: m[1], field: m[2] });
+        return;
+    }
+
+    // Aid Received — Runes
+    m = ev.match(/We have received a shipment of ([\d,]+) runes from (.+?) \((.+?)\)\./);
+    if (m) {
+        const amount = parseInt(m[1].replace(/,/g, ''));
+        const sender = `${m[2]} (${m[3]})`;
+        data.aidByResource.runes.total += amount;
+        data.aidByResource.runes.shipments++;
+        data.aidByResource.runes.senders[sender] = (data.aidByResource.runes.senders[sender] || 0) + amount;
+        return;
+    }
+
+    // Aid Received — Gold coins
+    m = ev.match(/We have received a shipment of ([\d,]+) gold coins from (.+?) \((.+?)\)\./);
+    if (m) {
+        const amount = parseInt(m[1].replace(/,/g, ''));
+        const sender = `${m[2]} (${m[3]})`;
+        data.aidByResource.gold.total += amount;
+        data.aidByResource.gold.shipments++;
+        data.aidByResource.gold.senders[sender] = (data.aidByResource.gold.senders[sender] || 0) + amount;
+        return;
+    }
+
+    // Aid Received — Bushels
+    m = ev.match(/We have received a shipment of ([\d,]+) bushels from (.+?) \((.+?)\)\./);
+    if (m) {
+        const amount = parseInt(m[1].replace(/,/g, ''));
+        const sender = `${m[2]} (${m[3]})`;
+        data.aidByResource.bushels.total += amount;
+        data.aidByResource.bushels.shipments++;
+        data.aidByResource.bushels.senders[sender] = (data.aidByResource.bushels.senders[sender] || 0) + amount;
+        return;
+    }
+
+    // Aid Received — Explore pool acres
+    m = ev.match(/We have received a shipment of ([\d,]+) explore pool acres \((\d+) acres lost!\) from (.+?) \((.+?)\)\./);
+    if (m) {
+        const gross = parseInt(m[1].replace(/,/g, ''));
+        const lost = parseInt(m[2]);
+        const sender = `${m[3]} (${m[4]})`;
+        data.aidByResource.exploreAcres.total += gross;
+        data.aidByResource.exploreAcres.lost += lost;
+        data.aidByResource.exploreAcres.shipments++;
+        data.aidByResource.exploreAcres.senders[sender] = (data.aidByResource.exploreAcres.senders[sender] || 0) + gross;
+        return;
+    }
+
+    // Resources Stolen — Runes
+    m = ev.match(/([\d,]+) runes of our runes were stolen!/);
+    if (m) {
+        data.stolen.runes += parseInt(m[1].replace(/,/g, ''));
+        return;
+    }
+
+    // Resources Stolen — Gold coins
+    m = ev.match(/([\d,]+) gold coins were stolen from our coffers!/);
+    if (m) {
+        data.stolen.gold += parseInt(m[1].replace(/,/g, ''));
+        return;
+    }
+
+    // Shadowlight — Attacker identified (check before thievery interception)
+    m = ev.match(/Shadowlight has revealed that (.+?) \((.+?)\) was responsible for this attack\./);
+    if (m) {
+        data.shadowlightAttackers.push(`${m[1]} (${m[2]})`);
+        return;
+    }
+
+    // Thievery — Shadowlight intercepted (prevented)
+    m = ev.match(/Shadowlight has revealed thieves from (.+?) \((.+?)\) causing trouble and prevented/);
+    if (m) {
+        data.thieveryIntercepted++;
+        return;
+    }
+
+    // Thievery — Known source
+    m = ev.match(/We have found thieves from (.+?) \((.+?)\) causing trouble within our lands!/);
+    if (m) {
+        const source = `${m[1]} (${m[2]})`;
+        data.thieveryDetected++;
+        data.thieveryBySource[source] = (data.thieveryBySource[source] || 0) + 1;
+        return;
+    }
+
+    // Thievery — Unknown source
+    if (ev.indexOf('We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.') !== -1) {
+        data.thieveryDetected++;
+        data.thieveryUnknown++;
+        return;
+    }
+
+    // Spell Attempts
+    m = ev.match(/Our mages noticed a possible spell attempt by (.+?) \((.+?)\) causing trouble on our lands!/);
+    if (m) {
+        const source = `${m[1]} (${m[2]})`;
+        data.spellAttempts++;
+        data.spellsBySource[source] = (data.spellsBySource[source] || 0) + 1;
+        return;
+    }
+
+    // Attacks Suffered
+    m = ev.match(/Forces from (.+) \((\d+:\d+)\) came through and ravaged our lands! They (captured ([\d,]+) acres|looted ([\d,]+) books)/);
+    if (m) {
+        data.attacks.push({
+            attacker: m[1].trim(),
+            kingdom: m[2],
+            acresCaptured: m[4] ? parseInt(m[4].replace(/,/g, '')) : 0,
+            booksLooted: m[5] ? parseInt(m[5].replace(/,/g, '')) : 0
+        });
+        return;
+    }
+
+    // Meteor shower — damage ticks (count days of damage and casualties)
+    m = ev.match(/Meteors rain across the lands and kill (.+)!/);
+    if (m) {
+        const cs = m[1];
+        const peas = cs.match(/(\d+) peasants?/);
+        const sol  = cs.match(/(\d+) soldiers?/);
+        const mags = cs.match(/(\d+) Magicians?/);
+        const bsts = cs.match(/(\d+) Beastmasters?/);
+        if (peas) data.meteorCasualties.peasants    += parseInt(peas[1]);
+        if (sol)  data.meteorCasualties.soldiers    += parseInt(sol[1]);
+        if (mags) data.meteorCasualties.Magicians   += parseInt(mags[1]);
+        if (bsts) data.meteorCasualties.Beastmasters += parseInt(bsts[1]);
+        data.meteorDays++;
+        return;
+    }
+
+    // Meteor shower — start announcement (no data to extract beyond noting it)
+    if (ev.indexOf('Meteors rain across our lands') !== -1) return;
+
+    // Rioting
+    m = ev.match(/Rioting has started amongst our people\. Our tax collection efforts will be hampered for (\d+) days!/);
+    if (m) {
+        data.rioting.count++;
+        data.rioting.totalDays += parseInt(m[1]);
+        return;
+    }
+
+    // Pitfalls
+    m = ev.match(/Pitfalls are haunting our lands for (\d+) days/);
+    if (m) {
+        data.pitfalls.count++;
+        return;
+    }
+
+    // Mana disruption — lasting effect
+    m = ev.match(/Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for (\d+) days?!/);
+    if (m) {
+        data.manaDis.count++;
+        data.manaDis.totalDays += parseInt(m[1]);
+        return;
+    }
+
+    // Mana disruption — instant recovery (0 days)
+    if (ev.indexOf("Our Wizards' ability to regain their mana has been disrupted! Fortunately") !== -1) {
+        data.manaDis.count++;
+        return;
+    }
+
+    // Soldier upkeep demands
+    m = ev.match(/Enemies have convinced our soldiers to demand more money for upkeep for (\d+) days\./);
+    if (m) {
+        data.soldierUpkeep.count++;
+        return;
+    }
+
+    // Troop desertions — wizards
+    m = ev.match(/(\d+) wizards of our wizards abandoned us hoping for a better life!/);
+    if (m) {
+        const count = parseInt(m[1]);
+        data.desertions.total += count;
+        data.desertions.byType['wizards'] = (data.desertions.byType['wizards'] || 0) + count;
+        return;
+    }
+
+    // Troop desertions — specialist troops
+    m = ev.match(/(\d+) of our specialist troops abandoned us hoping for a better life!/);
+    if (m) {
+        const count = parseInt(m[1]);
+        data.desertions.total += count;
+        data.desertions.byType['specialist troops'] = (data.desertions.byType['specialist troops'] || 0) + count;
+        return;
+    }
+
+    // Troop desertions — named type (e.g. "10 Beastmasters abandoned us...")
+    m = ev.match(/^(\d+) (\w+) abandoned us hoping for a better life!/);
+    if (m) {
+        const count = parseInt(m[1]);
+        const type = m[2];
+        data.desertions.total += count;
+        data.desertions.byType[type] = (data.desertions.byType[type] || 0) + count;
+        return;
+    }
+
+    // Turncoat general discovered
+    if (ev.indexOf('We have discovered a turncoat general leading our military. He has been executed for treason!') !== -1) {
+        data.turncoatGenerals++;
+        return;
+    }
+
+    // Failed propaganda
+    if (ev.indexOf('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.') !== -1) {
+        data.failedPropaganda++;
+        return;
+    }
+
+    // War outcome — land penalty
+    m = ev.match(/as a result of our failed war .+ We have given up (\d+) acres .+ (\d+) acres has gone to our enemies .+ and (\d+) acres for our Kingdom/);
+    if (m) {
+        data.warLandPenalty = {
+            total: parseInt(m[1]),
+            toEnemies: parseInt(m[2]),
+            redistributed: parseInt(m[3])
+        };
+        return;
+    }
+
+    // War outcome — resource bonus
+    m = ev.match(/as a result of our war .+ We have received ([\d,]+) free building credits .+ We have received ([\d,]+) free specialist credits .+ We have received ([\d,]+) science books/);
+    if (m) {
+        data.warResourceBonus = {
+            buildingCredits: parseInt(m[1].replace(/,/g, '')),
+            specialistCredits: parseInt(m[2].replace(/,/g, '')),
+            scienceBooks: parseInt(m[3].replace(/,/g, ''))
+        };
+        return;
+    }
+}
+
+/**
+ * Formats the Province News accumulated data into the output string.
+ * @param {Object} data - Accumulated province news data
+ * @returns {string} - Formatted output
+ */
+function formatProvinceNewsOutput(data) {
+    const out = [];
+
+    out.push('Province News Report');
+    if (data.firstDate && data.lastDate) {
+        const span = dateToNumber(data.lastDate) - dateToNumber(data.firstDate) + 1;
+        out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);
+    }
+
+    // Monthly Land
+    if (data.monthlyLand.length > 0) {
+        out.push('');
+        out.push('Monthly Land:');
+        for (const e of data.monthlyLand) out.push(`${e.month}: ${e.acres} acres`);
+        const totalLand = data.monthlyLand.reduce((s, e) => s + e.acres, 0);
+        out.push(`Total: ${totalLand} acres`);
+    }
+
+    // Monthly Income
+    if (data.monthlyIncome.length > 0) {
+        out.push('');
+        out.push('Monthly Income:');
+        for (const e of data.monthlyIncome) {
+            out.push(`${e.month}: ${formatNumber(e.gold)} gold, ${formatNumber(e.books)} books`);
+        }
+    }
+
+    // Scientists
+    if (data.scientists.length > 0) {
+        out.push('');
+        out.push(`Scientists (${data.scientists.length} total):`);
+        for (const s of data.scientists) out.push(`${s.name} (${s.field})`);
+    }
+
+    // Aid Received
+    const ar = data.aidByResource;
+    const hasAid = ar.runes.total > 0 || ar.gold.total > 0 || ar.bushels.total > 0 || ar.exploreAcres.total > 0;
+    if (hasAid) {
+        out.push('');
+        out.push('Aid Received:');
+        if (ar.runes.total > 0) {
+            out.push(`Runes: ${formatNumber(ar.runes.total)} (from ${ar.runes.shipments} shipment${ar.runes.shipments !== 1 ? 's' : ''})`);
+            if (Object.keys(ar.runes.senders).length > 1) {
+                for (const [s, a] of Object.entries(ar.runes.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
+            }
+        }
+        if (ar.gold.total > 0) {
+            out.push(`Gold: ${formatNumber(ar.gold.total)}`);
+            if (Object.keys(ar.gold.senders).length > 1) {
+                for (const [s, a] of Object.entries(ar.gold.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
+            }
+        }
+        if (ar.bushels.total > 0) {
+            out.push(`Bushels: ${formatNumber(ar.bushels.total)}`);
+            if (Object.keys(ar.bushels.senders).length > 1) {
+                for (const [s, a] of Object.entries(ar.bushels.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
+            }
+        }
+        if (ar.exploreAcres.total > 0) {
+            out.push(`Explore Pool: ${formatNumber(ar.exploreAcres.total)} acres (${formatNumber(ar.exploreAcres.lost)} acres lost in transit)`);
+            if (Object.keys(ar.exploreAcres.senders).length > 1) {
+                for (const [s, a] of Object.entries(ar.exploreAcres.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
+            }
+        }
+    }
+
+    // Resources Stolen
+    if (data.stolen.runes > 0 || data.stolen.gold > 0) {
+        out.push('');
+        out.push('Resources Stolen:');
+        if (data.stolen.runes > 0) out.push(`${formatNumber(data.stolen.runes)} runes`);
+        if (data.stolen.gold > 0) out.push(`${formatNumber(data.stolen.gold)} gold coins`);
+    }
+
+    // Thievery
+    if (data.thieveryDetected > 0 || data.thieveryIntercepted > 0) {
+        out.push('');
+        out.push('Thievery:');
+        if (data.thieveryDetected > 0) {
+            out.push(`${data.thieveryDetected} operations detected (${data.thieveryUnknown} from unknown sources)`);
+        }
+        if (data.thieveryIntercepted > 0) {
+            out.push(`${data.thieveryIntercepted} operations intercepted by Shadowlight`);
+        }
+        const knownSources = Object.entries(data.thieveryBySource).sort((a, b) => b[1] - a[1]);
+        for (const [src, cnt] of knownSources) out.push(`  ${src}: ${cnt}`);
+    }
+
+    // Spell Attempts
+    if (data.spellAttempts > 0) {
+        out.push('');
+        out.push(`Spell Attempts: ${data.spellAttempts}`);
+        const sources = Object.entries(data.spellsBySource).sort((a, b) => b[1] - a[1]);
+        for (const [src, cnt] of sources) out.push(`  ${src}: ${cnt}`);
+    }
+
+    // Shadowlight Attacker IDs
+    if (data.shadowlightAttackers.length > 0) {
+        out.push('');
+        out.push('Shadowlight Attacker IDs:');
+        for (const a of data.shadowlightAttackers) out.push(`  ${a}`);
+    }
+
+    // Attacks Suffered
+    if (data.attacks.length > 0) {
+        const totalAcres = data.attacks.reduce((s, a) => s + a.acresCaptured, 0);
+        const totalBooks = data.attacks.reduce((s, a) => s + a.booksLooted, 0);
+        const headerParts = [];
+        if (totalAcres > 0) headerParts.push(`${formatNumber(totalAcres)} acres lost`);
+        if (totalBooks > 0) headerParts.push(`${formatNumber(totalBooks)} books looted`);
+        out.push('');
+        out.push(`Attacks Suffered: ${data.attacks.length} (${headerParts.join(', ')})`);
+        for (const atk of data.attacks) {
+            if (atk.acresCaptured > 0) {
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${atk.acresCaptured} acres`);
+            } else if (atk.booksLooted > 0) {
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.booksLooted)} books (learn)`);
+            }
+        }
+    }
+
+    // Hazards & Events
+    const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
+                           data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
+    const hasHazards = data.meteorDays > 0 || data.rioting.count > 0 || data.pitfalls.count > 0 ||
+                       data.manaDis.count > 0 || data.soldierUpkeep.count > 0 || data.desertions.total > 0 ||
+                       data.turncoatGenerals > 0 || data.failedPropaganda > 0;
+    if (hasHazards) {
+        out.push('');
+        out.push('Hazards & Events:');
+        if (data.meteorDays > 0) {
+            const casParts = [];
+            if (data.meteorCasualties.peasants > 0)    casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
+            if (data.meteorCasualties.soldiers > 0)    casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
+            if (data.meteorCasualties.Magicians > 0)   casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
+            if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
+            out.push(`Meteor shower: ${data.meteorDays} days of damage, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
+        }
+        if (data.rioting.count > 0) {
+            out.push(`Rioting: ${data.rioting.count} occurrence(s), hampered tax for ${data.rioting.totalDays} days total`);
+        }
+        if (data.pitfalls.count > 0) {
+            out.push(`Pitfalls: ${data.pitfalls.count} occurrence(s)`);
+        }
+        if (data.manaDis.count > 0) {
+            out.push(`Mana disruptions: ${data.manaDis.count} (affecting ${data.manaDis.totalDays} days total)`);
+        }
+        if (data.soldierUpkeep.count > 0) {
+            out.push(`Soldier upkeep demands: ${data.soldierUpkeep.count}`);
+        }
+        if (data.desertions.total > 0) {
+            const types = Object.keys(data.desertions.byType);
+            if (types.length === 1) {
+                out.push(`Troop desertions: ${formatNumber(data.desertions.total)} troops (${types[0]})`);
+            } else {
+                const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
+                out.push(`Troop desertions: ${formatNumber(data.desertions.total)} troops (${breakdown})`);
+            }
+        }
+        if (data.turncoatGenerals > 0) out.push(`Turncoat general(s) executed: ${data.turncoatGenerals}`);
+        if (data.failedPropaganda > 0) out.push(`Failed propaganda attempts: ${data.failedPropaganda}`);
+    }
+
+    // War Outcomes
+    if (data.warLandPenalty || data.warResourceBonus) {
+        out.push('');
+        out.push('War Outcomes:');
+        if (data.warLandPenalty) {
+            const p = data.warLandPenalty;
+            out.push(`Land given up: ${p.total} acres (${p.toEnemies} to enemies, ${p.redistributed} redistributed)`);
+        }
+        if (data.warResourceBonus) {
+            const b = data.warResourceBonus;
+            out.push(`Resources received: ${formatNumber(b.buildingCredits)} building credits, ${formatNumber(b.specialistCredits)} specialist credits, ${formatNumber(b.scienceBooks)} science books`);
+        }
+    }
+
+    return out.join('\n');
+}
+
+/**
+ * Parses Province News text into a formatted summary.
+ * Province News uses "Month Day of YR##[tab]Event" format.
+ * @param {string} text - Raw Province News input
+ * @param {Object} options - (reserved for future use)
+ * @returns {string} - Formatted output
+ */
+function parseProvinceNews(text, options = {}) {
+    // Apply HTML cleaning but NOT normalizeWhitespace (would destroy tab delimiters)
+    let cleaned = removeHtmlTags(text);
+    cleaned = removeHtmlEntities(cleaned);
+    cleaned = normalizeLineBreaks(cleaned);
+    cleaned = removeProblematicCharacters(cleaned);
+
+    const data = {
+        firstDate: null,
+        lastDate: null,
+        monthlyLand: [],
+        monthlyIncome: [],
+        scientists: [],
+        aidByResource: {
+            runes:        { total: 0, shipments: 0, senders: {} },
+            gold:         { total: 0, shipments: 0, senders: {} },
+            bushels:      { total: 0, shipments: 0, senders: {} },
+            exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
+        },
+        stolen:               { runes: 0, gold: 0 },
+        thieveryDetected:     0,
+        thieveryUnknown:      0,
+        thieveryIntercepted:  0,
+        thieveryBySource:     {},
+        spellAttempts:        0,
+        spellsBySource:       {},
+        shadowlightAttackers: [],
+        attacks:              [],
+        meteorDays:           0,
+        meteorCasualties:     { peasants: 0, soldiers: 0, Magicians: 0, Beastmasters: 0 },
+        rioting:              { count: 0, totalDays: 0 },
+        pitfalls:             { count: 0 },
+        manaDis:              { count: 0, totalDays: 0 },
+        soldierUpkeep:        { count: 0 },
+        desertions:           { total: 0, byType: {} },
+        turncoatGenerals:     0,
+        failedPropaganda:     0,
+        warLandPenalty:       null,
+        warResourceBonus:     null
+    };
+
+    const dateLineRe = /^(\w+ \d+ of YR\d+)\t(.+)$/;
+
+    for (const line of cleaned.split('\n')) {
+        const match = line.match(dateLineRe);
+        if (!match) continue;
+
+        const dateStr = match[1];
+        const ev = match[2].trim();
+
+        if (!data.firstDate) data.firstDate = dateStr;
+        data.lastDate = dateStr;
+
+        parseProvinceNewsLine(ev, dateStr, data);
+    }
+
+    return formatProvinceNewsOutput(data);
+}
+
+// =============================================================================
 // INPUT TYPE DETECTION
 // =============================================================================
 
 /**
- * Detects whether pasted text is Kingdom News or Province Logs.
+ * Detects whether pasted text is Kingdom News, Province Logs, or Province News.
  * @param {string} text - Raw input text
- * @returns {'kingdom-news-log'|'province-logs'|null} - Detected type, or null if unknown
+ * @returns {'kingdom-news-log'|'province-logs'|'province-news'|null} - Detected type, or null if unknown
  */
 function detectInputType(text) {
     const kingdomNewsPatterns = [
@@ -1371,6 +1904,9 @@ function detectInputType(text) {
         /our thieves were able to steal/i,
     ];
 
+    // Province News: "Month Day of YR##<tab>" format — check first (most specific)
+    if (/\bof YR\d+\t/.test(text)) return 'province-news';
+
     const isKingdom = kingdomNewsPatterns.some(p => p.test(text));
     const isProvince = provinceLogsPatterns.some(p => p.test(text));
 
@@ -1387,6 +1923,7 @@ function detectInputType(text) {
 module.exports = {
     // Main parsing functions
     parseKingdomNewsLog,
+    parseProvinceNews,
     parseText,
     formatProvinceLogs,
     

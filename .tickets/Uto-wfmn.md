@@ -27,7 +27,7 @@ Requirements written in `Utopia Game Parser Requirements.md` under "Overview of 
 - Input format (date-tab pattern, "of YR" distinguisher from Province Logs)
 - Auto-detection heuristics
 - 20 event types with patterns and extraction rules
-- Output format for 10 sections (header, monthly land, monthly income, scientists, aid received, resources stolen, thievery, spell attempts, attacks suffered, hazards & events, war outcomes)
+- Output format for 9 sections (header, monthly land and monthly income as a single section called daily login bonus, scientists, aid received, resources stolen, thievery, spell attempts, attacks suffered, hazards & events, war outcomes)
 - Special parsing rules (multi-part lines, prefix stripping, meteor aggregation)
 
 Based on analysis of `ProvinceNewsExample.txt` (237 lines, YR1–YR3).

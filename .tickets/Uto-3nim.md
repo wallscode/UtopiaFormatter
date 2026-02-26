@@ -1,6 +1,6 @@
 ---
 id: Uto-3nim
-status: open
+status: closed
 deps: [Uto-wfmn]
 links: []
 created: 2026-02-24T22:36:10Z
