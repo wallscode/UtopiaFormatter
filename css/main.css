@@ -281,6 +281,19 @@ section > label {
     margin-top: 0.5rem;
 }
 
+/* Focus indicators — keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+details > summary:focus-visible {
+    outline: 3px solid #c8a84b;
+    outline-offset: 2px;
+}
+
+textarea:focus-visible {
+    outline: 2px solid #c8a84b;
+    outline-offset: 2px;
+}
+
 /* Textarea styling */
 textarea {
     width: 100%;
@@ -408,6 +421,64 @@ button:active {
     border: 1px solid #744210;
 }
 
+/* Keyboard shortcuts hint */
+.kbd-shortcuts {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: #a89880;
+}
+
+.kbd-shortcuts summary {
+    cursor: pointer;
+    color: #a89880;
+    user-select: none;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.kbd-shortcuts summary::-webkit-details-marker {
+    display: none;
+}
+
+.kbd-shortcuts summary::before {
+    content: '▶';
+    font-size: 0.6rem;
+    transition: transform 0.2s ease;
+}
+
+.kbd-shortcuts[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.kbd-shortcuts summary:hover {
+    color: #c8a84b;
+}
+
+.kbd-shortcuts ul {
+    list-style: none;
+    margin-top: 0.5rem;
+    padding-left: 0.75rem;
+}
+
+.kbd-shortcuts li {
+    padding: 0.2rem 0;
+    color: #a89880;
+}
+
+kbd {
+    display: inline-block;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.8rem;
+    border: 1px solid #3d3224;
+    border-radius: 3px;
+    background: #12100d;
+    color: #c8a84b;
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+}
+
 /* Footer styling */
 footer {
     background: rgba(20, 16, 12, 0.97);
@@ -456,5 +527,22 @@ footer {
         font-size: 0.9rem;
         padding: 1rem;
         text-align: center;
+    }
+
+    /* Expand order button touch targets to 44×44 on mobile */
+    .order-btn {
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1rem;
+    }
+}
+
+/* Reduced motion — disable transitions and animations */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
     }
 }

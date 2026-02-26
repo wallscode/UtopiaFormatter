@@ -161,7 +161,8 @@ function handleParse(elements) {
         showAdvancedPanel(elements);
 
         if (window.innerWidth < 768) {
-            elements.outputText.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            elements.outputText.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
         }
 
     } catch (error) {
@@ -492,6 +493,7 @@ function renderKingdomNewsSettings(container, elements) {
             upBtn.textContent = '▲';
             upBtn.disabled = index === 0;
             upBtn.title = 'Move up';
+            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
             upBtn.addEventListener('click', () => {
                 if (index > 0) {
                     [order[index - 1], order[index]] = [order[index], order[index - 1]];
@@ -505,6 +507,7 @@ function renderKingdomNewsSettings(container, elements) {
             downBtn.textContent = '▼';
             downBtn.disabled = index === order.length - 1;
             downBtn.title = 'Move down';
+            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
             downBtn.addEventListener('click', () => {
                 if (index < order.length - 1) {
                     [order[index], order[index + 1]] = [order[index + 1], order[index]];
@@ -568,6 +571,7 @@ function renderProvinceLogsSettings(container, elements) {
             upBtn.textContent = '▲';
             upBtn.disabled = visIdx === 0;
             upBtn.title = 'Move up';
+            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
             upBtn.addEventListener('click', () => {
                 if (visIdx > 0) {
                     const prev = visible[visIdx - 1];
@@ -584,6 +588,7 @@ function renderProvinceLogsSettings(container, elements) {
             downBtn.textContent = '▼';
             downBtn.disabled = visIdx === visible.length - 1;
             downBtn.title = 'Move down';
+            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
             downBtn.addEventListener('click', () => {
                 if (visIdx < visible.length - 1) {
                     const next = visible[visIdx + 1];
@@ -874,6 +879,7 @@ function renderProvinceNewsSettings(container, elements) {
             upBtn.textContent = '▲';
             upBtn.disabled = visIdx === 0;
             upBtn.title = 'Move up';
+            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
             upBtn.addEventListener('click', () => {
                 if (visIdx > 0) {
                     const prev = visible[visIdx - 1];
@@ -890,6 +896,7 @@ function renderProvinceNewsSettings(container, elements) {
             downBtn.textContent = '▼';
             downBtn.disabled = visIdx === visible.length - 1;
             downBtn.title = 'Move down';
+            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
             downBtn.addEventListener('click', () => {
                 if (visIdx < visible.length - 1) {
                     const next = visible[visIdx + 1];
