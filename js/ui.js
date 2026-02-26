@@ -12,7 +12,10 @@ const advSettings = {
         showMassacre: true,
         showPlunder: true,
         showDragons: true,
-        showRituals: true
+        showRituals: true,
+        uniqueWindow: 6,
+        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights'],
+        groupUniques: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary'],
@@ -119,7 +122,7 @@ function handleParse(elements) {
     try {
         let parsedText;
         if (detectedMode === 'kingdom-news-log') {
-            parsedText = parseKingdomNewsLog(inputText);
+            parsedText = parseKingdomNewsLog(inputText, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
             parsedText = applyKingdomNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(inputText);
@@ -345,17 +348,18 @@ function renderAdvancedSettings(elements) {
 }
 
 /**
- * Renders Kingdom News filter controls (show/hide attack types)
+ * Renders Kingdom News filter controls (show/hide attack types, unique window, section order)
  * @param {HTMLElement} container - The adv-content element
  * @param {Object} elements - DOM elements object
  */
 function renderKingdomNewsSettings(container, elements) {
-    const title = document.createElement('div');
-    title.className = 'adv-group-title';
-    title.textContent = 'Show / Hide';
-    container.appendChild(title);
+    // ── Show / Hide ──────────────────────────────────────────────────────────
+    const showHideTitle = document.createElement('div');
+    showHideTitle.className = 'adv-group-title';
+    showHideTitle.textContent = 'Show / Hide';
+    container.appendChild(showHideTitle);
 
-    const items = [
+    const checkboxItems = [
         { key: 'showLearn',    label: 'Learn attacks'   },
         { key: 'showMassacre', label: 'Massacre attacks' },
         { key: 'showPlunder',  label: 'Plunder attacks'  },
@@ -363,7 +367,7 @@ function renderKingdomNewsSettings(container, elements) {
         { key: 'showRituals',  label: 'Rituals'          }
     ];
 
-    for (const item of items) {
+    for (const item of checkboxItems) {
         const group = document.createElement('div');
         group.className = 'adv-group';
 
@@ -385,6 +389,114 @@ function renderKingdomNewsSettings(container, elements) {
         group.appendChild(label);
         container.appendChild(group);
     }
+
+    // ── Unique Attack Window ─────────────────────────────────────────────────
+    const windowTitle = document.createElement('div');
+    windowTitle.className = 'adv-group-title';
+    windowTitle.textContent = 'Unique Attack Window';
+    container.appendChild(windowTitle);
+
+    const windowGroup = document.createElement('div');
+    windowGroup.className = 'adv-group';
+
+    const windowLabel = document.createElement('label');
+    windowLabel.htmlFor = 'adv-kn-uniqueWindow';
+    windowLabel.textContent = 'Days: ';
+
+    const windowInput = document.createElement('input');
+    windowInput.type = 'number';
+    windowInput.id = 'adv-kn-uniqueWindow';
+    windowInput.min = '1';
+    windowInput.max = '30';
+    windowInput.value = advSettings.kingdomNews.uniqueWindow;
+    windowInput.addEventListener('change', () => {
+        const val = parseInt(windowInput.value, 10);
+        if (val >= 1 && val <= 30) {
+            advSettings.kingdomNews.uniqueWindow = val;
+            applyAndRerender(elements);
+        }
+    });
+
+    windowLabel.appendChild(windowInput);
+    windowGroup.appendChild(windowLabel);
+    container.appendChild(windowGroup);
+
+    // ── Uniques Grouping ─────────────────────────────────────────────────────
+    const groupingGroup = document.createElement('div');
+    groupingGroup.className = 'adv-group';
+
+    const groupingLabel = document.createElement('label');
+    groupingLabel.htmlFor = 'adv-kn-groupUniques';
+
+    const groupingCheckbox = document.createElement('input');
+    groupingCheckbox.type = 'checkbox';
+    groupingCheckbox.id = 'adv-kn-groupUniques';
+    groupingCheckbox.checked = advSettings.kingdomNews.groupUniques;
+    groupingCheckbox.addEventListener('change', () => {
+        advSettings.kingdomNews.groupUniques = groupingCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    groupingLabel.appendChild(groupingCheckbox);
+    groupingLabel.appendChild(document.createTextNode(' Group all Uniques at bottom'));
+    groupingGroup.appendChild(groupingLabel);
+    container.appendChild(groupingGroup);
+
+    // ── Section Order ────────────────────────────────────────────────────────
+    const orderTitle = document.createElement('div');
+    orderTitle.className = 'adv-group-title';
+    orderTitle.textContent = 'Section Order';
+    container.appendChild(orderTitle);
+
+    const list = document.createElement('ul');
+    list.className = 'section-order-list';
+    container.appendChild(list);
+
+    function renderOrderList() {
+        list.innerHTML = '';
+        const order = advSettings.kingdomNews.sectionOrder;
+
+        order.forEach((sectionName, index) => {
+            const item = document.createElement('li');
+            item.className = 'section-order-item';
+
+            const upBtn = document.createElement('button');
+            upBtn.className = 'order-btn';
+            upBtn.textContent = '▲';
+            upBtn.disabled = index === 0;
+            upBtn.title = 'Move up';
+            upBtn.addEventListener('click', () => {
+                if (index > 0) {
+                    [order[index - 1], order[index]] = [order[index], order[index - 1]];
+                    renderOrderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const downBtn = document.createElement('button');
+            downBtn.className = 'order-btn';
+            downBtn.textContent = '▼';
+            downBtn.disabled = index === order.length - 1;
+            downBtn.title = 'Move down';
+            downBtn.addEventListener('click', () => {
+                if (index < order.length - 1) {
+                    [order[index], order[index + 1]] = [order[index + 1], order[index]];
+                    renderOrderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = sectionName;
+
+            item.appendChild(upBtn);
+            item.appendChild(downBtn);
+            item.appendChild(nameSpan);
+            list.appendChild(item);
+        });
+    }
+
+    renderOrderList();
 }
 
 /**
@@ -471,7 +583,7 @@ function applyAndRerender(elements) {
     try {
         let parsedText;
         if (lastDetectedMode === 'kingdom-news-log') {
-            parsedText = parseKingdomNewsLog(lastRawInput);
+            parsedText = parseKingdomNewsLog(lastRawInput, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
             parsedText = applyKingdomNewsSettings(parsedText);
         } else {
             parsedText = formatProvinceLogs(lastRawInput);
@@ -484,21 +596,98 @@ function applyAndRerender(elements) {
 }
 
 /**
- * Filters Kingdom News output lines based on current advSettings
+ * Filters, reorders, and groups Kingdom News output based on current advSettings.
  * @param {string} text - Parsed Kingdom News output
- * @returns {string} - Filtered output
+ * @returns {string} - Filtered/reordered output
  */
 function applyKingdomNewsSettings(text) {
     const s = advSettings.kingdomNews;
-    return text.split('\n').filter(line => {
-        if (!s.showLearn    && /^Learn:/.test(line))                       return false;
-        if (!s.showMassacre && /^Massacre:/.test(line))                    return false;
-        if (!s.showPlunder  && /^Plunder:/.test(line))                     return false;
-        if (!s.showDragons  && /^Dragons (Started|Completed):/.test(line)) return false;
-        if (!s.showDragons  && /^Enemy Dragons Killed:/.test(line))        return false;
-        if (!s.showRituals  && /^Rituals (Started|Completed):/.test(line)) return false;
+
+    // Step 1: Apply line-level filters (show/hide attack sub-types)
+    const filteredText = text.split('\n').filter(line => {
+        if (!s.showLearn    && /^-- Learn:/.test(line))                          return false;
+        if (!s.showMassacre && /^-- Massacre:/.test(line))                       return false;
+        if (!s.showPlunder  && /^-- Plunder:/.test(line))                        return false;
+        if (!s.showDragons  && /^-- Dragons (Started|Completed):/.test(line))    return false;
+        if (!s.showDragons  && /^-- Enemy Dragons Killed:/.test(line))           return false;
+        if (!s.showRituals  && /^-- Rituals (Started|Completed):/.test(line))    return false;
         return true;
     }).join('\n');
+
+    // Step 2: Extract the report header (text before the first ** block)
+    const firstBlockMatch = filteredText.match(/\n\*\* /);
+    if (!firstBlockMatch) return filteredText;
+
+    const firstBlockIdx = firstBlockMatch.index;
+    const header = filteredText.substring(0, firstBlockIdx);
+    const rest = filteredText.substring(firstBlockIdx + 1); // skip leading \n
+
+    // Step 3: Split into individual blocks (each starts with "** ... **")
+    const rawBlocks = rest.split(/\n(?=\*\* )/);
+
+    // Step 4: Categorize and pair each Per-Kingdom block with its Uniques block
+    function getCategory(block) {
+        const firstLine = block.split('\n')[0];
+        if (/^\*\* Own Kingdom .+ Summary \*\*/.test(firstLine))  return 'Own Kingdom Summary';
+        if (/^\*\* Uniques for .+ \*\*/.test(firstLine))          return 'Uniques';
+        if (/^\*\* Highlights \*\*/.test(firstLine))               return 'Highlights';
+        return 'Per-Kingdom Summaries';
+    }
+
+    const ownKingdomSummaryBlocks = [];
+    const perKingdomPairs = []; // [{ summary: block, uniques: block|null }]
+    const highlightsBlocks = [];
+    let currentPair = null;
+
+    for (const block of rawBlocks) {
+        const cat = getCategory(block);
+        if (cat === 'Own Kingdom Summary') {
+            ownKingdomSummaryBlocks.push(block);
+        } else if (cat === 'Per-Kingdom Summaries') {
+            currentPair = { summary: block, uniques: null };
+            perKingdomPairs.push(currentPair);
+        } else if (cat === 'Uniques') {
+            if (currentPair && currentPair.uniques === null) {
+                currentPair.uniques = block;
+                currentPair = null;
+            } else {
+                // Orphaned uniques block — append to last pair or own summary
+                if (perKingdomPairs.length > 0) {
+                    const last = perKingdomPairs[perKingdomPairs.length - 1];
+                    if (!last.uniques) last.uniques = block;
+                }
+            }
+        } else if (cat === 'Highlights') {
+            highlightsBlocks.push(block);
+        }
+    }
+
+    // Step 5: Reconstruct in the user-defined section order
+    const resultBlocks = [];
+
+    for (const section of s.sectionOrder) {
+        if (section === 'Own Kingdom Summary') {
+            resultBlocks.push(...ownKingdomSummaryBlocks);
+        } else if (section === 'Per-Kingdom Summaries') {
+            for (const pair of perKingdomPairs) {
+                resultBlocks.push(pair.summary);
+                if (!s.groupUniques && pair.uniques) {
+                    resultBlocks.push(pair.uniques);
+                }
+            }
+        } else if (section === 'Uniques') {
+            if (s.groupUniques) {
+                for (const pair of perKingdomPairs) {
+                    if (pair.uniques) resultBlocks.push(pair.uniques);
+                }
+            }
+            // When not grouping, uniques were already emitted inline above
+        } else if (section === 'Highlights') {
+            resultBlocks.push(...highlightsBlocks);
+        }
+    }
+
+    return (header + '\n' + resultBlocks.join('\n')).trim();
 }
 
 /**

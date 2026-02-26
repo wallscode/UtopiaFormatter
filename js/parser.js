@@ -534,7 +534,7 @@ function formatProvinceLogs(text) {
  * @param {string} inputText - Raw Kingdom News log text
  * @returns {string} - Formatted Kingdom News summary
  */
-function parseKingdomNewsLog(inputText) {
+function parseKingdomNewsLog(inputText, options) {
     if (!inputText || inputText.trim() === '') {
         throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
     }
@@ -614,7 +614,8 @@ function parseKingdomNewsLog(inputText) {
     }
     
     // Generate formatted output
-    return formatKingdomNewsOutput(data);
+    const windowDays = (options && options.uniqueWindow != null) ? parseInt(options.uniqueWindow, 10) : UNIQUE_WINDOW_DAYS;
+    return formatKingdomNewsOutput(data, windowDays);
 }
 
 /**
@@ -1102,7 +1103,8 @@ function updateHighlights(data, attackType, attacker, defender, acres, people, i
 /**
  * Formats the final Kingdom News output
  */
-function formatKingdomNewsOutput(data) {
+function formatKingdomNewsOutput(data, windowDays) {
+    if (windowDays == null) windowDays = UNIQUE_WINDOW_DAYS;
     const output = [];
 
     // Header
@@ -1124,8 +1126,8 @@ function formatKingdomNewsOutput(data) {
     const ownKingdom = ownKingdomId ? data.kingdoms[ownKingdomId] : null;
 
     // Pre-compute uniques (needed in both summary and kingdom sections)
-    const madeUniques    = ownKingdom ? calculateUniques(ownKingdom.attacksMadeLog,    UNIQUE_WINDOW_DAYS) : { total: 0, perAttacker: {} };
-    const sufferedUniques = ownKingdom ? calculateUniques(ownKingdom.attacksSufferedLog, UNIQUE_WINDOW_DAYS) : { total: 0, perAttacker: {} };
+    const madeUniques    = ownKingdom ? calculateUniques(ownKingdom.attacksMadeLog,    windowDays) : { total: 0, perAttacker: {} };
+    const sufferedUniques = ownKingdom ? calculateUniques(ownKingdom.attacksSufferedLog, windowDays) : { total: 0, perAttacker: {} };
 
     if (ownKingdom) {
         // ── Own Kingdom Summary ──────────────────────────────────────────
