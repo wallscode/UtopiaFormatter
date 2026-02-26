@@ -1,6 +1,6 @@
 ---
 id: Uto-kyc1
-status: in_progress
+status: closed
 deps: [Uto-cyh5]
 links: []
 created: 2026-02-24T22:35:40Z

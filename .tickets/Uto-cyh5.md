@@ -1,6 +1,6 @@
 ---
 id: Uto-cyh5
-status: in_progress
+status: closed
 deps: []
 links: []
 created: 2026-02-24T22:35:08Z
