@@ -710,9 +710,9 @@ function parseAttackLine(line, data, dateStr) {
             plunder: { count: 0, acres: 0 },
             bouncesMade: 0,
             bouncesSuffered: 0,
-            dragonsStarted: 0,
-            dragonsCompleted: 0,
-            dragonsKilled: 0,
+            dragonsStarted: [],
+            dragonsCompleted: [],
+            dragonsKilled: [],
             ritualsStarted: 0,
             ritualsCompleted: 0
         };
@@ -736,9 +736,9 @@ function parseAttackLine(line, data, dateStr) {
             plunder: { count: 0, acres: 0 },
             bouncesMade: 0,
             bouncesSuffered: 0,
-            dragonsStarted: 0,
-            dragonsCompleted: 0,
-            dragonsKilled: 0,
+            dragonsStarted: [],
+            dragonsCompleted: [],
+            dragonsKilled: [],
             ritualsStarted: 0,
             ritualsCompleted: 0
         };
@@ -968,24 +968,27 @@ function parseSpecialLine(line, data) {
     // "Our kingdom has begun the [Type] Dragon project, [Name], targeted at Unnamed kingdom (X:Y)."
     if (line.includes('Our kingdom') && line.includes('has begun the') && line.includes('Dragon project')) {
         if (own && data.kingdoms[own]) {
-            data.kingdoms[own].dragonsStarted++;
+            const tm = line.match(/has begun the (\w+) Dragon project/);
+            data.kingdoms[own].dragonsStarted.push(tm ? tm[1] : null);
         }
         return;
     }
 
     // "[Province] has completed our dragon, [Name], and it sets flight to ravage Unnamed kingdom (X:Y)!"
     // The (X:Y) in this line is the TARGET, not the source kingdom — always own kingdom's dragon.
+    // Dragon type is not present in this line; push null so the count is tracked.
     if (line.includes('has completed our dragon')) {
         if (own && data.kingdoms[own]) {
-            data.kingdoms[own].dragonsCompleted++;
+            data.kingdoms[own].dragonsCompleted.push(null);
         }
         return;
     }
 
     // "[Province] has slain the dragon, [Name], ravaging our lands!" — own province killed enemy dragon
+    // Dragon type is not present in this line; push null so the count is tracked.
     if (line.includes('has slain the dragon') && line.includes('ravaging our lands')) {
         if (own && data.kingdoms[own]) {
-            data.kingdoms[own].dragonsKilled++;
+            data.kingdoms[own].dragonsKilled.push(null);
         }
         return;
     }
@@ -1004,11 +1007,12 @@ function parseSpecialLine(line, data) {
                     conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
-                    dragonsStarted: 0, dragonsCompleted: 0, dragonsKilled: 0,
+                    dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
                     ritualsStarted: 0, ritualsCompleted: 0
                 };
             }
-            data.kingdoms[kId].dragonsStarted++;
+            const tm = line.match(/has begun the (\w+) Dragon project/);
+            data.kingdoms[kId].dragonsStarted.push(tm ? tm[1] : null);
         }
         return;
     }
@@ -1027,11 +1031,12 @@ function parseSpecialLine(line, data) {
                     conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
-                    dragonsStarted: 0, dragonsCompleted: 0, dragonsKilled: 0,
+                    dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
                     ritualsStarted: 0, ritualsCompleted: 0
                 };
             }
-            data.kingdoms[kId].dragonsCompleted++;
+            const tm = line.match(/\bA (\w+) Dragon,/);
+            data.kingdoms[kId].dragonsCompleted.push(tm ? tm[1] : null);
         }
         return;
     }
@@ -1107,6 +1112,12 @@ function formatKingdomNewsOutput(data, windowDays) {
     if (windowDays == null) windowDays = UNIQUE_WINDOW_DAYS;
     const output = [];
 
+    // Returns " (Type, Type, ...)" for known dragon types, or "" if none are known
+    function dragonTypeSuffix(types) {
+        const known = types.filter(t => t !== null);
+        return known.length > 0 ? ' (' + known.join(', ') + ')' : '';
+    }
+
     // Header
     output.push('Kingdom News Report');
 
@@ -1150,9 +1161,12 @@ function formatKingdomNewsOutput(data, windowDays) {
             const pct = ownKingdom.attacksMade > 0 ? Math.round(ownKingdom.bouncesMade / ownKingdom.attacksMade * 100) : 0;
             output.push(`-- Bounces: ${ownKingdom.bouncesMade} (${pct}%)`);
         }
-        if (ownKingdom.dragonsStarted > 0)   output.push(`-- Dragons Started: ${ownKingdom.dragonsStarted}`);
-        if (ownKingdom.dragonsCompleted > 0)  output.push(`-- Dragons Completed: ${ownKingdom.dragonsCompleted}`);
-        if (ownKingdom.dragonsKilled > 0)     output.push(`-- Enemy Dragons Killed: ${ownKingdom.dragonsKilled}`);
+        if (ownKingdom.dragonsStarted.length > 0)
+            output.push(`-- Dragons Started: ${ownKingdom.dragonsStarted.length}${dragonTypeSuffix(ownKingdom.dragonsStarted)}`);
+        if (ownKingdom.dragonsCompleted.length > 0)
+            output.push(`-- Dragons Completed: ${ownKingdom.dragonsCompleted.length}${dragonTypeSuffix(ownKingdom.dragonsCompleted)}`);
+        if (ownKingdom.dragonsKilled.length > 0)
+            output.push(`-- Enemy Dragons Killed: ${ownKingdom.dragonsKilled.length}${dragonTypeSuffix(ownKingdom.dragonsKilled)}`);
         if (ownKingdom.ritualsStarted > 0)    output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted}`);
         if (ownKingdom.ritualsCompleted > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted}`);
 
@@ -1177,16 +1191,18 @@ function formatKingdomNewsOutput(data, windowDays) {
             output.push(`-- Bounces: ${ownKingdom.bouncesSuffered} (${pct}%)`);
         }
         // Enemy dragons (tracked on each enemy kingdom)
-        let enemyDragonsStarted = 0;
-        let enemyDragonsCompleted = 0;
+        const enemyDragonsStartedTypes = [];
+        const enemyDragonsCompletedTypes = [];
         for (const [kId, kData] of Object.entries(data.kingdoms)) {
             if (kId !== ownKingdomId) {
-                enemyDragonsStarted  += kData.dragonsStarted  || 0;
-                enemyDragonsCompleted += kData.dragonsCompleted || 0;
+                enemyDragonsStartedTypes.push(...(kData.dragonsStarted  || []));
+                enemyDragonsCompletedTypes.push(...(kData.dragonsCompleted || []));
             }
         }
-        if (enemyDragonsStarted > 0)   output.push(`-- Dragons Started: ${enemyDragonsStarted}`);
-        if (enemyDragonsCompleted > 0) output.push(`-- Dragons Completed: ${enemyDragonsCompleted}`);
+        if (enemyDragonsStartedTypes.length > 0)
+            output.push(`-- Enemy Dragons Started: ${enemyDragonsStartedTypes.length}${dragonTypeSuffix(enemyDragonsStartedTypes)}`);
+        if (enemyDragonsCompletedTypes.length > 0)
+            output.push(`-- Enemy Dragons Completed: ${enemyDragonsCompletedTypes.length}${dragonTypeSuffix(enemyDragonsCompletedTypes)}`);
 
         output.push('');
 

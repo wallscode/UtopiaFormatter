@@ -10,7 +10,7 @@ Total Attacks Made: 279 (8091 acres)
 -- Raze: 2 (90 acres)
 -- Massacre: 3 (965 people)
 -- Bounces: 1 (0%)
--- Dragons Started: 3
+-- Dragons Started: 3 (Ruby, Topaz, Topaz)
 -- Dragons Completed: 2
 -- Enemy Dragons Killed: 1
 -- Rituals Started: 2
@@ -22,8 +22,8 @@ Total Attacks Suffered: 196 (6959 acres)
 -- Raze: 1 (70 acres)
 -- Plunder: 3
 -- Bounces: 4 (2%)
--- Dragons Started: 2
--- Dragons Completed: 1
+-- Enemy Dragons Started: 2 (Topaz, Topaz)
+-- Enemy Dragons Completed: 1 (Topaz)
 
 ** Own Kingdom 5:1 **
 Total land exchanged: +1132 (279/196)

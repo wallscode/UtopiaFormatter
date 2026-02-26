@@ -661,8 +661,8 @@ function applyKingdomNewsSettings(text) {
         if (!s.showLearn    && /^-- Learn:/.test(line))                          return false;
         if (!s.showMassacre && /^-- Massacre:/.test(line))                       return false;
         if (!s.showPlunder  && /^-- Plunder:/.test(line))                        return false;
-        if (!s.showDragons  && /^-- Dragons (Started|Completed):/.test(line))    return false;
-        if (!s.showDragons  && /^-- Enemy Dragons Killed:/.test(line))           return false;
+        if (!s.showDragons  && /^-- (Enemy )?Dragons (Started|Completed):/.test(line))   return false;
+        if (!s.showDragons  && /^-- Enemy Dragons Killed:/.test(line))                    return false;
         if (!s.showRituals  && /^-- Rituals (Started|Completed):/.test(line))    return false;
         return true;
     }).join('\n');
