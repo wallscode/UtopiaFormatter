@@ -21,16 +21,19 @@ const advSettings = {
         warDetected: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary'],
+        sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary'],
         visible: {
             'Thievery Summary': true,
             'Resources Stolen': true,
             'Spell Summary': true,
             'Aid Summary': true,
             'Dragon Summary': true,
-            'Ritual Summary': true
+            'Ritual Summary': true,
+            'Construction Summary': true,
+            'Science Summary': true
         },
-        showAverages: false
+        showAverages: false,
+        showFailedThievery: true
     },
     provinceNews: {
         sectionOrder: ['Monthly Land', 'Monthly Income', 'Scientists', 'Aid Received', 'Resources Stolen', 'Thievery', 'Spell Attempts', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'Hazards & Events', 'War Outcomes'],
@@ -686,6 +689,26 @@ function renderProvinceLogsSettings(container, elements) {
     avgLabel.appendChild(document.createTextNode(' Show averages'));
     avgGroup.appendChild(avgLabel);
     container.appendChild(avgGroup);
+
+    const failedGroup = document.createElement('div');
+    failedGroup.className = 'adv-group';
+
+    const failedLabel = document.createElement('label');
+    failedLabel.htmlFor = 'adv-pl-showFailedThievery';
+
+    const failedCheckbox = document.createElement('input');
+    failedCheckbox.type = 'checkbox';
+    failedCheckbox.id = 'adv-pl-showFailedThievery';
+    failedCheckbox.checked = advSettings.provinceLogs.showFailedThievery;
+    failedCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showFailedThievery = failedCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    failedLabel.appendChild(failedCheckbox);
+    failedLabel.appendChild(document.createTextNode(' Show failed thievery attempts'));
+    failedGroup.appendChild(failedLabel);
+    container.appendChild(failedGroup);
 }
 
 /**
@@ -821,7 +844,8 @@ function applyKingdomNewsSettings(text) {
 function applyProvinceLogsSettings(text) {
     const sectionNames = [
         'Thievery Summary', 'Resources Stolen', 'Spell Summary',
-        'Aid Summary', 'Dragon Summary', 'Ritual Summary'
+        'Aid Summary', 'Dragon Summary', 'Ritual Summary',
+        'Construction Summary', 'Science Summary'
     ];
 
     // Find header (everything before the first section)
@@ -858,6 +882,10 @@ function applyProvinceLogsSettings(text) {
     let output = result.trim();
 
     // Add or strip per-line averages
+    if (!advSettings.provinceLogs.showFailedThievery) {
+        output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
+    }
+
     if (advSettings.provinceLogs.showAverages) {
         output = output.split('\n').map(line => {
             const m = line.match(/^(\d+) (.+) for a total of ([\d,]+) (.+)$/);

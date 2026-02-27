@@ -63,8 +63,21 @@ const PROVINCE_LOGS_CONFIG = {
         "Thieves' Dens", "Watch Towers", "Universities", "Libraries", "Stables", "Dungeons"
     ],
     
+    CONSTRUCTION_BUILDINGS: [
+        "Guilds", "Homes", "Hospitals", "Libraries", "Mills",
+        "Training Grounds", "Military Barracks", "Castles", "Thieves' Dens",
+        "Stables", "Farms", "Banks", "Armouries", "Forts", "Towers",
+        "Watch Towers", "Dungeons"
+    ],
+
+    SCIENCES: [
+        "TOOLS", "ALCHEMY", "HOUSING", "PRODUCTION", "BOOKKEEPING", "ARTISAN",
+        "STRATEGY", "SIEGE", "TACTICS", "VALOR", "HEROISM", "RESILIENCE",
+        "CRIME", "CHANNELING", "SHIELDING", "CUNNING", "SORCERY", "FINESSE"
+    ],
+
     PROPAGANDA_TROOPS: ["thieves", "soldiers", "wizards", "specialist troops"],
-    
+
     AID_RESOURCES: ["soldiers", "gold coins", "bushels", "runes", "explore pool acres"]
 };
 
@@ -419,6 +432,11 @@ function formatProvinceLogs(text) {
     let dragonBushelsDonated = 0;
     let greaterArsonOpsCount = 0;
     let ritualCasts = 0;
+    let failedThieveryCount = 0;
+    let thiervesLostCount = 0;
+
+    const constructionCounts = {};
+    const scienceCounts = {};
     
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -438,12 +456,14 @@ function formatProvinceLogs(text) {
     PROVINCE_LOGS_CONFIG.BUILDINGS.forEach(b => { 
         greaterArsonBuildingCounts[b] = 0; 
     });
-    PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.forEach(p => { 
-        propagandaCounts[p] = 0; 
+    PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.forEach(p => {
+        propagandaCounts[p] = 0;
     });
-    PROVINCE_LOGS_CONFIG.AID_RESOURCES.forEach(r => { 
-        aidTotals[r] = 0; 
+    PROVINCE_LOGS_CONFIG.AID_RESOURCES.forEach(r => {
+        aidTotals[r] = 0;
     });
+    PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { constructionCounts[b] = 0; });
+    PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
     // Main parsing loop
     for (const line of lines) {
@@ -539,6 +559,40 @@ function formatProvinceLogs(text) {
             if (pointsMatch) dragonPointsTotal += parseInt(pointsMatch[1].replace(/,/g, ""));
         }
         
+        // Parse construction orders
+        if (line.includes("You have given orders to commence work on")) {
+            const match = line.match(/commence work on ([\d,]+) (.+?)\.?\s*$/i);
+            if (match) {
+                const count = parseInt(match[1].replace(/,/g, ""));
+                const buildingText = match[2].trim();
+                for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
+                    if (buildingText.toLowerCase() === b.toLowerCase()) {
+                        constructionCounts[b] += count;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Parse failed thievery attempts
+        if (line.includes("Sources have indicated the mission was foiled")) {
+            failedThieveryCount++;
+            const lostMatch = line.match(/We lost ([\d,]+) thieves?/i);
+            if (lostMatch) thiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
+        }
+
+        // Parse science book allocation
+        if (line.includes("books allocated to")) {
+            const match = line.match(/([\d,]+) books allocated to (\w+)/i);
+            if (match) {
+                const count = parseInt(match[1].replace(/,/g, ""));
+                const science = match[2].toUpperCase();
+                if (PROVINCE_LOGS_CONFIG.SCIENCES.includes(science)) {
+                    scienceCounts[science] += count;
+                }
+            }
+        }
+
         // Parse stolen resources
         if (line.includes("Our thieves have returned with") || line.includes("Our thieves were able to steal")) {
             if (line.includes("gold coins")) {
@@ -559,7 +613,10 @@ function formatProvinceLogs(text) {
                    !line.includes("Early indications show that our operation was a success") &&
                    !line.includes("We are now closer to completing our ritual project") &&
                    !line.includes("to the quest of launching a dragon") &&
-                   !(line.includes("the dragon is weakened by") && line.includes("troops"))) {
+                   !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
+                   !line.includes("You have given orders to commence work on") &&
+                   !line.includes("Sources have indicated the mission was foiled") &&
+                   !line.includes("books allocated to")) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
@@ -609,6 +666,10 @@ function formatProvinceLogs(text) {
         } else {
             output += `${count} ${name}\n`;
         }
+    }
+
+    if (failedThieveryCount > 0) {
+        output += `${failedThieveryCount} failed thievery attempt${failedThieveryCount !== 1 ? 's' : ''} (${thiervesLostCount} thieves lost)\n`;
     }
 
     // Resources Stolen Summary
@@ -666,6 +727,26 @@ function formatProvinceLogs(text) {
     if (ritualCasts > 0) {
         output += "\nRitual Summary:\n";
         output += `${ritualCasts} successful ritual casts\n`;
+    }
+
+    // Construction Summary (omitted when no construction orders detected)
+    const anyConstruction = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => constructionCounts[b] > 0);
+    if (anyConstruction) {
+        output += "\nConstruction Summary:\n";
+        PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
+            .filter(b => constructionCounts[b] > 0)
+            .sort((a, b) => constructionCounts[b] - constructionCounts[a])
+            .forEach(b => { output += `${formatNumber(constructionCounts[b])} ${b}\n`; });
+    }
+
+    // Science Summary (omitted when no science allocations detected)
+    const anyScience = PROVINCE_LOGS_CONFIG.SCIENCES.some(s => scienceCounts[s] > 0);
+    if (anyScience) {
+        output += "\nScience Summary:\n";
+        PROVINCE_LOGS_CONFIG.SCIENCES
+            .filter(s => scienceCounts[s] > 0)
+            .sort((a, b) => scienceCounts[b] - scienceCounts[a])
+            .forEach(s => { output += `${formatNumber(scienceCounts[s])} books to ${s}\n`; });
     }
 
     return output.trim();

@@ -12,6 +12,7 @@ Propaganda:
 3 Kidnapping for a total of 336 peasants
 2 Bribe Thieves ops
 1 Sabotage Wizards for a total of 1 day
+76 failed thievery attempts (1589 thieves lost)
 
 Resources Stolen:
 1,404,731 gold coins stolen
@@ -50,3 +51,25 @@ Dragon Summary:
 
 Ritual Summary:
 37 successful ritual casts
+
+Construction Summary:
+390 Banks
+244 Watch Towers
+108 Towers
+96 Forts
+11 Libraries
+11 Thieves' Dens
+7 Farms
+
+Science Summary:
+196,560 books to CRIME
+103,480 books to BOOKKEEPING
+94,920 books to STRATEGY
+90,560 books to PRODUCTION
+71,760 books to FINESSE
+69,040 books to HOUSING
+62,740 books to HEROISM
+39,200 books to VALOR
+39,000 books to CHANNELING
+34,540 books to TOOLS
+22,400 books to ALCHEMY
