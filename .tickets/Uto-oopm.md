@@ -1,6 +1,6 @@
 ---
 id: Uto-oopm
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:04:39Z

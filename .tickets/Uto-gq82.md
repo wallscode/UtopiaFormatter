@@ -1,6 +1,6 @@
 ---
 id: Uto-gq82
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:04:47Z

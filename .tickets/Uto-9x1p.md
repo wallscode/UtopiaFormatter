@@ -1,6 +1,6 @@
 ---
 id: Uto-9x1p
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T22:00:00Z

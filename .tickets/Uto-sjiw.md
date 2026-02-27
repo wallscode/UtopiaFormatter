@@ -1,6 +1,6 @@
 ---
 id: Uto-sjiw
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:06:30Z
