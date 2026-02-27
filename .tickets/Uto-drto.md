@@ -1,6 +1,6 @@
 ---
 id: Uto-drto
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:04:54Z
@@ -21,3 +21,4 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is an indication of thievery attempts being foiled.  It should be included in the Failed Thievery section and summed with other failed thievery attempts.  The part after "the next mission." Is an indication of the province being targeted with the operation, and all of that can be ignored for now.  At some point in time we may want to add province targeting as well as the number of thieves sent, but for now we can ignore that.
