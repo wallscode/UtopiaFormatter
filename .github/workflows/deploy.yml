@@ -1,0 +1,83 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+# OIDC token needed to authenticate with AWS — no long-lived credentials.
+# contents:read needed for actions/checkout.
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Resolve which bucket + distribution to target based on branch.
+      # main → prod (bucket root), everything else → dev (bucket dev/ prefix).
+      - name: Select environment
+        id: env
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "bucket=${{ secrets.S3_BUCKET_PROD }}"       >> "$GITHUB_OUTPUT"
+            echo "cf_id=${{ secrets.CLOUDFRONT_ID_PROD }}"    >> "$GITHUB_OUTPUT"
+            echo "dest="                                       >> "$GITHUB_OUTPUT"
+            echo "invalidate=/*"                               >> "$GITHUB_OUTPUT"
+            echo "name=prod"                                   >> "$GITHUB_OUTPUT"
+          else
+            echo "bucket=${{ secrets.S3_BUCKET_DEV }}"        >> "$GITHUB_OUTPUT"
+            echo "cf_id=${{ secrets.CLOUDFRONT_ID_DEV }}"     >> "$GITHUB_OUTPUT"
+            echo "dest=dev/"                                   >> "$GITHUB_OUTPUT"
+            echo "invalidate=/dev/*"                           >> "$GITHUB_OUTPUT"
+            echo "name=dev"                                    >> "$GITHUB_OUTPUT"
+          fi
+
+      # Generate the gitignored config.js from secrets.
+      # LOG_ENDPOINT may be empty before Uto-9wce is deployed — that is safe;
+      # parser.js skips logging when window.APP_CONFIG.logEndpoint is falsy.
+      - name: Generate config.js
+        run: |
+          echo "window.APP_CONFIG = { logEndpoint: '${{ secrets.LOG_ENDPOINT }}' };" > js/config.js
+
+      # Sync only the deployable site files to S3.
+      # --exclude "*" then --include selectively ensures tests/, infra/, .tickets/,
+      # source-only JS (logsparse.js, parser-backup.js), and all markdown/config
+      # templates are never uploaded.
+      # --delete removes stale objects within the target prefix only. Because all
+      # other paths are matched by --exclude "*", the dev/ prefix is never touched
+      # by a prod sync and vice versa.
+      # dest is empty for prod (root) and "dev/" for all other branches.
+      - name: Sync to S3
+        run: |
+          aws s3 sync . "s3://${{ steps.env.outputs.bucket }}/${{ steps.env.outputs.dest }}" \
+            --delete \
+            --exclude "*" \
+            --include "index.html" \
+            --include "css/*" \
+            --include "js/config.js" \
+            --include "js/parser.js" \
+            --include "js/ui.js" \
+            --include "js/main.js" \
+            --no-progress
+
+      # Invalidate the entire distribution after every deploy so users always
+      # receive the latest content. At 1-2 users/day the cost is negligible.
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.env.outputs.cf_id }}" \
+            --paths "${{ steps.env.outputs.invalidate }}"

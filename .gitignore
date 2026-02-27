@@ -1,3 +1,12 @@
+# AWS / infrastructure — account-specific values must never be committed
+js/config.js
+infra/params.json
+infra/params.*.json
+infra/*.auto.tfvars
+infra/terraform.tfvars
+.env
+.env.*
+
 # Node.js
 node_modules/
 npm-debug.log*

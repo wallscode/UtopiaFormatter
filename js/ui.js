@@ -16,7 +16,9 @@ const advSettings = {
         showRituals: true,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights'],
-        groupUniques: false
+        groupUniques: false,
+        warOnly: false,
+        warDetected: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary'],
@@ -140,7 +142,14 @@ function handleParse(elements) {
     try {
         let parsedText;
         if (detectedMode === 'kingdom-news-log') {
-            parsedText = parseKingdomNewsLog(inputText, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
+            advSettings.kingdomNews.warDetected = hasWarEvents(inputText);
+            if (!advSettings.kingdomNews.warDetected) {
+                advSettings.kingdomNews.warOnly = false;
+            }
+            parsedText = parseKingdomNewsLog(inputText, {
+                uniqueWindow: advSettings.kingdomNews.uniqueWindow,
+                warOnly: advSettings.kingdomNews.warOnly
+            });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
         } else if (detectedMode === 'province-news') {
@@ -181,6 +190,10 @@ function handleClear(elements) {
     hideMessage(elements.outputText);
     elements.detectBadge.classList.add('hidden');
     updateParseButtonState(elements);
+
+    // Reset war detection state
+    advSettings.kingdomNews.warDetected = false;
+    advSettings.kingdomNews.warOnly = false;
 
     // Hide and collapse advanced settings panel
     lastRawInput = null;
@@ -470,6 +483,29 @@ function renderKingdomNewsSettings(container, elements) {
     groupingGroup.appendChild(groupingLabel);
     container.appendChild(groupingGroup);
 
+    // ── War Only (only shown when war events detected) ────────────────────────
+    if (advSettings.kingdomNews.warDetected) {
+        const warGroup = document.createElement('div');
+        warGroup.className = 'adv-group';
+
+        const warLabel = document.createElement('label');
+        warLabel.htmlFor = 'adv-kn-warOnly';
+
+        const warCheckbox = document.createElement('input');
+        warCheckbox.type = 'checkbox';
+        warCheckbox.id = 'adv-kn-warOnly';
+        warCheckbox.checked = advSettings.kingdomNews.warOnly;
+        warCheckbox.addEventListener('change', () => {
+            advSettings.kingdomNews.warOnly = warCheckbox.checked;
+            applyAndRerender(elements);
+        });
+
+        warLabel.appendChild(warCheckbox);
+        warLabel.appendChild(document.createTextNode(' War Only \u2014 show attacks involving war opponent only'));
+        warGroup.appendChild(warLabel);
+        container.appendChild(warGroup);
+    }
+
     // ── Section Order ────────────────────────────────────────────────────────
     const orderTitle = document.createElement('div');
     orderTitle.className = 'adv-group-title';
@@ -661,7 +697,10 @@ function applyAndRerender(elements) {
     try {
         let parsedText;
         if (lastDetectedMode === 'kingdom-news-log') {
-            parsedText = parseKingdomNewsLog(lastRawInput, { uniqueWindow: advSettings.kingdomNews.uniqueWindow });
+            parsedText = parseKingdomNewsLog(lastRawInput, {
+                uniqueWindow: advSettings.kingdomNews.uniqueWindow,
+                warOnly: advSettings.kingdomNews.warOnly
+            });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
         } else if (lastDetectedMode === 'province-news') {

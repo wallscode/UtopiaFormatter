@@ -1,0 +1,339 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  UtopiaFormatter — static site hosting (S3 + CloudFront) with GitHub Actions OIDC CI/CD.
+  Creates separate prod and dev buckets/distributions and an IAM role for GitHub Actions.
+  No account-specific values are hardcoded; all sensitive outputs must be added as
+  GitHub Secrets (see Outputs section).
+
+  Deploy command (fill in params.json from params.example.json first):
+    aws cloudformation deploy \
+      --template-file infra/template.yaml \
+      --stack-name utopia-formatter \
+      --capabilities CAPABILITY_IAM \
+      --parameter-overrides $(jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' infra/params.json)
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Description: GitHub username or organisation that owns the repository.
+
+  GitHubRepo:
+    Type: String
+    Default: UtopiaFormatter
+    Description: Repository name (case-sensitive).
+
+  # ── Custom domain (optional) ─────────────────────────────────────────────────
+  # Leave DomainNameProd / DomainNameDev empty to use the CloudFront *.cloudfront.net
+  # domain. If you provide a custom domain you must also supply the matching ACM
+  # certificate ARN (must be issued in us-east-1 for CloudFront) and the Route53
+  # hosted zone ID.
+
+  DomainNameProd:
+    Type: String
+    Default: ''
+    Description: Custom domain for production (e.g. utopiaformatter.com). Leave empty to skip.
+
+  DomainNameDev:
+    Type: String
+    Default: ''
+    Description: Custom domain for dev (e.g. dev.utopiaformatter.com). Leave empty to skip.
+
+  AcmCertificateArnProd:
+    Type: String
+    Default: ''
+    Description: ACM certificate ARN for the prod custom domain (must be in us-east-1).
+
+  AcmCertificateArnDev:
+    Type: String
+    Default: ''
+    Description: ACM certificate ARN for the dev custom domain (must be in us-east-1).
+
+  HostedZoneId:
+    Type: String
+    Default: ''
+    Description: Route53 hosted zone ID. Required only when using custom domains.
+
+Conditions:
+  UseCustomDomainProd: !Not [!Equals [!Ref DomainNameProd, '']]
+  UseCustomDomainDev:  !Not [!Equals [!Ref DomainNameDev,  '']]
+  CreateRoute53Prod:
+    !And
+      - !Condition UseCustomDomainProd
+      - !Not [!Equals [!Ref HostedZoneId, '']]
+  CreateRoute53Dev:
+    !And
+      - !Condition UseCustomDomainDev
+      - !Not [!Equals [!Ref HostedZoneId, '']]
+
+Resources:
+
+  # ── S3 Buckets ───────────────────────────────────────────────────────────────
+  # BucketName is intentionally omitted — CloudFormation auto-generates a
+  # non-guessable name. The name is exposed only via Outputs so it can be
+  # added as a GitHub Secret (never committed to source).
+
+  S3BucketProd:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  S3BucketDev:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # ── CloudFront Origin Access Control ─────────────────────────────────────────
+  # OAC (not the legacy OAI) — shared by both distributions.
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-oac'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # ── S3 Bucket Policies ───────────────────────────────────────────────────────
+  # Grants CloudFront OAC read access only. All other principals are implicitly
+  # denied because Block Public Access is enabled on the buckets.
+
+  S3BucketPolicyProd:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3BucketProd
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontOAC
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${S3BucketProd.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistProd}'
+
+  S3BucketPolicyDev:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3BucketDev
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontOAC
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${S3BucketDev.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistDev}'
+
+  # ── CloudFront Distributions ─────────────────────────────────────────────────
+
+  CloudFrontDistProd:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        Aliases: !If [UseCustomDomainProd, [!Ref DomainNameProd], !Ref AWS::NoValue]
+        ViewerCertificate: !If
+          - UseCustomDomainProd
+          - AcmCertificateArn: !Ref AcmCertificateArnProd
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt S3BucketProd.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          # CachingOptimized managed policy (default TTL 24h).
+          # A /* invalidation is created on every deploy so content is always
+          # fresh for users after deployment.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+
+  CloudFrontDistDev:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        Aliases: !If [UseCustomDomainDev, [!Ref DomainNameDev], !Ref AWS::NoValue]
+        ViewerCertificate: !If
+          - UseCustomDomainDev
+          - AcmCertificateArn: !Ref AcmCertificateArnDev
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt S3BucketDev.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+
+  # ── GitHub Actions OIDC ───────────────────────────────────────────────────────
+  # Allows GitHub Actions to authenticate with AWS using short-lived OIDC tokens.
+  # No long-lived credentials (access keys) are required.
+
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        # AWS ignores this thumbprint for GitHub's OIDC provider but the field
+        # is required by CloudFormation. Keep it current with GitHub's cert chain.
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                # Scoped to this repo only. ':*' allows all branches and events.
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+      Policies:
+        - PolicyName: DeployPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: S3Deploy
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt S3BucketProd.Arn
+                  - !Sub '${S3BucketProd.Arn}/*'
+                  - !GetAtt S3BucketDev.Arn
+                  - !Sub '${S3BucketDev.Arn}/*'
+              - Sid: CloudFrontInvalidate
+                Effect: Allow
+                Action: cloudfront:CreateInvalidation
+                Resource:
+                  - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistProd}'
+                  - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistDev}'
+
+  # ── Route53 Records (optional) ───────────────────────────────────────────────
+  # Only created when both a custom domain and a hosted zone ID are provided.
+
+  Route53RecordProd:
+    Type: AWS::Route53::RecordSet
+    Condition: CreateRoute53Prod
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainNameProd
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistProd.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID — this value is constant for all regions
+        EvaluateTargetHealth: false
+
+  Route53RecordDev:
+    Type: AWS::Route53::RecordSet
+    Condition: CreateRoute53Dev
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainNameDev
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistDev.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        EvaluateTargetHealth: false
+
+Outputs:
+  # Add all of these as GitHub Secrets after deploying the stack.
+  # Run: aws cloudformation describe-stacks --stack-name utopia-formatter \
+  #        --query 'Stacks[0].Outputs'
+
+  S3BucketProd:
+    Description: "→ GitHub Secret: S3_BUCKET_PROD"
+    Value: !Ref S3BucketProd
+
+  S3BucketDev:
+    Description: "→ GitHub Secret: S3_BUCKET_DEV"
+    Value: !Ref S3BucketDev
+
+  CloudFrontIdProd:
+    Description: "→ GitHub Secret: CLOUDFRONT_ID_PROD"
+    Value: !Ref CloudFrontDistProd
+
+  CloudFrontIdDev:
+    Description: "→ GitHub Secret: CLOUDFRONT_ID_DEV"
+    Value: !Ref CloudFrontDistDev
+
+  GitHubActionsRoleArn:
+    Description: "→ GitHub Secret: AWS_ROLE_ARN"
+    Value: !GetAtt GitHubActionsRole.Arn
+
+  CloudFrontUrlProd:
+    Description: Production URL (or use your custom domain)
+    Value: !Sub 'https://${CloudFrontDistProd.DomainName}'
+
+  CloudFrontUrlDev:
+    Description: Dev URL (or use your custom domain)
+    Value: !Sub 'https://${CloudFrontDistDev.DomainName}'

@@ -221,6 +221,138 @@ function detectOwnKingdom(lines) {
 }
 
 /**
+ * Returns true if the raw text contains war-related sentinel events.
+ * Used by the UI to decide whether to show the War Only option.
+ * @param {string} text
+ * @returns {boolean}
+ */
+function hasWarEvents(text) {
+    return text.includes('declared WAR') || text.includes('Our kingdom is now in a post-war period');
+}
+
+/**
+ * Pre-scans lines for war start/end events and builds an array of war periods.
+ * Handles multiple consecutive wars. Each period describes the opponent and time window.
+ * @param {string[]} lines - Cleaned, trimmed lines (same as relevantLines)
+ * @param {string|null} ownKingdomId - Own kingdom ID (for fallback opponent extraction)
+ * @returns {Array<{startDate:string|null, startDateVal:number|null, endDate:string|null, endDateVal:number|null, opponentId:string|null, opponentName:string|null}>}
+ */
+function detectWarPeriods(lines, ownKingdomId) {
+    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    const periods = [];
+    let openPeriod = null;
+    let prevContentLine = null;
+    let currentDate = null;
+
+    for (const line of lines) {
+        const dateMatch = line.match(dateRegex);
+        if (dateMatch) {
+            currentDate = dateMatch[0];
+        }
+
+        // War start: any line containing "declared WAR"
+        if (line.includes('declared WAR') && currentDate) {
+            const coordMatch = line.match(/\((\d+):(\d+)\)/);
+            const opponentId = coordMatch ? coordMatch[1] + ':' + coordMatch[2] : null;
+
+            let opponentName = null;
+            if (coordMatch) {
+                // Format: "We have declared WAR on <Name> (<X:Y>)!"
+                const weDecl = line.match(/declared WAR on (.+?) \(\d+:\d+\)/);
+                if (weDecl) {
+                    opponentName = weDecl[1].trim();
+                } else {
+                    // Format: "<Name> (<X:Y>) declared WAR..." or "<Name> (<X:Y>) has declared WAR..."
+                    const text = line.replace(dateRegex, '').trim();
+                    const theyDecl = text.match(/^(.+?) \(\d+:\d+\)/);
+                    if (theyDecl) {
+                        opponentName = theyDecl[1].trim();
+                    }
+                }
+            }
+
+            openPeriod = {
+                startDate: currentDate,
+                startDateVal: dateToNumber(currentDate),
+                endDate: null,
+                endDateVal: null,
+                opponentId,
+                opponentName
+            };
+            periods.push(openPeriod);
+        }
+
+        // War end: any line containing "Our kingdom is now in a post-war period"
+        if (line.includes('Our kingdom is now in a post-war period') && currentDate) {
+            if (openPeriod) {
+                openPeriod.endDate = currentDate;
+                openPeriod.endDateVal = dateToNumber(currentDate);
+                openPeriod = null;
+            } else {
+                // No start event in log — fallback: extract opponent from last combat event
+                let opponentId = null;
+                let opponentName = null;
+                if (prevContentLine) {
+                    const allCoords = [];
+                    for (const m of prevContentLine.matchAll(/\((\d+):(\d+)\)/g)) {
+                        allCoords.push(m[1] + ':' + m[2]);
+                    }
+                    if (ownKingdomId) {
+                        opponentId = allCoords.find(id => id !== ownKingdomId) || allCoords[0] || null;
+                    } else {
+                        opponentId = allCoords[0] || null;
+                    }
+                }
+                periods.push({
+                    startDate: null,
+                    startDateVal: null,
+                    endDate: currentDate,
+                    endDateVal: dateToNumber(currentDate),
+                    opponentId,
+                    opponentName
+                });
+            }
+        }
+
+        // Track last non-post-war content line (for fallback opponent extraction)
+        if (dateMatch && line.trim().length > dateMatch[0].length) {
+            if (!line.includes('Our kingdom is now in a post-war period') &&
+                !line.includes('withdrawn from war')) {
+                prevContentLine = line;
+            }
+        }
+    }
+
+    return periods;
+}
+
+/**
+ * Returns true if the event should be kept when War Only is active.
+ * The event must fall within at least one war period's time window AND involve
+ * the corresponding war opponent's (X:Y) coordinate.
+ * @param {number} dateVal - Numeric date of the event
+ * @param {string} line - Full raw line
+ * @param {Array} warPeriods - Detected war periods
+ * @returns {boolean}
+ */
+function linePassesWarFilter(dateVal, line, warPeriods) {
+    for (const period of warPeriods) {
+        // Time window check
+        if (period.startDateVal !== null && dateVal < period.startDateVal) continue;
+        if (period.endDateVal !== null && dateVal >= period.endDateVal) continue;
+
+        // Within window — if opponent unidentified, keep everything in this window
+        if (!period.opponentId) return true;
+
+        // Check if line involves the opponent's (X:Y)
+        for (const m of line.matchAll(/\((\d+):(\d+)\)/g)) {
+            if (m[1] + ':' + m[2] === period.opponentId) return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Calculates unique attack counts using a sliding day-window per attacker province.
  * A "unique" is defined as a 6-day window: all attacks by a province within 6 in-game
  * days of their first attack count as 1 unique; on the 7th day a new window opens.
@@ -422,6 +554,13 @@ function formatProvinceLogs(text) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
                 if (match) warHorsesStolen += parseInt(match[1].replace(/,/g, ""));
             }
+        } else if (!line.includes("begin casting") &&
+                   !line.includes("We have sent") &&
+                   !line.includes("Early indications show that our operation was a success") &&
+                   !line.includes("We are now closer to completing our ritual project") &&
+                   !line.includes("to the quest of launching a dragon") &&
+                   !(line.includes("the dragon is weakened by") && line.includes("troops"))) {
+            logUnrecognizedLine(line, 'province-logs');
         }
     }
 
@@ -530,6 +669,25 @@ function formatProvinceLogs(text) {
 }
 
 /**
+ * Sends an unrecognized parser line to the logging endpoint (browser only).
+ * Fire-and-forget: never blocks parsing, never surfaces errors to the user.
+ * Silently skips when running in Node.js (tests) or when logEndpoint is unset.
+ * @param {string} line - The unrecognized line (will be truncated to 500 chars)
+ * @param {string} context - Parser context: 'kingdom-news', 'province-logs', or 'province-news'
+ */
+function logUnrecognizedLine(line, context) {
+    if (typeof window === 'undefined') return; // Node.js / test environment
+    const endpoint = window.APP_CONFIG?.logEndpoint;
+    if (!endpoint) return;
+    fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ line: line.substring(0, 500), context }),
+        keepalive: true
+    }).catch(() => {}); // silently swallow all errors — never surface to user
+}
+
+/**
  * Parses full Kingdom News logs and summarizes attack data
  * @param {string} inputText - Raw Kingdom News log text
  * @returns {string} - Formatted Kingdom News summary
@@ -556,12 +714,18 @@ function parseKingdomNewsLog(inputText, options) {
     // Determine own kingdom from the text before main parse
     const detectedOwnKingdom = detectOwnKingdom(relevantLines);
 
+    // Pre-scan for war periods (used by War Only filter)
+    const warOnly = !!(options && options.warOnly);
+    const warPeriods = detectWarPeriods(relevantLines, detectedOwnKingdom);
+
     // Parse data structure
     const data = {
         startDate: null,
         endDate: null,
         kingdoms: {},
         ownKingdomId: detectedOwnKingdom,
+        warPeriods,
+        warOnly,
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
             mostLandLostTrad: { province: '', acres: 0 },
@@ -571,38 +735,60 @@ function parseKingdomNewsLog(inputText, options) {
             mostBouncesReceived: { provinces: [], count: 0 }
         }
     };
-    
+
     // Process each line
     let lastAttackDate = null;
-    
+    let currentDate = null;
+
     for (const line of relevantLines) {
         const dateMatch = line.match(dateRegex);
         if (dateMatch) {
+            currentDate = dateMatch[0];
             if (!data.startDate) {
-                data.startDate = dateMatch[0];
+                data.startDate = currentDate;
             }
             // Continue processing this line as an attack line too
         }
-        
+
         // Parse attack lines (skip lines that are only dates)
         if (line.trim().length > dateMatch[0].length) {
             const attackLine = line.replace(/^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+\s*/, '');
-            
+
             // Check if this is actually an attack line
             const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed \d+ people|razed \d+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
-            
+
+            // War Only filter: skip events that don't involve the war opponent in the war window
+            if (warOnly && warPeriods.length > 0) {
+                const dateVal = dateToNumber(currentDate);
+                if (!linePassesWarFilter(dateVal, line, warPeriods)) {
+                    continue;
+                }
+            }
+
             if (isAttack) {
                 if (dateMatch) {
-                    lastAttackDate = dateMatch[0];
+                    lastAttackDate = currentDate;
                 }
                 parseAttackLine(line, data, lastAttackDate);
             }
-            
+
             // Always parse special lines (dragons, rituals, etc.)
-            parseSpecialLine(line, data);
-            
-            // Stop at clear end points
-            if (line.includes('withdrawn from war') || line.includes('post-war period')) {
+            const handledBySpecial = parseSpecialLine(line, data);
+
+            // Log lines that are neither attacks nor any recognised special pattern.
+            // Known informational sentinels (war notices) are excluded — they're not
+            // parsing gaps, just events we intentionally don't count.
+            if (!isAttack && !handledBySpecial) {
+                const isKnownSentinel = line.includes('declared WAR') ||
+                                        line.includes('withdrawn from war') ||
+                                        line.includes('post-war period');
+                if (!isKnownSentinel) {
+                    logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
+                }
+            }
+
+            // In normal mode, stop at war end events (preserves existing behaviour)
+            if (!warOnly && (line.includes('withdrawn from war') || line.includes('post-war period'))) {
                 break;
             }
         }
@@ -971,7 +1157,7 @@ function parseSpecialLine(line, data) {
             const tm = line.match(/has begun the (\w+) Dragon project/);
             data.kingdoms[own].dragonsStarted.push(tm ? tm[1] : null);
         }
-        return;
+        return true;
     }
 
     // "[Province] has completed our dragon, [Name], and it sets flight to ravage Unnamed kingdom (X:Y)!"
@@ -981,7 +1167,7 @@ function parseSpecialLine(line, data) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].dragonsCompleted.push(null);
         }
-        return;
+        return true;
     }
 
     // "[Province] has slain the dragon, [Name], ravaging our lands!" — own province killed enemy dragon
@@ -990,7 +1176,7 @@ function parseSpecialLine(line, data) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].dragonsKilled.push(null);
         }
-        return;
+        return true;
     }
 
     // ── Enemy dragon actions (tracked on enemy kingdom for the "Suffered" section) ──
@@ -1014,7 +1200,7 @@ function parseSpecialLine(line, data) {
             const tm = line.match(/has begun the (\w+) Dragon project/);
             data.kingdoms[kId].dragonsStarted.push(tm ? tm[1] : null);
         }
-        return;
+        return true;
     }
 
     // "A [Type] Dragon, [Name], from Unnamed kingdom (X:Y) has begun ravaging our lands!"
@@ -1038,7 +1224,7 @@ function parseSpecialLine(line, data) {
             const tm = line.match(/\bA (\w+) Dragon,/);
             data.kingdoms[kId].dragonsCompleted.push(tm ? tm[1] : null);
         }
-        return;
+        return true;
     }
 
     // ── Ritual patterns ───────────────────────────────────────────────────
@@ -1047,7 +1233,7 @@ function parseSpecialLine(line, data) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].ritualsStarted++;
         }
-        return;
+        return true;
     }
 
     // "Sadly, we have failed summoning the ritual to cover our lands!"
@@ -1058,7 +1244,7 @@ function parseSpecialLine(line, data) {
             data.kingdoms[own].ritualsCompleted++;
             data.kingdoms[own].ritualsStarted++;
         }
-        return;
+        return true;
     }
 
     // "Our ritual [name] has been completed!" — successful ritual cast
@@ -1066,8 +1252,10 @@ function parseSpecialLine(line, data) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].ritualsCompleted++;
         }
-        return;
+        return true;
     }
+
+    return false;
 }
 
 /**
@@ -1118,8 +1306,35 @@ function formatKingdomNewsOutput(data, windowDays) {
         return known.length > 0 ? ' (' + known.join(', ') + ')' : '';
     }
 
+    // Helper: format a date string as "Month Day, YRN"
+    function fmtDate(dateStr) {
+        if (!dateStr) return null;
+        const m = dateStr.match(/^(\w+) (\d+) of (YR\d+)/);
+        return m ? `${m[1]} ${m[2]}, ${m[3]}` : dateStr;
+    }
+
     // Header
     output.push('Kingdom News Report');
+
+    // War Only header line(s) — inserted immediately after the title
+    if (data.warOnly && data.warPeriods && data.warPeriods.length > 0) {
+        for (const period of data.warPeriods) {
+            let vsStr;
+            if (!period.opponentId) {
+                vsStr = '(unknown)';
+            } else if (period.opponentName) {
+                vsStr = `${period.opponentName} (${period.opponentId})`;
+            } else {
+                vsStr = `(${period.opponentId})`;
+            }
+            const startStr = period.startDate ? fmtDate(period.startDate) : 'start of log';
+            const endStr   = period.endDate   ? fmtDate(period.endDate)   : 'present';
+            output.push(`[War Only] Showing attacks vs. ${vsStr} \u2014 ${startStr} to ${endStr}`);
+            if (!period.opponentId) {
+                output.push('[War Only] Warning: war opponent could not be identified \u2014 no filtering applied');
+            }
+        }
+    }
 
     // Date range (use dateToNumber for reliable day count)
     if (data.startDate && data.endDate) {
@@ -1433,6 +1648,17 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // Aid Received — Soldiers
+    m = ev.match(/We have received a shipment of ([\d,]+) soldiers from (.+?) \((.+?)\)\./);
+    if (m) {
+        const amount = parseInt(m[1].replace(/,/g, ''));
+        const sender = `${m[2]} (${m[3]})`;
+        data.aidByResource.soldiers.total += amount;
+        data.aidByResource.soldiers.shipments++;
+        data.aidByResource.soldiers.senders[sender] = (data.aidByResource.soldiers.senders[sender] || 0) + amount;
+        return;
+    }
+
     // Resources Stolen — Runes
     m = ev.match(/([\d,]+) runes of our runes were stolen!/);
     if (m) {
@@ -1614,6 +1840,9 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         };
         return;
     }
+
+    // No pattern matched — log for analysis
+    logUnrecognizedLine(ev, 'province-news');
 }
 
 /**
@@ -1630,61 +1859,43 @@ function formatProvinceNewsOutput(data) {
         out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);
     }
 
-    // Monthly Land
-    if (data.monthlyLand.length > 0) {
+    // Daily Login Bonus (monthly land grants + income, totals only)
+    const totalLoginAcres = data.monthlyLand.reduce((s, e) => s + e.acres, 0);
+    const totalLoginGold = data.monthlyIncome.reduce((s, e) => s + e.gold, 0);
+    const totalLoginBooks = data.monthlyIncome.reduce((s, e) => s + e.books, 0);
+    if (data.monthlyLand.length > 0 || data.monthlyIncome.length > 0) {
         out.push('');
-        out.push('Monthly Land:');
-        for (const e of data.monthlyLand) out.push(`${e.month}: ${e.acres} acres`);
-        const totalLand = data.monthlyLand.reduce((s, e) => s + e.acres, 0);
-        out.push(`Total: ${totalLand} acres`);
+        out.push('Daily Login Bonus:');
+        if (totalLoginAcres > 0) out.push(`${formatNumber(totalLoginAcres)} acres`);
+        if (totalLoginGold > 0) out.push(`${formatNumber(totalLoginGold)} gold coins`);
+        if (totalLoginBooks > 0) out.push(`${formatNumber(totalLoginBooks)} science books`);
     }
 
-    // Monthly Income
-    if (data.monthlyIncome.length > 0) {
+    // Scientists (counts by type, no individual names)
+    if (data.scientists.length > 0) {
+        const byField = {};
+        for (const s of data.scientists) {
+            byField[s.field] = (byField[s.field] || 0) + 1;
+        }
         out.push('');
-        out.push('Monthly Income:');
-        for (const e of data.monthlyIncome) {
-            out.push(`${e.month}: ${formatNumber(e.gold)} gold, ${formatNumber(e.books)} books`);
+        out.push('Scientists:');
+        for (const [field, count] of Object.entries(byField)) {
+            out.push(`${field}: ${count}`);
         }
     }
 
-    // Scientists
-    if (data.scientists.length > 0) {
-        out.push('');
-        out.push(`Scientists (${data.scientists.length} total):`);
-        for (const s of data.scientists) out.push(`${s.name} (${s.field})`);
-    }
-
-    // Aid Received
+    // Aid Received (totals by type only)
     const ar = data.aidByResource;
-    const hasAid = ar.runes.total > 0 || ar.gold.total > 0 || ar.bushels.total > 0 || ar.exploreAcres.total > 0;
+    const hasAid = ar.gold.total > 0 || ar.bushels.total > 0 || ar.runes.total > 0 ||
+                   ar.soldiers.total > 0 || ar.exploreAcres.total > 0;
     if (hasAid) {
         out.push('');
         out.push('Aid Received:');
-        if (ar.runes.total > 0) {
-            out.push(`Runes: ${formatNumber(ar.runes.total)} (from ${ar.runes.shipments} shipment${ar.runes.shipments !== 1 ? 's' : ''})`);
-            if (Object.keys(ar.runes.senders).length > 1) {
-                for (const [s, a] of Object.entries(ar.runes.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
-            }
-        }
-        if (ar.gold.total > 0) {
-            out.push(`Gold: ${formatNumber(ar.gold.total)}`);
-            if (Object.keys(ar.gold.senders).length > 1) {
-                for (const [s, a] of Object.entries(ar.gold.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
-            }
-        }
-        if (ar.bushels.total > 0) {
-            out.push(`Bushels: ${formatNumber(ar.bushels.total)}`);
-            if (Object.keys(ar.bushels.senders).length > 1) {
-                for (const [s, a] of Object.entries(ar.bushels.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
-            }
-        }
-        if (ar.exploreAcres.total > 0) {
-            out.push(`Explore Pool: ${formatNumber(ar.exploreAcres.total)} acres (${formatNumber(ar.exploreAcres.lost)} acres lost in transit)`);
-            if (Object.keys(ar.exploreAcres.senders).length > 1) {
-                for (const [s, a] of Object.entries(ar.exploreAcres.senders)) out.push(`  ${s}: ${formatNumber(a)}`);
-            }
-        }
+        if (ar.gold.total > 0) out.push(`${formatNumber(ar.gold.total)} gold coins`);
+        if (ar.bushels.total > 0) out.push(`${formatNumber(ar.bushels.total)} bushels`);
+        if (ar.runes.total > 0) out.push(`${formatNumber(ar.runes.total)} runes`);
+        if (ar.soldiers.total > 0) out.push(`${formatNumber(ar.soldiers.total)} soldiers`);
+        if (ar.exploreAcres.total > 0) out.push(`${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
     }
 
     // Resources Stolen
@@ -1695,10 +1906,13 @@ function formatProvinceNewsOutput(data) {
         if (data.stolen.gold > 0) out.push(`${formatNumber(data.stolen.gold)} gold coins`);
     }
 
-    // Thievery
-    if (data.thieveryDetected > 0 || data.thieveryIntercepted > 0) {
+    // Thievery Impacts (detected ops + effects of thievery ops against us)
+    const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
+        data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
+        data.turncoatGenerals > 0 || data.failedPropaganda > 0;
+    if (hasThieveryImpacts) {
         out.push('');
-        out.push('Thievery:');
+        out.push('Thievery Impacts:');
         if (data.thieveryDetected > 0) {
             out.push(`${data.thieveryDetected} operations detected (${data.thieveryUnknown} from unknown sources)`);
         }
@@ -1707,6 +1921,17 @@ function formatProvinceNewsOutput(data) {
         }
         const knownSources = Object.entries(data.thieveryBySource).sort((a, b) => b[1] - a[1]);
         for (const [src, cnt] of knownSources) out.push(`  ${src}: ${cnt}`);
+        if (data.rioting.count > 0)
+            out.push(`Incite Riots: ${data.rioting.count} occurrence(s), hampering tax for ${data.rioting.totalDays} days`);
+        if (data.manaDis.count > 0)
+            out.push(`Sabotage Wizards: ${data.manaDis.count} occurrence(s), disrupting mana for ${data.manaDis.totalDays} days`);
+        if (data.desertions.total > 0) {
+            const types = Object.keys(data.desertions.byType);
+            const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
+            out.push(`Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
+        }
+        if (data.failedPropaganda > 0) out.push(`Failed propaganda: ${data.failedPropaganda}`);
+        if (data.turncoatGenerals > 0) out.push(`Bribe General: ${data.turncoatGenerals}`);
     }
 
     // Spell Attempts
@@ -1742,46 +1967,23 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
-    // Hazards & Events
-    const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
-                           data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
-    const hasHazards = data.meteorDays > 0 || data.rioting.count > 0 || data.pitfalls.count > 0 ||
-                       data.manaDis.count > 0 || data.soldierUpkeep.count > 0 || data.desertions.total > 0 ||
-                       data.turncoatGenerals > 0 || data.failedPropaganda > 0;
-    if (hasHazards) {
+    // Magic Impacts (spell-based hazards)
+    const hasMagicImpacts = data.meteorDays > 0 || data.pitfalls.count > 0 || data.soldierUpkeep.count > 0;
+    if (hasMagicImpacts) {
         out.push('');
-        out.push('Hazards & Events:');
+        out.push('Magic Impacts:');
         if (data.meteorDays > 0) {
+            const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
+                                   data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
             const casParts = [];
-            if (data.meteorCasualties.peasants > 0)    casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
-            if (data.meteorCasualties.soldiers > 0)    casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
-            if (data.meteorCasualties.Magicians > 0)   casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
+            if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
+            if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
+            if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
             out.push(`Meteor shower: ${data.meteorDays} days of damage, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
         }
-        if (data.rioting.count > 0) {
-            out.push(`Rioting: ${data.rioting.count} occurrence(s), hampered tax for ${data.rioting.totalDays} days total`);
-        }
-        if (data.pitfalls.count > 0) {
-            out.push(`Pitfalls: ${data.pitfalls.count} occurrence(s)`);
-        }
-        if (data.manaDis.count > 0) {
-            out.push(`Mana disruptions: ${data.manaDis.count} (affecting ${data.manaDis.totalDays} days total)`);
-        }
-        if (data.soldierUpkeep.count > 0) {
-            out.push(`Soldier upkeep demands: ${data.soldierUpkeep.count}`);
-        }
-        if (data.desertions.total > 0) {
-            const types = Object.keys(data.desertions.byType);
-            if (types.length === 1) {
-                out.push(`Troop desertions: ${formatNumber(data.desertions.total)} troops (${types[0]})`);
-            } else {
-                const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
-                out.push(`Troop desertions: ${formatNumber(data.desertions.total)} troops (${breakdown})`);
-            }
-        }
-        if (data.turncoatGenerals > 0) out.push(`Turncoat general(s) executed: ${data.turncoatGenerals}`);
-        if (data.failedPropaganda > 0) out.push(`Failed propaganda attempts: ${data.failedPropaganda}`);
+        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${data.pitfalls.count} occurrence(s)`);
+        if (data.soldierUpkeep.count > 0) out.push(`Soldier upkeep demands: ${data.soldierUpkeep.count}`);
     }
 
     // War Outcomes
@@ -1825,6 +2027,7 @@ function parseProvinceNews(text, options = {}) {
             runes:        { total: 0, shipments: 0, senders: {} },
             gold:         { total: 0, shipments: 0, senders: {} },
             bushels:      { total: 0, shipments: 0, senders: {} },
+            soldiers:     { total: 0, shipments: 0, senders: {} },
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
         stolen:               { runes: 0, gold: 0 },
@@ -1943,6 +2146,11 @@ module.exports = {
     // Detection
     detectInputType,
     detectOwnKingdom,
+    hasWarEvents,
+    detectWarPeriods,
+
+    // Logging
+    logUnrecognizedLine,
 
     // Constants (for testing)
     ERROR_MESSAGES,
