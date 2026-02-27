@@ -1,6 +1,6 @@
 ---
 id: Uto-elz8
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:04:28Z
@@ -21,3 +21,4 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+In situations where it only shows We lost N thieves in the operation this is a situation where the operation was successful and the next line indicates the successful operation.  In these cases just keep track of the total number of thieves lost and consider that losses as part of successful operations.  Don't include that number in the output by default but include it in the advanced settings in the Thievery section to allow the user to show the number of thieves lost in successful operations.

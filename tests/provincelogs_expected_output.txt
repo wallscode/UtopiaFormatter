@@ -13,6 +13,7 @@ Propaganda:
 2 Bribe Thieves ops
 1 Sabotage Wizards for a total of 1 day
 76 failed thievery attempts (1589 thieves lost)
+339 thieves lost in successful operations
 
 Resources Stolen:
 1,404,731 gold coins stolen

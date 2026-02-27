@@ -36,6 +36,7 @@ const advSettings = {
         },
         showAverages: false,
         showFailedThievery: true,
+        showSuccessThieveryLosses: false,
         exploreDetails: false
     },
     provinceNews: {
@@ -713,6 +714,26 @@ function renderProvinceLogsSettings(container, elements) {
     failedGroup.appendChild(failedLabel);
     container.appendChild(failedGroup);
 
+    const successLossGroup = document.createElement('div');
+    successLossGroup.className = 'adv-group';
+
+    const successLossLabel = document.createElement('label');
+    successLossLabel.htmlFor = 'adv-pl-showSuccessThieveryLosses';
+
+    const successLossCheckbox = document.createElement('input');
+    successLossCheckbox.type = 'checkbox';
+    successLossCheckbox.id = 'adv-pl-showSuccessThieveryLosses';
+    successLossCheckbox.checked = advSettings.provinceLogs.showSuccessThieveryLosses;
+    successLossCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showSuccessThieveryLosses = successLossCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    successLossLabel.appendChild(successLossCheckbox);
+    successLossLabel.appendChild(document.createTextNode(' Show thieves lost in successful operations'));
+    successLossGroup.appendChild(successLossLabel);
+    container.appendChild(successLossGroup);
+
     const exploreGroup = document.createElement('div');
     exploreGroup.className = 'adv-group';
 
@@ -908,6 +929,10 @@ function applyProvinceLogsSettings(text) {
     // Add or strip per-line averages
     if (!advSettings.provinceLogs.showFailedThievery) {
         output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showSuccessThieveryLosses) {
+        output = output.split('\n').filter(line => !/thieves lost in successful operations/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.exploreDetails) {

@@ -434,6 +434,7 @@ function formatProvinceLogs(text) {
     let ritualCasts = 0;
     let failedThieveryCount = 0;
     let thiervesLostCount = 0;
+    let successThiervesLostCount = 0;
     let exploreAcres = 0;
     let exploreSoldiers = 0;
     let exploreCost = 0;
@@ -585,6 +586,12 @@ function formatProvinceLogs(text) {
             if (lostMatch) thiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
         }
 
+        // Parse thieves lost in successful operations
+        if (line.includes("We lost") && line.includes("thieves in the operation")) {
+            const lostMatch = line.match(/We lost ([\d,]+) thieves? in the operation/i);
+            if (lostMatch) successThiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
+        }
+
         // Parse exploration orders
         if (line.includes("to explore") && line.includes("expedition")) {
             const acresMatch = line.match(/to explore ([\d,]+) acres/i);
@@ -640,6 +647,7 @@ function formatProvinceLogs(text) {
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
                    !line.includes("You have given orders to commence work on") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
+                   !(line.includes("We lost") && line.includes("thieves in the operation")) &&
                    !line.includes("books allocated to") &&
                    !(line.includes("to explore") && line.includes("expedition")) &&
                    !(line.includes("You have ordered that") && line.includes("be trained"))) {
@@ -696,6 +704,9 @@ function formatProvinceLogs(text) {
 
     if (failedThieveryCount > 0) {
         output += `${failedThieveryCount} failed thievery attempt${failedThieveryCount !== 1 ? 's' : ''} (${thiervesLostCount} thieves lost)\n`;
+    }
+    if (successThiervesLostCount > 0) {
+        output += `${formatNumber(successThiervesLostCount)} thieves lost in successful operations\n`;
     }
 
     // Resources Stolen Summary
