@@ -21,3 +21,6 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is a ceasefire proposal.  It should be recorded in the Kingdom Relations section and should not be shown by default.
+
+Add a checkbox to the advanced settings to include ceasefire proposals in the Kingdom Relations section.

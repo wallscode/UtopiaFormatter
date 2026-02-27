@@ -21,3 +21,6 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This line indicates that a kingdom has cancelled a dragon project targeted at our kingdom.  It can be left out by default, but should be included in the Dragon Projects section if enabled in the advanced settings.
+
+Add a checkbox to the advanced settings to include cancelled dragon projects in the Dragon Projects section.ß

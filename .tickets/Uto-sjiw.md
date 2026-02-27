@@ -21,3 +21,4 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is a forum topic creation notification.  It can be ignored and should not be logged as unrecognized.

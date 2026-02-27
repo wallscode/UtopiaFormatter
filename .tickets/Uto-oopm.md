@@ -21,3 +21,5 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is a Ritual called Haste being successfully cast in our kingdom.  It should be recorded in the Rituals section and the type of Ritual should be included as well.  Make sure that the advanced settings section allows for Rituals to toggled off.
+

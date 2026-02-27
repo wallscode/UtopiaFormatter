@@ -21,3 +21,6 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is a military wage notification.  It should be recorded in the Military Training section and should not be shown by default.
+
+Add a checkbox to the advanced settings to include military wage notifications in the Military Training section.

@@ -21,3 +21,6 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+This is a ceasefire proposal withdrawal.  It can be left out by default, but should be included in the Kingdom Relations section if enabled in the advanced settings.
+
+Add a checkbox to the advanced settings to include ceasefire proposal withdrawals in the Kindgom Relations section.
