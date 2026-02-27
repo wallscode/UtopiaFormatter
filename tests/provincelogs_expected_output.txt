@@ -83,3 +83,5 @@ Military Training:
 6,001 archers
 1,590 thieves
 13 elf lords
+22,354 archers released
+12,856 soldiers released

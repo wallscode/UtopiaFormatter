@@ -37,6 +37,7 @@ const advSettings = {
         showAverages: false,
         showFailedThievery: true,
         showSuccessThieveryLosses: false,
+        showTroopsReleased: false,
         exploreDetails: false
     },
     provinceNews: {
@@ -753,6 +754,26 @@ function renderProvinceLogsSettings(container, elements) {
     exploreLabel.appendChild(document.createTextNode(' Show exploration soldier & cost details'));
     exploreGroup.appendChild(exploreLabel);
     container.appendChild(exploreGroup);
+
+    const releaseGroup = document.createElement('div');
+    releaseGroup.className = 'adv-group';
+
+    const releaseLabel = document.createElement('label');
+    releaseLabel.htmlFor = 'adv-pl-showTroopsReleased';
+
+    const releaseCheckbox = document.createElement('input');
+    releaseCheckbox.type = 'checkbox';
+    releaseCheckbox.id = 'adv-pl-showTroopsReleased';
+    releaseCheckbox.checked = advSettings.provinceLogs.showTroopsReleased;
+    releaseCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showTroopsReleased = releaseCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    releaseLabel.appendChild(releaseCheckbox);
+    releaseLabel.appendChild(document.createTextNode(' Show troops released from duty'));
+    releaseGroup.appendChild(releaseLabel);
+    container.appendChild(releaseGroup);
 }
 
 /**
@@ -933,6 +954,10 @@ function applyProvinceLogsSettings(text) {
 
     if (!advSettings.provinceLogs.showSuccessThieveryLosses) {
         output = output.split('\n').filter(line => !/thieves lost in successful operations/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showTroopsReleased) {
+        output = output.split('\n').filter(line => !/ released$/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.exploreDetails) {

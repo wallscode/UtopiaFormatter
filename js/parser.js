@@ -442,6 +442,7 @@ function formatProvinceLogs(text) {
     const constructionCounts = {};
     const scienceCounts = {};
     const trainingCounts = {};
+    const releaseCounts = {};
     
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -612,6 +613,16 @@ function formatProvinceLogs(text) {
             }
         }
 
+        // Parse military release orders
+        if (line.includes("You have ordered that") && line.includes("be released from duty")) {
+            const match = line.match(/You have ordered that ([\d,]+) (.+?) be released from duty/i);
+            if (match) {
+                const count = parseInt(match[1].replace(/,/g, ""));
+                const unit = match[2].trim().toLowerCase();
+                releaseCounts[unit] = (releaseCounts[unit] || 0) + count;
+            }
+        }
+
         // Parse science book allocation
         if (line.includes("books allocated to")) {
             const match = line.match(/([\d,]+) books allocated to (\w+)/i);
@@ -650,7 +661,8 @@ function formatProvinceLogs(text) {
                    !(line.includes("We lost") && line.includes("thieves in the operation")) &&
                    !line.includes("books allocated to") &&
                    !(line.includes("to explore") && line.includes("expedition")) &&
-                   !(line.includes("You have ordered that") && line.includes("be trained"))) {
+                   !(line.includes("You have ordered that") && line.includes("be trained")) &&
+                   !(line.includes("You have ordered that") && line.includes("be released from duty"))) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
@@ -793,13 +805,17 @@ function formatProvinceLogs(text) {
         output += `${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
     }
 
-    // Military Training (omitted when no training orders detected)
+    // Military Training (omitted when no training or release orders detected)
     const anyTraining = Object.keys(trainingCounts).length > 0;
-    if (anyTraining) {
+    const anyRelease = Object.keys(releaseCounts).length > 0;
+    if (anyTraining || anyRelease) {
         output += "\nMilitary Training:\n";
         Object.entries(trainingCounts)
             .sort((a, b) => b[1] - a[1])
             .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit}\n`; });
+        Object.entries(releaseCounts)
+            .sort((a, b) => b[1] - a[1])
+            .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit} released\n`; });
     }
 
     return output.trim();
