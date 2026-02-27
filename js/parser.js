@@ -440,6 +440,7 @@ function formatProvinceLogs(text) {
     let exploreCost = 0;
 
     const constructionCounts = {};
+    const razedCounts = {};
     const scienceCounts = {};
     const trainingCounts = {};
     const releaseCounts = {};
@@ -469,6 +470,7 @@ function formatProvinceLogs(text) {
         aidTotals[r] = 0;
     });
     PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { constructionCounts[b] = 0; });
+    PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { razedCounts[b] = 0; });
     PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
     // Main parsing loop
@@ -586,6 +588,27 @@ function formatProvinceLogs(text) {
             }
         }
 
+        // Parse building demolition
+        if (line.includes("You have destroyed")) {
+            const after = line.replace(/^.*You have destroyed\s+/i, '').replace(/\.?\s*$/, '');
+            const segments = after.replace(/ and /gi, ', ').split(/,\s*/);
+            for (const seg of segments) {
+                const m = seg.match(/^([\d,]+)\s+(.+)$/);
+                if (!m) continue;
+                const count = parseInt(m[1].replace(/,/g, ''));
+                const buildingText = m[2].trim().toLowerCase();
+                for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
+                    const bl = b.toLowerCase();
+                    if (buildingText === bl ||
+                        buildingText + 's' === bl ||
+                        (bl.endsWith('ies') && buildingText === bl.slice(0, -3) + 'y')) {
+                        razedCounts[b] += count;
+                        break;
+                    }
+                }
+            }
+        }
+
         // Parse failed thievery attempts
         if (line.includes("Sources have indicated the mission was foiled")) {
             failedThieveryCount++;
@@ -663,6 +686,7 @@ function formatProvinceLogs(text) {
                    !line.includes("to the quest of launching a dragon") &&
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
                    !line.includes("You have given orders to commence work on") &&
+                   !line.includes("You have destroyed") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
                    !(line.includes("We lost") && line.includes("thieves in the operation")) &&
                    !line.includes("books allocated to") &&
@@ -784,14 +808,19 @@ function formatProvinceLogs(text) {
         output += `${ritualCasts} successful ritual casts\n`;
     }
 
-    // Construction Summary (omitted when no construction orders detected)
+    // Construction Summary (omitted when no construction or demolition detected)
     const anyConstruction = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => constructionCounts[b] > 0);
-    if (anyConstruction) {
+    const anyRazed = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => razedCounts[b] > 0);
+    if (anyConstruction || anyRazed) {
         output += "\nConstruction Summary:\n";
         PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
             .filter(b => constructionCounts[b] > 0)
             .sort((a, b) => constructionCounts[b] - constructionCounts[a])
             .forEach(b => { output += `${formatNumber(constructionCounts[b])} ${b}\n`; });
+        PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
+            .filter(b => razedCounts[b] > 0)
+            .sort((a, b) => razedCounts[b] - razedCounts[a])
+            .forEach(b => { output += `${formatNumber(razedCounts[b])} ${b} razed\n`; });
     }
 
     // Science Summary (omitted when no science allocations detected)

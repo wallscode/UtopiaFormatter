@@ -37,6 +37,7 @@ const advSettings = {
         showAverages: false,
         showFailedThievery: true,
         showSuccessThieveryLosses: false,
+        showRazedBuildings: false,
         showTroopsReleased: false,
         exploreDetails: false
     },
@@ -735,6 +736,26 @@ function renderProvinceLogsSettings(container, elements) {
     successLossGroup.appendChild(successLossLabel);
     container.appendChild(successLossGroup);
 
+    const razedGroup = document.createElement('div');
+    razedGroup.className = 'adv-group';
+
+    const razedLabel = document.createElement('label');
+    razedLabel.htmlFor = 'adv-pl-showRazedBuildings';
+
+    const razedCheckbox = document.createElement('input');
+    razedCheckbox.type = 'checkbox';
+    razedCheckbox.id = 'adv-pl-showRazedBuildings';
+    razedCheckbox.checked = advSettings.provinceLogs.showRazedBuildings;
+    razedCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showRazedBuildings = razedCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    razedLabel.appendChild(razedCheckbox);
+    razedLabel.appendChild(document.createTextNode(' Show razed building summary'));
+    razedGroup.appendChild(razedLabel);
+    container.appendChild(razedGroup);
+
     const exploreGroup = document.createElement('div');
     exploreGroup.className = 'adv-group';
 
@@ -954,6 +975,10 @@ function applyProvinceLogsSettings(text) {
 
     if (!advSettings.provinceLogs.showSuccessThieveryLosses) {
         output = output.split('\n').filter(line => !/thieves lost in successful operations/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showRazedBuildings) {
+        output = output.split('\n').filter(line => !/ razed$/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showTroopsReleased) {

@@ -63,6 +63,9 @@ Construction Summary:
 81 Homes
 69 Farms
 49 Libraries
+220 Banks razed
+201 Thieves' Dens razed
+144 Forts razed
 
 Science Summary:
 196,560 books to CRIME
