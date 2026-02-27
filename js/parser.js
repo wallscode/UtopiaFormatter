@@ -2107,15 +2107,15 @@ function detectInputType(text) {
         /our thieves were able to steal/i,
     ];
 
-    // Province News: "Month Day of YR##<tab>" format — check first (most specific)
-    if (/\bof YR\d+\t/.test(text)) return 'province-news';
-
     const isKingdom = kingdomNewsPatterns.some(p => p.test(text));
     const isProvince = provinceLogsPatterns.some(p => p.test(text));
 
-    if (isKingdom && !isProvince) return 'kingdom-news-log';
     if (isProvince && !isKingdom) return 'province-logs';
     if (isKingdom) return 'kingdom-news-log'; // kingdom takes priority if both match
+
+    // Province News: "Month Day of YR##<tab>" format — checked last because province logs
+    // also use this date format; only reached when no operation/spell markers were found.
+    if (/\bof YR\d+\t/.test(text)) return 'province-news';
     return null;
 }
 
