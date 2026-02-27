@@ -1,6 +1,6 @@
 ---
 id: Uto-clzb
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T19:13:06Z
