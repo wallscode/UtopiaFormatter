@@ -13,7 +13,11 @@ const advSettings = {
         showMassacre: true,
         showPlunder: true,
         showDragons: true,
+        showDragonCancellations: false,
         showRituals: true,
+        showRitualCoverage: true,
+        showCeasefireProposals: false,
+        showCeasefireWithdrawals: false,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights'],
         groupUniques: false,
@@ -39,6 +43,8 @@ const advSettings = {
         showSuccessThieveryLosses: false,
         showRazedBuildings: false,
         showTroopsReleased: false,
+        showDraftPercentage: false,
+        showMilitaryWages: false,
         exploreDetails: false
     },
     provinceNews: {
@@ -410,11 +416,15 @@ function renderKingdomNewsSettings(container, elements) {
     container.appendChild(showHideTitle);
 
     const checkboxItems = [
-        { key: 'showLearn',    label: 'Learn attacks'   },
-        { key: 'showMassacre', label: 'Massacre attacks' },
-        { key: 'showPlunder',  label: 'Plunder attacks'  },
-        { key: 'showDragons',  label: 'Dragons'          },
-        { key: 'showRituals',  label: 'Rituals'          }
+        { key: 'showLearn',                label: 'Learn attacks'                  },
+        { key: 'showMassacre',             label: 'Massacre attacks'               },
+        { key: 'showPlunder',              label: 'Plunder attacks'                },
+        { key: 'showDragons',              label: 'Dragons'                        },
+        { key: 'showDragonCancellations',  label: 'Enemy dragon cancellations'     },
+        { key: 'showRituals',              label: 'Rituals started/completed'      },
+        { key: 'showRitualCoverage',       label: 'Ritual coverage of our lands'   },
+        { key: 'showCeasefireProposals',   label: 'Ceasefire proposals received'   },
+        { key: 'showCeasefireWithdrawals', label: 'Ceasefire withdrawals made'     }
     ];
 
     for (const item of checkboxItems) {
@@ -795,6 +805,46 @@ function renderProvinceLogsSettings(container, elements) {
     releaseLabel.appendChild(document.createTextNode(' Show troops released from duty'));
     releaseGroup.appendChild(releaseLabel);
     container.appendChild(releaseGroup);
+
+    const draftGroup = document.createElement('div');
+    draftGroup.className = 'adv-group';
+
+    const draftLabel = document.createElement('label');
+    draftLabel.htmlFor = 'adv-pl-showDraftPercentage';
+
+    const draftCheckbox = document.createElement('input');
+    draftCheckbox.type = 'checkbox';
+    draftCheckbox.id = 'adv-pl-showDraftPercentage';
+    draftCheckbox.checked = advSettings.provinceLogs.showDraftPercentage;
+    draftCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showDraftPercentage = draftCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    draftLabel.appendChild(draftCheckbox);
+    draftLabel.appendChild(document.createTextNode(' Show draft percentage'));
+    draftGroup.appendChild(draftLabel);
+    container.appendChild(draftGroup);
+
+    const wagesGroup = document.createElement('div');
+    wagesGroup.className = 'adv-group';
+
+    const wagesLabel = document.createElement('label');
+    wagesLabel.htmlFor = 'adv-pl-showMilitaryWages';
+
+    const wagesCheckbox = document.createElement('input');
+    wagesCheckbox.type = 'checkbox';
+    wagesCheckbox.id = 'adv-pl-showMilitaryWages';
+    wagesCheckbox.checked = advSettings.provinceLogs.showMilitaryWages;
+    wagesCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showMilitaryWages = wagesCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    wagesLabel.appendChild(wagesCheckbox);
+    wagesLabel.appendChild(document.createTextNode(' Show military wages'));
+    wagesGroup.appendChild(wagesLabel);
+    container.appendChild(wagesGroup);
 }
 
 /**
@@ -840,9 +890,13 @@ function applyKingdomNewsSettings(text) {
         if (!s.showLearn    && /^-- Learn:/.test(line))                          return false;
         if (!s.showMassacre && /^-- Massacre:/.test(line))                       return false;
         if (!s.showPlunder  && /^-- Plunder:/.test(line))                        return false;
-        if (!s.showDragons  && /^-- (Enemy )?Dragons (Started|Completed):/.test(line))   return false;
-        if (!s.showDragons  && /^-- Enemy Dragons Killed:/.test(line))                    return false;
-        if (!s.showRituals  && /^-- Rituals (Started|Completed):/.test(line))    return false;
+        if (!s.showDragons             && /^-- (Enemy )?Dragons (Started|Completed):/.test(line))   return false;
+        if (!s.showDragons             && /^-- Enemy Dragons Killed:/.test(line))                    return false;
+        if (!s.showDragonCancellations && /^-- Enemy Dragons Cancelled:/.test(line))                return false;
+        if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
+        if (!s.showRitualCoverage      && /^-- Ritual Coverage:/.test(line))                        return false;
+        if (!s.showCeasefireProposals  && /^-- Ceasefire Proposals Received:/.test(line))           return false;
+        if (!s.showCeasefireWithdrawals && /^-- Ceasefire Withdrawals Made:/.test(line))            return false;
         return true;
     }).join('\n');
 
@@ -979,6 +1033,14 @@ function applyProvinceLogsSettings(text) {
 
     if (!advSettings.provinceLogs.showRazedBuildings) {
         output = output.split('\n').filter(line => !/ razed$/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showDraftPercentage) {
+        output = output.split('\n').filter(line => !/^Draft:/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showMilitaryWages) {
+        output = output.split('\n').filter(line => !/^Military wages:/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showTroopsReleased) {

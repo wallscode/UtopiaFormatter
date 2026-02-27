@@ -1,4 +1,4 @@
-Summary of Province Log Events
+Summary of Province Log Events from UtopiaFormatter.com
 ----------------------------------------
 
 Thievery Summary:
@@ -90,3 +90,5 @@ Military Training:
 13 elf lords
 22,354 archers released
 12,856 soldiers released
+Draft: 0% of population
+Military wages: 200%

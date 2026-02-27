@@ -435,6 +435,11 @@ function formatProvinceLogs(text) {
     let failedThieveryCount = 0;
     let thiervesLostCount = 0;
     let successThiervesLostCount = 0;
+    let stealHorsesOps = 0;
+    let stealHorsesReleased = 0;
+    let stealHorsesBroughtBack = 0;
+    let draftPercent = null;
+    let militaryWagesPercent = null;
     let exploreAcres = 0;
     let exploreSoldiers = 0;
     let exploreCost = 0;
@@ -622,6 +627,28 @@ function formatProvinceLogs(text) {
             if (lostMatch) successThiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
         }
 
+        // Parse Steal War Horses thievery op
+        if (line.includes("release") && line.includes("horses") && line.includes("bring back")) {
+            const m = line.match(/release ([\d,]+) horses.*bring back ([\d,]+)/i);
+            if (m) {
+                stealHorsesOps++;
+                stealHorsesReleased += parseInt(m[1].replace(/,/g, ''));
+                stealHorsesBroughtBack += parseInt(m[2].replace(/,/g, ''));
+            }
+        }
+
+        // Parse draft percentage order
+        if (line.includes("You will draft up to") && line.includes("of your population")) {
+            const m = line.match(/You will draft up to (\d+)%/);
+            if (m) draftPercent = parseInt(m[1]);
+        }
+
+        // Parse military wages notification
+        if (line.includes("You will pay") && line.includes("of military wages")) {
+            const m = line.match(/You will pay (\d+)%/);
+            if (m) militaryWagesPercent = parseInt(m[1]);
+        }
+
         // Parse exploration orders
         if (line.includes("to explore") && line.includes("expedition")) {
             const acresMatch = line.match(/to explore ([\d,]+) acres/i);
@@ -692,13 +719,17 @@ function formatProvinceLogs(text) {
                    !line.includes("books allocated to") &&
                    !(line.includes("to explore") && line.includes("expedition")) &&
                    !(line.includes("You have ordered that") && line.includes("be trained")) &&
-                   !(line.includes("You have ordered that") && line.includes("be released from duty"))) {
+                   !(line.includes("You have ordered that") && line.includes("be released from duty")) &&
+                   !(line.includes("release") && line.includes("horses") && line.includes("bring back")) &&
+                   !line.includes("You will draft up to") &&
+                   !(line.includes("You will pay") && line.includes("of military wages")) &&
+                   !line.includes("Your topic was created successfully")) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
 
     // Build output
-    let output = "\nSummary of Province Log Events\n" + "-".repeat(40) + "\n";
+    let output = "\nSummary of Province Log Events from UtopiaFormatter.com\n" + "-".repeat(40) + "\n";
 
     // Thievery Summary
     output += "\nThievery Summary:\n";
@@ -744,6 +775,9 @@ function formatProvinceLogs(text) {
         }
     }
 
+    if (stealHorsesOps > 0) {
+        output += `${stealHorsesOps} Steal War Horses (${formatNumber(stealHorsesReleased)} released, ${formatNumber(stealHorsesBroughtBack)} stolen)\n`;
+    }
     if (failedThieveryCount > 0) {
         output += `${failedThieveryCount} failed thievery attempt${failedThieveryCount !== 1 ? 's' : ''} (${thiervesLostCount} thieves lost)\n`;
     }
@@ -840,10 +874,10 @@ function formatProvinceLogs(text) {
         output += `${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
     }
 
-    // Military Training (omitted when no training or release orders detected)
+    // Military Training (omitted when no training, release, draft, or wage data detected)
     const anyTraining = Object.keys(trainingCounts).length > 0;
     const anyRelease = Object.keys(releaseCounts).length > 0;
-    if (anyTraining || anyRelease) {
+    if (anyTraining || anyRelease || draftPercent !== null || militaryWagesPercent !== null) {
         output += "\nMilitary Training:\n";
         Object.entries(trainingCounts)
             .sort((a, b) => b[1] - a[1])
@@ -851,6 +885,8 @@ function formatProvinceLogs(text) {
         Object.entries(releaseCounts)
             .sort((a, b) => b[1] - a[1])
             .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit} released\n`; });
+        if (draftPercent !== null) output += `Draft: ${draftPercent}% of population\n`;
+        if (militaryWagesPercent !== null) output += `Military wages: ${militaryWagesPercent}%\n`;
     }
 
     return output.trim();
@@ -914,6 +950,9 @@ function parseKingdomNewsLog(inputText, options) {
         ownKingdomId: detectedOwnKingdom,
         warPeriods,
         warOnly,
+        ceasefireProposals: [],
+        ceasefireWithdrawals: [],
+        ritualCoverage: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
             mostLandLostTrad: { province: '', acres: 0 },
@@ -1087,6 +1126,7 @@ function parseAttackLine(line, data, dateStr) {
             dragonsStarted: [],
             dragonsCompleted: [],
             dragonsKilled: [],
+            dragonsCancelled: 0,
             ritualsStarted: 0,
             ritualsCompleted: 0
         };
@@ -1113,11 +1153,12 @@ function parseAttackLine(line, data, dateStr) {
             dragonsStarted: [],
             dragonsCompleted: [],
             dragonsKilled: [],
+            dragonsCancelled: 0,
             ritualsStarted: 0,
             ritualsCompleted: 0
         };
     }
-    
+
     // Initialize province data
     // Unknown provinces (number === 0) use just the name as the key (no "0 - " prefix)
     const attackerKey = attackerProvince.number > 0
@@ -1382,7 +1423,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    ritualsStarted: 0, ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
                 };
             }
             const tm = line.match(/has begun the (\w+) Dragon project/);
@@ -1406,7 +1447,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    ritualsStarted: 0, ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
                 };
             }
             const tm = line.match(/\bA (\w+) Dragon,/);
@@ -1440,6 +1481,49 @@ function parseSpecialLine(line, data) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].ritualsCompleted++;
         }
+        return true;
+    }
+
+    // "A ritual is covering our lands! (Haste)" — active ritual coverage
+    if (line.includes('A ritual is covering our lands')) {
+        const m = line.match(/\((\w+)\)/);
+        data.ritualCoverage.push(m ? m[1] : 'Unknown');
+        return true;
+    }
+
+    // "Unnamed kingdom (5:3) has cancelled their dragon project targeted at us."
+    if (line.includes('has cancelled their dragon project')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        if (m) {
+            const kId = m[1] + ':' + m[2];
+            if (!data.kingdoms[kId]) {
+                data.kingdoms[kId] = {
+                    attacksMade: 0, attacksSuffered: 0, acresGained: 0, acresLost: 0,
+                    provinces: {}, attacksMadeLog: [], attacksSufferedLog: [],
+                    tradMarch: { count: 0, acres: 0 }, ambush: { count: 0, acres: 0 },
+                    conquest: { count: 0, acres: 0 }, raze: { count: 0, acres: 0 },
+                    learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
+                    plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
+                    dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
+                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
+                };
+            }
+            data.kingdoms[kId].dragonsCancelled++;
+        }
+        return true;
+    }
+
+    // "We have withdrawn our ceasefire proposal to Unnamed kingdom (5:3)."
+    if (line.includes('have withdrawn our ceasefire proposal')) {
+        const m = line.match(/to Unnamed kingdom \((\d+):(\d+)\)/);
+        if (m) data.ceasefireWithdrawals.push(m[1] + ':' + m[2]);
+        return true;
+    }
+
+    // "Unnamed kingdom (5:3) has proposed a formal ceasefire with our kingdom."
+    if (line.includes('has proposed a formal ceasefire')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        if (m) data.ceasefireProposals.push(m[1] + ':' + m[2]);
         return true;
     }
 
@@ -1502,7 +1586,7 @@ function formatKingdomNewsOutput(data, windowDays) {
     }
 
     // Header
-    output.push('Kingdom News Report');
+    output.push('Kingdom News Report from UtopiaFormatter.com');
 
     // War Only header line(s) — inserted immediately after the title
     if (data.warOnly && data.warPeriods && data.warPeriods.length > 0) {
@@ -1606,6 +1690,21 @@ function formatKingdomNewsOutput(data, windowDays) {
             output.push(`-- Enemy Dragons Started: ${enemyDragonsStartedTypes.length}${dragonTypeSuffix(enemyDragonsStartedTypes)}`);
         if (enemyDragonsCompletedTypes.length > 0)
             output.push(`-- Enemy Dragons Completed: ${enemyDragonsCompletedTypes.length}${dragonTypeSuffix(enemyDragonsCompletedTypes)}`);
+        const enemyDragonsCancelled = Object.entries(data.kingdoms)
+            .filter(([kId]) => kId !== ownKingdomId)
+            .reduce((sum, [, kData]) => sum + (kData.dragonsCancelled || 0), 0);
+        if (enemyDragonsCancelled > 0)
+            output.push(`-- Enemy Dragons Cancelled: ${enemyDragonsCancelled}`);
+        if (data.ritualCoverage.length > 0) {
+            const rtCounts = {};
+            for (const t of data.ritualCoverage) rtCounts[t] = (rtCounts[t] || 0) + 1;
+            const typeStr = Object.entries(rtCounts).map(([t, n]) => n > 1 ? `${t} x${n}` : t).join(', ');
+            output.push(`-- Ritual Coverage: ${data.ritualCoverage.length} (${typeStr})`);
+        }
+        if (data.ceasefireProposals.length > 0)
+            output.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
+        if (data.ceasefireWithdrawals.length > 0)
+            output.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
 
         output.push('');
 
@@ -2041,7 +2140,7 @@ function parseProvinceNewsLine(ev, dateStr, data) {
 function formatProvinceNewsOutput(data) {
     const out = [];
 
-    out.push('Province News Report');
+    out.push('Province News Report from UtopiaFormatter.com');
     if (data.firstDate && data.lastDate) {
         const span = dateToNumber(data.lastDate) - dateToNumber(data.firstDate) + 1;
         out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);

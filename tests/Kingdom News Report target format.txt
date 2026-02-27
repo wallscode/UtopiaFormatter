@@ -1,4 +1,4 @@
-Kingdom News Report
+Kingdom News Report from UtopiaFormatter.com
 February 1, YR0 - April 2, YR0 (50 days)
 
 ** Own Kingdom 5:1 Summary **
@@ -24,6 +24,7 @@ Total Attacks Suffered: 196 (6959 acres)
 -- Bounces: 4 (2%)
 -- Enemy Dragons Started: 2 (Topaz, Topaz)
 -- Enemy Dragons Completed: 1 (Topaz)
+-- Enemy Dragons Cancelled: 1
 
 ** Own Kingdom 5:1 **
 Total land exchanged: +1132 (279/196)
