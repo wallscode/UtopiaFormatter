@@ -565,14 +565,20 @@ function formatProvinceLogs(text) {
             if (pointsMatch) dragonPointsTotal += parseInt(pointsMatch[1].replace(/,/g, ""));
         }
         
-        // Parse construction orders
+        // Parse construction orders (handles single and multi-building formats)
         if (line.includes("You have given orders to commence work on")) {
-            const match = line.match(/commence work on ([\d,]+) (.+?)\.?\s*$/i);
-            if (match) {
-                const count = parseInt(match[1].replace(/,/g, ""));
-                const buildingText = match[2].trim();
+            const after = line.replace(/^.*commence work on\s+/i, '').replace(/\.?\s*$/, '');
+            const segments = after.replace(/ and /gi, ', ').split(/,\s*/);
+            for (const seg of segments) {
+                const m = seg.match(/^([\d,]+)\s+(.+)$/);
+                if (!m) continue;
+                const count = parseInt(m[1].replace(/,/g, ''));
+                const buildingText = m[2].trim().toLowerCase();
                 for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
-                    if (buildingText.toLowerCase() === b.toLowerCase()) {
+                    const bl = b.toLowerCase();
+                    if (buildingText === bl ||
+                        buildingText + 's' === bl ||
+                        (bl.endsWith('ies') && buildingText === bl.slice(0, -3) + 'y')) {
                         constructionCounts[b] += count;
                         break;
                     }

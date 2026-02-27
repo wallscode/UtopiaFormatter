@@ -54,13 +54,15 @@ Ritual Summary:
 37 successful ritual casts
 
 Construction Summary:
-390 Banks
-244 Watch Towers
-108 Towers
-96 Forts
-11 Libraries
-11 Thieves' Dens
-7 Farms
+410 Banks
+269 Watch Towers
+236 Towers
+159 Forts
+87 Guilds
+86 Thieves' Dens
+81 Homes
+69 Farms
+49 Libraries
 
 Science Summary:
 196,560 books to CRIME
