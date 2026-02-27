@@ -34,7 +34,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Land Lust", text: "Our Land Lust over", impact: "acres" },
         { name: "Magic Ward", text: "Magic Ward", impact: "" },
         { name: "Meteor Showers", text: "Meteors will rain across the lands", impact: "days" },
-        { name: "Mystic Vortex", text: "A magic vortex overcomes", impact: "active spells" },
+        { name: "Mystic Vortex", text: "A magic vortex overcomes", impact: "active spell" },
         { name: "Nightmares", text: "Some were forced into rehabilitation", impact: "of the men" },
         { name: "Nightfall", text: "Nightfall", impact: "days" },
         { name: "Pitfalls", text: "Pitfalls will haunt the lands", impact: "days" },
@@ -634,6 +634,9 @@ function formatProvinceLogs(text) {
         const totalImpact = spellImpacts[spell.name];
         if (impact === "of the men") {
             impact = "troops";
+        }
+        if (impact === "active spell" && totalImpact !== 1) {
+            impact = "active spells";
         }
         if (impact) {
             output += `${count} ${spell.name} for a total of ${formatNumber(totalImpact)} ${impact}\n`;
