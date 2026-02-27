@@ -73,3 +73,12 @@ Science Summary:
 39,000 books to CHANNELING
 34,540 books to TOOLS
 22,400 books to ALCHEMY
+
+Exploration Summary:
+778 acres explored
+10,364 soldiers sent at a cost of 2,888,419 gold coins
+
+Military Training:
+6,001 archers
+1,590 thieves
+13 elf lords

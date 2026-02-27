@@ -21,7 +21,7 @@ const advSettings = {
         warDetected: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary'],
+        sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
         visible: {
             'Thievery Summary': true,
             'Resources Stolen': true,
@@ -30,10 +30,13 @@ const advSettings = {
             'Dragon Summary': true,
             'Ritual Summary': true,
             'Construction Summary': true,
-            'Science Summary': true
+            'Science Summary': true,
+            'Exploration Summary': true,
+            'Military Training': true
         },
         showAverages: false,
-        showFailedThievery: true
+        showFailedThievery: true,
+        exploreDetails: false
     },
     provinceNews: {
         sectionOrder: ['Monthly Land', 'Monthly Income', 'Scientists', 'Aid Received', 'Resources Stolen', 'Thievery', 'Spell Attempts', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'Hazards & Events', 'War Outcomes'],
@@ -709,6 +712,26 @@ function renderProvinceLogsSettings(container, elements) {
     failedLabel.appendChild(document.createTextNode(' Show failed thievery attempts'));
     failedGroup.appendChild(failedLabel);
     container.appendChild(failedGroup);
+
+    const exploreGroup = document.createElement('div');
+    exploreGroup.className = 'adv-group';
+
+    const exploreLabel = document.createElement('label');
+    exploreLabel.htmlFor = 'adv-pl-exploreDetails';
+
+    const exploreCheckbox = document.createElement('input');
+    exploreCheckbox.type = 'checkbox';
+    exploreCheckbox.id = 'adv-pl-exploreDetails';
+    exploreCheckbox.checked = advSettings.provinceLogs.exploreDetails;
+    exploreCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.exploreDetails = exploreCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    exploreLabel.appendChild(exploreCheckbox);
+    exploreLabel.appendChild(document.createTextNode(' Show exploration soldier & cost details'));
+    exploreGroup.appendChild(exploreLabel);
+    container.appendChild(exploreGroup);
 }
 
 /**
@@ -845,7 +868,8 @@ function applyProvinceLogsSettings(text) {
     const sectionNames = [
         'Thievery Summary', 'Resources Stolen', 'Spell Summary',
         'Aid Summary', 'Dragon Summary', 'Ritual Summary',
-        'Construction Summary', 'Science Summary'
+        'Construction Summary', 'Science Summary',
+        'Exploration Summary', 'Military Training'
     ];
 
     // Find header (everything before the first section)
@@ -884,6 +908,10 @@ function applyProvinceLogsSettings(text) {
     // Add or strip per-line averages
     if (!advSettings.provinceLogs.showFailedThievery) {
         output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.exploreDetails) {
+        output = output.split('\n').filter(line => !/soldiers sent at a cost of/.test(line)).join('\n');
     }
 
     if (advSettings.provinceLogs.showAverages) {

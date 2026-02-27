@@ -434,9 +434,13 @@ function formatProvinceLogs(text) {
     let ritualCasts = 0;
     let failedThieveryCount = 0;
     let thiervesLostCount = 0;
+    let exploreAcres = 0;
+    let exploreSoldiers = 0;
+    let exploreCost = 0;
 
     const constructionCounts = {};
     const scienceCounts = {};
+    const trainingCounts = {};
     
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -581,6 +585,26 @@ function formatProvinceLogs(text) {
             if (lostMatch) thiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
         }
 
+        // Parse exploration orders
+        if (line.includes("to explore") && line.includes("expedition")) {
+            const acresMatch = line.match(/to explore ([\d,]+) acres/i);
+            const soldiersMatch = line.match(/expedition of ([\d,]+) soldiers/i);
+            const costMatch = line.match(/cost of ([\d,]+) gold coins/i);
+            if (acresMatch) exploreAcres += parseInt(acresMatch[1].replace(/,/g, ""));
+            if (soldiersMatch) exploreSoldiers += parseInt(soldiersMatch[1].replace(/,/g, ""));
+            if (costMatch) exploreCost += parseInt(costMatch[1].replace(/,/g, ""));
+        }
+
+        // Parse military training orders
+        if (line.includes("You have ordered that") && line.includes("be trained")) {
+            const match = line.match(/You have ordered that ([\d,]+) (.+?) be trained/i);
+            if (match) {
+                const count = parseInt(match[1].replace(/,/g, ""));
+                const unit = match[2].trim().toLowerCase();
+                trainingCounts[unit] = (trainingCounts[unit] || 0) + count;
+            }
+        }
+
         // Parse science book allocation
         if (line.includes("books allocated to")) {
             const match = line.match(/([\d,]+) books allocated to (\w+)/i);
@@ -616,7 +640,9 @@ function formatProvinceLogs(text) {
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
                    !line.includes("You have given orders to commence work on") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
-                   !line.includes("books allocated to")) {
+                   !line.includes("books allocated to") &&
+                   !(line.includes("to explore") && line.includes("expedition")) &&
+                   !(line.includes("You have ordered that") && line.includes("be trained"))) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
@@ -747,6 +773,22 @@ function formatProvinceLogs(text) {
             .filter(s => scienceCounts[s] > 0)
             .sort((a, b) => scienceCounts[b] - scienceCounts[a])
             .forEach(s => { output += `${formatNumber(scienceCounts[s])} books to ${s}\n`; });
+    }
+
+    // Exploration Summary (omitted when no exploration orders detected)
+    if (exploreAcres > 0) {
+        output += "\nExploration Summary:\n";
+        output += `${formatNumber(exploreAcres)} acres explored\n`;
+        output += `${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
+    }
+
+    // Military Training (omitted when no training orders detected)
+    const anyTraining = Object.keys(trainingCounts).length > 0;
+    if (anyTraining) {
+        output += "\nMilitary Training:\n";
+        Object.entries(trainingCounts)
+            .sort((a, b) => b[1] - a[1])
+            .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit}\n`; });
     }
 
     return output.trim();
