@@ -50,20 +50,19 @@ const advSettings = {
         exploreDetails: false
     },
     provinceNews: {
-        sectionOrder: ['Monthly Land', 'Monthly Income', 'Scientists', 'Aid Received', 'Resources Stolen', 'Thievery', 'Spell Attempts', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'Hazards & Events', 'War Outcomes'],
+        sectionOrder: ['Thievery Impacts', 'Spell Impacts', 'Aid Received', 'Scientists Gained', 'Daily Login Bonus', 'Resources Stolen', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'War Outcomes'],
         visible: {
-            'Monthly Land': true,
-            'Monthly Income': true,
-            'Scientists': true,
-            'Aid Received': true,
-            'Resources Stolen': true,
-            'Thievery': true,
-            'Spell Attempts': true,
-            'Shadowlight Attacker IDs': true,
-            'Attacks Suffered': true,
-            'Hazards & Events': true,
-            'War Outcomes': true
-        }
+            'Thievery Impacts':       true,
+            'Spell Impacts':          true,
+            'Aid Received':           true,
+            'Scientists Gained':      true,
+            'Daily Login Bonus':      true,
+            'Resources Stolen':       false,
+            'Shadowlight Attacker IDs': false,
+            'Attacks Suffered':       false,
+            'War Outcomes':           false
+        },
+        showSourceIdentifiers: false
     }
 };
 
@@ -82,7 +81,9 @@ function getDomElements() {
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
-        advToggle: document.getElementById('adv-toggle')
+        advToggle: document.getElementById('adv-toggle'),
+        wideModeBtn: document.getElementById('wide-mode-btn'),
+        mainContainer: document.querySelector('main.container')
     };
 }
 
@@ -131,6 +132,21 @@ function setupEventListeners(elements) {
             elements.advContent.setAttribute('hidden', '');
         }
     });
+
+    // Wide mode toggle — restore saved preference and set up listener (Uto-lx6n)
+    if (elements.wideModeBtn && elements.mainContainer) {
+        if (localStorage.getItem('utopiaFormatter.wideMode') === '1') {
+            elements.mainContainer.classList.add('wide');
+            elements.wideModeBtn.textContent = 'Narrow mode';
+            elements.wideModeBtn.setAttribute('aria-pressed', 'true');
+        }
+        elements.wideModeBtn.addEventListener('click', () => {
+            const isWide = elements.mainContainer.classList.toggle('wide');
+            localStorage.setItem('utopiaFormatter.wideMode', isWide ? '1' : '0');
+            elements.wideModeBtn.textContent = isWide ? 'Narrow mode' : 'Wide mode';
+            elements.wideModeBtn.setAttribute('aria-pressed', String(isWide));
+        });
+    }
 }
 
 /**
@@ -1213,6 +1229,32 @@ function renderProvinceNewsSettings(container, elements) {
     }
 
     renderList();
+
+    // ── Display Options ───────────────────────────────────────────────────────
+    const optTitle = document.createElement('div');
+    optTitle.className = 'adv-group-title';
+    optTitle.textContent = 'Display Options';
+    container.appendChild(optTitle);
+
+    const srcGroup = document.createElement('div');
+    srcGroup.className = 'adv-group';
+
+    const srcLabel = document.createElement('label');
+    srcLabel.htmlFor = 'adv-pn-showSourceIdentifiers';
+
+    const srcCheckbox = document.createElement('input');
+    srcCheckbox.type = 'checkbox';
+    srcCheckbox.id = 'adv-pn-showSourceIdentifiers';
+    srcCheckbox.checked = advSettings.provinceNews.showSourceIdentifiers;
+    srcCheckbox.addEventListener('change', () => {
+        advSettings.provinceNews.showSourceIdentifiers = srcCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    srcLabel.appendChild(srcCheckbox);
+    srcLabel.appendChild(document.createTextNode(' Show attacker names in Thievery & Spell Impacts'));
+    srcGroup.appendChild(srcLabel);
+    container.appendChild(srcGroup);
 }
 
 /**
@@ -1245,6 +1287,18 @@ function applyProvinceNewsSettings(text) {
             if (otherStart > start && otherStart < end) end = otherStart;
         }
         sections[name] = text.substring(start + 2, end); // skip leading \n\n
+    }
+
+    // Strip source identifier lines when toggle is off (Uto-l42y)
+    if (!advSettings.provinceNews.showSourceIdentifiers) {
+        for (const sectionName of ['Thievery Impacts', 'Spell Impacts']) {
+            if (sections[sectionName]) {
+                sections[sectionName] = sections[sectionName]
+                    .split('\n')
+                    .filter(line => !line.startsWith('  '))
+                    .join('\n');
+            }
+        }
     }
 
     // Reconstruct in the user-defined order, skipping hidden sections

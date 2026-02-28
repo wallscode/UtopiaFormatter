@@ -41,6 +41,46 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Storms", text: "Storms will ravage", impact: "days" },
         { name: "Tornadoes", text: "Tornadoes scour the lands", impact: "acres of buildings" },
         { name: "Vermin", text: "Vermin", impact: "bushels" }
+        // TODO (Uto-h3gw): Crystal Ball and Crystal Eye — log text unknown; add once seen in wild
+    ],
+
+    // Espionage operations we run on enemy provinces (Province Logs).
+    // All log-text patterns are unknown — add text/impact once identified from real log data.
+    // Ref: https://wiki.utopia-game.com/index.php?title=Thievery (Uto-9row)
+    ESPIONAGE_OPS: [
+        { name: "Spy on Throne" },
+        { name: "Spy on Defense" },
+        { name: "Spy on Exploration" },
+        { name: "Snatch News" },
+        { name: "Infiltrate" },
+        { name: "Survey" },
+        { name: "Spy on Military" },
+        { name: "Spy on Sciences" }
+    ],
+
+    // Self spells we cast on our own province (Province Logs).
+    // All log-text patterns are unknown — add text/impact once identified from real log data.
+    // Ref: https://wiki.utopia-game.com/index.php?title=Mystics (Uto-h3gw)
+    SELF_SPELLS: [
+        // Defensive/Protection
+        { name: "Divine Shield" }, { name: "Greater Protection" }, { name: "Magic Shield" },
+        { name: "Minor Protection" }, { name: "Mist" }, { name: "Nature's Blessing" },
+        { name: "Reflect Magic" }, { name: "Shadowlight" },
+        // Army/Combat
+        { name: "Aggression" }, { name: "Animate Dead" }, { name: "Bloodlust" },
+        { name: "Fanaticism" }, { name: "Inspire Army" }, { name: "Mage's Fury" },
+        { name: "Patriotism" }, { name: "Quick Feet" }, { name: "Righteous Aggressor" },
+        { name: "Salvation" }, { name: "War Spoils" }, { name: "Wrath" },
+        // Thievery-Related
+        { name: "Clear Sight" }, { name: "Illuminate Shadows" },
+        { name: "Invisibility" }, { name: "Town Watch" },
+        // Economic/Production
+        { name: "Builders' Boon" }, { name: "Fertile Lands" },
+        { name: "Fountain of Knowledge" }, { name: "Love & Peace" },
+        { name: "Mind Focus" }, { name: "Miner's Mystique" },
+        { name: "Paradise" }, { name: "Tree of Gold" },
+        // Utility
+        { name: "Anonymity" }, { name: "Guile" }, { name: "Revelation" }
     ],
     
     OPERATIONS: [
@@ -184,6 +224,13 @@ function escapeRegExp(string) {
  */
 function formatNumber(n) {
     return n.toLocaleString();
+}
+
+/**
+ * Returns "N word" or "N words" based on count.
+ */
+function pluralize(n, word) {
+    return n === 1 ? `${n} ${word}` : `${n} ${word}s`;
 }
 
 /**
@@ -1975,6 +2022,17 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // Resources Stolen — Bushels (Uto-9row — pattern inferred; confirm from real log data)
+    m = ev.match(/([\d,]+) bushels.*stolen/i);
+    if (m) {
+        data.stolen.bushels += parseInt(m[1].replace(/,/g, ''));
+        return;
+    }
+
+    // Resources Stolen — War Horses (Uto-9row — TODO: log text unknown, confirm from real data)
+    // m = ev.match(/TODO war horses stolen pattern/);
+    // if (m) { data.stolen.warHorses += ...; return; }
+
     // Shadowlight — Attacker identified (check before thievery interception)
     m = ev.match(/Shadowlight has revealed that (.+?) \((.+?)\) was responsible for this attack\./);
     if (m) {
@@ -1986,6 +2044,8 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     m = ev.match(/Shadowlight has revealed thieves from (.+?) \((.+?)\) causing trouble and prevented/);
     if (m) {
         data.thieveryIntercepted++;
+        const source = `${m[1]} (${m[2]})`;
+        data.interceptedBySource[source] = (data.interceptedBySource[source] || 0) + 1;
         return;
     }
 
@@ -2074,10 +2134,11 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
-    // Soldier upkeep demands
+    // Greed (Soldier upkeep demands)
     m = ev.match(/Enemies have convinced our soldiers to demand more money for upkeep for (\d+) days\./);
     if (m) {
-        data.soldierUpkeep.count++;
+        data.greed.count++;
+        data.greed.totalDays += parseInt(m[1]);
         return;
     }
 
@@ -2143,6 +2204,25 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // Daily login bonus (Uto-akkk)
+    if (ev.startsWith('Your people appreciate')) {
+        if (ev.includes('extreme')) {
+            data.loginBonus.extreme++;
+        } else if (ev.includes('impressive')) {
+            data.loginBonus.impressive++;
+        } else {
+            data.loginBonus.unknown++;
+            logUnrecognizedLine(ev, 'province-news'); // capture 1-hr tier text when seen
+        }
+        const acresM = ev.match(/([\d,]+)\s+acres/i);
+        if (acresM) data.loginBonus.acres += parseInt(acresM[1].replace(/,/g, ''));
+        const goldM = ev.match(/([\d,]+)\s+gold coins/i);
+        if (goldM) data.loginBonus.gold += parseInt(goldM[1].replace(/,/g, ''));
+        const booksM = ev.match(/([\d,]+)\s+(?:science )?books/i);
+        if (booksM) data.loginBonus.books += parseInt(booksM[1].replace(/,/g, ''));
+        return;
+    }
+
     // No pattern matched — log for analysis
     logUnrecognizedLine(ev, 'province-news');
 }
@@ -2161,54 +2241,64 @@ function formatProvinceNewsOutput(data) {
         out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);
     }
 
-    // Daily Login Bonus (monthly land grants + income, totals only)
-    const totalLoginAcres = data.monthlyLand.reduce((s, e) => s + e.acres, 0);
-    const totalLoginGold = data.monthlyIncome.reduce((s, e) => s + e.gold, 0);
-    const totalLoginBooks = data.monthlyIncome.reduce((s, e) => s + e.books, 0);
-    if (data.monthlyLand.length > 0 || data.monthlyIncome.length > 0) {
+    // Daily Login Bonus — monthly grants + "Your people appreciate" events (Uto-akkk, Uto-l42y)
+    const totalLoginAcres = data.monthlyLand.reduce((s, e) => s + e.acres, 0) + data.loginBonus.acres;
+    const totalLoginGold  = data.monthlyIncome.reduce((s, e) => s + e.gold, 0) + data.loginBonus.gold;
+    const totalLoginBooks = data.monthlyIncome.reduce((s, e) => s + e.books, 0) + data.loginBonus.books;
+    const totalLoginBonuses = data.loginBonus.extreme + data.loginBonus.impressive + data.loginBonus.unknown;
+    if (data.monthlyLand.length > 0 || data.monthlyIncome.length > 0 || totalLoginBonuses > 0) {
         out.push('');
         out.push('Daily Login Bonus:');
+        if (totalLoginBonuses > 0) {
+            const parts = [];
+            if (data.loginBonus.extreme > 0)    parts.push(`${data.loginBonus.extreme} extreme`);
+            if (data.loginBonus.impressive > 0) parts.push(`${data.loginBonus.impressive} impressive`);
+            if (data.loginBonus.unknown > 0)    parts.push(`${data.loginBonus.unknown} unknown`);
+            out.push(`${totalLoginBonuses} total (${parts.join(', ')})`);
+        }
         if (totalLoginAcres > 0) out.push(`${formatNumber(totalLoginAcres)} acres`);
-        if (totalLoginGold > 0) out.push(`${formatNumber(totalLoginGold)} gold coins`);
+        if (totalLoginGold  > 0) out.push(`${formatNumber(totalLoginGold)} gold coins`);
         if (totalLoginBooks > 0) out.push(`${formatNumber(totalLoginBooks)} science books`);
     }
 
-    // Scientists (counts by type, no individual names)
+    // Scientists Gained (Uto-l42y)
     if (data.scientists.length > 0) {
         const byField = {};
         for (const s of data.scientists) {
             byField[s.field] = (byField[s.field] || 0) + 1;
         }
         out.push('');
-        out.push('Scientists:');
+        out.push('Scientists Gained:');
         for (const [field, count] of Object.entries(byField)) {
             out.push(`${field}: ${count}`);
         }
     }
 
-    // Aid Received (totals by type only)
+    // Aid Received
     const ar = data.aidByResource;
     const hasAid = ar.gold.total > 0 || ar.bushels.total > 0 || ar.runes.total > 0 ||
                    ar.soldiers.total > 0 || ar.exploreAcres.total > 0;
     if (hasAid) {
         out.push('');
         out.push('Aid Received:');
-        if (ar.gold.total > 0) out.push(`${formatNumber(ar.gold.total)} gold coins`);
-        if (ar.bushels.total > 0) out.push(`${formatNumber(ar.bushels.total)} bushels`);
-        if (ar.runes.total > 0) out.push(`${formatNumber(ar.runes.total)} runes`);
-        if (ar.soldiers.total > 0) out.push(`${formatNumber(ar.soldiers.total)} soldiers`);
+        if (ar.gold.total > 0)         out.push(`${formatNumber(ar.gold.total)} gold coins`);
+        if (ar.bushels.total > 0)      out.push(`${formatNumber(ar.bushels.total)} bushels`);
+        if (ar.runes.total > 0)        out.push(`${formatNumber(ar.runes.total)} runes`);
+        if (ar.soldiers.total > 0)     out.push(`${formatNumber(ar.soldiers.total)} soldiers`);
         if (ar.exploreAcres.total > 0) out.push(`${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
     }
 
-    // Resources Stolen
-    if (data.stolen.runes > 0 || data.stolen.gold > 0) {
+    // Resources Stolen (Uto-9row: added bushels and warHorses)
+    if (data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0) {
         out.push('');
         out.push('Resources Stolen:');
-        if (data.stolen.runes > 0) out.push(`${formatNumber(data.stolen.runes)} runes`);
-        if (data.stolen.gold > 0) out.push(`${formatNumber(data.stolen.gold)} gold coins`);
+        if (data.stolen.gold > 0)      out.push(`${formatNumber(data.stolen.gold)} gold coins`);
+        if (data.stolen.bushels > 0)   out.push(`${formatNumber(data.stolen.bushels)} bushels`);
+        if (data.stolen.runes > 0)     out.push(`${formatNumber(data.stolen.runes)} runes`);
+        if (data.stolen.warHorses > 0) out.push(`${formatNumber(data.stolen.warHorses)} war horses`);
     }
 
-    // Thievery Impacts (detected ops + effects of thievery ops against us)
+    // Thievery Impacts (Uto-l42y: intercepted source tracking; Uto-ig81: pluralize; Uto-v63f: simplified days)
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
         data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
         data.turncoatGenerals > 0 || data.failedPropaganda > 0;
@@ -2217,31 +2307,50 @@ function formatProvinceNewsOutput(data) {
         out.push('Thievery Impacts:');
         if (data.thieveryDetected > 0) {
             out.push(`${data.thieveryDetected} operations detected (${data.thieveryUnknown} from unknown sources)`);
+            const knownSources = Object.entries(data.thieveryBySource).sort((a, b) => b[1] - a[1]);
+            for (const [src, cnt] of knownSources) out.push(`  ${src}: ${cnt}`);
         }
         if (data.thieveryIntercepted > 0) {
             out.push(`${data.thieveryIntercepted} operations intercepted by Shadowlight`);
+            const interceptedSources = Object.entries(data.interceptedBySource).sort((a, b) => b[1] - a[1]);
+            for (const [src, cnt] of interceptedSources) out.push(`  ${src}: ${cnt}`);
         }
-        const knownSources = Object.entries(data.thieveryBySource).sort((a, b) => b[1] - a[1]);
-        for (const [src, cnt] of knownSources) out.push(`  ${src}: ${cnt}`);
         if (data.rioting.count > 0)
-            out.push(`Incite Riots: ${data.rioting.count} occurrence(s), hampering tax for ${data.rioting.totalDays} days`);
+            out.push(`Incite Riots: ${pluralize(data.rioting.count, 'occurrence')}, ${data.rioting.totalDays} days`);
         if (data.manaDis.count > 0)
-            out.push(`Sabotage Wizards: ${data.manaDis.count} occurrence(s), disrupting mana for ${data.manaDis.totalDays} days`);
+            out.push(`Sabotage Wizards: ${pluralize(data.manaDis.count, 'occurrence')}, ${data.manaDis.totalDays} days`);
         if (data.desertions.total > 0) {
             const types = Object.keys(data.desertions.byType);
             const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
             out.push(`Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
         }
-        if (data.failedPropaganda > 0) out.push(`Failed propaganda: ${data.failedPropaganda}`);
-        if (data.turncoatGenerals > 0) out.push(`Bribe General: ${data.turncoatGenerals}`);
+        if (data.failedPropaganda > 0)  out.push(`Failed propaganda: ${data.failedPropaganda}`);
+        if (data.turncoatGenerals > 0)  out.push(`Bribe General: ${data.turncoatGenerals}`);
     }
 
-    // Spell Attempts
-    if (data.spellAttempts > 0) {
+    // Spell Impacts — spell attempts + magical hazards merged (Uto-l42y, Uto-ccjb, Uto-ig81, Uto-v63f)
+    const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
+        data.pitfalls.count > 0 || data.greed.count > 0;
+    if (hasSpellImpacts) {
         out.push('');
-        out.push(`Spell Attempts: ${data.spellAttempts}`);
-        const sources = Object.entries(data.spellsBySource).sort((a, b) => b[1] - a[1]);
-        for (const [src, cnt] of sources) out.push(`  ${src}: ${cnt}`);
+        out.push('Spell Impacts:');
+        if (data.spellAttempts > 0) {
+            out.push(pluralize(data.spellAttempts, 'attempt'));
+            const sources = Object.entries(data.spellsBySource).sort((a, b) => b[1] - a[1]);
+            for (const [src, cnt] of sources) out.push(`  ${src}: ${cnt}`);
+        }
+        if (data.meteorDays > 0) {
+            const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
+                                   data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
+            const casParts = [];
+            if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
+            if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
+            if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
+            if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
+            out.push(`Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
+        }
+        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}`);
+        if (data.greed.count > 0)    out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
     }
 
     // Shadowlight Attacker IDs
@@ -2267,25 +2376,6 @@ function formatProvinceNewsOutput(data) {
                 out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.booksLooted)} books (learn)`);
             }
         }
-    }
-
-    // Magic Impacts (spell-based hazards)
-    const hasMagicImpacts = data.meteorDays > 0 || data.pitfalls.count > 0 || data.soldierUpkeep.count > 0;
-    if (hasMagicImpacts) {
-        out.push('');
-        out.push('Magic Impacts:');
-        if (data.meteorDays > 0) {
-            const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
-                                   data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
-            const casParts = [];
-            if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
-            if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
-            if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
-            if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
-            out.push(`Meteor shower: ${data.meteorDays} days of damage, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
-        }
-        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${data.pitfalls.count} occurrence(s)`);
-        if (data.soldierUpkeep.count > 0) out.push(`Soldier upkeep demands: ${data.soldierUpkeep.count}`);
     }
 
     // War Outcomes
@@ -2324,6 +2414,7 @@ function parseProvinceNews(text, options = {}) {
         lastDate: null,
         monthlyLand: [],
         monthlyIncome: [],
+        loginBonus:           { extreme: 0, impressive: 0, unknown: 0, acres: 0, gold: 0, books: 0 },
         scientists: [],
         aidByResource: {
             runes:        { total: 0, shipments: 0, senders: {} },
@@ -2332,11 +2423,12 @@ function parseProvinceNews(text, options = {}) {
             soldiers:     { total: 0, shipments: 0, senders: {} },
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
-        stolen:               { runes: 0, gold: 0 },
+        stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         thieveryDetected:     0,
         thieveryUnknown:      0,
         thieveryIntercepted:  0,
         thieveryBySource:     {},
+        interceptedBySource:  {},
         spellAttempts:        0,
         spellsBySource:       {},
         shadowlightAttackers: [],
@@ -2346,7 +2438,7 @@ function parseProvinceNews(text, options = {}) {
         rioting:              { count: 0, totalDays: 0 },
         pitfalls:             { count: 0 },
         manaDis:              { count: 0, totalDays: 0 },
-        soldierUpkeep:        { count: 0 },
+        greed:                { count: 0, totalDays: 0 },
         desertions:           { total: 0, byType: {} },
         turncoatGenerals:     0,
         failedPropaganda:     0,

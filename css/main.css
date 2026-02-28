@@ -22,6 +22,17 @@ body {
     padding: 20px;
 }
 
+/* Fluid container on large screens (Uto-lx6n) */
+@media (min-width: 1400px) {
+    .container {
+        max-width: min(1600px, 90vw);
+    }
+}
+
+.container.wide {
+    max-width: 95vw;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
@@ -36,6 +47,43 @@ header {
     margin-bottom: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.header-content {
+    position: relative;
+    display: inline-block;
+}
+
+/* Wide mode toggle button (Uto-lx6n) */
+#wide-mode-btn {
+    position: absolute;
+    top: 50%;
+    right: -1rem;
+    transform: translateY(-50%);
+    background: rgba(138, 175, 200, 0.1);
+    border: 1px solid rgba(138, 175, 200, 0.3);
+    border-radius: 6px;
+    color: #8aafc8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    white-space: nowrap;
+    min-width: unset;
+    min-height: unset;
+}
+
+#wide-mode-btn:hover {
+    background: rgba(138, 175, 200, 0.2);
+    transform: translateY(-50%);
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    #wide-mode-btn {
+        display: none;
+    }
 }
 
 header h1 {
