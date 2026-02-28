@@ -2167,6 +2167,50 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // Non-instant offensive spells — Province News exact message text not yet confirmed;
+    // patterns are derived from Province Logs cast messages and will match the likely
+    // victim-perspective wording. Update the regex once real Province News data is seen.
+
+    // Blizzard ("Blizzards will beset the works of [province] for N days!" → victim view)
+    m = ev.match(/[Bb]lizzard.{0,80}?(\d+) days?/);
+    if (m) { data.blizzard.count++; data.blizzard.totalDays += parseInt(m[1]); return; }
+
+    // Chastity ("womenfolk have taken a vow of chastity for N days!")
+    m = ev.match(/vow of chastity for (\d+) days?/);
+    if (m) { data.chastity.count++; data.chastity.totalDays += parseInt(m[1]); return; }
+
+    // Droughts ("A drought will reign over our lands for N days!")
+    m = ev.match(/[Dd]rought.{0,80}?(\d+) days?/);
+    if (m) { data.droughts.count++; data.droughts.totalDays += parseInt(m[1]); return; }
+
+    // Explosions ("Explosions will rock our aid shipments for N days!")
+    m = ev.match(/[Ee]xplosion.{0,80}?(\d+) days?/);
+    if (m) { data.explosions.count++; data.explosions.totalDays += parseInt(m[1]); return; }
+
+    // Expose Thieves ("Enemies have exposed our thieves for N days!" or similar)
+    m = ev.match(/[Ee]xpos(?:e|ed).{0,80}?(?:thieves?|stealth).{0,80}?(\d+) days?/);
+    if (m) { data.exposeThieves.count++; data.exposeThieves.totalDays += parseInt(m[1]); return; }
+
+    // Gluttony ("The gluttony of our people has increased for N days!")
+    m = ev.match(/[Gg]luttony.{0,80}?(\d+) days?/);
+    if (m) { data.gluttony.count++; data.gluttony.totalDays += parseInt(m[1]); return; }
+
+    // Magic Ward ("A Magic Ward has been placed on our lands for N days!" or similar)
+    m = ev.match(/[Mm]agic [Ww]ard.{0,80}?(\d+) days?/);
+    if (m) { data.magicWard.count++; data.magicWard.totalDays += parseInt(m[1]); return; }
+
+    // Nightfall (wiki: "8 ticks"; Province News may say days or ticks)
+    m = ev.match(/[Nn]ightfall.{0,80}?(\d+) (?:days?|ticks?)/);
+    if (m) { data.nightfall.count++; data.nightfall.totalDays += parseInt(m[1]); return; }
+
+    // Sloth ("Slothful behavior has gripped our province for N days!" or similar)
+    m = ev.match(/[Ss]loth.{0,80}?(\d+) days?/);
+    if (m) { data.sloth.count++; data.sloth.totalDays += parseInt(m[1]); return; }
+
+    // Storms ("Storms will ravage our lands for N days!")
+    m = ev.match(/[Ss]torms?.{0,80}?(\d+) days?/);
+    if (m) { data.storms.count++; data.storms.totalDays += parseInt(m[1]); return; }
+
     // Troop desertions — wizards
     m = ev.match(/(\d+) wizards of our wizards abandoned us hoping for a better life!/);
     if (m) {
@@ -2349,8 +2393,14 @@ function formatProvinceNewsOutput(data) {
     }
 
     // Spell Impacts — spell attempts + magical hazards merged (Uto-l42y, Uto-ccjb, Uto-ig81, Uto-v63f)
+    const durationSpells = [
+        data.pitfalls, data.greed,
+        data.blizzard, data.chastity, data.droughts, data.explosions,
+        data.exposeThieves, data.gluttony, data.magicWard,
+        data.nightfall, data.sloth, data.storms
+    ];
     const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
-        data.pitfalls.count > 0 || data.greed.count > 0;
+        durationSpells.some(s => s.count > 0);
     if (hasSpellImpacts) {
         out.push('');
         out.push('Spell Impacts:');
@@ -2369,8 +2419,18 @@ function formatProvinceNewsOutput(data) {
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
             out.push(`Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
         }
-        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
-        if (data.greed.count > 0)    out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
+        if (data.pitfalls.count > 0)      out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
+        if (data.greed.count > 0)         out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
+        if (data.blizzard.count > 0)      out.push(`Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
+        if (data.chastity.count > 0)      out.push(`Chastity: ${pluralize(data.chastity.count, 'occurrence')}, ${data.chastity.totalDays} days`);
+        if (data.droughts.count > 0)      out.push(`Droughts: ${pluralize(data.droughts.count, 'occurrence')}, ${data.droughts.totalDays} days`);
+        if (data.explosions.count > 0)    out.push(`Explosions: ${pluralize(data.explosions.count, 'occurrence')}, ${data.explosions.totalDays} days`);
+        if (data.exposeThieves.count > 0) out.push(`Expose Thieves: ${pluralize(data.exposeThieves.count, 'occurrence')}, ${data.exposeThieves.totalDays} days`);
+        if (data.gluttony.count > 0)      out.push(`Gluttony: ${pluralize(data.gluttony.count, 'occurrence')}, ${data.gluttony.totalDays} days`);
+        if (data.magicWard.count > 0)     out.push(`Magic Ward: ${pluralize(data.magicWard.count, 'occurrence')}, ${data.magicWard.totalDays} days`);
+        if (data.nightfall.count > 0)     out.push(`Nightfall: ${pluralize(data.nightfall.count, 'occurrence')}, ${data.nightfall.totalDays} days`);
+        if (data.sloth.count > 0)         out.push(`Sloth: ${pluralize(data.sloth.count, 'occurrence')}, ${data.sloth.totalDays} days`);
+        if (data.storms.count > 0)        out.push(`Storms: ${pluralize(data.storms.count, 'occurrence')}, ${data.storms.totalDays} days`);
     }
 
     // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
@@ -2459,6 +2519,18 @@ function parseProvinceNews(text, options = {}) {
         pitfalls:             { count: 0, totalDays: 0 },
         manaDis:              { count: 0, totalDays: 0 },
         greed:                { count: 0, totalDays: 0 },
+        // Non-instant offensive spells — patterns are approximate (Province News exact
+        // message text not yet seen in the wild; update regexes when confirmed).
+        blizzard:             { count: 0, totalDays: 0 },
+        chastity:             { count: 0, totalDays: 0 },
+        droughts:             { count: 0, totalDays: 0 },
+        explosions:           { count: 0, totalDays: 0 },
+        exposeThieves:        { count: 0, totalDays: 0 },
+        gluttony:             { count: 0, totalDays: 0 },
+        magicWard:            { count: 0, totalDays: 0 },
+        nightfall:            { count: 0, totalDays: 0 },
+        sloth:                { count: 0, totalDays: 0 },
+        storms:               { count: 0, totalDays: 0 },
         desertions:           { total: 0, byType: {} },
         turncoatGenerals:     0,
         failedPropaganda:     0,
