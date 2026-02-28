@@ -204,7 +204,6 @@ function handleParse(elements) {
 function handleClear(elements) {
     elements.inputText.value = '';
     elements.outputText.value = '';
-    hideMessage(elements.outputText);
     elements.detectBadge.classList.add('hidden');
     updateParseButtonState(elements);
 
