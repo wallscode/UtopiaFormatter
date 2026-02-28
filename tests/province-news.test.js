@@ -92,14 +92,14 @@ assertContains(output, '166 explore pool acres', 'Explore pool 166 acres');
 assertContains(output, '84 lost in transit', 'Explore pool 84 acres lost');
 
 // =============================================================================
-// Resources Stolen
+// Resources Stolen — now inside Thievery Impacts (Uto-hb3m)
 // =============================================================================
 
-console.log('\n--- Resources Stolen ---');
-assertContains(output, 'Resources Stolen:', 'Resources Stolen section present');
-assertContains(output, 'runes', 'Stolen runes present');
+console.log('\n--- Resources Stolen (in Thievery Impacts) ---');
+assertNotContains(output, 'Resources Stolen:', 'Resources Stolen no longer a standalone section');
+assertContains(output, 'runes stolen', 'Stolen runes inside Thievery Impacts');
 // Gold was stolen: 1,344 gold coins (April 10 of YR1)
-assertContains(output, 'gold coins', 'Stolen gold present');
+assertContains(output, 'gold coins stolen', 'Stolen gold inside Thievery Impacts');
 
 // =============================================================================
 // Thievery Impacts
@@ -147,11 +147,11 @@ assertContains(output, 'Pitfalls:', 'Pitfalls line present');
 assertContains(output, 'Greed:', 'Greed line present');
 
 // =============================================================================
-// Shadowlight Attacker IDs
+// Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
 // =============================================================================
 
-console.log('\n--- Shadowlight Attacker IDs ---');
-assertContains(output, 'Shadowlight Attacker IDs:', 'Shadowlight Attacker IDs section present');
+console.log('\n--- Shadowlight Thief IDs ---');
+assertContains(output, 'Shadowlight Thief IDs:', 'Shadowlight Thief IDs section present');
 assertContains(output, 'Arancini (2:4)', 'Arancini attacker ID');
 assertContains(output, '10_Kentucky (3:3)', '10_Kentucky attacker ID');
 assertContains(output, 'Flandern (3:3)', 'Flandern attacker ID');
@@ -191,6 +191,8 @@ assertNotContains(output, 'Scientists (', 'Old "Scientists (N total):" absent');
 assertNotContains(output, 'Spell Attempts:', 'Old "Spell Attempts:" section absent');
 assertNotContains(output, 'Hazards & Events:', 'Old "Hazards & Events:" section absent');
 assertNotContains(output, 'Thievery:', 'Old "Thievery:" section label absent (replaced by "Thievery Impacts:")');
+assertNotContains(output, 'Resources Stolen:', 'Old standalone "Resources Stolen:" section absent');
+assertNotContains(output, 'Shadowlight Attacker IDs:', 'Old "Shadowlight Attacker IDs:" absent (renamed to "Shadowlight Thief IDs:")');
 
 // =============================================================================
 // Edge cases

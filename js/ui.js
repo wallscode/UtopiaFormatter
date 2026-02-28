@@ -50,17 +50,16 @@ const advSettings = {
         exploreDetails: false
     },
     provinceNews: {
-        sectionOrder: ['Thievery Impacts', 'Spell Impacts', 'Aid Received', 'Scientists Gained', 'Daily Login Bonus', 'Resources Stolen', 'Shadowlight Attacker IDs', 'Attacks Suffered', 'War Outcomes'],
+        sectionOrder: ['Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts', 'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes'],
         visible: {
-            'Thievery Impacts':       true,
-            'Spell Impacts':          true,
-            'Aid Received':           true,
-            'Scientists Gained':      true,
-            'Daily Login Bonus':      true,
-            'Resources Stolen':       false,
-            'Shadowlight Attacker IDs': false,
-            'Attacks Suffered':       false,
-            'War Outcomes':           false
+            'Attacks Suffered':     true,
+            'Thievery Impacts':     true,
+            'Shadowlight Thief IDs': false,
+            'Spell Impacts':        true,
+            'Aid Received':         true,
+            'Daily Login Bonus':    true,
+            'Scientists Gained':    false,
+            'War Outcomes':         false
         },
         showSourceIdentifiers: false
     }
@@ -81,9 +80,7 @@ function getDomElements() {
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
-        advToggle: document.getElementById('adv-toggle'),
-        wideModeBtn: document.getElementById('wide-mode-btn'),
-        mainContainer: document.querySelector('main.container')
+        advToggle: document.getElementById('adv-toggle')
     };
 }
 
@@ -133,20 +130,6 @@ function setupEventListeners(elements) {
         }
     });
 
-    // Wide mode toggle — restore saved preference and set up listener (Uto-lx6n)
-    if (elements.wideModeBtn && elements.mainContainer) {
-        if (localStorage.getItem('utopiaFormatter.wideMode') === '1') {
-            elements.mainContainer.classList.add('wide');
-            elements.wideModeBtn.textContent = 'Narrow mode';
-            elements.wideModeBtn.setAttribute('aria-pressed', 'true');
-        }
-        elements.wideModeBtn.addEventListener('click', () => {
-            const isWide = elements.mainContainer.classList.toggle('wide');
-            localStorage.setItem('utopiaFormatter.wideMode', isWide ? '1' : '0');
-            elements.wideModeBtn.textContent = isWide ? 'Narrow mode' : 'Wide mode';
-            elements.wideModeBtn.setAttribute('aria-pressed', String(isWide));
-        });
-    }
 }
 
 /**
@@ -198,6 +181,7 @@ function handleParse(elements) {
         lastRawInput = inputText;
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
+        autoResizeOutput(elements.outputText);
         showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success');
 
         showAdvancedPanel(elements);
@@ -337,6 +321,16 @@ function updateParseButtonState(elements) {
     const hasText = elements.inputText.value.trim().length > 0;
     elements.parseBtn.disabled = !hasText;
     elements.parseBtn.style.opacity = hasText ? '1' : '0.6';
+}
+
+/**
+ * Expands the output textarea to fit its content, capped at 80% of viewport height (Uto-qsxw).
+ * @param {HTMLElement} el - The output textarea element
+ */
+function autoResizeOutput(el) {
+    el.style.height = 'auto';
+    const maxHeight = Math.floor(window.innerHeight * 0.8);
+    el.style.height = Math.min(el.scrollHeight, maxHeight) + 'px';
 }
 
 /**
@@ -929,6 +923,7 @@ function applyAndRerender(elements) {
             parsedText = applyProvinceLogsSettings(parsedText);
         }
         elements.outputText.value = parsedText;
+        autoResizeOutput(elements.outputText);
     } catch (error) {
         console.error('Error re-rendering with settings:', error);
     }

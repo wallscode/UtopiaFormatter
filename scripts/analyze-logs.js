@@ -4,14 +4,18 @@
 /**
  * analyze-logs.js
  *
- * Pulls unrecognized-line logs from S3, groups them by normalised pattern,
- * and interactively creates tk tickets for each group.
+ * 1. GitHub Issues phase  — fetch open issues, prompt to create tk tickets
+ * 2. S3 log sync          — sync unrecognized-line logs from S3
+ * 3. Log analysis phase   — group patterns, prompt to create tk tickets
  *
  * Usage:
- *   node scripts/analyze-logs.js           # sync from S3 then analyse
- *   node scripts/analyze-logs.js --no-sync # analyse local ./logs/ cache only
+ *   node scripts/analyze-logs.js                     # full run (issues → sync → logs)
+ *   node scripts/analyze-logs.js --no-sync           # skip S3 sync
+ *   node scripts/analyze-logs.js --no-issues         # skip GitHub Issues phase
+ *   node scripts/analyze-logs.js --close-issues      # also prompt to comment/close resolved issues
  *
  * Requires LOG_BUCKET in the environment or a .env file at the project root.
+ * Requires `gh` CLI to be installed and authenticated for the GitHub Issues phase.
  */
 
 const fs = require('fs');
@@ -25,7 +29,207 @@ const { execSync, spawnSync } = require('child_process');
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const LOGS_DIR = path.join(PROJECT_ROOT, 'logs');
 const PATTERNS_FILE = path.join(__dirname, '.analyzed-patterns.json');
+const ISSUE_MAP_FILE = path.join(__dirname, '.github-issue-map.json');
 const NO_SYNC = process.argv.includes('--no-sync');
+const NO_ISSUES = process.argv.includes('--no-issues');
+const CLOSE_ISSUES = process.argv.includes('--close-issues');
+
+// ---------------------------------------------------------------------------
+// GitHub Issues — persistence
+// ---------------------------------------------------------------------------
+function loadIssueMap() {
+    if (fs.existsSync(ISSUE_MAP_FILE)) {
+        try { return JSON.parse(fs.readFileSync(ISSUE_MAP_FILE, 'utf8')); }
+        catch { return {}; }
+    }
+    return {};
+}
+
+function saveIssueMap(map) {
+    fs.writeFileSync(ISSUE_MAP_FILE, JSON.stringify(map, null, 2) + '\n');
+}
+
+// ---------------------------------------------------------------------------
+// GitHub Issues — gh CLI helpers
+// ---------------------------------------------------------------------------
+function checkGhAuth() {
+    return spawnSync('gh', ['auth', 'status'], { encoding: 'utf8' }).status === 0;
+}
+
+function getRepoUrl() {
+    const r = spawnSync('gh', ['repo', 'view', '--json', 'url'], { encoding: 'utf8' });
+    try { return JSON.parse(r.stdout).url; } catch { return null; }
+}
+
+function fetchOpenIssues() {
+    const r = spawnSync(
+        'gh', ['issue', 'list', '--state', 'open', '--json', 'number,title,body,createdAt', '--limit', '100'],
+        { encoding: 'utf8' }
+    );
+    if (r.status !== 0) return null;
+    try { return JSON.parse(r.stdout); } catch { return null; }
+}
+
+function isGitHubIssueOpen(number) {
+    const r = spawnSync('gh', ['issue', 'view', String(number), '--json', 'state'], { encoding: 'utf8' });
+    try { return JSON.parse(r.stdout).state === 'OPEN'; } catch { return false; }
+}
+
+function isTicketClosed(ticketId) {
+    const r = spawnSync('tk', ['show', ticketId], { encoding: 'utf8' });
+    return r.stdout.toLowerCase().includes('closed');
+}
+
+function getLatestCommit() {
+    const r = spawnSync('git', ['log', '-1', '--format=%H %s'], { encoding: 'utf8' });
+    const line = r.stdout.trim();
+    if (!line) return null;
+    const space = line.indexOf(' ');
+    return { sha: line.substring(0, space).substring(0, 8), message: line.substring(space + 1) };
+}
+
+function commentAndClose(number, ticketId) {
+    const commit = getLatestCommit();
+    const commitRef = commit ? `commit ${commit.sha}: ${commit.message}` : 'a recent commit';
+    const body = `Fixed in ${commitRef}\n\nTicket: ${ticketId}\nFix will be live after the next deployment.`;
+    spawnSync('gh', ['issue', 'comment', String(number), '--body', body], { encoding: 'utf8', stdio: 'inherit' });
+    spawnSync('gh', ['issue', 'close', String(number)], { encoding: 'utf8', stdio: 'inherit' });
+}
+
+function createTicketFromIssue(issue, repoUrl) {
+    const title = `GH#${issue.number}: ${issue.title}`;
+    const issueUrl = repoUrl
+        ? `${repoUrl}/issues/${issue.number}`
+        : `https://github.com/wallscode/UtopiaFormatter/issues/${issue.number}`;
+    const desc = [
+        `GitHub Issue: ${issueUrl}`,
+        '',
+        issue.body ? issue.body.trim() : '(no description)',
+    ].join('\n');
+
+    const r = spawnSync(
+        'tk', ['create', title, '--type', 'bug', '--priority', '2', '--tags', 'github-issue', '--description', desc],
+        { encoding: 'utf8' }
+    );
+    if (r.status !== 0) return { error: (r.stderr || '').trim() || 'tk create failed' };
+    return { ticketId: r.stdout.trim() };
+}
+
+// ---------------------------------------------------------------------------
+// GitHub Issues — interactive phase
+// ---------------------------------------------------------------------------
+async function githubIssuesPhase(rl) {
+    const question = (q) => new Promise(resolve => rl.question(q, resolve));
+
+    if (!checkGhAuth()) {
+        console.log('⚠  gh CLI is not authenticated. Run `gh auth login` to enable GitHub Issues integration.');
+        console.log('   Skipping GitHub Issues phase.\n');
+        return;
+    }
+
+    const repoUrl = getRepoUrl();
+    const issues = fetchOpenIssues();
+    if (!issues) {
+        console.log('⚠  Could not fetch GitHub Issues. Skipping.\n');
+        return;
+    }
+
+    const issueMap = loadIssueMap();
+
+    // Filter: skip already-mapped issues (unless the ticket is now closed, which close-issues handles)
+    const newIssues = issues.filter(i => !issueMap[String(i.number)]);
+
+    if (newIssues.length === 0) {
+        console.log('✓  No new GitHub Issues to process.\n');
+        return;
+    }
+
+    console.log(`\n=== GitHub Issues (${newIssues.length} new) ===\n`);
+
+    for (const issue of newIssues) {
+        const bodyPreview = (issue.body || '(no description)')
+            .split('\n').slice(0, 8).join('\n  ');
+
+        console.log(`[GitHub Issue #${issue.number}] "${issue.title}"`);
+        console.log(`  Body: ${bodyPreview}`);
+
+        const answer = (await question('\n  (c) create ticket  (s) skip  (a) acknowledge  (q) quit issues  > ')).trim().toLowerCase();
+        console.log('');
+
+        if (answer === 'q') {
+            console.log('Stopping GitHub Issues phase.\n');
+            break;
+        } else if (answer === 'c') {
+            const result = createTicketFromIssue(issue, repoUrl);
+            if (result.error) {
+                console.log(`  Error: ${result.error}`);
+            } else {
+                const issueUrl = repoUrl
+                    ? `${repoUrl}/issues/${issue.number}`
+                    : `https://github.com/wallscode/UtopiaFormatter/issues/${issue.number}`;
+                console.log(`  Created: ${result.ticketId}`);
+                issueMap[String(issue.number)] = result.ticketId;
+                saveIssueMap(issueMap);
+                // Comment on the issue to confirm tracking
+                spawnSync(
+                    'gh', ['issue', 'comment', String(issue.number),
+                        '--body', `Tracked as ticket ${result.ticketId} — working on it.`],
+                    { encoding: 'utf8' }
+                );
+            }
+        } else if (answer === 'a') {
+            issueMap[String(issue.number)] = '__acknowledged__';
+            saveIssueMap(issueMap);
+            console.log('  Acknowledged (no ticket).');
+        } else {
+            console.log('  Skipped.');
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// GitHub Issues — close resolved issues phase
+// ---------------------------------------------------------------------------
+async function closeResolvedIssuesPhase(rl) {
+    const question = (q) => new Promise(resolve => rl.question(q, resolve));
+
+    if (!checkGhAuth()) {
+        console.log('⚠  gh CLI not authenticated — skipping close-issues phase.\n');
+        return;
+    }
+
+    const issueMap = loadIssueMap();
+    const entries = Object.entries(issueMap).filter(([, v]) => v !== '__acknowledged__');
+
+    if (entries.length === 0) {
+        console.log('No tracked issue→ticket mappings found.\n');
+        return;
+    }
+
+    console.log('\n=== Checking resolved issues ===\n');
+    let found = 0;
+
+    for (const [issueNum, ticketId] of entries) {
+        if (!isTicketClosed(ticketId)) continue;
+        if (!isGitHubIssueOpen(parseInt(issueNum))) continue;
+
+        found++;
+        console.log(`Issue #${issueNum} — ticket ${ticketId} is closed and the GitHub issue is still open.`);
+        const answer = (await question('  (y) comment & close issue  (s) skip  > ')).trim().toLowerCase();
+        console.log('');
+
+        if (answer === 'y') {
+            commentAndClose(parseInt(issueNum), ticketId);
+            issueMap[issueNum] = '__resolved__';
+            saveIssueMap(issueMap);
+            console.log(`  Commented and closed #${issueNum}.`);
+        } else {
+            console.log('  Skipped.');
+        }
+    }
+
+    if (found === 0) console.log('No resolved issues to close.\n');
+}
 
 // ---------------------------------------------------------------------------
 // LOG_BUCKET resolution
@@ -215,8 +419,7 @@ function printSummary(groups, totalEvents, totalFiles) {
 // ---------------------------------------------------------------------------
 // Interactive loop
 // ---------------------------------------------------------------------------
-async function interactive(groups, acknowledged) {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+async function interactive(groups, acknowledged, rl) {
     const question = (q) => new Promise(resolve => rl.question(q, resolve));
 
     let quit = false;
@@ -248,7 +451,6 @@ async function interactive(groups, acknowledged) {
         }
     }
 
-    rl.close();
     if (!quit) console.log('Done.');
 }
 
@@ -256,12 +458,20 @@ async function interactive(groups, acknowledged) {
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
-    // S3 sync
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+    // Phase 1: GitHub Issues
+    if (!NO_ISSUES) {
+        await githubIssuesPhase(rl);
+    }
+
+    // Phase 2: S3 sync
     if (!NO_SYNC) {
         const bucket = getLogBucket();
         if (!bucket) {
             console.error('Error: LOG_BUCKET is not set.\n' +
                 'Add LOG_BUCKET=<bucket-name> to your environment or a .env file.');
+            rl.close();
             process.exit(1);
         }
         console.log(`Syncing s3://${bucket}/logs/ → ./logs/ ...`);
@@ -269,36 +479,40 @@ async function main() {
             execSync(`aws s3 sync "s3://${bucket}/logs/" "${LOGS_DIR}/"`, { stdio: 'inherit' });
         } catch {
             console.error('aws s3 sync failed. Check your credentials and bucket name.');
+            rl.close();
             process.exit(1);
         }
     }
 
-    // Discover and parse logs
+    // Phase 3: Unrecognized line analysis
     const files = findJsonl(LOGS_DIR);
-    if (files.length === 0) {
+    if (files.length > 0) {
+        const events = parseAllLogs(files);
+        if (events.length > 0) {
+            const acknowledged = loadAcknowledged();
+            const allGroups    = groupEvents(events);
+            const newGroups    = allGroups.filter(g => !acknowledged.has(g.pattern));
+
+            if (newGroups.length > 0) {
+                printSummary(newGroups, events.length, files.length);
+                await interactive(newGroups, acknowledged, rl);
+            } else {
+                console.log(`All ${allGroups.length} pattern(s) already acknowledged. Nothing to do.`);
+            }
+        } else {
+            console.log('No log events found in ./logs/.');
+        }
+    } else {
         console.log('No .jsonl files found under ./logs/.' +
             (NO_SYNC ? ' Run without --no-sync to fetch from S3.' : ''));
-        process.exit(0);
     }
 
-    const events = parseAllLogs(files);
-    if (events.length === 0) {
-        console.log('No log events found in ./logs/.');
-        process.exit(0);
+    // Phase 4: Close resolved GitHub Issues (if requested)
+    if (CLOSE_ISSUES) {
+        await closeResolvedIssuesPhase(rl);
     }
 
-    // Filter out already-acknowledged patterns
-    const acknowledged = loadAcknowledged();
-    const allGroups    = groupEvents(events);
-    const newGroups    = allGroups.filter(g => !acknowledged.has(g.pattern));
-
-    if (newGroups.length === 0) {
-        console.log(`All ${allGroups.length} pattern(s) already acknowledged. Nothing to do.`);
-        process.exit(0);
-    }
-
-    printSummary(newGroups, events.length, files.length);
-    await interactive(newGroups, acknowledged);
+    rl.close();
 }
 
 main().catch(err => {

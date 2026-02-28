@@ -30,6 +30,7 @@ Thumbs.db
 # Logs
 *.log
 
-# Log analysis tool — local cache and acknowledged-pattern state
+# Log analysis tool — local cache, acknowledged-pattern state, and GitHub issue map
 logs/
 scripts/.analyzed-patterns.json
+scripts/.github-issue-map.json

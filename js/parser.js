@@ -2288,18 +2288,9 @@ function formatProvinceNewsOutput(data) {
         if (ar.exploreAcres.total > 0) out.push(`${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
     }
 
-    // Resources Stolen (Uto-9row: added bushels and warHorses)
-    if (data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0) {
-        out.push('');
-        out.push('Resources Stolen:');
-        if (data.stolen.gold > 0)      out.push(`${formatNumber(data.stolen.gold)} gold coins`);
-        if (data.stolen.bushels > 0)   out.push(`${formatNumber(data.stolen.bushels)} bushels`);
-        if (data.stolen.runes > 0)     out.push(`${formatNumber(data.stolen.runes)} runes`);
-        if (data.stolen.warHorses > 0) out.push(`${formatNumber(data.stolen.warHorses)} war horses`);
-    }
-
-    // Thievery Impacts (Uto-l42y: intercepted source tracking; Uto-ig81: pluralize; Uto-v63f: simplified days)
+    // Thievery Impacts — includes stolen resources (Uto-hb3m), source tracking, and op impacts
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
+        data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
         data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
         data.turncoatGenerals > 0 || data.failedPropaganda > 0;
     if (hasThieveryImpacts) {
@@ -2315,6 +2306,10 @@ function formatProvinceNewsOutput(data) {
             const interceptedSources = Object.entries(data.interceptedBySource).sort((a, b) => b[1] - a[1]);
             for (const [src, cnt] of interceptedSources) out.push(`  ${src}: ${cnt}`);
         }
+        if (data.stolen.gold > 0)      out.push(`${formatNumber(data.stolen.gold)} gold coins stolen`);
+        if (data.stolen.bushels > 0)   out.push(`${formatNumber(data.stolen.bushels)} bushels stolen`);
+        if (data.stolen.runes > 0)     out.push(`${formatNumber(data.stolen.runes)} runes stolen`);
+        if (data.stolen.warHorses > 0) out.push(`${formatNumber(data.stolen.warHorses)} war horses stolen`);
         if (data.rioting.count > 0)
             out.push(`Incite Riots: ${pluralize(data.rioting.count, 'occurrence')}, ${data.rioting.totalDays} days`);
         if (data.manaDis.count > 0)
@@ -2353,10 +2348,10 @@ function formatProvinceNewsOutput(data) {
         if (data.greed.count > 0)    out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
     }
 
-    // Shadowlight Attacker IDs
+    // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
     if (data.shadowlightAttackers.length > 0) {
         out.push('');
-        out.push('Shadowlight Attacker IDs:');
+        out.push('Shadowlight Thief IDs:');
         for (const a of data.shadowlightAttackers) out.push(`  ${a}`);
     }
 
