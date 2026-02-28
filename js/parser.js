@@ -475,6 +475,7 @@ function formatProvinceLogs(text) {
     PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.forEach(p => {
         propagandaCounts[p] = 0;
     });
+    propagandaCounts['elites'] = 0;
     PROVINCE_LOGS_CONFIG.AID_RESOURCES.forEach(r => {
         aidTotals[r] = 0;
     });
@@ -519,19 +520,13 @@ function formatProvinceLogs(text) {
                     }
                 } else if (op.name === "Propaganda" && op.unique_impact) {
                     if (line.includes(op.text)) {
-                        let foundMatch = false;
-                        for (const troop of PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS) {
-                            const match = line.match(new RegExp(`([\\d,]+)\\s+of the enemy's\\s+${escapeRegExp(troop)}`, "i"));
-                            if (match) {
-                                propagandaCounts[troop] += parseInt(match[1].replace(/,/g, ""));
-                                foundMatch = true;
-                            }
-                        }
-                        if (!foundMatch) {
-                            const match = line.match(/([\d,]+)\s+\w+/);
-                            if (match) {
-                                propagandaCounts["elites"] = (propagandaCounts["elites"] || 0) + parseInt(match[1].replace(/,/g, ""));
-                            }
+                        const m = line.match(/We have converted ([\d,]+) (?:of the enemy's )?(.+?) (?:from the enemy|to our)/i);
+                        if (m) {
+                            const troopCount = parseInt(m[1].replace(/,/g, ''));
+                            const troopName = m[2].trim().toLowerCase();
+                            const namedTroop = PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.find(p => p.toLowerCase() === troopName);
+                            const key = namedTroop || 'elites';
+                            propagandaCounts[key] = (propagandaCounts[key] || 0) + troopCount;
                         }
                     }
                 } else if (op.unique_impact) {

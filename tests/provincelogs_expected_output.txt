@@ -3,8 +3,10 @@ Summary of Province Log Events from UtopiaFormatter.com
 
 Thievery Summary:
 Propaganda:
- 100 elites
+ 49 wizards
  30 specialist troops
+ 28 elites
+ 23 thieves
 9 Arson for a total of 85 acres
 7 Bribe Generals ops
 5 Incite Riots for a total of 24 days

@@ -32,11 +32,11 @@ const advSettings = {
             'Spell Summary': true,
             'Aid Summary': true,
             'Dragon Summary': true,
-            'Ritual Summary': true,
-            'Construction Summary': true,
-            'Science Summary': true,
-            'Exploration Summary': true,
-            'Military Training': true
+            'Ritual Summary': false,
+            'Construction Summary': false,
+            'Science Summary': false,
+            'Exploration Summary': false,
+            'Military Training': false
         },
         showAverages: false,
         showRobberyOpCounts: false,
