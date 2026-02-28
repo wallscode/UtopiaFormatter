@@ -1,6 +1,6 @@
 ---
 id: Uto-4f5g
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-27T21:58:00Z
