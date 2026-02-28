@@ -1014,6 +1014,7 @@ function parseKingdomNewsLog(inputText, options) {
         warOnly,
         ceasefireProposals: [],
         ceasefireWithdrawals: [],
+        warDeclarations: [],
         ritualCoverage: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
@@ -1068,9 +1069,19 @@ function parseKingdomNewsLog(inputText, options) {
             // Known informational sentinels (war notices) are excluded — they're not
             // parsing gaps, just events we intentionally don't count.
             if (!isAttack && !handledBySpecial) {
-                const isKnownSentinel = line.includes('declared WAR') ||
+                const isWarDeclaration = line.includes('declared WAR');
+                const isKnownSentinel = isWarDeclaration ||
                                         line.includes('withdrawn from war') ||
                                         line.includes('post-war period');
+                if (isWarDeclaration && currentDate) {
+                    const isWeDeclared = /We have declared WAR/i.test(line);
+                    const m = line.match(/\((\d+):(\d+)\)/);
+                    data.warDeclarations.push({
+                        who: isWeDeclared ? 'us' : 'them',
+                        kingdom: m ? m[1] + ':' + m[2] : null,
+                        date: currentDate
+                    });
+                }
                 if (!isKnownSentinel) {
                     logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
                 }
@@ -1763,11 +1774,6 @@ function formatKingdomNewsOutput(data, windowDays) {
             const typeStr = Object.entries(rtCounts).map(([t, n]) => n > 1 ? `${t} x${n}` : t).join(', ');
             output.push(`-- Ritual Coverage: ${data.ritualCoverage.length} (${typeStr})`);
         }
-        if (data.ceasefireProposals.length > 0)
-            output.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
-        if (data.ceasefireWithdrawals.length > 0)
-            output.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
-
         output.push('');
 
         // ── Own Kingdom Province Breakdown ───────────────────────────────
@@ -1893,6 +1899,24 @@ function formatKingdomNewsOutput(data, windowDays) {
         for (const line of highlightLines) {
             output.push(line);
         }
+    }
+
+    // ── Kingdom Relations ─────────────────────────────────────────────────────
+    const krLines = [];
+    if (data.ceasefireProposals.length > 0)
+        krLines.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
+    if (data.ceasefireWithdrawals.length > 0)
+        krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
+    const theyDeclaredWar = data.warDeclarations.filter(w => w.who === 'them').length;
+    const weDeclaredWar   = data.warDeclarations.filter(w => w.who === 'us').length;
+    if (theyDeclaredWar > 0)
+        krLines.push(`-- War Declarations Against Us: ${theyDeclaredWar}`);
+    if (weDeclaredWar > 0)
+        krLines.push(`-- War Declarations Made: ${weDeclaredWar}`);
+    if (krLines.length > 0) {
+        output.push('');
+        output.push('** Kingdom Relations **');
+        output.push(...krLines);
     }
 
     return output.join('\n');

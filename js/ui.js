@@ -16,10 +16,9 @@ const advSettings = {
         showDragonCancellations: false,
         showRituals: true,
         showRitualCoverage: true,
-        showCeasefireProposals: false,
-        showCeasefireWithdrawals: false,
+        showKingdomRelations: false,
         uniqueWindow: 6,
-        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights'],
+        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
         groupUniques: false,
         warOnly: false,
         warDetected: false
@@ -434,8 +433,7 @@ function renderKingdomNewsSettings(container, elements) {
         { key: 'showDragonCancellations',  label: 'Enemy dragon cancellations'     },
         { key: 'showRituals',              label: 'Rituals started/completed'      },
         { key: 'showRitualCoverage',       label: 'Ritual coverage of our lands'   },
-        { key: 'showCeasefireProposals',   label: 'Ceasefire proposals received'   },
-        { key: 'showCeasefireWithdrawals', label: 'Ceasefire withdrawals made'     }
+        { key: 'showKingdomRelations',     label: 'Kingdom Relations'              }
     ];
 
     for (const item of checkboxItems) {
@@ -947,8 +945,6 @@ function applyKingdomNewsSettings(text) {
         if (!s.showDragonCancellations && /^-- Enemy Dragons Cancelled:/.test(line))                return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
         if (!s.showRitualCoverage      && /^-- Ritual Coverage:/.test(line))                        return false;
-        if (!s.showCeasefireProposals  && /^-- Ceasefire Proposals Received:/.test(line))           return false;
-        if (!s.showCeasefireWithdrawals && /^-- Ceasefire Withdrawals Made:/.test(line))            return false;
         return true;
     }).join('\n');
 
@@ -969,12 +965,14 @@ function applyKingdomNewsSettings(text) {
         if (/^\*\* Own Kingdom .+ Summary \*\*/.test(firstLine))  return 'Own Kingdom Summary';
         if (/^\*\* Uniques for .+ \*\*/.test(firstLine))          return 'Uniques';
         if (/^\*\* Highlights \*\*/.test(firstLine))               return 'Highlights';
+        if (/^\*\* Kingdom Relations \*\*/.test(firstLine))        return 'Kingdom Relations';
         return 'Per-Kingdom Summaries';
     }
 
     const ownKingdomSummaryBlocks = [];
     const perKingdomPairs = []; // [{ summary: block, uniques: block|null }]
     const highlightsBlocks = [];
+    const kingdomRelationsBlocks = [];
     let currentPair = null;
 
     for (const block of rawBlocks) {
@@ -997,6 +995,8 @@ function applyKingdomNewsSettings(text) {
             }
         } else if (cat === 'Highlights') {
             highlightsBlocks.push(block);
+        } else if (cat === 'Kingdom Relations') {
+            kingdomRelationsBlocks.push(block);
         }
     }
 
@@ -1022,6 +1022,8 @@ function applyKingdomNewsSettings(text) {
             // When not grouping, uniques were already emitted inline above
         } else if (section === 'Highlights') {
             resultBlocks.push(...highlightsBlocks);
+        } else if (section === 'Kingdom Relations') {
+            if (s.showKingdomRelations) resultBlocks.push(...kingdomRelationsBlocks);
         }
     }
 

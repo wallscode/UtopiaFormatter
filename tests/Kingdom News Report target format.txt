@@ -141,3 +141,6 @@ Most land gained in a single ambush - 17 - Pee Time: 34
 Most land lost in a single ambush - 1 - Time to Shine: 29
 Most bounces made - 17 - Pee Time: 1
 Most bounces received - 20 - Its 5 OClock Somewhere, 1 - Time to Shine, 12 - Misstress Of Time, 6 - Slack Time: 1
+
+** Kingdom Relations **
+-- War Declarations Against Us: 1
