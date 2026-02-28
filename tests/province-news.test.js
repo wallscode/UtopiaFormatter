@@ -141,8 +141,8 @@ assertContains(output, 'To resurrect the soul (5:5)', 'Spell caster To resurrect
 // Meteor shower (was in Hazards & Events)
 assertContains(output, 'Meteor shower:', 'Meteor shower line present');
 assertContains(output, 'total casualties', 'Meteor casualties present');
-// Pitfalls
-assertContains(output, 'Pitfalls:', 'Pitfalls line present');
+// Pitfalls — 3 occurrences × (19 + 10 + 6) = 35 days
+assertContains(output, 'Pitfalls: 3 occurrences, 35 days', 'Pitfalls with occurrence count and total days');
 // Greed (was Soldier Upkeep Demands)
 assertContains(output, 'Greed:', 'Greed line present');
 

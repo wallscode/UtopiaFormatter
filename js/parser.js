@@ -2141,6 +2141,7 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     m = ev.match(/Pitfalls are haunting our lands for (\d+) days/);
     if (m) {
         data.pitfalls.count++;
+        data.pitfalls.totalDays += parseInt(m[1]);
         return;
     }
 
@@ -2368,7 +2369,7 @@ function formatProvinceNewsOutput(data) {
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
             out.push(`Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
         }
-        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}`);
+        if (data.pitfalls.count > 0) out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)    out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
     }
 
@@ -2455,7 +2456,7 @@ function parseProvinceNews(text, options = {}) {
         meteorDays:           0,
         meteorCasualties:     { peasants: 0, soldiers: 0, Magicians: 0, Beastmasters: 0 },
         rioting:              { count: 0, totalDays: 0 },
-        pitfalls:             { count: 0 },
+        pitfalls:             { count: 0, totalDays: 0 },
         manaDis:              { count: 0, totalDays: 0 },
         greed:                { count: 0, totalDays: 0 },
         desertions:           { total: 0, byType: {} },
