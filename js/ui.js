@@ -39,6 +39,7 @@ const advSettings = {
             'Military Training': true
         },
         showAverages: false,
+        showRobberyOpCounts: false,
         showFailedThievery: true,
         showSuccessThieveryLosses: false,
         showRazedBuildings: false,
@@ -707,6 +708,26 @@ function renderProvinceLogsSettings(container, elements) {
     avgGroup.appendChild(avgLabel);
     container.appendChild(avgGroup);
 
+    const robberyGroup = document.createElement('div');
+    robberyGroup.className = 'adv-group';
+
+    const robberyLabel = document.createElement('label');
+    robberyLabel.htmlFor = 'adv-pl-showRobberyOpCounts';
+
+    const robberyCheckbox = document.createElement('input');
+    robberyCheckbox.type = 'checkbox';
+    robberyCheckbox.id = 'adv-pl-showRobberyOpCounts';
+    robberyCheckbox.checked = advSettings.provinceLogs.showRobberyOpCounts;
+    robberyCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showRobberyOpCounts = robberyCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    robberyLabel.appendChild(robberyCheckbox);
+    robberyLabel.appendChild(document.createTextNode(' Show robbery op counts & averages'));
+    robberyGroup.appendChild(robberyLabel);
+    container.appendChild(robberyGroup);
+
     const failedGroup = document.createElement('div');
     failedGroup.className = 'adv-group';
 
@@ -1044,6 +1065,10 @@ function applyProvinceLogsSettings(text) {
     let output = result.trim();
 
     // Add or strip per-line averages
+    if (!advSettings.provinceLogs.showRobberyOpCounts) {
+        output = output.split('\n').map(line => line.replace(/ \(\d+ ops Avg: \S+\)$/, '')).join('\n');
+    }
+
     if (!advSettings.provinceLogs.showFailedThievery) {
         output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
     }

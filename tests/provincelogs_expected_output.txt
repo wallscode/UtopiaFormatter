@@ -16,9 +16,9 @@ Propaganda:
 359 thieves lost in successful operations
 
 Resources Stolen:
-1,404,731 gold coins stolen
-597,907 bushels stolen
-746,273 runes stolen
+1,404,731 gold coins stolen (24 ops Avg: 59k)
+597,907 bushels stolen (15 ops Avg: 40k)
+746,273 runes stolen (51 ops Avg: 15k)
 50 war horses stolen
 
 Spell Summary:

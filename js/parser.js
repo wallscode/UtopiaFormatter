@@ -456,6 +456,9 @@ function formatProvinceLogs(text) {
     let bushelsStolen = 0;
     let runesStolen = 0;
     let warHorsesStolen = 0;
+    let vaultRobberyCount = 0;
+    let granaryRobberyCount = 0;
+    let towerRobberyCount = 0;
 
     // Initialize all counters to zero
     PROVINCE_LOGS_CONFIG.SPELLS.forEach(s => { 
@@ -702,13 +705,13 @@ function formatProvinceLogs(text) {
         if (line.includes("Our thieves have returned with") || line.includes("Our thieves were able to steal")) {
             if (line.includes("gold coins")) {
                 const match = line.match(/([\d,]+)\s+gold coins/i);
-                if (match) goldCoinsStolen += parseInt(match[1].replace(/,/g, ""));
+                if (match) { goldCoinsStolen += parseInt(match[1].replace(/,/g, "")); vaultRobberyCount++; }
             } else if (line.includes("bushels")) {
                 const match = line.match(/([\d,]+)\s+bushels/i);
-                if (match) bushelsStolen += parseInt(match[1].replace(/,/g, ""));
+                if (match) { bushelsStolen += parseInt(match[1].replace(/,/g, "")); granaryRobberyCount++; }
             } else if (line.includes("runes")) {
                 const match = line.match(/([\d,]+)\s+runes/i);
-                if (match) runesStolen += parseInt(match[1].replace(/,/g, ""));
+                if (match) { runesStolen += parseInt(match[1].replace(/,/g, "")); towerRobberyCount++; }
             } else if (line.includes("war horses")) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
                 if (match) warHorsesStolen += parseInt(match[1].replace(/,/g, ""));
@@ -796,10 +799,16 @@ function formatProvinceLogs(text) {
     }
 
     // Resources Stolen Summary
+    function robberyDetail(total, count) {
+        if (count === 0) return '';
+        const avg = Math.round(total / count);
+        const avgStr = avg >= 1000 ? `${Math.round(avg / 1000)}k` : `${avg}`;
+        return ` (${count} ops Avg: ${avgStr})`;
+    }
     output += "\nResources Stolen:\n";
-    if (goldCoinsStolen > 0) output += `${formatNumber(goldCoinsStolen)} gold coins stolen\n`;
-    if (bushelsStolen > 0) output += `${formatNumber(bushelsStolen)} bushels stolen\n`;
-    if (runesStolen > 0) output += `${formatNumber(runesStolen)} runes stolen\n`;
+    if (goldCoinsStolen > 0) output += `${formatNumber(goldCoinsStolen)} gold coins stolen${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
+    if (bushelsStolen > 0) output += `${formatNumber(bushelsStolen)} bushels stolen${robberyDetail(bushelsStolen, granaryRobberyCount)}\n`;
+    if (runesStolen > 0) output += `${formatNumber(runesStolen)} runes stolen${robberyDetail(runesStolen, towerRobberyCount)}\n`;
     if (warHorsesStolen > 0) output += `${formatNumber(warHorsesStolen)} war horses stolen\n`;
 
     // Spell Summary
