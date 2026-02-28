@@ -21,7 +21,8 @@ const advSettings = {
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
         groupUniques: false,
         warOnly: false,
-        warDetected: false
+        warDetected: false,
+        discordCopy: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
@@ -46,7 +47,8 @@ const advSettings = {
         showDraftPercentage: false,
         showDraftRate: false,
         showMilitaryWages: false,
-        exploreDetails: false
+        exploreDetails: false,
+        discordCopy: false
     },
     provinceNews: {
         sectionOrder: ['Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts', 'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes'],
@@ -60,7 +62,8 @@ const advSettings = {
             'Scientists Gained':    false,
             'War Outcomes':         false
         },
-        showSourceIdentifiers: false
+        showSourceIdentifiers: false,
+        discordCopy: false
     }
 };
 
@@ -76,6 +79,8 @@ function getDomElements() {
         clearBtn: document.getElementById('clear-btn'),
         copyBtn: document.getElementById('copy-btn'),
         copyFeedback: document.getElementById('copy-feedback'),
+        discordCopyBtn: document.getElementById('discord-copy-btn'),
+        discordCopyFeedback: document.getElementById('discord-copy-feedback'),
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
@@ -106,6 +111,11 @@ function setupEventListeners(elements) {
     // Copy button - copies output to clipboard
     elements.copyBtn.addEventListener('click', () => {
         handleCopy(elements);
+    });
+
+    // Discord copy button
+    elements.discordCopyBtn.addEventListener('click', () => {
+        handleDiscordCopy(elements);
     });
 
     // Input textarea - enable/disable parse button based on content
@@ -184,6 +194,7 @@ function handleParse(elements) {
         showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success');
 
         showAdvancedPanel(elements);
+        updateDiscordButtonVisibility(elements, detectedMode);
 
         if (window.innerWidth < 768) {
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -533,6 +544,32 @@ function renderKingdomNewsSettings(container, elements) {
         warGroup.appendChild(warLabel);
         container.appendChild(warGroup);
     }
+
+    // ── Display Options ───────────────────────────────────────────────────────
+    const knDisplayTitle = document.createElement('div');
+    knDisplayTitle.className = 'adv-group-title';
+    knDisplayTitle.textContent = 'Display Options';
+    container.appendChild(knDisplayTitle);
+
+    const knDiscordGroup = document.createElement('div');
+    knDiscordGroup.className = 'adv-group';
+
+    const knDiscordLabel = document.createElement('label');
+    knDiscordLabel.htmlFor = 'adv-kn-discordCopy';
+
+    const knDiscordCheckbox = document.createElement('input');
+    knDiscordCheckbox.type = 'checkbox';
+    knDiscordCheckbox.id = 'adv-kn-discordCopy';
+    knDiscordCheckbox.checked = advSettings.kingdomNews.discordCopy;
+    knDiscordCheckbox.addEventListener('change', () => {
+        advSettings.kingdomNews.discordCopy = knDiscordCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    knDiscordLabel.appendChild(knDiscordCheckbox);
+    knDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
+    knDiscordGroup.appendChild(knDiscordLabel);
+    container.appendChild(knDiscordGroup);
 
     // ── Section Order ────────────────────────────────────────────────────────
     const orderTitle = document.createElement('div');
@@ -894,6 +931,26 @@ function renderProvinceLogsSettings(container, elements) {
     wagesLabel.appendChild(document.createTextNode(' Show military wages'));
     wagesGroup.appendChild(wagesLabel);
     container.appendChild(wagesGroup);
+
+    const plDiscordGroup = document.createElement('div');
+    plDiscordGroup.className = 'adv-group';
+
+    const plDiscordLabel = document.createElement('label');
+    plDiscordLabel.htmlFor = 'adv-pl-discordCopy';
+
+    const plDiscordCheckbox = document.createElement('input');
+    plDiscordCheckbox.type = 'checkbox';
+    plDiscordCheckbox.id = 'adv-pl-discordCopy';
+    plDiscordCheckbox.checked = advSettings.provinceLogs.discordCopy;
+    plDiscordCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.discordCopy = plDiscordCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    plDiscordLabel.appendChild(plDiscordCheckbox);
+    plDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
+    plDiscordGroup.appendChild(plDiscordLabel);
+    container.appendChild(plDiscordGroup);
 }
 
 /**
@@ -922,6 +979,7 @@ function applyAndRerender(elements) {
         }
         elements.outputText.value = parsedText;
         autoResizeOutput(elements.outputText);
+        updateDiscordButtonVisibility(elements, lastDetectedMode);
     } catch (error) {
         console.error('Error re-rendering with settings:', error);
     }
@@ -1094,15 +1152,15 @@ function applyProvinceLogsSettings(text) {
     }
 
     if (!advSettings.provinceLogs.showDraftPercentage) {
-        output = output.split('\n').filter(line => !/^Draft:/.test(line)).join('\n');
+        output = output.split('\n').filter(line => !/Draft:/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showDraftRate) {
-        output = output.split('\n').filter(line => !/^Draft rate:/.test(line)).join('\n');
+        output = output.split('\n').filter(line => !/Draft rate:/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showMilitaryWages) {
-        output = output.split('\n').filter(line => !/^Military wages:/.test(line)).join('\n');
+        output = output.split('\n').filter(line => !/Military wages:/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showTroopsReleased) {
@@ -1115,14 +1173,14 @@ function applyProvinceLogsSettings(text) {
 
     if (advSettings.provinceLogs.showAverages) {
         output = output.split('\n').map(line => {
-            const m = line.match(/^(\d+) (.+) for a total of ([\d,]+) (.+)$/);
+            const m = line.match(/^\s*(\d+) (.+) for a total of ([\d,]+) (.+)$/);
             if (m) {
                 const count = parseInt(m[1], 10);
                 const total = parseInt(m[3].replace(/,/g, ''), 10);
                 if (count > 1) {
                     const avg = Math.round(total / count);
                     const avgStr = avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                    return `${line} (avg ${avgStr} each)`;
+                    return `${line} (avg ${avgStr})`;
                 }
             }
             return line;
@@ -1252,6 +1310,26 @@ function renderProvinceNewsSettings(container, elements) {
     srcLabel.appendChild(document.createTextNode(' Show attacker names in Thievery & Spell Impacts'));
     srcGroup.appendChild(srcLabel);
     container.appendChild(srcGroup);
+
+    const pnDiscordGroup = document.createElement('div');
+    pnDiscordGroup.className = 'adv-group';
+
+    const pnDiscordLabel = document.createElement('label');
+    pnDiscordLabel.htmlFor = 'adv-pn-discordCopy';
+
+    const pnDiscordCheckbox = document.createElement('input');
+    pnDiscordCheckbox.type = 'checkbox';
+    pnDiscordCheckbox.id = 'adv-pn-discordCopy';
+    pnDiscordCheckbox.checked = advSettings.provinceNews.discordCopy;
+    pnDiscordCheckbox.addEventListener('change', () => {
+        advSettings.provinceNews.discordCopy = pnDiscordCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    pnDiscordLabel.appendChild(pnDiscordCheckbox);
+    pnDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
+    pnDiscordGroup.appendChild(pnDiscordLabel);
+    container.appendChild(pnDiscordGroup);
 }
 
 /**
@@ -1292,7 +1370,7 @@ function applyProvinceNewsSettings(text) {
             if (sections[sectionName]) {
                 sections[sectionName] = sections[sectionName]
                     .split('\n')
-                    .filter(line => !line.startsWith('  '))
+                    .filter(line => !line.startsWith('    '))
                     .join('\n');
             }
         }
@@ -1333,4 +1411,230 @@ function handleKeyboardShortcuts(event, elements) {
         event.preventDefault();
         handleCopy(elements);
     }
+}
+
+/**
+ * Shows or hides the Discord copy button based on the current mode's discordCopy setting.
+ */
+function updateDiscordButtonVisibility(elements, mode) {
+    if (!elements.discordCopyBtn) return;
+    const modeKey = mode === 'kingdom-news-log' ? 'kingdomNews'
+                  : mode === 'province-news'     ? 'provinceNews'
+                  :                               'provinceLogs';
+    const show = mode && advSettings[modeKey] && advSettings[modeKey].discordCopy;
+    elements.discordCopyBtn.classList.toggle('hidden', !show);
+}
+
+/**
+ * Handles the Discord copy button click — transforms output and copies to clipboard.
+ */
+async function handleDiscordCopy(elements) {
+    const outputText = elements.outputText.value.trim();
+    if (!outputText) {
+        showCopyFeedback(elements.discordCopyFeedback, 'No text to copy!', 'error');
+        return;
+    }
+    const transformed = toDiscordFormat(outputText, lastDetectedMode);
+    const charCount = transformed.length;
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(transformed);
+        } else {
+            fallbackCopyToClipboard(transformed);
+        }
+        if (charCount <= 2000) {
+            showCopyFeedback(elements.discordCopyFeedback, 'Copied for Discord!', 'success');
+        } else {
+            showCopyFeedback(elements.discordCopyFeedback,
+                `Copied for Discord \u26a0 ${charCount.toLocaleString()} chars (Discord limit: 2,000)`, 'warning');
+        }
+    } catch (err) {
+        fallbackCopyToClipboard(transformed);
+        showCopyFeedback(elements.discordCopyFeedback, 'Text copied \u2014 paste into Discord', 'warning');
+    }
+}
+
+/**
+ * Dispatches to a mode-specific Discord markdown transform helper.
+ */
+function toDiscordFormat(text, mode) {
+    if (mode === 'province-news')    return toDiscordProvinceNews(text);
+    if (mode === 'kingdom-news-log') return toDiscordKingdomNews(text);
+    return toDiscordProvinceLogs(text);
+}
+
+/**
+ * Transforms Province News plain text (post-settings) into Discord markdown.
+ * Rules:
+ *   - Title + date line merged: **Title** — date
+ *   - Flush-left lines with ':' → **Heading:** rest (if any)
+ *   - 4-space sub-items → "- stripped"
+ *   - 2-space detail lines → stripped (no prefix)
+ *   - Empty lines preserved
+ */
+function toDiscordProvinceNews(text) {
+    const lines = text.split('\n');
+    const out = [];
+    let i = 0;
+
+    // Title (line 0) + date (line 1) merged onto one line
+    if (lines.length > 0) {
+        const title = lines[0].replace(' from UtopiaFormatter.com', '');
+        const dateLine = lines.length > 1 ? lines[1] : '';
+        if (dateLine && !dateLine.startsWith(' ')) {
+            out.push(`**${title}** \u2014 ${dateLine}`);
+            i = 2;
+        } else {
+            out.push(`**${title}**`);
+            i = 1;
+        }
+    }
+
+    while (i < lines.length) {
+        const line = lines[i++];
+
+        if (line === '') {
+            out.push('');
+            continue;
+        }
+
+        // 4-space source sub-items → bullet
+        if (line.startsWith('    ')) {
+            out.push('- ' + line.trimStart());
+            continue;
+        }
+
+        // 2-space detail lines → strip indent
+        if (line.startsWith('  ')) {
+            out.push(line.slice(2));
+            continue;
+        }
+
+        // Flush-left lines with colon → bold the heading portion
+        const colonIdx = line.indexOf(':');
+        if (colonIdx !== -1) {
+            const heading = line.substring(0, colonIdx);
+            const rest = line.substring(colonIdx + 1).trim();
+            out.push(rest ? `**${heading}:** ${rest}` : `**${heading}:**`);
+            continue;
+        }
+
+        out.push(line);
+    }
+
+    return out.join('\n');
+}
+
+/**
+ * Transforms Kingdom News plain text (post-settings) into Discord markdown.
+ * Rules:
+ *   - ** Block Header ** → **Block Header**
+ *   - -- Key: value → Key: value (strip "-- ")
+ *   - Province breakdown lines containing " | " → wrapped in code fences
+ *   - Other lines pass through
+ */
+function toDiscordKingdomNews(text) {
+    const lines = text.split('\n');
+    const out = [];
+    let i = 0;
+
+    while (i < lines.length) {
+        const line = lines[i];
+
+        // ** Block Header ** → **Block Header**
+        const blockMatch = line.match(/^\*\* (.+?) \*\*$/);
+        if (blockMatch) {
+            out.push(`**${blockMatch[1]}**`);
+            i++;
+            // Collect province breakdown table lines (contain " | ")
+            if (i < lines.length && lines[i].includes(' | ')) {
+                out.push('```');
+                while (i < lines.length && lines[i].includes(' | ')) {
+                    out.push(lines[i]);
+                    i++;
+                }
+                out.push('```');
+            }
+            continue;
+        }
+
+        // -- Key: value → Key: value
+        if (line.startsWith('-- ')) {
+            out.push(line.slice(3));
+            i++;
+            continue;
+        }
+
+        out.push(line);
+        i++;
+    }
+
+    return out.join('\n');
+}
+
+/**
+ * Transforms Province Logs plain text (post-settings) into Discord markdown.
+ * Rules:
+ *   - First line (summary title) → **Province Log Summary**
+ *   - Separator line (---...) → skipped
+ *   - Flush-left section headings ending in ':' → **Heading:**
+ *   - 2-space sub-headings ending in ':' (e.g. "  Propaganda:") → **SubHeading:**
+ *   - 4-space sub-items (Propaganda troops) → "- stripped"
+ *   - 2-space detail lines → stripped (no prefix)
+ *   - Empty lines preserved
+ */
+function toDiscordProvinceLogs(text) {
+    const lines = text.split('\n');
+    const out = [];
+    let i = 0;
+
+    // Replace title line
+    if (lines.length > 0) {
+        out.push('**Province Log Summary**');
+        i = 1;
+    }
+
+    // Skip separator line (---...)
+    if (i < lines.length && /^-{3,}/.test(lines[i])) {
+        i++;
+    }
+
+    while (i < lines.length) {
+        const line = lines[i++];
+
+        if (line === '') {
+            out.push('');
+            continue;
+        }
+
+        // 4-space sub-items (Propaganda troops) → bullet
+        if (line.startsWith('    ')) {
+            out.push('- ' + line.trimStart());
+            continue;
+        }
+
+        // 2-space sub-headings like "  Propaganda:" → **SubHeading:**
+        if (line.startsWith('  ') && line.trimEnd().endsWith(':')) {
+            const subheading = line.trim().slice(0, -1);
+            out.push(`**${subheading}:**`);
+            continue;
+        }
+
+        // 2-space detail lines → strip indent
+        if (line.startsWith('  ')) {
+            out.push(line.slice(2));
+            continue;
+        }
+
+        // Flush-left section headings ending in ':'
+        if (line.endsWith(':')) {
+            const heading = line.slice(0, -1);
+            out.push(`**${heading}:**`);
+            continue;
+        }
+
+        out.push(line);
+    }
+
+    return out.join('\n');
 }

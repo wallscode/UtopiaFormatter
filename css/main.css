@@ -391,6 +391,11 @@ button:active {
     color: #fff;
 }
 
+#discord-copy-btn {
+    background: linear-gradient(135deg, #3c3263 0%, #5c4d9a 100%);
+    color: #e0d9ff;
+}
+
 /* Feedback message */
 .feedback {
     margin-top: 1rem;

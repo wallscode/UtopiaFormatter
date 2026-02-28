@@ -1,6 +1,6 @@
 ---
 id: Uto-uv71
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-28T19:56:43Z

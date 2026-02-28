@@ -2,96 +2,96 @@ Summary of Province Log Events from UtopiaFormatter.com
 ----------------------------------------
 
 Thievery Summary:
-Propaganda:
- 49 wizards
- 30 specialist troops
- 28 elites
- 23 thieves
-9 Arson for a total of 85 acres
-7 Bribe Generals ops
-5 Incite Riots for a total of 24 days
-3 Assassinate Wizards for a total of 306 wizards
-3 Kidnapping for a total of 336 peasants
-2 Bribe Thieves ops
-1 Sabotage Wizards for a total of 1 day
-76 failed thievery attempts (1589 thieves lost)
-359 thieves lost in successful operations
+  Propaganda:
+    49 wizards
+    30 specialist troops
+    28 elites
+    23 thieves
+  9 Arson for a total of 85 acres
+  7 Bribe Generals ops
+  5 Incite Riots for a total of 24 days
+  3 Assassinate Wizards for a total of 306 wizards
+  3 Kidnapping for a total of 336 peasants
+  2 Bribe Thieves ops
+  1 Sabotage Wizards for a total of 1 day
+  76 failed thievery attempts (1589 thieves lost)
+  359 thieves lost in successful operations
 
 Resources Stolen:
-1,404,731 gold coins stolen (24 ops Avg: 59k)
-597,907 bushels stolen (15 ops Avg: 40k)
-746,273 runes stolen (51 ops Avg: 15k)
-50 war horses stolen
+  1,404,731 gold coins (24 ops Avg: 59k)
+  597,907 bushels (15 ops Avg: 40k)
+  746,273 runes (51 ops Avg: 15k)
+  50 war horses
 
 Spell Summary:
-62 Meteor Showers for a total of 493 days
-50 Mystic Vortex for a total of 107 active spells
-33 Chastity for a total of 185 days
-10 Pitfalls for a total of 119 days
-4 Amnesia for a total of 322,673 books
-4 Droughts for a total of 53 days
-4 Lightning Strike for a total of 14,884 runes
-4 Nightmares for a total of 1,450 troops
-3 Fireball for a total of 3,639 peasants
-3 Gluttony for a total of 45 days
-3 Greed for a total of 28 days
-3 Land Lust for a total of 81 acres
-3 Tornadoes for a total of 1,025 acres of buildings
-2 Expose Thieves for a total of 12 days
-1 Explosions for a total of 12 days
+  62 Meteor Showers for a total of 493 days
+  50 Mystic Vortex for a total of 107 active spells
+  33 Chastity for a total of 185 days
+  10 Pitfalls for a total of 119 days
+  4 Amnesia for a total of 322,673 books
+  4 Droughts for a total of 53 days
+  4 Lightning Strike for a total of 14,884 runes
+  4 Nightmares for a total of 1,450 troops
+  3 Fireball for a total of 3,639 peasants
+  3 Gluttony for a total of 45 days
+  3 Greed for a total of 28 days
+  3 Land Lust for a total of 81 acres
+  3 Tornadoes for a total of 1,025 acres of buildings
+  2 Expose Thieves for a total of 12 days
+  1 Explosions for a total of 12 days
 
 Aid Summary:
-5,072,494 gold coins
-349,977 runes
-246,000 bushels
-16,572 soldiers
-2 explore pool acres
+  5,072,494 gold coins
+  349,977 runes
+  246,000 bushels
+  16,572 soldiers
+  2 explore pool acres
 
 Dragon Summary:
-1,965,315 gold coins donated
-881,611 bushels donated
-7,693 troops sent and weakened by 94,633 points
+  1,965,315 gold coins donated
+  881,611 bushels donated
+  7,693 troops sent and weakened by 94,633 points
 
 Ritual Summary:
-37 successful ritual casts
+  37 successful ritual casts
 
 Construction Summary:
-410 Banks
-269 Watch Towers
-236 Towers
-159 Forts
-87 Guilds
-86 Thieves' Dens
-81 Homes
-69 Farms
-49 Libraries
-220 Banks razed
-201 Thieves' Dens razed
-144 Forts razed
+  410 Banks
+  269 Watch Towers
+  236 Towers
+  159 Forts
+  87 Guilds
+  86 Thieves' Dens
+  81 Homes
+  69 Farms
+  49 Libraries
+  220 Banks razed
+  201 Thieves' Dens razed
+  144 Forts razed
 
 Science Summary:
-196,560 books to CRIME
-103,480 books to BOOKKEEPING
-94,920 books to STRATEGY
-90,560 books to PRODUCTION
-71,760 books to FINESSE
-69,040 books to HOUSING
-62,740 books to HEROISM
-39,200 books to VALOR
-39,000 books to CHANNELING
-34,540 books to TOOLS
-22,400 books to ALCHEMY
+  196,560 books to CRIME
+  103,480 books to BOOKKEEPING
+  94,920 books to STRATEGY
+  90,560 books to PRODUCTION
+  71,760 books to FINESSE
+  69,040 books to HOUSING
+  62,740 books to HEROISM
+  39,200 books to VALOR
+  39,000 books to CHANNELING
+  34,540 books to TOOLS
+  22,400 books to ALCHEMY
 
 Exploration Summary:
-778 acres explored
-10,364 soldiers sent at a cost of 2,888,419 gold coins
+  778 acres explored
+  10,364 soldiers sent at a cost of 2,888,419 gold coins
 
 Military Training:
-6,001 archers
-1,590 thieves
-13 elf lords
-22,354 archers released
-12,856 soldiers released
-Draft: 0% of population
-Draft rate: Normal
-Military wages: 200%
+  6,001 archers
+  1,590 thieves
+  13 elf lords
+  22,354 archers released
+  12,856 soldiers released
+  Draft: 0% of population
+  Draft rate: Normal
+  Military wages: 200%

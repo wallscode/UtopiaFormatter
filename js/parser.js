@@ -807,15 +807,15 @@ function formatProvinceLogs(text) {
         const totalImpact = thieveryImpacts[name];
         
         if (op.unique_impact && name === "Propaganda") {
-            output += "Propaganda:\n";
+            output += `  Propaganda:\n`;
             Object.entries(propagandaCounts)
                 .filter(([, c]) => c > 0)
                 .sort((a, b) => b[1] - a[1])
                 .forEach(([pName, pCount]) => {
-                    output += ` ${pCount} ${pName}\n`;
+                    output += `    ${pCount} ${pName}\n`;
                 });
         } else if (op.unique_impact && (name === "Bribe Generals" || name === "Bribe Thieves")) {
-            output += `${count} ${name} ops\n`;
+            output += `  ${count} ${name} ops\n`;
         } else if (impact) {
             let impactStr = impact;
             if (impactStr === "day" && totalImpact > 1) {
@@ -824,20 +824,20 @@ function formatProvinceLogs(text) {
             if (impactStr === "of them") {
                 impactStr = "peasants";
             }
-            output += `${count} ${name} for a total of ${formatNumber(totalImpact)} ${impactStr}\n`;
+            output += `  ${count} ${name} for a total of ${formatNumber(totalImpact)} ${impactStr}\n`;
         } else {
-            output += `${count} ${name}\n`;
+            output += `  ${count} ${name}\n`;
         }
     }
 
     if (stealHorsesOps > 0) {
-        output += `${stealHorsesOps} Steal War Horses (${formatNumber(stealHorsesReleased)} released, ${formatNumber(stealHorsesBroughtBack)} stolen)\n`;
+        output += `  ${stealHorsesOps} Steal War Horses (${formatNumber(stealHorsesReleased)} released, ${formatNumber(stealHorsesBroughtBack)} stolen)\n`;
     }
     if (failedThieveryCount > 0) {
-        output += `${failedThieveryCount} failed thievery attempt${failedThieveryCount !== 1 ? 's' : ''} (${thiervesLostCount} thieves lost)\n`;
+        output += `  ${failedThieveryCount} failed thievery attempt${failedThieveryCount !== 1 ? 's' : ''} (${thiervesLostCount} thieves lost)\n`;
     }
     if (successThiervesLostCount > 0) {
-        output += `${formatNumber(successThiervesLostCount)} thieves lost in successful operations\n`;
+        output += `  ${formatNumber(successThiervesLostCount)} thieves lost in successful operations\n`;
     }
 
     // Resources Stolen Summary
@@ -848,10 +848,10 @@ function formatProvinceLogs(text) {
         return ` (${count} ops Avg: ${avgStr})`;
     }
     output += "\nResources Stolen:\n";
-    if (goldCoinsStolen > 0) output += `${formatNumber(goldCoinsStolen)} gold coins stolen${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
-    if (bushelsStolen > 0) output += `${formatNumber(bushelsStolen)} bushels stolen${robberyDetail(bushelsStolen, granaryRobberyCount)}\n`;
-    if (runesStolen > 0) output += `${formatNumber(runesStolen)} runes stolen${robberyDetail(runesStolen, towerRobberyCount)}\n`;
-    if (warHorsesStolen > 0) output += `${formatNumber(warHorsesStolen)} war horses stolen\n`;
+    if (goldCoinsStolen > 0) output += `  ${formatNumber(goldCoinsStolen)} gold coins${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
+    if (bushelsStolen > 0) output += `  ${formatNumber(bushelsStolen)} bushels${robberyDetail(bushelsStolen, granaryRobberyCount)}\n`;
+    if (runesStolen > 0) output += `  ${formatNumber(runesStolen)} runes${robberyDetail(runesStolen, towerRobberyCount)}\n`;
+    if (warHorsesStolen > 0) output += `  ${formatNumber(warHorsesStolen)} war horses\n`;
 
     // Spell Summary
     output += "\nSpell Summary:\n";
@@ -874,9 +874,9 @@ function formatProvinceLogs(text) {
             impact = "active spells";
         }
         if (impact) {
-            output += `${count} ${spell.name} for a total of ${formatNumber(totalImpact)} ${impact}\n`;
+            output += `  ${count} ${spell.name} for a total of ${formatNumber(totalImpact)} ${impact}\n`;
         } else {
-            output += `${count} ${spell.name}\n`;
+            output += `  ${count} ${spell.name}\n`;
         }
     }
 
@@ -886,21 +886,21 @@ function formatProvinceLogs(text) {
         .filter(([, total]) => total > 0)
         .sort((a, b) => b[1] - a[1])
         .forEach(([resource, total]) => {
-            output += `${formatNumber(total)} ${resource}\n`;
+            output += `  ${formatNumber(total)} ${resource}\n`;
         });
 
     // Dragon Summary
     output += "\nDragon Summary:\n";
-    if (dragonGoldDonated > 0) output += `${formatNumber(dragonGoldDonated)} gold coins donated\n`;
-    if (dragonBushelsDonated > 0) output += `${formatNumber(dragonBushelsDonated)} bushels donated\n`;
+    if (dragonGoldDonated > 0) output += `  ${formatNumber(dragonGoldDonated)} gold coins donated\n`;
+    if (dragonBushelsDonated > 0) output += `  ${formatNumber(dragonBushelsDonated)} bushels donated\n`;
     if (dragonTroopsTotal > 0 || dragonPointsTotal > 0) {
-        output += `${formatNumber(dragonTroopsTotal)} troops sent and weakened by ${formatNumber(dragonPointsTotal)} points\n`;
+        output += `  ${formatNumber(dragonTroopsTotal)} troops sent and weakened by ${formatNumber(dragonPointsTotal)} points\n`;
     }
 
     // Ritual Summary (omitted when no ritual casts detected)
     if (ritualCasts > 0) {
         output += "\nRitual Summary:\n";
-        output += `${ritualCasts} successful ritual casts\n`;
+        output += `  ${ritualCasts} successful ritual casts\n`;
     }
 
     // Construction Summary (omitted when no construction or demolition detected)
@@ -911,11 +911,11 @@ function formatProvinceLogs(text) {
         PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
             .filter(b => constructionCounts[b] > 0)
             .sort((a, b) => constructionCounts[b] - constructionCounts[a])
-            .forEach(b => { output += `${formatNumber(constructionCounts[b])} ${b}\n`; });
+            .forEach(b => { output += `  ${formatNumber(constructionCounts[b])} ${b}\n`; });
         PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
             .filter(b => razedCounts[b] > 0)
             .sort((a, b) => razedCounts[b] - razedCounts[a])
-            .forEach(b => { output += `${formatNumber(razedCounts[b])} ${b} razed\n`; });
+            .forEach(b => { output += `  ${formatNumber(razedCounts[b])} ${b} razed\n`; });
     }
 
     // Science Summary (omitted when no science allocations detected)
@@ -925,14 +925,14 @@ function formatProvinceLogs(text) {
         PROVINCE_LOGS_CONFIG.SCIENCES
             .filter(s => scienceCounts[s] > 0)
             .sort((a, b) => scienceCounts[b] - scienceCounts[a])
-            .forEach(s => { output += `${formatNumber(scienceCounts[s])} books to ${s}\n`; });
+            .forEach(s => { output += `  ${formatNumber(scienceCounts[s])} books to ${s}\n`; });
     }
 
     // Exploration Summary (omitted when no exploration orders detected)
     if (exploreAcres > 0) {
         output += "\nExploration Summary:\n";
-        output += `${formatNumber(exploreAcres)} acres explored\n`;
-        output += `${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
+        output += `  ${formatNumber(exploreAcres)} acres explored\n`;
+        output += `  ${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
     }
 
     // Military Training (omitted when no training, release, draft, or wage data detected)
@@ -942,13 +942,13 @@ function formatProvinceLogs(text) {
         output += "\nMilitary Training:\n";
         Object.entries(trainingCounts)
             .sort((a, b) => b[1] - a[1])
-            .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit}\n`; });
+            .forEach(([unit, count]) => { output += `  ${formatNumber(count)} ${unit}\n`; });
         Object.entries(releaseCounts)
             .sort((a, b) => b[1] - a[1])
-            .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit} released\n`; });
-        if (draftPercent !== null) output += `Draft: ${draftPercent}% of population\n`;
-        if (draftRate !== null) output += `Draft rate: ${draftRate}\n`;
-        if (militaryWagesPercent !== null) output += `Military wages: ${militaryWagesPercent}%\n`;
+            .forEach(([unit, count]) => { output += `  ${formatNumber(count)} ${unit} released\n`; });
+        if (draftPercent !== null) output += `  Draft: ${draftPercent}% of population\n`;
+        if (draftRate !== null) output += `  Draft rate: ${draftRate}\n`;
+        if (militaryWagesPercent !== null) output += `  Military wages: ${militaryWagesPercent}%\n`;
     }
 
     return output.trim();
@@ -2323,11 +2323,11 @@ function formatProvinceNewsOutput(data) {
             if (data.loginBonus.extreme > 0)    parts.push(`${data.loginBonus.extreme} extreme`);
             if (data.loginBonus.impressive > 0) parts.push(`${data.loginBonus.impressive} impressive`);
             if (data.loginBonus.unknown > 0)    parts.push(`${data.loginBonus.unknown} unknown`);
-            out.push(`${totalLoginBonuses} total (${parts.join(', ')})`);
+            out.push(`  ${totalLoginBonuses} total (${parts.join(', ')})`);
         }
-        if (totalLoginAcres > 0) out.push(`${formatNumber(totalLoginAcres)} acres`);
-        if (totalLoginGold  > 0) out.push(`${formatNumber(totalLoginGold)} gold coins`);
-        if (totalLoginBooks > 0) out.push(`${formatNumber(totalLoginBooks)} science books`);
+        if (totalLoginAcres > 0) out.push(`  ${formatNumber(totalLoginAcres)} acres`);
+        if (totalLoginGold  > 0) out.push(`  ${formatNumber(totalLoginGold)} gold coins`);
+        if (totalLoginBooks > 0) out.push(`  ${formatNumber(totalLoginBooks)} science books`);
     }
 
     // Scientists Gained (Uto-l42y)
@@ -2339,7 +2339,7 @@ function formatProvinceNewsOutput(data) {
         out.push('');
         out.push('Scientists Gained:');
         for (const [field, count] of Object.entries(byField)) {
-            out.push(`${field}: ${count}`);
+            out.push(`  ${field}: ${count}`);
         }
     }
 
@@ -2350,11 +2350,11 @@ function formatProvinceNewsOutput(data) {
     if (hasAid) {
         out.push('');
         out.push('Aid Received:');
-        if (ar.gold.total > 0)         out.push(`${formatNumber(ar.gold.total)} gold coins`);
-        if (ar.bushels.total > 0)      out.push(`${formatNumber(ar.bushels.total)} bushels`);
-        if (ar.runes.total > 0)        out.push(`${formatNumber(ar.runes.total)} runes`);
-        if (ar.soldiers.total > 0)     out.push(`${formatNumber(ar.soldiers.total)} soldiers`);
-        if (ar.exploreAcres.total > 0) out.push(`${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
+        if (ar.gold.total > 0)         out.push(`  ${formatNumber(ar.gold.total)} gold coins`);
+        if (ar.bushels.total > 0)      out.push(`  ${formatNumber(ar.bushels.total)} bushels`);
+        if (ar.runes.total > 0)        out.push(`  ${formatNumber(ar.runes.total)} runes`);
+        if (ar.soldiers.total > 0)     out.push(`  ${formatNumber(ar.soldiers.total)} soldiers`);
+        if (ar.exploreAcres.total > 0) out.push(`  ${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
     }
 
     // Thievery Impacts — includes stolen resources (Uto-hb3m), source tracking, and op impacts
@@ -2366,30 +2366,30 @@ function formatProvinceNewsOutput(data) {
         out.push('');
         out.push('Thievery Impacts:');
         if (data.thieveryDetected > 0) {
-            out.push(`${data.thieveryDetected} operations detected (${data.thieveryUnknown} from unknown sources)`);
+            out.push(`  ${data.thieveryDetected} operations detected (${data.thieveryUnknown} from unknown sources)`);
             const knownSources = Object.entries(data.thieveryBySource).sort((a, b) => b[1] - a[1]);
-            for (const [src, cnt] of knownSources) out.push(`  ${src}: ${cnt}`);
+            for (const [src, cnt] of knownSources) out.push(`    ${src}: ${cnt}`);
         }
         if (data.thieveryIntercepted > 0) {
-            out.push(`${data.thieveryIntercepted} operations intercepted by Shadowlight`);
+            out.push(`  ${data.thieveryIntercepted} operations intercepted by Shadowlight`);
             const interceptedSources = Object.entries(data.interceptedBySource).sort((a, b) => b[1] - a[1]);
-            for (const [src, cnt] of interceptedSources) out.push(`  ${src}: ${cnt}`);
+            for (const [src, cnt] of interceptedSources) out.push(`    ${src}: ${cnt}`);
         }
-        if (data.stolen.gold > 0)      out.push(`${formatNumber(data.stolen.gold)} gold coins stolen`);
-        if (data.stolen.bushels > 0)   out.push(`${formatNumber(data.stolen.bushels)} bushels stolen`);
-        if (data.stolen.runes > 0)     out.push(`${formatNumber(data.stolen.runes)} runes stolen`);
-        if (data.stolen.warHorses > 0) out.push(`${formatNumber(data.stolen.warHorses)} war horses stolen`);
+        if (data.stolen.gold > 0)      out.push(`  ${formatNumber(data.stolen.gold)} gold coins stolen`);
+        if (data.stolen.bushels > 0)   out.push(`  ${formatNumber(data.stolen.bushels)} bushels stolen`);
+        if (data.stolen.runes > 0)     out.push(`  ${formatNumber(data.stolen.runes)} runes stolen`);
+        if (data.stolen.warHorses > 0) out.push(`  ${formatNumber(data.stolen.warHorses)} war horses stolen`);
         if (data.rioting.count > 0)
-            out.push(`Incite Riots: ${pluralize(data.rioting.count, 'occurrence')}, ${data.rioting.totalDays} days`);
+            out.push(`  Incite Riots: ${pluralize(data.rioting.count, 'occurrence')}, ${data.rioting.totalDays} days`);
         if (data.manaDis.count > 0)
-            out.push(`Sabotage Wizards: ${pluralize(data.manaDis.count, 'occurrence')}, ${data.manaDis.totalDays} days`);
+            out.push(`  Sabotage Wizards: ${pluralize(data.manaDis.count, 'occurrence')}, ${data.manaDis.totalDays} days`);
         if (data.desertions.total > 0) {
             const types = Object.keys(data.desertions.byType);
             const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
-            out.push(`Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
+            out.push(`  Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
         }
-        if (data.failedPropaganda > 0)  out.push(`Failed propaganda: ${data.failedPropaganda}`);
-        if (data.turncoatGenerals > 0)  out.push(`Bribe General: ${data.turncoatGenerals}`);
+        if (data.failedPropaganda > 0)  out.push(`  Failed propaganda: ${data.failedPropaganda}`);
+        if (data.turncoatGenerals > 0)  out.push(`  Bribe General: ${data.turncoatGenerals}`);
     }
 
     // Spell Impacts — spell attempts + magical hazards merged (Uto-l42y, Uto-ccjb, Uto-ig81, Uto-v63f)
@@ -2405,9 +2405,9 @@ function formatProvinceNewsOutput(data) {
         out.push('');
         out.push('Spell Impacts:');
         if (data.spellAttempts > 0) {
-            out.push(pluralize(data.spellAttempts, 'attempt'));
+            out.push(`  ${pluralize(data.spellAttempts, 'attempt')}`);
             const sources = Object.entries(data.spellsBySource).sort((a, b) => b[1] - a[1]);
-            for (const [src, cnt] of sources) out.push(`  ${src}: ${cnt}`);
+            for (const [src, cnt] of sources) out.push(`    ${src}: ${cnt}`);
         }
         if (data.meteorDays > 0) {
             const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
@@ -2417,20 +2417,20 @@ function formatProvinceNewsOutput(data) {
             if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
             if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
-            out.push(`Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
+            out.push(`  Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
         }
-        if (data.pitfalls.count > 0)      out.push(`Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
-        if (data.greed.count > 0)         out.push(`Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
-        if (data.blizzard.count > 0)      out.push(`Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
-        if (data.chastity.count > 0)      out.push(`Chastity: ${pluralize(data.chastity.count, 'occurrence')}, ${data.chastity.totalDays} days`);
-        if (data.droughts.count > 0)      out.push(`Droughts: ${pluralize(data.droughts.count, 'occurrence')}, ${data.droughts.totalDays} days`);
-        if (data.explosions.count > 0)    out.push(`Explosions: ${pluralize(data.explosions.count, 'occurrence')}, ${data.explosions.totalDays} days`);
-        if (data.exposeThieves.count > 0) out.push(`Expose Thieves: ${pluralize(data.exposeThieves.count, 'occurrence')}, ${data.exposeThieves.totalDays} days`);
-        if (data.gluttony.count > 0)      out.push(`Gluttony: ${pluralize(data.gluttony.count, 'occurrence')}, ${data.gluttony.totalDays} days`);
-        if (data.magicWard.count > 0)     out.push(`Magic Ward: ${pluralize(data.magicWard.count, 'occurrence')}, ${data.magicWard.totalDays} days`);
-        if (data.nightfall.count > 0)     out.push(`Nightfall: ${pluralize(data.nightfall.count, 'occurrence')}, ${data.nightfall.totalDays} days`);
-        if (data.sloth.count > 0)         out.push(`Sloth: ${pluralize(data.sloth.count, 'occurrence')}, ${data.sloth.totalDays} days`);
-        if (data.storms.count > 0)        out.push(`Storms: ${pluralize(data.storms.count, 'occurrence')}, ${data.storms.totalDays} days`);
+        if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
+        if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
+        if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
+        if (data.chastity.count > 0)      out.push(`  Chastity: ${pluralize(data.chastity.count, 'occurrence')}, ${data.chastity.totalDays} days`);
+        if (data.droughts.count > 0)      out.push(`  Droughts: ${pluralize(data.droughts.count, 'occurrence')}, ${data.droughts.totalDays} days`);
+        if (data.explosions.count > 0)    out.push(`  Explosions: ${pluralize(data.explosions.count, 'occurrence')}, ${data.explosions.totalDays} days`);
+        if (data.exposeThieves.count > 0) out.push(`  Expose Thieves: ${pluralize(data.exposeThieves.count, 'occurrence')}, ${data.exposeThieves.totalDays} days`);
+        if (data.gluttony.count > 0)      out.push(`  Gluttony: ${pluralize(data.gluttony.count, 'occurrence')}, ${data.gluttony.totalDays} days`);
+        if (data.magicWard.count > 0)     out.push(`  Magic Ward: ${pluralize(data.magicWard.count, 'occurrence')}, ${data.magicWard.totalDays} days`);
+        if (data.nightfall.count > 0)     out.push(`  Nightfall: ${pluralize(data.nightfall.count, 'occurrence')}, ${data.nightfall.totalDays} days`);
+        if (data.sloth.count > 0)         out.push(`  Sloth: ${pluralize(data.sloth.count, 'occurrence')}, ${data.sloth.totalDays} days`);
+        if (data.storms.count > 0)        out.push(`  Storms: ${pluralize(data.storms.count, 'occurrence')}, ${data.storms.totalDays} days`);
     }
 
     // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
@@ -2464,11 +2464,11 @@ function formatProvinceNewsOutput(data) {
         out.push('War Outcomes:');
         if (data.warLandPenalty) {
             const p = data.warLandPenalty;
-            out.push(`Land given up: ${p.total} acres (${p.toEnemies} to enemies, ${p.redistributed} redistributed)`);
+            out.push(`  Land given up: ${p.total} acres (${p.toEnemies} to enemies, ${p.redistributed} redistributed)`);
         }
         if (data.warResourceBonus) {
             const b = data.warResourceBonus;
-            out.push(`Resources received: ${formatNumber(b.buildingCredits)} building credits, ${formatNumber(b.specialistCredits)} specialist credits, ${formatNumber(b.scienceBooks)} science books`);
+            out.push(`  Resources received: ${formatNumber(b.buildingCredits)} building credits, ${formatNumber(b.specialistCredits)} specialist credits, ${formatNumber(b.scienceBooks)} science books`);
         }
     }
 
