@@ -44,6 +44,7 @@ const advSettings = {
         showRazedBuildings: false,
         showTroopsReleased: false,
         showDraftPercentage: false,
+        showDraftRate: false,
         showMilitaryWages: false,
         exploreDetails: false
     },
@@ -826,6 +827,26 @@ function renderProvinceLogsSettings(container, elements) {
     draftGroup.appendChild(draftLabel);
     container.appendChild(draftGroup);
 
+    const draftRateGroup = document.createElement('div');
+    draftRateGroup.className = 'adv-group';
+
+    const draftRateLabel = document.createElement('label');
+    draftRateLabel.htmlFor = 'adv-pl-showDraftRate';
+
+    const draftRateCheckbox = document.createElement('input');
+    draftRateCheckbox.type = 'checkbox';
+    draftRateCheckbox.id = 'adv-pl-showDraftRate';
+    draftRateCheckbox.checked = advSettings.provinceLogs.showDraftRate;
+    draftRateCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showDraftRate = draftRateCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    draftRateLabel.appendChild(draftRateCheckbox);
+    draftRateLabel.appendChild(document.createTextNode(' Show draft rate setting'));
+    draftRateGroup.appendChild(draftRateLabel);
+    container.appendChild(draftRateGroup);
+
     const wagesGroup = document.createElement('div');
     wagesGroup.className = 'adv-group';
 
@@ -1037,6 +1058,10 @@ function applyProvinceLogsSettings(text) {
 
     if (!advSettings.provinceLogs.showDraftPercentage) {
         output = output.split('\n').filter(line => !/^Draft:/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showDraftRate) {
+        output = output.split('\n').filter(line => !/^Draft rate:/.test(line)).join('\n');
     }
 
     if (!advSettings.provinceLogs.showMilitaryWages) {

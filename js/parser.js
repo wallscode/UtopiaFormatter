@@ -439,6 +439,7 @@ function formatProvinceLogs(text) {
     let stealHorsesReleased = 0;
     let stealHorsesBroughtBack = 0;
     let draftPercent = null;
+    let draftRate = null;
     let militaryWagesPercent = null;
     let exploreAcres = 0;
     let exploreSoldiers = 0;
@@ -622,8 +623,8 @@ function formatProvinceLogs(text) {
         }
 
         // Parse thieves lost in successful operations
-        if (line.includes("We lost") && line.includes("thieves in the operation")) {
-            const lostMatch = line.match(/We lost ([\d,]+) thieves? in the operation/i);
+        if (line.includes("We lost") && (line.includes("thieves in the operation") || line.includes("thief in the operation"))) {
+            const lostMatch = line.match(/We lost ([\d,]+) thie(?:f|ves?) in the operation/i);
             if (lostMatch) successThiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
         }
 
@@ -641,6 +642,12 @@ function formatProvinceLogs(text) {
         if (line.includes("You will draft up to") && line.includes("of your population")) {
             const m = line.match(/You will draft up to (\d+)%/);
             if (m) draftPercent = parseInt(m[1]);
+        }
+
+        // Parse draft rate setting
+        if (line.includes("You have set your draft rate to")) {
+            const m = line.match(/You have set your draft rate to (.+?)\./i);
+            if (m) draftRate = m[1].trim();
         }
 
         // Parse military wages notification
@@ -722,8 +729,11 @@ function formatProvinceLogs(text) {
                    !(line.includes("You have ordered that") && line.includes("be released from duty")) &&
                    !(line.includes("release") && line.includes("horses") && line.includes("bring back")) &&
                    !line.includes("You will draft up to") &&
+                   !line.includes("You have set your draft rate to") &&
                    !(line.includes("You will pay") && line.includes("of military wages")) &&
-                   !line.includes("Your topic was created successfully")) {
+                   !line.includes("Your topic was created successfully") &&
+                   !line.includes("Post edited successfully") &&
+                   !line.includes("The power of Mana Well surges through your forces")) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
@@ -877,7 +887,7 @@ function formatProvinceLogs(text) {
     // Military Training (omitted when no training, release, draft, or wage data detected)
     const anyTraining = Object.keys(trainingCounts).length > 0;
     const anyRelease = Object.keys(releaseCounts).length > 0;
-    if (anyTraining || anyRelease || draftPercent !== null || militaryWagesPercent !== null) {
+    if (anyTraining || anyRelease || draftPercent !== null || draftRate !== null || militaryWagesPercent !== null) {
         output += "\nMilitary Training:\n";
         Object.entries(trainingCounts)
             .sort((a, b) => b[1] - a[1])
@@ -886,6 +896,7 @@ function formatProvinceLogs(text) {
             .sort((a, b) => b[1] - a[1])
             .forEach(([unit, count]) => { output += `${formatNumber(count)} ${unit} released\n`; });
         if (draftPercent !== null) output += `Draft: ${draftPercent}% of population\n`;
+        if (draftRate !== null) output += `Draft rate: ${draftRate}\n`;
         if (militaryWagesPercent !== null) output += `Military wages: ${militaryWagesPercent}%\n`;
     }
 
