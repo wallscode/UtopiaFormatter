@@ -8,7 +8,7 @@ type: bug
 priority: 2
 assignee: Jamie Walls
 ---
-# Province Logs: fix 15 Unknown Thievery Targets entries — Greater Arson + Assassinate Generals
+# Province Logs: fix 15 Unknown Thievery Targets entries — Greater Arson + Night Strike
 
 ## Background
 
@@ -86,15 +86,15 @@ The Thievery Targets builder already aggregates impact by type, so per-building 
 
 ---
 
-## Cause 2: Assassinate Generals — not a recognised op type (2 entries)
+## Cause 2: Night Strike — not a recognised op type (2 entries)
 
 ```
 Our thieves assassinated 12 enemy troops!
 ```
 
-The Assassinate Wizards op matches `"assassinated"` + `"wizards"`. The Assassinate Generals op uses `"enemy troops"` instead. No OPERATIONS entry exists for it.
+The Assassinate Wizards op matches `"assassinated"` + `"wizards"`. Night Strike uses `"assassinated"` + `"enemy troops"` instead. No OPERATIONS entry exists for it.
 
-Add an entry to `PROVINCE_LOGS_CONFIG.OPERATIONS` for Assassinate Generals with detection text `"assassinated"` and a secondary guard for `"enemy troops"` (to distinguish it from Assassinate Wizards which already claims `"assassinated"`). Impact unit: troops.
+Add an entry to `PROVINCE_LOGS_CONFIG.OPERATIONS` for Night Strike with detection text `"assassinated"` and a secondary guard for `"enemy troops"` (to distinguish it from Assassinate Wizards which already claims `"assassinated"`). Impact unit: troops.
 
 ---
 
@@ -107,5 +107,5 @@ Add an entry to `PROVINCE_LOGS_CONFIG.OPERATIONS` for Assassinate Generals with 
 After the fix:
 - Thievery Summary shows a `Greater Arson:` entry with per-building-type lines below it (like Propaganda).
 - Thievery Targets shows no Unknown entries for Willaimia Sherman (4:11).
-- `Assassinate Generals` appears as a named entry where applicable.
+- `Night Strike` appears as a named entry where applicable.
 - Run `tests/province-logs.test.js` and update `tests/provincelogs_expected_output.txt`.
