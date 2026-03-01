@@ -128,7 +128,7 @@ Thievery Targets:
     Failed: 9 (217 thieves lost)
   mystic (4:8) — 12 ops (4 failed):
     Tower Robbery: 5 (113,133 runes)
-    Unknown: 2
+    Steal War Horses: 2 (50 war horses)
     Bribe Generals: 1
     Failed: 4 (83 thieves lost)
   Bikini Bottom (3:6) — 11 ops (2 failed):

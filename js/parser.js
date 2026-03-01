@@ -668,6 +668,7 @@ function formatProvinceLogs(text) {
                 if (line.includes('gold coins')) { matchedOpName = 'Vault Robbery'; const m = line.match(/([\d,]+)\s+gold coins/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'gold coins'; } }
                 else if (line.includes('bushels')) { matchedOpName = 'Granary Robbery'; const m = line.match(/([\d,]+)\s+bushels/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'bushels'; } }
                 else if (line.includes('runes') && !line.includes('begin casting')) { matchedOpName = 'Tower Robbery'; const m = line.match(/([\d,]+)\s+runes/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'runes'; } }
+                else if (line.includes('war horses')) { matchedOpName = 'Steal War Horses'; const m = line.match(/([\d,]+)\s+war horses/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'war horses'; } }
             }
             if (thiefTargetM) {
                 thiefOps.push({ target: thiefTargetM[1], type: matchedOpName, success: true, impact: matchedImpact, impactUnit: matchedUnit });
