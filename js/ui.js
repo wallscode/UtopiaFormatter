@@ -30,11 +30,13 @@ const advSettings = {
         discordCopy: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Resources Stolen', 'Spell Summary', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
+        sectionOrder: ['Thievery Summary', 'Thievery Targets', 'Resources Stolen', 'Spell Summary', 'Spell Targets', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
         visible: {
             'Thievery Summary': true,
+            'Thievery Targets': false,
             'Resources Stolen': true,
             'Spell Summary': true,
+            'Spell Targets': false,
             'Aid Summary': true,
             'Dragon Summary': true,
             'Ritual Summary': false,

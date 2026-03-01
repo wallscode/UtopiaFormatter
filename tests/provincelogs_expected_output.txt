@@ -95,3 +95,308 @@ Military Training:
   Draft: 0% of population
   Draft rate: Normal
   Military wages: 200%
+
+Thievery Targets:
+  Willaimia Sherman (4:11) — 50 ops (1 failed):
+    Unknown: 18
+    Propaganda: 11 (130 specialist troops)
+    Arson: 9 (85 acres)
+    Tower Robbery: 3 (28,056 runes)
+    Assassinate Wizards: 3 (306 wizards)
+    Kidnapping: 3 (336 peasants)
+    Incite Riots: 1 (2 days)
+    Vault Robbery: 1 (2,320 gold coins)
+    Failed: 1 (9 thieves lost)
+  Mat Phoria Salleh (4:11) — 23 ops (13 failed):
+    Unknown: 6
+    Tower Robbery: 4 (30,370 runes)
+    Failed: 13 (239 thieves lost)
+  Back From The Edge (4:8) — 21 ops (6 failed):
+    Vault Robbery: 6 (257,794 gold coins)
+    Unknown: 5
+    Granary Robbery: 3 (107,009 bushels)
+    Bribe Generals: 1
+    Failed: 6 (66 thieves lost)
+  VercingetoFist (4:11) — 16 ops (9 failed):
+    Tower Robbery: 5 (37,271 runes)
+    Unknown: 2
+    Failed: 9 (217 thieves lost)
+  aaaaaargh (4:8) — 15 ops (4 failed):
+    Granary Robbery: 6 (228,108 bushels)
+    Unknown: 4
+    Bribe Generals: 1
+    Failed: 4 (42 thieves lost)
+  mystic (4:8) — 14 ops (4 failed):
+    Tower Robbery: 5 (113,133 runes)
+    Unknown: 4
+    Bribe Generals: 1
+    Failed: 4 (83 thieves lost)
+  Resius Caesar (4:11) — 13 ops (5 failed):
+    Unknown: 5
+    Granary Robbery: 3 (186,566 bushels)
+    Failed: 5 (123 thieves lost)
+  Jal the Putrid (4:11) — 13 ops (2 failed):
+    Unknown: 5
+    Vault Robbery: 3 (95,029 gold coins)
+    Incite Riots: 1 (5 days)
+    Bribe Thieves: 1
+    Tower Robbery: 1 (5,726 runes)
+    Failed: 2 (48 thieves lost)
+  Bikini Bottom (3:6) — 12 ops (2 failed):
+    Vault Robbery: 8 (810,402 gold coins)
+    Unknown: 1
+    Bribe Thieves: 1
+    Failed: 2 (80 thieves lost)
+  Crimson Dwight Eisenhower (4:11) — 11 ops (2 failed):
+    Tower Robbery: 6 (45,109 runes)
+    Unknown: 3
+    Failed: 2 (29 thieves lost)
+  wayshegoes (4:8) — 10 ops (3 failed):
+    Granary Robbery: 3 (76,224 bushels)
+    Unknown: 2
+    Tower Robbery: 1 (14,117 runes)
+    Bribe Generals: 1
+    Failed: 3 (14 thieves lost)
+  ARRROT (4:8) — 9 ops (1 failed):
+    Vault Robbery: 5 (169,876 gold coins)
+    Unknown: 3
+    Failed: 1 (14 thieves lost)
+  Ragnar Crashbrok (4:11) — 9 ops (2 failed):
+    Unknown: 4
+    Tower Robbery: 3 (20,999 runes)
+    Failed: 2 (72 thieves lost)
+  FutureState (4:11) — 9 ops (2 failed):
+    Tower Robbery: 4 (18,489 runes)
+    Unknown: 2
+    Incite Riots: 1 (5 days)
+    Failed: 2 (83 thieves lost)
+  Alchemia (4:11) — 8 ops (2 failed):
+    Bribe Generals: 3
+    Unknown: 3
+    Failed: 2 (35 thieves lost)
+  ZePirateCaptnAFAU (4:8) — 6 ops (4 failed):
+    Unknown: 1
+    Tower Robbery: 1 (27,079 runes)
+    Failed: 4 (59 thieves lost)
+  Tintagel (4:8) — 6 ops (1 failed):
+    Tower Robbery: 4 (97,763 runes)
+    Unknown: 1
+    Failed: 1 (11 thieves lost)
+  Haxe (4:8) — 6 ops (1 failed):
+    Tower Robbery: 4 (52,905 runes)
+    Unknown: 1
+    Failed: 1 (8 thieves lost)
+  bornagainboot (4:8) — 6 ops (2 failed):
+    Tower Robbery: 4 (82,048 runes)
+    Failed: 2 (34 thieves lost)
+  GengBriz Khan (4:11) — 6 ops (2 failed):
+    Unknown: 3
+    Tower Robbery: 1 (1,362 runes)
+    Failed: 2 (56 thieves lost)
+  muguiying (4:11) — 6 ops (2 failed):
+    Unknown: 4
+    Failed: 2 (71 thieves lost)
+  Cao Cao (4:11) — 5 ops (1 failed):
+    Unknown: 3
+    Incite Riots: 1 (6 days)
+    Failed: 1 (50 thieves lost)
+  Gordon Granger (4:11) — 5 ops (2 failed):
+    Tower Robbery: 2 (6,855 runes)
+    Unknown: 1
+    Failed: 2 (18 thieves lost)
+  to hell and back (3:9) — 4 ops:
+    Tower Robbery: 3 (164,991 runes)
+    Unknown: 1
+  Black Hole (3:10) — 4 ops (2 failed):
+    Unknown: 1
+    Vault Robbery: 1 (69,310 gold coins)
+    Failed: 2 (120 thieves lost)
+  BroadSword (4:8) — 3 ops:
+    Unknown: 2
+    Sabotage Wizards: 1 (1 days)
+  Walk The Plank (4:8) — 2 ops:
+    Unknown: 2
+  Legion Maverick (4:11) — 2 ops:
+    Incite Riots: 1 (6 days)
+    Unknown: 1
+  Maj Gen Robert Ross (4:11) — 2 ops (1 failed):
+    Unknown: 1
+    Failed: 1 (8 thieves lost)
+  An Emerald Dragon from (4:8) — 1 op:
+    Unknown: 1
+  Plague Pirate Pete (4:8) — 1 op:
+    Unknown: 1
+  Ta the daddy pirate (4:8) — 1 op:
+    Unknown: 1
+  Frost (4:8) — 1 op:
+    Unknown: 1
+  UnKnown ReBel (4:8) — 1 op:
+    Unknown: 1
+  Pisot Bbm Gen Thorre (4:11) — 1 op:
+    Unknown: 1
+  William Wallace (4:11) — 1 op:
+    Unknown: 1
+  Clampy (4:11) — 1 op:
+    Unknown: 1
+
+Spell Targets:
+  Back From The Edge (4:8) — 24 casts (2 failed):
+    Meteor Showers: 4 (34 days)
+    Mystic Vortex: 4 (17 active spells)
+    Nightmares: 4 (1,450 troops)
+    Chastity: 3 (20 days)
+    Fireball: 3 (3,639 peasants)
+    Droughts: 2 (23 days)
+    Gluttony: 1 (15 days)
+    Pitfalls: 1 (13 days)
+    Failed: 2
+  muguiying (4:11) — 20 casts (8 failed):
+    Mystic Vortex: 4 (2 active spells)
+    Meteor Showers: 4 (23 days)
+    Chastity: 4 (17 days)
+    Failed: 8
+  Alchemia (4:11) — 17 casts (4 failed):
+    Mystic Vortex: 5 (9 active spells)
+    Meteor Showers: 4 (33 days)
+    Chastity: 2 (10 days)
+    Greed: 1 (12 days)
+    Pitfalls: 1 (13 days)
+    Failed: 4
+  Legion Maverick (4:11) — 15 casts (8 failed):
+    Meteor Showers: 3 (23 days)
+    Mystic Vortex: 2 (7 active spells)
+    Chastity: 2 (13 days)
+    Failed: 8
+  aaaaaargh (4:8) — 14 casts:
+    Mystic Vortex: 3 (9 active spells)
+    Tornadoes: 3 (1,025 acres of buildings)
+    Pitfalls: 2 (25 days)
+    Chastity: 1 (5 days)
+    Meteor Showers: 1 (6 days)
+    Gluttony: 1 (19 days)
+    Droughts: 1 (16 days)
+    Greed: 1 (7 days)
+    Explosions: 1 (12 days)
+  Gordon Granger (4:11) — 14 casts (3 failed):
+    Amnesia: 4 (322,673 books)
+    Mystic Vortex: 3 (9 active spells)
+    Pitfalls: 2 (22 days)
+    Meteor Showers: 2 (16 days)
+    Failed: 3
+  wayshegoes (4:8) — 12 casts (1 failed):
+    Mystic Vortex: 5 (5 active spells)
+    Meteor Showers: 2 (13 days)
+    Pitfalls: 1 (12 days)
+    Greed: 1 (9 days)
+    Droughts: 1 (14 days)
+    Gluttony: 1 (11 days)
+    Failed: 1
+  Busy With Bonnie Blue (4:1) — 10 casts (3 failed):
+    Mystic Vortex: 7 (16 active spells)
+    Failed: 3
+  UnKnown ReBel (4:8) — 9 casts (3 failed):
+    Chastity: 4 (17 days)
+    Expose Thieves: 1 (5 days)
+    Meteor Showers: 1 (7 days)
+    Failed: 3
+  mystic (4:8) — 9 casts (4 failed):
+    Mystic Vortex: 1 (2 active spells)
+    Meteor Showers: 1 (9 days)
+    Expose Thieves: 1 (7 days)
+    Chastity: 1 (8 days)
+    Pitfalls: 1 (13 days)
+    Failed: 4
+  My Dog Ate It (4:1) — 9 casts (1 failed):
+    Mystic Vortex: 8 (25 active spells)
+    Failed: 1
+  Mat Phoria Salleh (4:11) — 9 casts (6 failed):
+    Lightning Strike: 2 (6,662 runes)
+    Meteor Showers: 1 (10 days)
+    Failed: 6
+  ARRROT (4:8) — 8 casts (5 failed):
+    Meteor Showers: 3 (26 days)
+    Failed: 5
+  SafeHaven (4:8) — 8 casts (1 failed):
+    Meteor Showers: 3 (22 days)
+    Mystic Vortex: 2 (4 active spells)
+    Pitfalls: 1 (10 days)
+    Chastity: 1 (8 days)
+    Failed: 1
+  Ragnar Crashbrok (4:11) — 7 casts (5 failed):
+    Meteor Showers: 1 (7 days)
+    Pitfalls: 1 (11 days)
+    Failed: 5
+  MAGGOT BASTARD (4:8) — 6 casts:
+    Land Lust: 3 (81 acres)
+    Chastity: 2 (8 days)
+    Meteor Showers: 1 (9 days)
+  ZePirateCaptnAFAU (4:8) — 6 casts (2 failed):
+    Chastity: 3 (17 days)
+    Meteor Showers: 1 (9 days)
+    Failed: 2
+  Tintagel (4:8) — 5 casts (1 failed):
+    Chastity: 2 (12 days)
+    Meteor Showers: 2 (17 days)
+    Failed: 1
+  BroadSword (4:8) — 5 casts (4 failed):
+    Chastity: 1 (4 days)
+    Failed: 4
+  Undead Demonic Pirate (4:8) — 5 casts (2 failed):
+    Meteor Showers: 2 (18 days)
+    Chastity: 1 (7 days)
+    Failed: 2
+  An Emerald Dragon from (4:8) — 5 casts (1 failed):
+    Meteor Showers: 3 (26 days)
+    Chastity: 1 (5 days)
+    Failed: 1
+  Cao Cao (4:11) — 5 casts (2 failed):
+    Meteor Showers: 2 (18 days)
+    Chastity: 1 (5 days)
+    Failed: 2
+  GengBriz Khan (4:11) — 5 casts (3 failed):
+    Meteor Showers: 1 (11 days)
+    Chastity: 1 (7 days)
+    Failed: 3
+  Maj Gen Robert Ross (4:11) — 5 casts (2 failed):
+    Meteor Showers: 3 (25 days)
+    Failed: 2
+  shiver me timbers (4:8) — 4 casts:
+    Lightning Strike: 2 (8,222 runes)
+    Meteor Showers: 1 (8 days)
+    Chastity: 1 (7 days)
+  Frost (4:8) — 4 casts (1 failed):
+    Meteor Showers: 3 (21 days)
+    Failed: 1
+  Resius Caesar (4:11) — 4 casts (1 failed):
+    Mystic Vortex: 2 (2 active spells)
+    Meteor Showers: 1 (8 days)
+    Failed: 1
+  Busy at work (4:1) — 4 casts (1 failed):
+    Mystic Vortex: 3
+    Failed: 1
+  Ta the daddy pirate (4:8) — 3 casts (2 failed):
+    Meteor Showers: 1 (8 days)
+    Failed: 2
+  Plague Pirate Pete (4:8) — 3 casts:
+    Chastity: 2 (15 days)
+    Meteor Showers: 1 (10 days)
+  Jal the Putrid (4:11) — 3 casts (1 failed):
+    Meteor Showers: 2 (19 days)
+    Failed: 1
+  Pisot Bbm Gen Thorre (4:11) — 3 casts:
+    Meteor Showers: 3 (21 days)
+  Hairy nipple nebula force (4:8) — 2 casts (2 failed):
+    Failed: 2
+  Haxe (4:8) — 2 casts:
+    Meteor Showers: 2 (16 days)
+  FutureState (4:11) — 2 casts (1 failed):
+    Mystic Vortex: 1
+    Failed: 1
+  Bikini Bottom (3:6) — 1 cast (1 failed):
+    Failed: 1
+  greybear (4:8) — 1 cast:
+    Meteor Showers: 1 (6 days)
+  Napoleon Pongaparte (4:11) — 1 cast:
+    Meteor Showers: 1 (6 days)
+  William Wallace (4:11) — 1 cast:
+    Meteor Showers: 1 (8 days)

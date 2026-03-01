@@ -507,6 +507,10 @@ function formatProvinceLogs(text) {
     const trainingCounts = {};
     const releaseCounts = {};
     
+    // Per-operation records for target breakdowns
+    const thiefOps = [];  // { target, type, success, impact, impactUnit }
+    const spellOps = [];  // { target, spell, success, impact, impactUnit }
+
     // Resources stolen counters
     let goldCoinsStolen = 0;
     let bushelsStolen = 0;
@@ -543,16 +547,31 @@ function formatProvinceLogs(text) {
     for (const line of lines) {
         // Parse spells
         if (line.includes("begin casting")) {
+            const spellTargetM = line.match(/\(([^()]+\(\d+:\d+\))\)\s*$/);
+            const spellTarget = spellTargetM ? spellTargetM[1] : null;
+            const spellSuccess = !line.includes('but the spell fails');
             for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
                 if (line.includes(spell.text)) {
                     spellCounts[spell.name]++;
+                    let impactValue = null;
                     if (spell.impact) {
                         const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i"));
                         if (match) {
-                            spellImpacts[spell.name] += parseInt(match[1].replace(/,/g, ""));
+                            impactValue = parseInt(match[1].replace(/,/g, ""));
+                            spellImpacts[spell.name] += impactValue;
                         }
                     }
+                    if (spellTarget) {
+                        let unit = spell.impact || null;
+                        if (unit === 'of the men') unit = 'troops';
+                        else if (unit === 'active spell') unit = 'active spells';
+                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, impact: spellSuccess ? impactValue : null, impactUnit: unit });
+                    }
                 }
+            }
+            // Capture failed casts where no spell text matched (unrecognised spell type)
+            if (spellTarget && !spellSuccess && !PROVINCE_LOGS_CONFIG.SPELLS.some(s => line.includes(s.text))) {
+                spellOps.push({ target: spellTarget, spell: null, success: false, impact: null, impactUnit: null });
             }
         }
         
@@ -566,6 +585,10 @@ function formatProvinceLogs(text) {
         
         // Parse thievery operations
         if (line.includes("Early indications show that our operation was a success")) {
+            const thiefTargetM = line.match(/\(([^()]+\(\d+:\d+\)),\s*sent (\d+)\)/);
+            let matchedOpName = null;
+            let matchedImpact = null;
+            let matchedUnit = null;
             for (const op of PROVINCE_LOGS_CONFIG.OPERATIONS) {
                 // Handle different operation types
                 if (op.name === "Arson" && op.unique_impact) {
@@ -573,6 +596,8 @@ function formatProvinceLogs(text) {
                         thieveryCounts[op.name]++;
                         const match = line.match(/([\d,]+)\s+acres/i);
                         if (match) thieveryImpacts[op.name] += parseInt(match[1].replace(/,/g, ""));
+                        matchedOpName = op.name;
+                        if (match) { matchedImpact = parseInt(match[1].replace(/,/g, "")); matchedUnit = 'acres'; }
                     }
                 } else if (op.name === "Propaganda" && op.unique_impact) {
                     if (line.includes(op.text)) {
@@ -584,6 +609,8 @@ function formatProvinceLogs(text) {
                             const namedTroop = PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.find(p => p.toLowerCase() === troopName);
                             const key = namedTroop || 'elites';
                             propagandaCounts[key] = (propagandaCounts[key] || 0) + troopCount;
+                            matchedOpName = 'Propaganda';
+                            matchedImpact = troopCount; matchedUnit = troopName;
                         }
                     }
                 } else if (op.unique_impact) {
@@ -592,16 +619,30 @@ function formatProvinceLogs(text) {
                         if (op.name === "Bribe Generals" || op.name === "Bribe Thieves") {
                             thieveryImpacts[op.name]++;
                         }
+                        matchedOpName = op.name;
                     }
                 } else if (line.includes(op.text)) {
                     thieveryCounts[op.name]++;
+                    matchedOpName = op.name;
                     if (op.impact) {
                         const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(op.impact)}`, "i"));
                         if (match) {
-                            thieveryImpacts[op.name] += parseInt(match[1].replace(/,/g, ""));
+                            const val = parseInt(match[1].replace(/,/g, ""));
+                            thieveryImpacts[op.name] += val;
+                            matchedImpact = val;
+                            matchedUnit = op.impact === 'of them' ? 'peasants' : op.impact === 'day' ? 'days' : op.impact;
                         }
                     }
                 }
+            }
+            // Also capture stolen resources from this line if present (Vault/Granary/Tower Robbery)
+            if (!matchedOpName) {
+                if (line.includes('gold coins')) { matchedOpName = 'Vault Robbery'; const m = line.match(/([\d,]+)\s+gold coins/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'gold coins'; } }
+                else if (line.includes('bushels')) { matchedOpName = 'Granary Robbery'; const m = line.match(/([\d,]+)\s+bushels/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'bushels'; } }
+                else if (line.includes('runes') && !line.includes('begin casting')) { matchedOpName = 'Tower Robbery'; const m = line.match(/([\d,]+)\s+runes/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'runes'; } }
+            }
+            if (thiefTargetM) {
+                thiefOps.push({ target: thiefTargetM[1], type: matchedOpName, success: true, impact: matchedImpact, impactUnit: matchedUnit });
             }
         }
         
@@ -675,6 +716,11 @@ function formatProvinceLogs(text) {
             failedThieveryCount++;
             const lostMatch = line.match(/We lost ([\d,]+) thieves?/i);
             if (lostMatch) thiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
+            const failTargetM = line.match(/\(([^()]+\(\d+:\d+\)),\s*sent (\d+)\)/);
+            if (failTargetM) {
+                const lost = lostMatch ? parseInt(lostMatch[1].replace(/,/g, "")) : 0;
+                thiefOps.push({ target: failTargetM[1], type: null, success: false, impact: lost || null, impactUnit: lost ? 'thieves lost' : null });
+            }
         }
 
         // Parse thieves lost in successful operations
@@ -956,6 +1002,83 @@ function formatProvinceLogs(text) {
         if (draftPercent !== null) output += `  Draft: ${draftPercent}% of population\n`;
         if (draftRate !== null) output += `  Draft rate: ${draftRate}\n`;
         if (militaryWagesPercent !== null) output += `  Military wages: ${militaryWagesPercent}%\n`;
+    }
+
+    // Thievery Targets
+    if (thiefOps.length > 0) {
+        // Group by target
+        const byTarget = new Map();
+        for (const op of thiefOps) {
+            if (!byTarget.has(op.target)) byTarget.set(op.target, []);
+            byTarget.get(op.target).push(op);
+        }
+        // Sort targets by total op count descending
+        const sorted = [...byTarget.entries()].sort((a, b) => b[1].length - a[1].length);
+        let ttOut = '\nThievery Targets:\n';
+        for (const [target, ops] of sorted) {
+            const successes = ops.filter(o => o.success);
+            const failures  = ops.filter(o => !o.success);
+            const failLabel = failures.length ? ` (${failures.length} failed)` : '';
+            ttOut += `  ${target} \u2014 ${ops.length} op${ops.length !== 1 ? 's' : ''}${failLabel}:\n`;
+            // Aggregate successes by type
+            const typeMap = new Map();
+            for (const op of successes) {
+                const key = op.type || 'Unknown';
+                if (!typeMap.has(key)) typeMap.set(key, { count: 0, impact: 0, unit: op.impactUnit });
+                const entry = typeMap.get(key);
+                entry.count++;
+                if (op.impact) entry.impact += op.impact;
+            }
+            // Sort by count descending
+            [...typeMap.entries()]
+                .sort((a, b) => b[1].count - a[1].count)
+                .forEach(([type, data]) => {
+                    const impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit})` : '';
+                    ttOut += `    ${type}: ${data.count}${impactStr}\n`;
+                });
+            if (failures.length > 0) {
+                const totalLost = failures.reduce((s, o) => s + (o.impact || 0), 0);
+                const lostStr = totalLost > 0 ? ` (${formatNumber(totalLost)} thieves lost)` : '';
+                ttOut += `    Failed: ${failures.length}${lostStr}\n`;
+            }
+        }
+        output += ttOut;
+    }
+
+    // Spell Targets
+    if (spellOps.length > 0) {
+        const byTarget = new Map();
+        for (const op of spellOps) {
+            if (!byTarget.has(op.target)) byTarget.set(op.target, []);
+            byTarget.get(op.target).push(op);
+        }
+        const sorted = [...byTarget.entries()].sort((a, b) => b[1].length - a[1].length);
+        let stOut = '\nSpell Targets:\n';
+        for (const [target, ops] of sorted) {
+            const successes = ops.filter(o => o.success);
+            const failures  = ops.filter(o => !o.success);
+            const failLabel = failures.length ? ` (${failures.length} failed)` : '';
+            stOut += `  ${target} \u2014 ${ops.length} cast${ops.length !== 1 ? 's' : ''}${failLabel}:\n`;
+            // Aggregate successes by spell name
+            const spellMap = new Map();
+            for (const op of successes) {
+                const key = op.spell || 'Unknown';
+                if (!spellMap.has(key)) spellMap.set(key, { count: 0, impact: 0, unit: op.impactUnit });
+                const entry = spellMap.get(key);
+                entry.count++;
+                if (op.impact) entry.impact += op.impact;
+            }
+            [...spellMap.entries()]
+                .sort((a, b) => b[1].count - a[1].count)
+                .forEach(([spell, data]) => {
+                    const impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit})` : '';
+                    stOut += `    ${spell}: ${data.count}${impactStr}\n`;
+                });
+            if (failures.length > 0) {
+                stOut += `    Failed: ${failures.length}\n`;
+            }
+        }
+        output += stOut;
     }
 
     return output.trim();
@@ -2455,14 +2578,12 @@ function formatProvinceNewsOutput(data) {
             for (const [src, cnt] of sources) out.push(`    ${src}: ${cnt}`);
         }
         if (data.meteorDays > 0) {
-            const totalMeteorCas = data.meteorCasualties.peasants + data.meteorCasualties.soldiers +
-                                   data.meteorCasualties.Magicians + data.meteorCasualties.Beastmasters;
             const casParts = [];
             if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
             if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
             if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
-            out.push(`  Meteor shower: ${data.meteorDays} days, ${formatNumber(totalMeteorCas)} total casualties (${casParts.join(', ')})`);
+            out.push(`  Meteor shower: ${data.meteorDays} days${casParts.length ? ` (${casParts.join(', ')})` : ''}`);
         }
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
