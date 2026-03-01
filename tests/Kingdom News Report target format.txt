@@ -14,8 +14,8 @@ Total Attacks Made: 279 (8091 acres)
 -- Dragons Completed: 2
 -- Enemy Dragons Killed: 1
 -- Dragons Cancelled: 1
--- Rituals Started: 2 (Barrier)
--- Rituals Completed: 1
+-- Rituals Started: 1 (Barrier)
+-- Rituals Failed: 1
 Total Attacks Suffered: 196 (6959 acres)
 -- Uniques: 82
 -- Trad March: 181 (6800 acres)

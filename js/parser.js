@@ -1209,7 +1209,8 @@ function parseAttackLine(line, data, dateStr) {
             dragonsKilled: [],
             dragonsCancelled: 0,
             ritualsStarted: [],
-            ritualsCompleted: 0
+            ritualsCompleted: 0,
+            ritualsFailed: 0
         };
     }
 
@@ -1236,7 +1237,8 @@ function parseAttackLine(line, data, dateStr) {
             dragonsKilled: [],
             dragonsCancelled: 0,
             ritualsStarted: [],
-            ritualsCompleted: 0
+            ritualsCompleted: 0,
+            ritualsFailed: 0
         };
     }
 
@@ -1512,7 +1514,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
                 };
             }
             const tm = line.match(/has begun the (\w+) Dragon project/);
@@ -1536,7 +1538,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
                 };
             }
             const tm = line.match(/\bA (\w+) Dragon,/);
@@ -1556,12 +1558,10 @@ function parseSpecialLine(line, data) {
     }
 
     // "Sadly, we have failed summoning the ritual to cover our lands!"
-    // The ritual development completed (ritualsCompleted++) but the summoning failed,
-    // so a new development cycle must begin (ritualsStarted++).
+    // The summoning failed — not a start and not a completion.
     if (line.includes('failed summoning the ritual')) {
         if (own && data.kingdoms[own]) {
-            data.kingdoms[own].ritualsCompleted++;
-            data.kingdoms[own].ritualsStarted.push(null);
+            data.kingdoms[own].ritualsFailed = (data.kingdoms[own].ritualsFailed || 0) + 1;
         }
         return true;
     }
@@ -1595,7 +1595,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
                 };
             }
             data.kingdoms[kId].dragonsCancelled++;
@@ -1749,6 +1749,7 @@ function formatKingdomNewsOutput(data, windowDays) {
         if (ownKingdom.ritualsStarted.length > 0)
             output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted.length}${dragonTypeSuffix(ownKingdom.ritualsStarted)}`);
         if (ownKingdom.ritualsCompleted > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted}`);
+        if ((ownKingdom.ritualsFailed || 0) > 0) output.push(`-- Rituals Failed: ${ownKingdom.ritualsFailed}`);
 
         output.push(`Total Attacks Suffered: ${ownKingdom.attacksSuffered} (${ownKingdom.acresLost} acres)`);
         output.push(`-- Uniques: ${sufferedUniques.total}`);

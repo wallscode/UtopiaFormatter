@@ -15,6 +15,7 @@ const advSettings = {
         showDragons: true,
         showDragonCancellations: false,
         showRituals: true,
+        showRitualsFailed: false,
         showRitualCoverage: true,
         showKingdomRelations: false,
         uniqueWindow: 6,
@@ -441,8 +442,9 @@ function renderKingdomNewsSettings(container, elements) {
         { key: 'showMassacre',             label: 'Massacre attacks'               },
         { key: 'showPlunder',              label: 'Plunder attacks'                },
         { key: 'showDragons',              label: 'Dragons'                        },
-        { key: 'showDragonCancellations',  label: 'Enemy dragon cancellations'     },
+        { key: 'showDragonCancellations',  label: 'Dragon Cancellations'           },
         { key: 'showRituals',              label: 'Rituals started/completed'      },
+        { key: 'showRitualsFailed',        label: 'Rituals failed (summoning)'     },
         { key: 'showRitualCoverage',       label: 'Ritual coverage of our lands'   },
         { key: 'showKingdomRelations',     label: 'Kingdom Relations'              }
     ];
@@ -1000,8 +1002,9 @@ function applyKingdomNewsSettings(text) {
         if (!s.showPlunder  && /^-- Plunder:/.test(line))                        return false;
         if (!s.showDragons             && /^-- (Enemy )?Dragons (Started|Completed):/.test(line))   return false;
         if (!s.showDragons             && /^-- Enemy Dragons Killed:/.test(line))                    return false;
-        if (!s.showDragonCancellations && /^-- Enemy Dragons Cancelled:/.test(line))                return false;
+        if (!s.showDragonCancellations && /^-- (Enemy )?Dragons Cancelled:/.test(line))             return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
+        if (!s.showRitualsFailed       && /^-- Rituals Failed:/.test(line))                         return false;
         if (!s.showRitualCoverage      && /^-- Ritual Coverage:/.test(line))                        return false;
         return true;
     }).join('\n');
