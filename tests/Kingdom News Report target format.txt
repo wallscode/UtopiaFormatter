@@ -13,7 +13,8 @@ Total Attacks Made: 279 (8091 acres)
 -- Dragons Started: 3 (Ruby, Topaz, Topaz)
 -- Dragons Completed: 2
 -- Enemy Dragons Killed: 1
--- Rituals Started: 2
+-- Dragons Cancelled: 1
+-- Rituals Started: 2 (Barrier)
 -- Rituals Completed: 1
 Total Attacks Suffered: 196 (6959 acres)
 -- Uniques: 82

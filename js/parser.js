@@ -421,6 +421,15 @@ function linePassesWarFilter(dateVal, line, warPeriods) {
  * @returns {{total: number, perAttacker: Object<string, number>}}
  */
 function calculateUniques(log, windowDays) {
+    // windowDays === 0 means every attack is its own unique (no windowing)
+    if (windowDays === 0) {
+        const perAttacker = {};
+        for (const { attackerKey } of log) {
+            perAttacker[attackerKey] = (perAttacker[attackerKey] || 0) + 1;
+        }
+        return { total: log.length, perAttacker };
+    }
+
     // Group dates by attacker province
     const byAttacker = {};
     for (const entry of log) {
@@ -779,7 +788,8 @@ function formatProvinceLogs(text) {
                    !(line.includes("You will pay") && line.includes("of military wages")) &&
                    !line.includes("Your topic was created successfully") &&
                    !line.includes("Post edited successfully") &&
-                   !line.includes("The power of Mana Well surges through your forces")) {
+                   !line.includes("The power of Mana Well surges through your forces") &&
+                   !line.includes("Drawing from the ancient Mana Well")) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
@@ -1011,6 +1021,7 @@ function parseKingdomNewsLog(inputText, options) {
         warOnly,
         ceasefireProposals: [],
         ceasefireWithdrawals: [],
+        ceasefireEntered: 0,
         warDeclarations: [],
         ritualCoverage: [],
         highlights: {
@@ -1197,7 +1208,7 @@ function parseAttackLine(line, data, dateStr) {
             dragonsCompleted: [],
             dragonsKilled: [],
             dragonsCancelled: 0,
-            ritualsStarted: 0,
+            ritualsStarted: [],
             ritualsCompleted: 0
         };
     }
@@ -1224,7 +1235,7 @@ function parseAttackLine(line, data, dateStr) {
             dragonsCompleted: [],
             dragonsKilled: [],
             dragonsCancelled: 0,
-            ritualsStarted: 0,
+            ritualsStarted: [],
             ritualsCompleted: 0
         };
     }
@@ -1478,6 +1489,14 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "Our kingdom has cancelled the dragon project to Unnamed kingdom (X:Y)."
+    if (line.includes('Our kingdom has cancelled the dragon project')) {
+        if (own && data.kingdoms[own]) {
+            data.kingdoms[own].dragonsCancelled = (data.kingdoms[own].dragonsCancelled || 0) + 1;
+        }
+        return true;
+    }
+
     // ── Enemy dragon actions (tracked on enemy kingdom for the "Suffered" section) ──
     // "Unnamed kingdom (X:Y) has begun the [Type] Dragon project, [Name], against us!"
     if (line.includes('has begun the') && line.includes('Dragon project') && line.includes('against us')) {
@@ -1493,7 +1512,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
                 };
             }
             const tm = line.match(/has begun the (\w+) Dragon project/);
@@ -1517,7 +1536,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
                 };
             }
             const tm = line.match(/\bA (\w+) Dragon,/);
@@ -1530,7 +1549,8 @@ function parseSpecialLine(line, data) {
     // "We have started developing a ritual! (Barrier)!"
     if (line.includes('started developing a ritual')) {
         if (own && data.kingdoms[own]) {
-            data.kingdoms[own].ritualsStarted++;
+            const rm = line.match(/\(([^)]+)\)/);
+            data.kingdoms[own].ritualsStarted.push(rm ? rm[1] : null);
         }
         return true;
     }
@@ -1541,7 +1561,7 @@ function parseSpecialLine(line, data) {
     if (line.includes('failed summoning the ritual')) {
         if (own && data.kingdoms[own]) {
             data.kingdoms[own].ritualsCompleted++;
-            data.kingdoms[own].ritualsStarted++;
+            data.kingdoms[own].ritualsStarted.push(null);
         }
         return true;
     }
@@ -1575,7 +1595,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: 0, ritualsCompleted: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0
                 };
             }
             data.kingdoms[kId].dragonsCancelled++;
@@ -1594,6 +1614,12 @@ function parseSpecialLine(line, data) {
     if (line.includes('has proposed a formal ceasefire')) {
         const m = line.match(/\((\d+):(\d+)\)/);
         if (m) data.ceasefireProposals.push(m[1] + ':' + m[2]);
+        return true;
+    }
+
+    // "We have entered into a formal ceasefire with Phoenix STFO (2:2). It will be unbreakable until..."
+    if (line.includes('entered into a formal ceasefire')) {
+        data.ceasefireEntered++;
         return true;
     }
 
@@ -1718,7 +1744,10 @@ function formatKingdomNewsOutput(data, windowDays) {
             output.push(`-- Dragons Completed: ${ownKingdom.dragonsCompleted.length}${dragonTypeSuffix(ownKingdom.dragonsCompleted)}`);
         if (ownKingdom.dragonsKilled.length > 0)
             output.push(`-- Enemy Dragons Killed: ${ownKingdom.dragonsKilled.length}${dragonTypeSuffix(ownKingdom.dragonsKilled)}`);
-        if (ownKingdom.ritualsStarted > 0)    output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted}`);
+        if ((ownKingdom.dragonsCancelled || 0) > 0)
+            output.push(`-- Dragons Cancelled: ${ownKingdom.dragonsCancelled}`);
+        if (ownKingdom.ritualsStarted.length > 0)
+            output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted.length}${dragonTypeSuffix(ownKingdom.ritualsStarted)}`);
         if (ownKingdom.ritualsCompleted > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted}`);
 
         output.push(`Total Attacks Suffered: ${ownKingdom.attacksSuffered} (${ownKingdom.acresLost} acres)`);
@@ -1898,6 +1927,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         krLines.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
     if (data.ceasefireWithdrawals.length > 0)
         krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
+    if (data.ceasefireEntered > 0)
+        krLines.push(`-- Formal Ceasefires Entered: ${data.ceasefireEntered}`);
     const theyDeclaredWar = data.warDeclarations.filter(w => w.who === 'them').length;
     const weDeclaredWar   = data.warDeclarations.filter(w => w.who === 'us').length;
     if (theyDeclaredWar > 0)
@@ -2283,6 +2314,28 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // Starvation — "Our people are starving! We have lost N peasants, N Magicians, N Beastmasters and N thieves."
+    if (ev.startsWith('Our people are starving!')) {
+        data.starvation.count++;
+        const types = [
+            { re: /(\d+) peasants?/,      key: 'peasants' },
+            { re: /(\d+) soldiers?/,      key: 'soldiers' },
+            { re: /(\d+) Magicians?/,     key: 'Magicians' },
+            { re: /(\d+) Beastmasters?/,  key: 'Beastmasters' },
+            { re: /(\d+) thieves?/,       key: 'thieves' },
+            { re: /(\d+) Elf Lords?/,     key: 'Elf Lords' },
+        ];
+        for (const { re, key } of types) {
+            const tm = ev.match(re);
+            if (tm) {
+                const n = parseInt(tm[1]);
+                data.starvation.total += n;
+                data.starvation.byType[key] = (data.starvation.byType[key] || 0) + n;
+            }
+        }
+        return;
+    }
+
     // No pattern matched — log for analysis
     logUnrecognizedLine(ev, 'province-news');
 }
@@ -2449,6 +2502,15 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    // Starvation
+    if (data.starvation.count > 0) {
+        out.push('');
+        out.push(`Starvation: ${pluralize(data.starvation.count, 'event')}, ${formatNumber(data.starvation.total)} total losses`);
+        for (const [type, n] of Object.entries(data.starvation.byType)) {
+            out.push(`  ${formatNumber(n)} ${type}`);
+        }
+    }
+
     // War Outcomes
     if (data.warLandPenalty || data.warResourceBonus) {
         out.push('');
@@ -2526,7 +2588,8 @@ function parseProvinceNews(text, options = {}) {
         turncoatGenerals:     0,
         failedPropaganda:     0,
         warLandPenalty:       null,
-        warResourceBonus:     null
+        warResourceBonus:     null,
+        starvation:           { count: 0, total: 0, byType: {} }
     };
 
     const dateLineRe = /^(\w+ \d+ of YR\d+)\t(.+)$/;

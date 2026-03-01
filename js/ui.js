@@ -481,17 +481,17 @@ function renderKingdomNewsSettings(container, elements) {
 
     const windowLabel = document.createElement('label');
     windowLabel.htmlFor = 'adv-kn-uniqueWindow';
-    windowLabel.textContent = 'Days: ';
+    windowLabel.textContent = 'Days (0 = every attack unique): ';
 
     const windowInput = document.createElement('input');
     windowInput.type = 'number';
     windowInput.id = 'adv-kn-uniqueWindow';
-    windowInput.min = '1';
+    windowInput.min = '0';
     windowInput.max = '30';
     windowInput.value = advSettings.kingdomNews.uniqueWindow;
     windowInput.addEventListener('change', () => {
         const val = parseInt(windowInput.value, 10);
-        if (val >= 1 && val <= 30) {
+        if (val >= 0 && val <= 30) {
             advSettings.kingdomNews.uniqueWindow = val;
             applyAndRerender(elements);
         }
