@@ -9,6 +9,8 @@ let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 const advSettings = {
     kingdomNews: {
+        showAttacks: true,
+        showTradMarch: true,
         showLearn: true,
         showMassacre: true,
         showPlunder: true,
@@ -18,6 +20,8 @@ const advSettings = {
         showRitualsFailed: false,
         showRitualCoverage: true,
         showKingdomRelations: false,
+        showWarDeclarations: true,
+        showCeasefires: true,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
         uniquesWithKingdoms: false,
@@ -437,39 +441,101 @@ function renderKingdomNewsSettings(container, elements) {
     showHideTitle.textContent = 'Show / Hide';
     container.appendChild(showHideTitle);
 
-    const checkboxItems = [
-        { key: 'showLearn',                label: 'Learn attacks'                  },
-        { key: 'showMassacre',             label: 'Massacre attacks'               },
-        { key: 'showPlunder',              label: 'Plunder attacks'                },
-        { key: 'showDragons',              label: 'Dragons'                        },
-        { key: 'showDragonCancellations',  label: 'Dragon Cancellations'           },
-        { key: 'showRituals',              label: 'Rituals started/completed'      },
-        { key: 'showRitualsFailed',        label: 'Rituals failed (summoning)'     },
-        { key: 'showRitualCoverage',       label: 'Ritual coverage of our lands'   },
-        { key: 'showKingdomRelations',     label: 'Kingdom Relations'              }
+    const checkboxGroups = [
+        {
+            parentKey: 'showAttacks', parentLabel: 'Attacks',
+            children: [
+                { key: 'showTradMarch', label: 'Trad March' },
+                { key: 'showLearn',     label: 'Learn'      },
+                { key: 'showMassacre',  label: 'Massacre'   },
+                { key: 'showPlunder',   label: 'Plunder'    },
+            ]
+        },
+        {
+            parentKey: 'showDragons', parentLabel: 'Dragons',
+            children: [
+                { key: 'showDragonCancellations', label: 'Dragon Cancellations' },
+            ]
+        },
+        {
+            parentKey: 'showKingdomRelations', parentLabel: 'Kingdom Relations',
+            children: [
+                { key: 'showWarDeclarations', label: 'War Declarations' },
+                { key: 'showCeasefires',      label: 'Ceasefires'       },
+            ]
+        },
+        { key: 'showRituals',        label: 'Rituals started/completed'    },
+        { key: 'showRitualsFailed',  label: 'Rituals failed (summoning)'   },
+        { key: 'showRitualCoverage', label: 'Ritual coverage of our lands' },
     ];
 
-    for (const item of checkboxItems) {
-        const group = document.createElement('div');
-        group.className = 'adv-group';
-
-        const id = `adv-kn-${item.key}`;
-        const label = document.createElement('label');
-        label.htmlFor = id;
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = id;
-        checkbox.checked = advSettings.kingdomNews[item.key];
-        checkbox.addEventListener('change', () => {
-            advSettings.kingdomNews[item.key] = checkbox.checked;
+    function makeCheckbox(key, id) {
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = id;
+        cb.checked = advSettings.kingdomNews[key];
+        cb.addEventListener('change', () => {
+            advSettings.kingdomNews[key] = cb.checked;
             applyAndRerender(elements);
         });
+        return cb;
+    }
 
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(' ' + item.label));
-        group.appendChild(label);
-        container.appendChild(group);
+    for (const item of checkboxGroups) {
+        if (item.parentKey) {
+            // Parent-child group
+            const wrapper = document.createElement('div');
+            wrapper.className = 'adv-parent-group';
+
+            // Parent row
+            const parentRow = document.createElement('div');
+            parentRow.className = 'adv-group';
+            const parentId = `adv-kn-${item.parentKey}`;
+            const parentLabel = document.createElement('label');
+            parentLabel.htmlFor = parentId;
+            const parentCb = makeCheckbox(item.parentKey, parentId);
+            parentLabel.appendChild(parentCb);
+            parentLabel.appendChild(document.createTextNode(' ' + item.parentLabel));
+            parentRow.appendChild(parentLabel);
+            wrapper.appendChild(parentRow);
+
+            // Children container
+            const childrenDiv = document.createElement('div');
+            childrenDiv.className = 'adv-children' + (advSettings.kingdomNews[item.parentKey] ? '' : ' disabled');
+
+            for (const child of item.children) {
+                const childRow = document.createElement('div');
+                childRow.className = 'adv-child-group';
+                const childId = `adv-kn-${child.key}`;
+                const childLabel = document.createElement('label');
+                childLabel.htmlFor = childId;
+                const childCb = makeCheckbox(child.key, childId);
+                childLabel.appendChild(childCb);
+                childLabel.appendChild(document.createTextNode(' ' + child.label));
+                childRow.appendChild(childLabel);
+                childrenDiv.appendChild(childRow);
+            }
+
+            // Update children disabled state when parent changes
+            parentCb.addEventListener('change', () => {
+                childrenDiv.classList.toggle('disabled', !parentCb.checked);
+            });
+
+            wrapper.appendChild(childrenDiv);
+            container.appendChild(wrapper);
+        } else {
+            // Standalone item
+            const group = document.createElement('div');
+            group.className = 'adv-group';
+            const id = `adv-kn-${item.key}`;
+            const label = document.createElement('label');
+            label.htmlFor = id;
+            const cb = makeCheckbox(item.key, id);
+            label.appendChild(cb);
+            label.appendChild(document.createTextNode(' ' + item.label));
+            group.appendChild(label);
+            container.appendChild(group);
+        }
     }
 
     // ── Unique Attack Window ─────────────────────────────────────────────────
@@ -997,12 +1063,20 @@ function applyKingdomNewsSettings(text) {
 
     // Step 1: Apply line-level filters (show/hide attack sub-types)
     const filteredText = text.split('\n').filter(line => {
-        if (!s.showLearn    && /^-- Learn:/.test(line))                          return false;
-        if (!s.showMassacre && /^-- Massacre:/.test(line))                       return false;
-        if (!s.showPlunder  && /^-- Plunder:/.test(line))                        return false;
-        if (!s.showDragons             && /^-- (Enemy )?Dragons (Started|Completed):/.test(line))   return false;
-        if (!s.showDragons             && /^-- Enemy Dragons Killed:/.test(line))                    return false;
-        if (!s.showDragonCancellations && /^-- (Enemy )?Dragons Cancelled:/.test(line))             return false;
+        // Attacks parent + children
+        const atk = s.showAttacks;
+        if ((!atk || !s.showTradMarch) && /^-- Trad March:/.test(line))                   return false;
+        if (!atk                        && /^-- (Ambush|Conquest|Raze):/.test(line))       return false;
+        if ((!atk || !s.showLearn)     && /^-- Learn:/.test(line))                         return false;
+        if ((!atk || !s.showMassacre)  && /^-- Massacre:/.test(line))                      return false;
+        if ((!atk || !s.showPlunder)   && /^-- Plunder:/.test(line))                       return false;
+        // Dragons parent + child
+        if (!s.showDragons                              && /^-- (Enemy )?Dragons (Started|Completed):/.test(line)) return false;
+        if (!s.showDragons                              && /^-- Enemy Dragons Killed:/.test(line))                  return false;
+        if ((!s.showDragons || !s.showDragonCancellations) && /^-- (Enemy )?Dragons Cancelled:/.test(line))        return false;
+        // Kingdom Relations children
+        if ((!s.showKingdomRelations || !s.showWarDeclarations) && /^-- War Declarations/.test(line))              return false;
+        if ((!s.showKingdomRelations || !s.showCeasefires)      && /^-- (Ceasefire|Formal Ceasefires)/.test(line)) return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
         if (!s.showRitualsFailed       && /^-- Rituals Failed:/.test(line))                         return false;
         if (!s.showRitualCoverage      && /^-- Ritual Coverage:/.test(line))                        return false;
