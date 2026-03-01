@@ -68,6 +68,12 @@ jobs:
             --exclude "*" \
             --include "index.html" \
             --include "css/*" \
+            --include "img/*" \
+            --include "favicon.ico" \
+            --include "favicon-*.png" \
+            --include "apple-touch-icon.png" \
+            --include "android-chrome-*.png" \
+            --include "site.webmanifest" \
             --include "js/config.js" \
             --include "js/parser.js" \
             --include "js/ui.js" \
