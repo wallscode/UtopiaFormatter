@@ -30,13 +30,15 @@ const advSettings = {
         discordCopy: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Thievery Targets', 'Resources Stolen', 'Spell Summary', 'Spell Targets', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
+        sectionOrder: ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen', 'Spell Summary', 'Spell Targets', 'Spell by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
         visible: {
             'Thievery Summary': true,
             'Thievery Targets': false,
+            'Thievery by Op Type': false,
             'Resources Stolen': true,
             'Spell Summary': true,
             'Spell Targets': false,
+            'Spell by Spell Type': false,
             'Aid Summary': true,
             'Dragon Summary': true,
             'Ritual Summary': false,
@@ -1174,8 +1176,8 @@ function applyKingdomNewsSettings(text) {
  */
 function applyProvinceLogsSettings(text) {
     const sectionNames = [
-        'Thievery Summary', 'Thievery Targets', 'Resources Stolen',
-        'Spell Summary', 'Spell Targets',
+        'Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen',
+        'Spell Summary', 'Spell Targets', 'Spell by Spell Type',
         'Aid Summary', 'Dragon Summary', 'Ritual Summary',
         'Construction Summary', 'Science Summary',
         'Exploration Summary', 'Military Training'

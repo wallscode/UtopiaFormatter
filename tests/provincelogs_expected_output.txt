@@ -365,3 +365,230 @@ Spell Targets:
     Meteor Showers: 1 (6 days)
   William Wallace (4:11) — 1 cast:
     Meteor Showers: 1 (8 days)
+
+Thievery by Op Type:
+  Tower Robbery — 51 ops (746,273 runes):
+    Crimson Dwight Eisenhower (4:11): 6 (45,109 runes)
+    mystic (4:8): 5 (113,133 runes)
+    VercingetoFist (4:11): 5 (37,271 runes)
+    Tintagel (4:8): 4 (97,763 runes)
+    Haxe (4:8): 4 (52,905 runes)
+    bornagainboot (4:8): 4 (82,048 runes)
+    Mat Phoria Salleh (4:11): 4 (30,370 runes)
+    FutureState (4:11): 4 (18,489 runes)
+    to hell and back (3:9): 3 (164,991 runes)
+    Ragnar Crashbrok (4:11): 3 (20,999 runes)
+    Willaimia Sherman (4:11): 3 (28,056 runes)
+    Gordon Granger (4:11): 2 (6,855 runes)
+    wayshegoes (4:8): 1 (14,117 runes)
+    ZePirateCaptnAFAU (4:8): 1 (27,079 runes)
+    GengBriz Khan (4:11): 1 (1,362 runes)
+    Jal the Putrid (4:11): 1 (5,726 runes)
+  Vault Robbery — 24 ops (1,404,731 gold coins):
+    Bikini Bottom (3:6): 8 (810,402 gold coins)
+    Back From The Edge (4:8): 6 (257,794 gold coins)
+    ARRROT (4:8): 5 (169,876 gold coins)
+    Jal the Putrid (4:11): 3 (95,029 gold coins)
+    Black Hole (3:10): 1 (69,310 gold coins)
+    Willaimia Sherman (4:11): 1 (2,320 gold coins)
+  Granary Robbery — 15 ops (597,907 bushels):
+    aaaaaargh (4:8): 6 (228,108 bushels)
+    wayshegoes (4:8): 3 (76,224 bushels)
+    Back From The Edge (4:8): 3 (107,009 bushels)
+    Resius Caesar (4:11): 3 (186,566 bushels)
+  Greater Arson — 13 ops (33 Watch Towers, 32 Hospitals, 31 Homes, 17 Guilds, 12 Banks):
+    Willaimia Sherman (4:11): 13 (33 Watch Towers, 32 Hospitals, 31 Homes, 17 Guilds, 12 Banks)
+  Propaganda — 11 ops (130 specialist troops):
+    Willaimia Sherman (4:11): 11 (130 specialist troops)
+  Arson — 9 ops (85 acres):
+    Willaimia Sherman (4:11): 9 (85 acres)
+  Bribe Generals — 7 ops:
+    Alchemia (4:11): 3
+    aaaaaargh (4:8): 1
+    wayshegoes (4:8): 1
+    mystic (4:8): 1
+    Back From The Edge (4:8): 1
+  Incite Riots — 5 ops (24 days):
+    Willaimia Sherman (4:11): 1 (2 days)
+    Legion Maverick (4:11): 1 (6 days)
+    Cao Cao (4:11): 1 (6 days)
+    Jal the Putrid (4:11): 1 (5 days)
+    FutureState (4:11): 1 (5 days)
+  Assassinate Wizards — 3 ops (306 wizards):
+    Willaimia Sherman (4:11): 3 (306 wizards)
+  Kidnapping — 3 ops (336 peasants):
+    Willaimia Sherman (4:11): 3 (336 peasants)
+  Bribe Thieves — 2 ops:
+    Bikini Bottom (3:6): 1
+    Jal the Putrid (4:11): 1
+  Steal War Horses — 2 ops (50 war horses):
+    mystic (4:8): 2 (50 war horses)
+  Night Strike — 2 ops (24 enemy troops):
+    Willaimia Sherman (4:11): 2 (24 enemy troops)
+  Sabotage Wizards — 1 op (1 days):
+    BroadSword (4:8): 1 (1 days)
+  Failed — 76 ops:
+    Mat Phoria Salleh (4:11): 13 (239 thieves lost)
+    VercingetoFist (4:11): 9 (217 thieves lost)
+    Back From The Edge (4:8): 6 (66 thieves lost)
+    Resius Caesar (4:11): 5 (123 thieves lost)
+    mystic (4:8): 4 (83 thieves lost)
+    aaaaaargh (4:8): 4 (42 thieves lost)
+    ZePirateCaptnAFAU (4:8): 4 (59 thieves lost)
+    wayshegoes (4:8): 3 (14 thieves lost)
+    Bikini Bottom (3:6): 2 (80 thieves lost)
+    Black Hole (3:10): 2 (120 thieves lost)
+    bornagainboot (4:8): 2 (34 thieves lost)
+    GengBriz Khan (4:11): 2 (56 thieves lost)
+    Alchemia (4:11): 2 (35 thieves lost)
+    Ragnar Crashbrok (4:11): 2 (72 thieves lost)
+    muguiying (4:11): 2 (71 thieves lost)
+    FutureState (4:11): 2 (83 thieves lost)
+    Jal the Putrid (4:11): 2 (48 thieves lost)
+    Crimson Dwight Eisenhower (4:11): 2 (29 thieves lost)
+    Gordon Granger (4:11): 2 (18 thieves lost)
+    ARRROT (4:8): 1 (14 thieves lost)
+    Tintagel (4:8): 1 (11 thieves lost)
+    Haxe (4:8): 1 (8 thieves lost)
+    Cao Cao (4:11): 1 (50 thieves lost)
+    Maj Gen Robert Ross (4:11): 1 (8 thieves lost)
+    Willaimia Sherman (4:11): 1 (9 thieves lost)
+
+Spell by Spell Type:
+  Meteor Showers — 62 casts (493 days):
+    Back From The Edge (4:8): 4 (34 days)
+    muguiying (4:11): 4 (23 days)
+    Alchemia (4:11): 4 (33 days)
+    ARRROT (4:8): 3 (26 days)
+    SafeHaven (4:8): 3 (22 days)
+    Frost (4:8): 3 (21 days)
+    An Emerald Dragon from (4:8): 3 (26 days)
+    Legion Maverick (4:11): 3 (23 days)
+    Pisot Bbm Gen Thorre (4:11): 3 (21 days)
+    Maj Gen Robert Ross (4:11): 3 (25 days)
+    wayshegoes (4:8): 2 (13 days)
+    Undead Demonic Pirate (4:8): 2 (18 days)
+    Haxe (4:8): 2 (16 days)
+    Tintagel (4:8): 2 (17 days)
+    Cao Cao (4:11): 2 (18 days)
+    Jal the Putrid (4:11): 2 (19 days)
+    Gordon Granger (4:11): 2 (16 days)
+    greybear (4:8): 1 (6 days)
+    mystic (4:8): 1 (9 days)
+    aaaaaargh (4:8): 1 (6 days)
+    shiver me timbers (4:8): 1 (8 days)
+    MAGGOT BASTARD (4:8): 1 (9 days)
+    UnKnown ReBel (4:8): 1 (7 days)
+    Plague Pirate Pete (4:8): 1 (10 days)
+    Ta the daddy pirate (4:8): 1 (8 days)
+    ZePirateCaptnAFAU (4:8): 1 (9 days)
+    Resius Caesar (4:11): 1 (8 days)
+    Mat Phoria Salleh (4:11): 1 (10 days)
+    Napoleon Pongaparte (4:11): 1 (6 days)
+    Ragnar Crashbrok (4:11): 1 (7 days)
+    GengBriz Khan (4:11): 1 (11 days)
+    William Wallace (4:11): 1 (8 days)
+  Mystic Vortex — 50 casts (107 active spells):
+    My Dog Ate It (4:1): 8 (25 active spells)
+    Busy With Bonnie Blue (4:1): 7 (16 active spells)
+    wayshegoes (4:8): 5 (5 active spells)
+    Alchemia (4:11): 5 (9 active spells)
+    Back From The Edge (4:8): 4 (17 active spells)
+    muguiying (4:11): 4 (2 active spells)
+    aaaaaargh (4:8): 3 (9 active spells)
+    Gordon Granger (4:11): 3 (9 active spells)
+    Busy at work (4:1): 3
+    SafeHaven (4:8): 2 (4 active spells)
+    Legion Maverick (4:11): 2 (7 active spells)
+    Resius Caesar (4:11): 2 (2 active spells)
+    mystic (4:8): 1 (2 active spells)
+    FutureState (4:11): 1
+  Chastity — 33 casts (185 days):
+    UnKnown ReBel (4:8): 4 (17 days)
+    muguiying (4:11): 4 (17 days)
+    ZePirateCaptnAFAU (4:8): 3 (17 days)
+    Back From The Edge (4:8): 3 (20 days)
+    MAGGOT BASTARD (4:8): 2 (8 days)
+    Tintagel (4:8): 2 (12 days)
+    Plague Pirate Pete (4:8): 2 (15 days)
+    Alchemia (4:11): 2 (10 days)
+    Legion Maverick (4:11): 2 (13 days)
+    SafeHaven (4:8): 1 (8 days)
+    aaaaaargh (4:8): 1 (5 days)
+    mystic (4:8): 1 (8 days)
+    BroadSword (4:8): 1 (4 days)
+    shiver me timbers (4:8): 1 (7 days)
+    Undead Demonic Pirate (4:8): 1 (7 days)
+    An Emerald Dragon from (4:8): 1 (5 days)
+    Cao Cao (4:11): 1 (5 days)
+    GengBriz Khan (4:11): 1 (7 days)
+  Pitfalls — 10 casts (119 days):
+    aaaaaargh (4:8): 2 (25 days)
+    Gordon Granger (4:11): 2 (22 days)
+    SafeHaven (4:8): 1 (10 days)
+    wayshegoes (4:8): 1 (12 days)
+    mystic (4:8): 1 (13 days)
+    Back From The Edge (4:8): 1 (13 days)
+    Alchemia (4:11): 1 (13 days)
+    Ragnar Crashbrok (4:11): 1 (11 days)
+  Lightning Strike — 4 casts (14,884 runes):
+    shiver me timbers (4:8): 2 (8,222 runes)
+    Mat Phoria Salleh (4:11): 2 (6,662 runes)
+  Droughts — 4 casts (53 days):
+    Back From The Edge (4:8): 2 (23 days)
+    aaaaaargh (4:8): 1 (16 days)
+    wayshegoes (4:8): 1 (14 days)
+  Amnesia — 4 casts (322,673 books):
+    Gordon Granger (4:11): 4 (322,673 books)
+  Nightmares — 4 casts (1,450 troops):
+    Back From The Edge (4:8): 4 (1,450 troops)
+  Gluttony — 3 casts (45 days):
+    aaaaaargh (4:8): 1 (19 days)
+    wayshegoes (4:8): 1 (11 days)
+    Back From The Edge (4:8): 1 (15 days)
+  Greed — 3 casts (28 days):
+    aaaaaargh (4:8): 1 (7 days)
+    wayshegoes (4:8): 1 (9 days)
+    Alchemia (4:11): 1 (12 days)
+  Land Lust — 3 casts (81 acres):
+    MAGGOT BASTARD (4:8): 3 (81 acres)
+  Fireball — 3 casts (3,639 peasants):
+    Back From The Edge (4:8): 3 (3,639 peasants)
+  Tornadoes — 3 casts (1,025 acres of buildings):
+    aaaaaargh (4:8): 3 (1,025 acres of buildings)
+  Expose Thieves — 2 casts (12 days):
+    UnKnown ReBel (4:8): 1 (5 days)
+    mystic (4:8): 1 (7 days)
+  Explosions — 1 cast (12 days):
+    aaaaaargh (4:8): 1 (12 days)
+  Failed — 81 casts:
+    muguiying (4:11): 8
+    Legion Maverick (4:11): 8
+    Mat Phoria Salleh (4:11): 6
+    ARRROT (4:8): 5
+    Ragnar Crashbrok (4:11): 5
+    mystic (4:8): 4
+    BroadSword (4:8): 4
+    Alchemia (4:11): 4
+    UnKnown ReBel (4:8): 3
+    Gordon Granger (4:11): 3
+    Busy With Bonnie Blue (4:1): 3
+    GengBriz Khan (4:11): 3
+    Ta the daddy pirate (4:8): 2
+    Hairy nipple nebula force (4:8): 2
+    Back From The Edge (4:8): 2
+    Undead Demonic Pirate (4:8): 2
+    ZePirateCaptnAFAU (4:8): 2
+    Maj Gen Robert Ross (4:11): 2
+    Cao Cao (4:11): 2
+    Bikini Bottom (3:6): 1
+    SafeHaven (4:8): 1
+    Tintagel (4:8): 1
+    wayshegoes (4:8): 1
+    Frost (4:8): 1
+    An Emerald Dragon from (4:8): 1
+    FutureState (4:11): 1
+    Jal the Putrid (4:11): 1
+    My Dog Ate It (4:1): 1
+    Busy at work (4:1): 1
+    Resius Caesar (4:11): 1

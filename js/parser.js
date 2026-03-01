@@ -1134,6 +1134,119 @@ function formatProvinceLogs(text) {
         output += stOut;
     }
 
+    // Thievery by Op Type
+    if (thiefOps.length > 0) {
+        // Group successful ops by type
+        const byType = new Map();
+        for (const op of thiefOps.filter(o => o.success && o.type)) {
+            if (!byType.has(op.type)) byType.set(op.type, []);
+            byType.get(op.type).push(op);
+        }
+        const sortedTypes = [...byType.entries()].sort((a, b) => b[1].length - a[1].length);
+        let tboOut = '\nThievery by Op Type:\n';
+        for (const [opType, ops] of sortedTypes) {
+            // Aggregate totals for header
+            let totalImpact = 0;
+            let impactUnit = null;
+            const subCounts = opType === 'Greater Arson' ? {} : null;
+            for (const op of ops) {
+                if (opType === 'Greater Arson') {
+                    if (op.impactUnit) subCounts[op.impactUnit] = (subCounts[op.impactUnit] || 0) + (op.impact || 0);
+                } else {
+                    totalImpact += op.impact || 0;
+                    if (!impactUnit && op.impactUnit) impactUnit = op.impactUnit;
+                }
+            }
+            let headerImpact = '';
+            if (opType === 'Greater Arson') {
+                const bd = Object.entries(subCounts).filter(([, c]) => c > 0).sort((a, b) => b[1] - a[1]).map(([n, c]) => `${c} ${n}`).join(', ');
+                if (bd) headerImpact = ` (${bd})`;
+            } else if (totalImpact > 0 && impactUnit) {
+                headerImpact = ` (${formatNumber(totalImpact)} ${impactUnit})`;
+            }
+            tboOut += `  ${opType} \u2014 ${ops.length} op${ops.length !== 1 ? 's' : ''}${headerImpact}:\n`;
+            // Group by province
+            const byProv = new Map();
+            for (const op of ops) {
+                if (!byProv.has(op.target)) byProv.set(op.target, []);
+                byProv.get(op.target).push(op);
+            }
+            [...byProv.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+                if (opType === 'Greater Arson') {
+                    const ps = {};
+                    for (const o of provOps) { if (o.impactUnit) ps[o.impactUnit] = (ps[o.impactUnit] || 0) + (o.impact || 0); }
+                    const bd = Object.entries(ps).filter(([, c]) => c > 0).sort((a, b) => b[1] - a[1]).map(([n, c]) => `${c} ${n}`).join(', ');
+                    tboOut += `    ${prov}: ${provOps.length}${bd ? ` (${bd})` : ''}\n`;
+                } else {
+                    const provImpact = provOps.reduce((s, o) => s + (o.impact || 0), 0);
+                    const provStr = provImpact > 0 && impactUnit ? ` (${formatNumber(provImpact)} ${impactUnit})` : '';
+                    tboOut += `    ${prov}: ${provOps.length}${provStr}\n`;
+                }
+            });
+        }
+        // Failed ops grouped by province
+        const failedThiefOps = thiefOps.filter(o => !o.success);
+        if (failedThiefOps.length > 0) {
+            tboOut += `  Failed \u2014 ${failedThiefOps.length} op${failedThiefOps.length !== 1 ? 's' : ''}:\n`;
+            const byProvFail = new Map();
+            for (const op of failedThiefOps) {
+                if (!byProvFail.has(op.target)) byProvFail.set(op.target, []);
+                byProvFail.get(op.target).push(op);
+            }
+            [...byProvFail.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+                const totalLost = provOps.reduce((s, o) => s + (o.impact || 0), 0);
+                const lostStr = totalLost > 0 ? ` (${formatNumber(totalLost)} thieves lost)` : '';
+                tboOut += `    ${prov}: ${provOps.length}${lostStr}\n`;
+            });
+        }
+        output += tboOut;
+    }
+
+    // Spell by Spell Type
+    if (spellOps.length > 0) {
+        const bySpell = new Map();
+        for (const op of spellOps.filter(o => o.success && o.spell)) {
+            if (!bySpell.has(op.spell)) bySpell.set(op.spell, []);
+            bySpell.get(op.spell).push(op);
+        }
+        const sortedSpells = [...bySpell.entries()].sort((a, b) => b[1].length - a[1].length);
+        let sbsOut = '\nSpell by Spell Type:\n';
+        for (const [spell, ops] of sortedSpells) {
+            let totalImpact = 0;
+            let impactUnit = null;
+            for (const op of ops) {
+                totalImpact += op.impact || 0;
+                if (!impactUnit && op.impactUnit) impactUnit = op.impactUnit;
+            }
+            const headerImpact = totalImpact > 0 && impactUnit ? ` (${formatNumber(totalImpact)} ${impactUnit})` : '';
+            sbsOut += `  ${spell} \u2014 ${ops.length} cast${ops.length !== 1 ? 's' : ''}${headerImpact}:\n`;
+            const byProv = new Map();
+            for (const op of ops) {
+                if (!byProv.has(op.target)) byProv.set(op.target, []);
+                byProv.get(op.target).push(op);
+            }
+            [...byProv.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+                const provImpact = provOps.reduce((s, o) => s + (o.impact || 0), 0);
+                const provStr = provImpact > 0 && impactUnit ? ` (${formatNumber(provImpact)} ${impactUnit})` : '';
+                sbsOut += `    ${prov}: ${provOps.length}${provStr}\n`;
+            });
+        }
+        // Failed spells grouped by province
+        const failedSpellOps = spellOps.filter(o => !o.success);
+        if (failedSpellOps.length > 0) {
+            sbsOut += `  Failed \u2014 ${failedSpellOps.length} cast${failedSpellOps.length !== 1 ? 's' : ''}:\n`;
+            const byProvFail = new Map();
+            for (const op of failedSpellOps) {
+                if (!byProvFail.has(op.target)) byProvFail.set(op.target, []);
+                byProvFail.get(op.target).push(op);
+            }
+            [...byProvFail.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+                sbsOut += `    ${prov}: ${provOps.length}\n`;
+            });
+        }
+        output += sbsOut;
+    }
+
     return output.trim();
 }
 
