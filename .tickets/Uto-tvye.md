@@ -1,6 +1,6 @@
 ---
 id: Uto-tvye
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-28T23:28:12Z
@@ -20,7 +20,7 @@ Replace this with a cleaner line that names both kingdoms by coordinate,
 with our own kingdom listed first, followed by the date range:
 
 ```
-Showing only attacks between Kingdoms (5:1) and (4:1) — February 1, YR1 to March 15, YR1
+War Report: Showing only attacks between Kingdoms (5:1) and (4:1) — February 1, YR1 to March 15, YR1
 ```
 
 ---
@@ -50,7 +50,7 @@ come from `period.startDate` / `period.endDate` with `fmtDate()`.
 For each war period emit a single header line in the form:
 
 ```
-Showing only attacks between Kingdoms (5:1) and (4:1) — February 1, YR1 to March 15, YR1
+War Report: Showing only attacks between Kingdoms (5:1) and (4:1) — February 1, YR1 to March 15, YR1
 ```
 
 - **Own kingdom** always listed first: `(${data.ownKingdomId})`, or
@@ -115,7 +115,7 @@ are needed.
 Manually verify in the browser:
 1. Parse a Kingdom News log that contains a war declaration and enable the
    War Only toggle — confirm the header reads
-   `Showing only attacks between Kingdoms (X:X) and (Y:Y) — …`.
+   `War Report: Showing only attacks between Kingdoms (X:X) and (Y:Y) — …`.
 2. Own kingdom appears first.
 3. When the war opponent cannot be identified, the warning line appears
    without the `[War Only]` prefix.

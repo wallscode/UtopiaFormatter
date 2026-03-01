@@ -1,6 +1,6 @@
 ---
 id: Uto-ifxj
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-02-28T23:25:31Z

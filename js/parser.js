@@ -569,6 +569,7 @@ function formatProvinceLogs(text) {
                     if (line.includes(op.text)) {
                         const m = line.match(/We have converted ([\d,]+) (?:of the enemy's )?(.+?) (?:from the enemy|to our)/i);
                         if (m) {
+                            thieveryCounts["Propaganda"]++;
                             const troopCount = parseInt(m[1].replace(/,/g, ''));
                             const troopName = m[2].trim().toLowerCase();
                             const namedTroop = PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.find(p => p.toLowerCase() === troopName);
@@ -791,11 +792,7 @@ function formatProvinceLogs(text) {
     const opTotals = [];
     for (const op of PROVINCE_LOGS_CONFIG.OPERATIONS) {
         let count = thieveryCounts[op.name];
-        if (op.unique_impact) {
-            if (op.name === "Propaganda") {
-                count = Object.values(propagandaCounts).reduce((a, b) => a + b, 0);
-            }
-        }
+        // Propaganda op count now tracked in thieveryCounts directly
         if (count > 0) {
             opTotals.push([count, op.name, op]);
         }
@@ -807,7 +804,7 @@ function formatProvinceLogs(text) {
         const totalImpact = thieveryImpacts[name];
         
         if (op.unique_impact && name === "Propaganda") {
-            output += `  Propaganda:\n`;
+            output += `  ${count} Propaganda:\n`;
             Object.entries(propagandaCounts)
                 .filter(([, c]) => c > 0)
                 .sort((a, b) => b[1] - a[1])
@@ -1664,19 +1661,13 @@ function formatKingdomNewsOutput(data, windowDays) {
     // War Only header line(s) — inserted immediately after the title
     if (data.warOnly && data.warPeriods && data.warPeriods.length > 0) {
         for (const period of data.warPeriods) {
-            let vsStr;
-            if (!period.opponentId) {
-                vsStr = '(unknown)';
-            } else if (period.opponentName) {
-                vsStr = `${period.opponentName} (${period.opponentId})`;
-            } else {
-                vsStr = `(${period.opponentId})`;
-            }
+            const ownStr   = data.ownKingdomId ? `(${data.ownKingdomId})` : '(unknown)';
+            const oppStr   = period.opponentId  ? `(${period.opponentId})` : '(unknown)';
             const startStr = period.startDate ? fmtDate(period.startDate) : 'start of log';
-            const endStr   = period.endDate   ? fmtDate(period.endDate)   : 'present';
-            output.push(`[War Only] Showing attacks vs. ${vsStr} \u2014 ${startStr} to ${endStr}`);
+            const endStr   = period.endDate   ? fmtDate(period.endDate)   : 'end of log';
+            output.push(`Showing only attacks between Kingdoms ${ownStr} and ${oppStr} \u2014 ${startStr} to ${endStr}`);
             if (!period.opponentId) {
-                output.push('[War Only] Warning: war opponent could not be identified \u2014 no filtering applied');
+                output.push(`Warning: war opponent could not be identified \u2014 no filtering applied`);
             }
         }
     }

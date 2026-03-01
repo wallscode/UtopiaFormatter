@@ -2,7 +2,7 @@ Summary of Province Log Events from UtopiaFormatter.com
 ----------------------------------------
 
 Thievery Summary:
-  Propaganda:
+  11 Propaganda:
     49 wizards
     30 specialist troops
     28 elites

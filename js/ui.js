@@ -19,7 +19,7 @@ const advSettings = {
         showKingdomRelations: false,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
-        groupUniques: false,
+        uniquesWithKingdoms: false,
         warOnly: false,
         warDetected: false,
         discordCopy: false
@@ -510,15 +510,15 @@ function renderKingdomNewsSettings(container, elements) {
 
     const groupingCheckbox = document.createElement('input');
     groupingCheckbox.type = 'checkbox';
-    groupingCheckbox.id = 'adv-kn-groupUniques';
-    groupingCheckbox.checked = advSettings.kingdomNews.groupUniques;
+    groupingCheckbox.id = 'adv-kn-uniquesWithKingdoms';
+    groupingCheckbox.checked = advSettings.kingdomNews.uniquesWithKingdoms;
     groupingCheckbox.addEventListener('change', () => {
-        advSettings.kingdomNews.groupUniques = groupingCheckbox.checked;
+        advSettings.kingdomNews.uniquesWithKingdoms = groupingCheckbox.checked;
         applyAndRerender(elements);
     });
 
     groupingLabel.appendChild(groupingCheckbox);
-    groupingLabel.appendChild(document.createTextNode(' Group all Uniques at bottom'));
+    groupingLabel.appendChild(document.createTextNode(' Uniques grouped with Kingdoms'));
     groupingGroup.appendChild(groupingLabel);
     container.appendChild(groupingGroup);
 
@@ -1067,17 +1067,17 @@ function applyKingdomNewsSettings(text) {
         } else if (section === 'Per-Kingdom Summaries') {
             for (const pair of perKingdomPairs) {
                 resultBlocks.push(pair.summary);
-                if (!s.groupUniques && pair.uniques) {
+                if (s.uniquesWithKingdoms && pair.uniques) {
                     resultBlocks.push(pair.uniques);
                 }
             }
         } else if (section === 'Uniques') {
-            if (s.groupUniques) {
+            if (!s.uniquesWithKingdoms) {
                 for (const pair of perKingdomPairs) {
                     if (pair.uniques) resultBlocks.push(pair.uniques);
                 }
             }
-            // When not grouping, uniques were already emitted inline above
+            // When uniquesWithKingdoms, uniques were already emitted inline above
         } else if (section === 'Highlights') {
             resultBlocks.push(...highlightsBlocks);
         } else if (section === 'Kingdom Relations') {
