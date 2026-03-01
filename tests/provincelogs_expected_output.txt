@@ -97,8 +97,8 @@ Military Training:
   Military wages: 200%
 
 Thievery Targets:
-  Willaimia Sherman (4:11) — 50 ops (1 failed):
-    Unknown: 18
+  Willaimia Sherman (4:11) — 47 ops (1 failed):
+    Unknown: 15
     Propaganda: 11 (130 specialist troops)
     Arson: 9 (85 acres)
     Tower Robbery: 3 (28,056 runes)
@@ -107,137 +107,94 @@ Thievery Targets:
     Incite Riots: 1 (2 days)
     Vault Robbery: 1 (2,320 gold coins)
     Failed: 1 (9 thieves lost)
-  Mat Phoria Salleh (4:11) — 23 ops (13 failed):
-    Unknown: 6
+  Mat Phoria Salleh (4:11) — 17 ops (13 failed):
     Tower Robbery: 4 (30,370 runes)
     Failed: 13 (239 thieves lost)
-  Back From The Edge (4:8) — 21 ops (6 failed):
+  Back From The Edge (4:8) — 16 ops (6 failed):
     Vault Robbery: 6 (257,794 gold coins)
-    Unknown: 5
     Granary Robbery: 3 (107,009 bushels)
     Bribe Generals: 1
     Failed: 6 (66 thieves lost)
-  VercingetoFist (4:11) — 16 ops (9 failed):
+  VercingetoFist (4:11) — 14 ops (9 failed):
     Tower Robbery: 5 (37,271 runes)
-    Unknown: 2
     Failed: 9 (217 thieves lost)
-  aaaaaargh (4:8) — 15 ops (4 failed):
-    Granary Robbery: 6 (228,108 bushels)
-    Unknown: 4
-    Bribe Generals: 1
-    Failed: 4 (42 thieves lost)
-  mystic (4:8) — 14 ops (4 failed):
+  mystic (4:8) — 12 ops (4 failed):
     Tower Robbery: 5 (113,133 runes)
-    Unknown: 4
+    Unknown: 2
     Bribe Generals: 1
     Failed: 4 (83 thieves lost)
-  Resius Caesar (4:11) — 13 ops (5 failed):
-    Unknown: 5
+  Bikini Bottom (3:6) — 11 ops (2 failed):
+    Vault Robbery: 8 (810,402 gold coins)
+    Bribe Thieves: 1
+    Failed: 2 (80 thieves lost)
+  aaaaaargh (4:8) — 11 ops (4 failed):
+    Granary Robbery: 6 (228,108 bushels)
+    Bribe Generals: 1
+    Failed: 4 (42 thieves lost)
+  wayshegoes (4:8) — 8 ops (3 failed):
+    Granary Robbery: 3 (76,224 bushels)
+    Tower Robbery: 1 (14,117 runes)
+    Bribe Generals: 1
+    Failed: 3 (14 thieves lost)
+  Resius Caesar (4:11) — 8 ops (5 failed):
     Granary Robbery: 3 (186,566 bushels)
     Failed: 5 (123 thieves lost)
-  Jal the Putrid (4:11) — 13 ops (2 failed):
-    Unknown: 5
+  Jal the Putrid (4:11) — 8 ops (2 failed):
     Vault Robbery: 3 (95,029 gold coins)
     Incite Riots: 1 (5 days)
     Bribe Thieves: 1
     Tower Robbery: 1 (5,726 runes)
     Failed: 2 (48 thieves lost)
-  Bikini Bottom (3:6) — 12 ops (2 failed):
-    Vault Robbery: 8 (810,402 gold coins)
-    Unknown: 1
-    Bribe Thieves: 1
-    Failed: 2 (80 thieves lost)
-  Crimson Dwight Eisenhower (4:11) — 11 ops (2 failed):
+  Crimson Dwight Eisenhower (4:11) — 8 ops (2 failed):
     Tower Robbery: 6 (45,109 runes)
-    Unknown: 3
     Failed: 2 (29 thieves lost)
-  wayshegoes (4:8) — 10 ops (3 failed):
-    Granary Robbery: 3 (76,224 bushels)
-    Unknown: 2
-    Tower Robbery: 1 (14,117 runes)
-    Bribe Generals: 1
-    Failed: 3 (14 thieves lost)
-  ARRROT (4:8) — 9 ops (1 failed):
-    Vault Robbery: 5 (169,876 gold coins)
-    Unknown: 3
-    Failed: 1 (14 thieves lost)
-  Ragnar Crashbrok (4:11) — 9 ops (2 failed):
-    Unknown: 4
-    Tower Robbery: 3 (20,999 runes)
-    Failed: 2 (72 thieves lost)
-  FutureState (4:11) — 9 ops (2 failed):
+  FutureState (4:11) — 7 ops (2 failed):
     Tower Robbery: 4 (18,489 runes)
-    Unknown: 2
     Incite Riots: 1 (5 days)
     Failed: 2 (83 thieves lost)
-  Alchemia (4:11) — 8 ops (2 failed):
-    Bribe Generals: 3
-    Unknown: 3
-    Failed: 2 (35 thieves lost)
-  ZePirateCaptnAFAU (4:8) — 6 ops (4 failed):
-    Unknown: 1
-    Tower Robbery: 1 (27,079 runes)
-    Failed: 4 (59 thieves lost)
-  Tintagel (4:8) — 6 ops (1 failed):
-    Tower Robbery: 4 (97,763 runes)
-    Unknown: 1
-    Failed: 1 (11 thieves lost)
-  Haxe (4:8) — 6 ops (1 failed):
-    Tower Robbery: 4 (52,905 runes)
-    Unknown: 1
-    Failed: 1 (8 thieves lost)
+  ARRROT (4:8) — 6 ops (1 failed):
+    Vault Robbery: 5 (169,876 gold coins)
+    Failed: 1 (14 thieves lost)
   bornagainboot (4:8) — 6 ops (2 failed):
     Tower Robbery: 4 (82,048 runes)
     Failed: 2 (34 thieves lost)
-  GengBriz Khan (4:11) — 6 ops (2 failed):
-    Unknown: 3
-    Tower Robbery: 1 (1,362 runes)
-    Failed: 2 (56 thieves lost)
-  muguiying (4:11) — 6 ops (2 failed):
-    Unknown: 4
-    Failed: 2 (71 thieves lost)
-  Cao Cao (4:11) — 5 ops (1 failed):
-    Unknown: 3
-    Incite Riots: 1 (6 days)
-    Failed: 1 (50 thieves lost)
-  Gordon Granger (4:11) — 5 ops (2 failed):
+  ZePirateCaptnAFAU (4:8) — 5 ops (4 failed):
+    Tower Robbery: 1 (27,079 runes)
+    Failed: 4 (59 thieves lost)
+  Tintagel (4:8) — 5 ops (1 failed):
+    Tower Robbery: 4 (97,763 runes)
+    Failed: 1 (11 thieves lost)
+  Haxe (4:8) — 5 ops (1 failed):
+    Tower Robbery: 4 (52,905 runes)
+    Failed: 1 (8 thieves lost)
+  Alchemia (4:11) — 5 ops (2 failed):
+    Bribe Generals: 3
+    Failed: 2 (35 thieves lost)
+  Ragnar Crashbrok (4:11) — 5 ops (2 failed):
+    Tower Robbery: 3 (20,999 runes)
+    Failed: 2 (72 thieves lost)
+  Gordon Granger (4:11) — 4 ops (2 failed):
     Tower Robbery: 2 (6,855 runes)
-    Unknown: 1
     Failed: 2 (18 thieves lost)
-  to hell and back (3:9) — 4 ops:
+  to hell and back (3:9) — 3 ops:
     Tower Robbery: 3 (164,991 runes)
-    Unknown: 1
-  Black Hole (3:10) — 4 ops (2 failed):
-    Unknown: 1
+  Black Hole (3:10) — 3 ops (2 failed):
     Vault Robbery: 1 (69,310 gold coins)
     Failed: 2 (120 thieves lost)
-  BroadSword (4:8) — 3 ops:
-    Unknown: 2
-    Sabotage Wizards: 1 (1 days)
-  Walk The Plank (4:8) — 2 ops:
-    Unknown: 2
-  Legion Maverick (4:11) — 2 ops:
+  GengBriz Khan (4:11) — 3 ops (2 failed):
+    Tower Robbery: 1 (1,362 runes)
+    Failed: 2 (56 thieves lost)
+  muguiying (4:11) — 2 ops (2 failed):
+    Failed: 2 (71 thieves lost)
+  Cao Cao (4:11) — 2 ops (1 failed):
     Incite Riots: 1 (6 days)
-    Unknown: 1
-  Maj Gen Robert Ross (4:11) — 2 ops (1 failed):
-    Unknown: 1
+    Failed: 1 (50 thieves lost)
+  BroadSword (4:8) — 1 op:
+    Sabotage Wizards: 1 (1 days)
+  Legion Maverick (4:11) — 1 op:
+    Incite Riots: 1 (6 days)
+  Maj Gen Robert Ross (4:11) — 1 op (1 failed):
     Failed: 1 (8 thieves lost)
-  An Emerald Dragon from (4:8) — 1 op:
-    Unknown: 1
-  Plague Pirate Pete (4:8) — 1 op:
-    Unknown: 1
-  Ta the daddy pirate (4:8) — 1 op:
-    Unknown: 1
-  Frost (4:8) — 1 op:
-    Unknown: 1
-  UnKnown ReBel (4:8) — 1 op:
-    Unknown: 1
-  Pisot Bbm Gen Thorre (4:11) — 1 op:
-    Unknown: 1
-  William Wallace (4:11) — 1 op:
-    Unknown: 1
-  Clampy (4:11) — 1 op:
-    Unknown: 1
 
 Spell Targets:
   Back From The Edge (4:8) — 24 casts (2 failed):

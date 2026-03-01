@@ -585,6 +585,8 @@ function formatProvinceLogs(text) {
         
         // Parse thievery operations
         if (line.includes("Early indications show that our operation was a success")) {
+            // Skip intelligence/spy ops — not thievery ops
+            if (line.includes('confidence in the information retrieved')) continue;
             const thiefTargetM = line.match(/\(([^()]+\(\d+:\d+\)),\s*sent (\d+)\)/);
             let matchedOpName = null;
             let matchedImpact = null;
