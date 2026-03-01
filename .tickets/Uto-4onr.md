@@ -1,6 +1,6 @@
 ---
 id: Uto-4onr
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-01T12:25:08Z

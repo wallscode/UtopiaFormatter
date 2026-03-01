@@ -1,6 +1,6 @@
 ---
 id: Uto-jo9u
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-01T00:42:38Z

@@ -1,6 +1,6 @@
 ---
 id: Uto-vqwb
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-01T14:00:04Z
