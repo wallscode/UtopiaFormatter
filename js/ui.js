@@ -1174,7 +1174,8 @@ function applyKingdomNewsSettings(text) {
  */
 function applyProvinceLogsSettings(text) {
     const sectionNames = [
-        'Thievery Summary', 'Resources Stolen', 'Spell Summary',
+        'Thievery Summary', 'Thievery Targets', 'Resources Stolen',
+        'Spell Summary', 'Spell Targets',
         'Aid Summary', 'Dragon Summary', 'Ritual Summary',
         'Construction Summary', 'Science Summary',
         'Exploration Summary', 'Military Training'
