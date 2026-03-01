@@ -85,6 +85,7 @@ const PROVINCE_LOGS_CONFIG = {
     
     OPERATIONS: [
         { name: "Arson", text: "burn", impact: "acres", unique_impact: true },
+        { name: "Greater Arson", text: "burn", impact: "", unique_impact: true },
         { name: "Assassinate Wizards", text: "wizards of the enemy", impact: "wizards", unique_impact: false },
         { name: "Bribe Generals", text: "Our thieves have bribed an enemy general", impact: "", unique_impact: true },
         { name: "Bribe Thieves", text: "Our thieves have bribed members of our enemies", impact: "", unique_impact: true },
@@ -92,7 +93,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Free Prisoners", text: "Our thieves freed", impact: "prisoners", unique_impact: false },
         { name: "Incite Riots", text: "Our thieves have caused ri", impact: "day", unique_impact: false },
         { name: "Kidnapping", text: "Our thieves kidnapped many people", impact: "of them", unique_impact: false },
-        { name: "Night Strike", text: "enemy troops.", impact: "enemy troops", unique_impact: false },
+        { name: "Night Strike", text: "enemy troops", impact: "enemy troops", unique_impact: false },
         { name: "Propaganda", text: "We have converted", impact: "", unique_impact: true },
         { name: "Sabotage Wizards", text: "ability to regain their mana", impact: "day", unique_impact: false }
     ],
@@ -601,6 +602,31 @@ function formatProvinceLogs(text) {
                         matchedOpName = op.name;
                         if (match) { matchedImpact = parseInt(match[1].replace(/,/g, "")); matchedUnit = 'acres'; }
                     }
+                } else if (op.name === "Greater Arson" && op.unique_impact) {
+                    if (line.includes(op.text) && !line.includes("buildings")) {
+                        // Extract building type and count/acres
+                        let gaAmount = 0;
+                        let gaRawType = '';
+                        const acresOfM = line.match(/burned down ([\d,]+) acres of ([^.(]+)/i);
+                        const plainM = line.match(/burned down ([\d,]+) ([^.(]+)/i);
+                        if (acresOfM) {
+                            gaAmount = parseInt(acresOfM[1].replace(/,/g, ''));
+                            gaRawType = acresOfM[2].trim();
+                        } else if (plainM) {
+                            gaAmount = parseInt(plainM[1].replace(/,/g, ''));
+                            gaRawType = plainM[2].trim().replace(/\.$/, '').trim();
+                        }
+                        if (gaRawType) {
+                            const normalized = PROVINCE_LOGS_CONFIG.BUILDINGS.find(
+                                b => b.toLowerCase() === gaRawType.toLowerCase()
+                            ) || gaRawType;
+                            greaterArsonBuildingCounts[normalized] = (greaterArsonBuildingCounts[normalized] || 0) + gaAmount;
+                            thieveryCounts["Greater Arson"]++;
+                            matchedOpName = 'Greater Arson';
+                            matchedImpact = gaAmount;
+                            matchedUnit = normalized;
+                        }
+                    }
                 } else if (op.name === "Propaganda" && op.unique_impact) {
                     if (line.includes(op.text)) {
                         const m = line.match(/We have converted ([\d,]+) (?:of the enemy's )?(.+?) (?:from the enemy|to our)/i);
@@ -869,6 +895,14 @@ function formatProvinceLogs(text) {
                 .forEach(([pName, pCount]) => {
                     output += `    ${pCount} ${pName}\n`;
                 });
+        } else if (op.unique_impact && name === "Greater Arson") {
+            output += `  ${count} Greater Arson:\n`;
+            Object.entries(greaterArsonBuildingCounts)
+                .filter(([, c]) => c > 0)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([bName, bCount]) => {
+                    output += `    ${bCount} ${bName}\n`;
+                });
         } else if (op.unique_impact && (name === "Bribe Generals" || name === "Bribe Thieves")) {
             output += `  ${count} ${name} ops\n`;
         } else if (impact) {
@@ -1026,17 +1060,33 @@ function formatProvinceLogs(text) {
             const typeMap = new Map();
             for (const op of successes) {
                 const key = op.type || 'Unknown';
-                if (!typeMap.has(key)) typeMap.set(key, { count: 0, impact: 0, unit: op.impactUnit });
+                if (!typeMap.has(key)) typeMap.set(key, { count: 0, impact: 0, unit: op.impactUnit, subCounts: null });
                 const entry = typeMap.get(key);
                 entry.count++;
-                if (op.impact) entry.impact += op.impact;
+                if (key === 'Greater Arson') {
+                    // Track per-building-type breakdown
+                    if (!entry.subCounts) entry.subCounts = {};
+                    const bType = op.impactUnit || 'unknown';
+                    entry.subCounts[bType] = (entry.subCounts[bType] || 0) + (op.impact || 0);
+                } else if (op.impact) {
+                    entry.impact += op.impact;
+                }
             }
             // Sort by count descending
             [...typeMap.entries()]
                 .sort((a, b) => b[1].count - a[1].count)
                 .forEach(([type, data]) => {
-                    const impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit})` : '';
-                    ttOut += `    ${type}: ${data.count}${impactStr}\n`;
+                    if (type === 'Greater Arson' && data.subCounts) {
+                        const breakdown = Object.entries(data.subCounts)
+                            .filter(([, c]) => c > 0)
+                            .sort((a, b) => b[1] - a[1])
+                            .map(([bName, bCount]) => `${bCount} ${bName}`)
+                            .join(', ');
+                        ttOut += `    ${type}: ${data.count}${breakdown ? ` (${breakdown})` : ''}\n`;
+                    } else {
+                        const impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit})` : '';
+                        ttOut += `    ${type}: ${data.count}${impactStr}\n`;
+                    }
                 });
             if (failures.length > 0) {
                 const totalLost = failures.reduce((s, o) => s + (o.impact || 0), 0);

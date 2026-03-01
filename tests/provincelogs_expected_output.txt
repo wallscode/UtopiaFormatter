@@ -2,6 +2,12 @@ Summary of Province Log Events from UtopiaFormatter.com
 ----------------------------------------
 
 Thievery Summary:
+  13 Greater Arson:
+    33 Watch Towers
+    32 Hospitals
+    31 Homes
+    17 Guilds
+    12 Banks
   11 Propaganda:
     49 wizards
     30 specialist troops
@@ -13,6 +19,7 @@ Thievery Summary:
   3 Assassinate Wizards for a total of 306 wizards
   3 Kidnapping for a total of 336 peasants
   2 Bribe Thieves ops
+  2 Night Strike for a total of 24 enemy troops
   1 Sabotage Wizards for a total of 1 day
   76 failed thievery attempts (1589 thieves lost)
   359 thieves lost in successful operations
@@ -98,12 +105,13 @@ Military Training:
 
 Thievery Targets:
   Willaimia Sherman (4:11) — 47 ops (1 failed):
-    Unknown: 15
+    Greater Arson: 13 (33 Watch Towers, 32 Hospitals, 31 Homes, 17 Guilds, 12 Banks)
     Propaganda: 11 (130 specialist troops)
     Arson: 9 (85 acres)
     Tower Robbery: 3 (28,056 runes)
     Assassinate Wizards: 3 (306 wizards)
     Kidnapping: 3 (336 peasants)
+    Night Strike: 2 (24 enemy troops)
     Incite Riots: 1 (2 days)
     Vault Robbery: 1 (2,320 gold coins)
     Failed: 1 (9 thieves lost)
