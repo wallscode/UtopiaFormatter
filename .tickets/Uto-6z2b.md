@@ -1,6 +1,6 @@
 ---
 id: Uto-6z2b
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-01T15:11:41Z

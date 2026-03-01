@@ -1,6 +1,6 @@
 ---
 id: Uto-153c
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-01T15:15:32Z
