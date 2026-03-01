@@ -556,6 +556,12 @@ footer {
     display: none !important;
 }
 
+@media (max-width: 768px) and (orientation: portrait) {
+    .site-logo {
+        display: none;
+    }
+}
+
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
     section {
