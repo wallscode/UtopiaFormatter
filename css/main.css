@@ -161,13 +161,23 @@ section > label {
 #adv-content {
     padding: 0 2rem 1.5rem;
     border-top: 1px solid #2a2a2e;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0 2rem;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.adv-col {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    #adv-content {
+        flex-direction: column;
+    }
 }
 
 .adv-group-title {
-    grid-column: 1 / -1;
     font-size: 0.75rem;
     font-weight: 700;
     color: #7a8290;
@@ -261,7 +271,6 @@ section > label {
     list-style: none;
     padding: 0;
     margin: 0;
-    grid-column: 1 / -1;
 }
 
 .section-order-item {
@@ -335,7 +344,7 @@ section > label {
 
     #adv-content {
         padding: 0 1.5rem 1.5rem;
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 }
 

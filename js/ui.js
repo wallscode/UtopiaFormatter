@@ -435,12 +435,20 @@ function showAdvancedPanel(elements) {
 function renderAdvancedSettings(elements) {
     const container = elements.advContent;
     container.innerHTML = '';
+
+    const leftCol = document.createElement('div');
+    leftCol.className = 'adv-col adv-col-left';
+    const rightCol = document.createElement('div');
+    rightCol.className = 'adv-col adv-col-right';
+    container.appendChild(leftCol);
+    container.appendChild(rightCol);
+
     if (lastDetectedMode === 'kingdom-news-log') {
-        renderKingdomNewsSettings(container, elements);
+        renderKingdomNewsSettings(leftCol, rightCol, elements);
     } else if (lastDetectedMode === 'province-news') {
-        renderProvinceNewsSettings(container, elements);
+        renderProvinceNewsSettings(leftCol, rightCol, elements);
     } else {
-        renderProvinceLogsSettings(container, elements);
+        renderProvinceLogsSettings(leftCol, rightCol, elements);
     }
 }
 
@@ -449,12 +457,12 @@ function renderAdvancedSettings(elements) {
  * @param {HTMLElement} container - The adv-content element
  * @param {Object} elements - DOM elements object
  */
-function renderKingdomNewsSettings(container, elements) {
+function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     // ── Show / Hide ──────────────────────────────────────────────────────────
     const showHideTitle = document.createElement('div');
     showHideTitle.className = 'adv-group-title';
     showHideTitle.textContent = 'Show / Hide';
-    container.appendChild(showHideTitle);
+    leftCol.appendChild(showHideTitle);
 
     const checkboxGroups = [
         {
@@ -537,7 +545,7 @@ function renderKingdomNewsSettings(container, elements) {
             });
 
             wrapper.appendChild(childrenDiv);
-            container.appendChild(wrapper);
+            leftCol.appendChild(wrapper);
         } else {
             // Standalone item
             const group = document.createElement('div');
@@ -549,7 +557,7 @@ function renderKingdomNewsSettings(container, elements) {
             label.appendChild(cb);
             label.appendChild(document.createTextNode(' ' + item.label));
             group.appendChild(label);
-            container.appendChild(group);
+            leftCol.appendChild(group);
         }
     }
 
@@ -557,7 +565,7 @@ function renderKingdomNewsSettings(container, elements) {
     const windowTitle = document.createElement('div');
     windowTitle.className = 'adv-group-title';
     windowTitle.textContent = 'Unique Attack Window';
-    container.appendChild(windowTitle);
+    leftCol.appendChild(windowTitle);
 
     const windowGroup = document.createElement('div');
     windowGroup.className = 'adv-group';
@@ -582,7 +590,7 @@ function renderKingdomNewsSettings(container, elements) {
 
     windowLabel.appendChild(windowInput);
     windowGroup.appendChild(windowLabel);
-    container.appendChild(windowGroup);
+    leftCol.appendChild(windowGroup);
 
     // ── Uniques Grouping ─────────────────────────────────────────────────────
     const groupingGroup = document.createElement('div');
@@ -603,7 +611,7 @@ function renderKingdomNewsSettings(container, elements) {
     groupingLabel.appendChild(groupingCheckbox);
     groupingLabel.appendChild(document.createTextNode(' Uniques grouped with Kingdoms'));
     groupingGroup.appendChild(groupingLabel);
-    container.appendChild(groupingGroup);
+    leftCol.appendChild(groupingGroup);
 
     // ── War Only (only shown when war events detected) ────────────────────────
     if (advSettings.kingdomNews.warDetected) {
@@ -625,14 +633,14 @@ function renderKingdomNewsSettings(container, elements) {
         warLabel.appendChild(warCheckbox);
         warLabel.appendChild(document.createTextNode(' War Only \u2014 show attacks involving war opponent only'));
         warGroup.appendChild(warLabel);
-        container.appendChild(warGroup);
+        leftCol.appendChild(warGroup);
     }
 
     // ── Display Options ───────────────────────────────────────────────────────
     const knDisplayTitle = document.createElement('div');
     knDisplayTitle.className = 'adv-group-title';
     knDisplayTitle.textContent = 'Display Options';
-    container.appendChild(knDisplayTitle);
+    rightCol.appendChild(knDisplayTitle);
 
     const knDiscordGroup = document.createElement('div');
     knDiscordGroup.className = 'adv-group';
@@ -652,17 +660,17 @@ function renderKingdomNewsSettings(container, elements) {
     knDiscordLabel.appendChild(knDiscordCheckbox);
     knDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
     knDiscordGroup.appendChild(knDiscordLabel);
-    container.appendChild(knDiscordGroup);
+    rightCol.appendChild(knDiscordGroup);
 
     // ── Section Order ────────────────────────────────────────────────────────
     const orderTitle = document.createElement('div');
     orderTitle.className = 'adv-group-title';
     orderTitle.textContent = 'Section Order';
-    container.appendChild(orderTitle);
+    rightCol.appendChild(orderTitle);
 
     const list = document.createElement('ul');
     list.className = 'section-order-list';
-    container.appendChild(list);
+    rightCol.appendChild(list);
 
     function renderOrderList() {
         list.innerHTML = '';
@@ -718,7 +726,7 @@ function renderKingdomNewsSettings(container, elements) {
  * @param {HTMLElement} container - The adv-content element
  * @param {Object} elements - DOM elements object
  */
-function renderProvinceLogsSettings(container, elements) {
+function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {
@@ -734,11 +742,11 @@ function renderProvinceLogsSettings(container, elements) {
     const title = document.createElement('div');
     title.className = 'adv-group-title';
     title.textContent = 'Sections';
-    container.appendChild(title);
+    leftCol.appendChild(title);
 
     const list = document.createElement('ul');
     list.className = 'section-order-list';
-    container.appendChild(list);
+    leftCol.appendChild(list);
 
     function makeOrderBtn(text, ariaLabel, disabled, onClick) {
         const btn = document.createElement('button');
@@ -902,7 +910,7 @@ function renderProvinceLogsSettings(container, elements) {
     const avgTitle = document.createElement('div');
     avgTitle.className = 'adv-group-title';
     avgTitle.textContent = 'Display Options';
-    container.appendChild(avgTitle);
+    rightCol.appendChild(avgTitle);
 
     const avgGroup = document.createElement('div');
     avgGroup.className = 'adv-group';
@@ -922,7 +930,7 @@ function renderProvinceLogsSettings(container, elements) {
     avgLabel.appendChild(avgCheckbox);
     avgLabel.appendChild(document.createTextNode(' Show averages'));
     avgGroup.appendChild(avgLabel);
-    container.appendChild(avgGroup);
+    rightCol.appendChild(avgGroup);
 
     const robberyGroup = document.createElement('div');
     robberyGroup.className = 'adv-group';
@@ -942,7 +950,7 @@ function renderProvinceLogsSettings(container, elements) {
     robberyLabel.appendChild(robberyCheckbox);
     robberyLabel.appendChild(document.createTextNode(' Show robbery op counts & averages'));
     robberyGroup.appendChild(robberyLabel);
-    container.appendChild(robberyGroup);
+    rightCol.appendChild(robberyGroup);
 
     const failedGroup = document.createElement('div');
     failedGroup.className = 'adv-group';
@@ -962,7 +970,7 @@ function renderProvinceLogsSettings(container, elements) {
     failedLabel.appendChild(failedCheckbox);
     failedLabel.appendChild(document.createTextNode(' Show failed thievery attempts'));
     failedGroup.appendChild(failedLabel);
-    container.appendChild(failedGroup);
+    rightCol.appendChild(failedGroup);
 
     const successLossGroup = document.createElement('div');
     successLossGroup.className = 'adv-group';
@@ -982,7 +990,7 @@ function renderProvinceLogsSettings(container, elements) {
     successLossLabel.appendChild(successLossCheckbox);
     successLossLabel.appendChild(document.createTextNode(' Show thieves lost in successful operations'));
     successLossGroup.appendChild(successLossLabel);
-    container.appendChild(successLossGroup);
+    rightCol.appendChild(successLossGroup);
 
     const razedGroup = document.createElement('div');
     razedGroup.className = 'adv-group';
@@ -1002,7 +1010,7 @@ function renderProvinceLogsSettings(container, elements) {
     razedLabel.appendChild(razedCheckbox);
     razedLabel.appendChild(document.createTextNode(' Show razed building summary'));
     razedGroup.appendChild(razedLabel);
-    container.appendChild(razedGroup);
+    rightCol.appendChild(razedGroup);
 
     const exploreGroup = document.createElement('div');
     exploreGroup.className = 'adv-group';
@@ -1022,7 +1030,7 @@ function renderProvinceLogsSettings(container, elements) {
     exploreLabel.appendChild(exploreCheckbox);
     exploreLabel.appendChild(document.createTextNode(' Show exploration soldier & cost details'));
     exploreGroup.appendChild(exploreLabel);
-    container.appendChild(exploreGroup);
+    rightCol.appendChild(exploreGroup);
 
     const releaseGroup = document.createElement('div');
     releaseGroup.className = 'adv-group';
@@ -1042,7 +1050,7 @@ function renderProvinceLogsSettings(container, elements) {
     releaseLabel.appendChild(releaseCheckbox);
     releaseLabel.appendChild(document.createTextNode(' Show troops released from duty'));
     releaseGroup.appendChild(releaseLabel);
-    container.appendChild(releaseGroup);
+    rightCol.appendChild(releaseGroup);
 
     const draftGroup = document.createElement('div');
     draftGroup.className = 'adv-group';
@@ -1062,7 +1070,7 @@ function renderProvinceLogsSettings(container, elements) {
     draftLabel.appendChild(draftCheckbox);
     draftLabel.appendChild(document.createTextNode(' Show draft percentage'));
     draftGroup.appendChild(draftLabel);
-    container.appendChild(draftGroup);
+    rightCol.appendChild(draftGroup);
 
     const draftRateGroup = document.createElement('div');
     draftRateGroup.className = 'adv-group';
@@ -1082,7 +1090,7 @@ function renderProvinceLogsSettings(container, elements) {
     draftRateLabel.appendChild(draftRateCheckbox);
     draftRateLabel.appendChild(document.createTextNode(' Show draft rate setting'));
     draftRateGroup.appendChild(draftRateLabel);
-    container.appendChild(draftRateGroup);
+    rightCol.appendChild(draftRateGroup);
 
     const wagesGroup = document.createElement('div');
     wagesGroup.className = 'adv-group';
@@ -1102,7 +1110,7 @@ function renderProvinceLogsSettings(container, elements) {
     wagesLabel.appendChild(wagesCheckbox);
     wagesLabel.appendChild(document.createTextNode(' Show military wages'));
     wagesGroup.appendChild(wagesLabel);
-    container.appendChild(wagesGroup);
+    rightCol.appendChild(wagesGroup);
 
     const plDiscordGroup = document.createElement('div');
     plDiscordGroup.className = 'adv-group';
@@ -1122,7 +1130,7 @@ function renderProvinceLogsSettings(container, elements) {
     plDiscordLabel.appendChild(plDiscordCheckbox);
     plDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
     plDiscordGroup.appendChild(plDiscordLabel);
-    container.appendChild(plDiscordGroup);
+    rightCol.appendChild(plDiscordGroup);
 }
 
 /**
@@ -1377,7 +1385,7 @@ function applyProvinceLogsSettings(text) {
  * @param {HTMLElement} container - The adv-content element
  * @param {Object} elements - DOM elements object
  */
-function renderProvinceNewsSettings(container, elements) {
+function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {
@@ -1393,11 +1401,11 @@ function renderProvinceNewsSettings(container, elements) {
     const title = document.createElement('div');
     title.className = 'adv-group-title';
     title.textContent = 'Sections';
-    container.appendChild(title);
+    leftCol.appendChild(title);
 
     const list = document.createElement('ul');
     list.className = 'section-order-list';
-    container.appendChild(list);
+    leftCol.appendChild(list);
 
     function renderList() {
         list.innerHTML = '';
@@ -1471,7 +1479,7 @@ function renderProvinceNewsSettings(container, elements) {
     const optTitle = document.createElement('div');
     optTitle.className = 'adv-group-title';
     optTitle.textContent = 'Display Options';
-    container.appendChild(optTitle);
+    rightCol.appendChild(optTitle);
 
     const srcGroup = document.createElement('div');
     srcGroup.className = 'adv-group';
@@ -1491,7 +1499,7 @@ function renderProvinceNewsSettings(container, elements) {
     srcLabel.appendChild(srcCheckbox);
     srcLabel.appendChild(document.createTextNode(' Show attacker names in Thievery & Spell Impacts'));
     srcGroup.appendChild(srcLabel);
-    container.appendChild(srcGroup);
+    rightCol.appendChild(srcGroup);
 
     const pnDiscordGroup = document.createElement('div');
     pnDiscordGroup.className = 'adv-group';
@@ -1511,7 +1519,7 @@ function renderProvinceNewsSettings(container, elements) {
     pnDiscordLabel.appendChild(pnDiscordCheckbox);
     pnDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
     pnDiscordGroup.appendChild(pnDiscordLabel);
-    container.appendChild(pnDiscordGroup);
+    rightCol.appendChild(pnDiscordGroup);
 }
 
 /**
