@@ -1171,7 +1171,11 @@ function formatProvinceLogs(text) {
                 if (!byProv.has(op.target)) byProv.set(op.target, []);
                 byProv.get(op.target).push(op);
             }
-            [...byProv.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+            [...byProv.entries()].sort((a, b) => {
+                const impA = a[1].reduce((s, o) => s + (o.impact || 0), 0);
+                const impB = b[1].reduce((s, o) => s + (o.impact || 0), 0);
+                return impB - impA || b[1].length - a[1].length;
+            }).forEach(([prov, provOps]) => {
                 if (opType === 'Greater Arson') {
                     const ps = {};
                     for (const o of provOps) { if (o.impactUnit) ps[o.impactUnit] = (ps[o.impactUnit] || 0) + (o.impact || 0); }
@@ -1225,7 +1229,11 @@ function formatProvinceLogs(text) {
                 if (!byProv.has(op.target)) byProv.set(op.target, []);
                 byProv.get(op.target).push(op);
             }
-            [...byProv.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+            [...byProv.entries()].sort((a, b) => {
+                const impA = a[1].reduce((s, o) => s + (o.impact || 0), 0);
+                const impB = b[1].reduce((s, o) => s + (o.impact || 0), 0);
+                return impB - impA || b[1].length - a[1].length;
+            }).forEach(([prov, provOps]) => {
                 const provImpact = provOps.reduce((s, o) => s + (o.impact || 0), 0);
                 const provStr = provImpact > 0 && impactUnit ? ` (${formatNumber(provImpact)} ${impactUnit})` : '';
                 sbsOut += `    ${prov}: ${provOps.length}${provStr}\n`;

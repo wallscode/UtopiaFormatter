@@ -313,6 +313,20 @@ section > label {
     cursor: not-allowed;
 }
 
+.section-order-parent {
+    margin-top: 0.4rem;
+}
+
+.section-order-group-label {
+    font-weight: 600;
+    color: #8aafc8;
+    font-size: 0.9rem;
+}
+
+.section-order-child {
+    padding-left: 2rem;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
     .adv-toggle-btn {

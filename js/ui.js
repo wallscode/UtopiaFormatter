@@ -31,6 +31,17 @@ const advSettings = {
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen', 'Spell Summary', 'Spell Targets', 'Spell by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
+        sectionGroups: [
+            { label: 'Thievery', children: ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen'] },
+            { label: 'Spells',   children: ['Spell Summary', 'Spell Targets', 'Spell by Spell Type'] },
+            { label: 'Aid Summary',          children: ['Aid Summary'] },
+            { label: 'Dragon Summary',       children: ['Dragon Summary'] },
+            { label: 'Ritual Summary',       children: ['Ritual Summary'] },
+            { label: 'Construction Summary', children: ['Construction Summary'] },
+            { label: 'Science Summary',      children: ['Science Summary'] },
+            { label: 'Exploration Summary',  children: ['Exploration Summary'] },
+            { label: 'Military Training',    children: ['Military Training'] },
+        ],
         visible: {
             'Thievery Summary': true,
             'Thievery Targets': false,
@@ -729,70 +740,159 @@ function renderProvinceLogsSettings(container, elements) {
     list.className = 'section-order-list';
     container.appendChild(list);
 
+    function makeOrderBtn(text, ariaLabel, disabled, onClick) {
+        const btn = document.createElement('button');
+        btn.className = 'order-btn';
+        btn.textContent = text;
+        btn.disabled = disabled;
+        btn.title = text === '▲' ? 'Move up' : 'Move down';
+        btn.setAttribute('aria-label', ariaLabel);
+        btn.addEventListener('click', onClick);
+        return btn;
+    }
+
     function renderList() {
         list.innerHTML = '';
         const fullOrder = advSettings.provinceLogs.sectionOrder;
-        // Only display sections that exist in the parsed output
-        const visible = fullOrder.filter(n => presentSections.has(n));
+        const groups = advSettings.provinceLogs.sectionGroups;
 
-        visible.forEach((sectionName, visIdx) => {
-            const item = document.createElement('li');
-            item.className = 'section-order-item';
+        // Derive visible group order from sectionOrder
+        const visibleGroups = groups
+            .map(g => ({
+                ...g,
+                presentChildren: g.children.filter(c => presentSections.has(c))
+            }))
+            .filter(g => g.presentChildren.length > 0)
+            .sort((a, b) => {
+                const idxA = Math.min(...a.children.map(c => fullOrder.indexOf(c)).filter(i => i >= 0));
+                const idxB = Math.min(...b.children.map(c => fullOrder.indexOf(c)).filter(i => i >= 0));
+                return idxA - idxB;
+            });
 
-            const upBtn = document.createElement('button');
-            upBtn.className = 'order-btn';
-            upBtn.textContent = '▲';
-            upBtn.disabled = visIdx === 0;
-            upBtn.title = 'Move up';
-            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
-            upBtn.addEventListener('click', () => {
-                if (visIdx > 0) {
-                    const prev = visible[visIdx - 1];
-                    const idxA = fullOrder.indexOf(prev);
-                    const idxB = fullOrder.indexOf(sectionName);
-                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+        // Swap two groups in fullOrder (handles different group sizes)
+        function swapGroups(groupA, groupB) {
+            // Get current positions of all children of both groups
+            const childrenA = groupA.children.filter(c => fullOrder.includes(c));
+            const childrenB = groupB.children.filter(c => fullOrder.includes(c));
+            const minA = Math.min(...childrenA.map(c => fullOrder.indexOf(c)));
+            const minB = Math.min(...childrenB.map(c => fullOrder.indexOf(c)));
+
+            // Remove both groups' children from array
+            const allToMove = [...childrenA, ...childrenB];
+            const remaining = fullOrder.filter(s => !allToMove.includes(s));
+
+            // Determine insertion point: where the earlier group started
+            const insertAt = Math.min(minA, minB);
+
+            // Reinsert with groups swapped
+            const [first, second] = minA < minB ? [childrenB, childrenA] : [childrenA, childrenB];
+            remaining.splice(insertAt, 0, ...first, ...second);
+            fullOrder.length = 0;
+            fullOrder.push(...remaining);
+        }
+
+        visibleGroups.forEach((group, gIdx) => {
+            const isStandalone = group.children.length === 1;
+            const isFirstGroup = gIdx === 0;
+            const isLastGroup = gIdx === visibleGroups.length - 1;
+
+            if (isStandalone) {
+                // Standalone: single row with reorder buttons + checkbox
+                const sectionName = group.children[0];
+                const item = document.createElement('li');
+                item.className = 'section-order-item';
+
+                item.appendChild(makeOrderBtn('▲', `Move ${group.label} up`, isFirstGroup, () => {
+                    swapGroups(group, visibleGroups[gIdx - 1]);
                     renderList();
                     applyAndRerender(elements);
-                }
-            });
-
-            const downBtn = document.createElement('button');
-            downBtn.className = 'order-btn';
-            downBtn.textContent = '▼';
-            downBtn.disabled = visIdx === visible.length - 1;
-            downBtn.title = 'Move down';
-            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
-            downBtn.addEventListener('click', () => {
-                if (visIdx < visible.length - 1) {
-                    const next = visible[visIdx + 1];
-                    const idxA = fullOrder.indexOf(sectionName);
-                    const idxB = fullOrder.indexOf(next);
-                    [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+                }));
+                item.appendChild(makeOrderBtn('▼', `Move ${group.label} down`, isLastGroup, () => {
+                    swapGroups(group, visibleGroups[gIdx + 1]);
                     renderList();
                     applyAndRerender(elements);
-                }
-            });
+                }));
 
-            const id = `adv-pl-${sectionName.replace(/ /g, '-')}`;
-            const label = document.createElement('label');
-            label.htmlFor = id;
+                const id = `adv-pl-${sectionName.replace(/ /g, '-')}`;
+                const label = document.createElement('label');
+                label.htmlFor = id;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = id;
+                checkbox.checked = advSettings.provinceLogs.visible[sectionName];
+                checkbox.addEventListener('change', () => {
+                    advSettings.provinceLogs.visible[sectionName] = checkbox.checked;
+                    applyAndRerender(elements);
+                });
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(' ' + sectionName));
+                item.appendChild(label);
+                list.appendChild(item);
+            } else {
+                // Multi-child group: parent header row + indented child rows
+                const parentItem = document.createElement('li');
+                parentItem.className = 'section-order-item section-order-parent';
 
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = id;
-            checkbox.checked = advSettings.provinceLogs.visible[sectionName];
-            checkbox.addEventListener('change', () => {
-                advSettings.provinceLogs.visible[sectionName] = checkbox.checked;
-                applyAndRerender(elements);
-            });
+                parentItem.appendChild(makeOrderBtn('▲', `Move ${group.label} group up`, isFirstGroup, () => {
+                    swapGroups(group, visibleGroups[gIdx - 1]);
+                    renderList();
+                    applyAndRerender(elements);
+                }));
+                parentItem.appendChild(makeOrderBtn('▼', `Move ${group.label} group down`, isLastGroup, () => {
+                    swapGroups(group, visibleGroups[gIdx + 1]);
+                    renderList();
+                    applyAndRerender(elements);
+                }));
 
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(' ' + sectionName));
+                const parentLabel = document.createElement('span');
+                parentLabel.className = 'section-order-group-label';
+                parentLabel.textContent = group.label;
+                parentItem.appendChild(parentLabel);
+                list.appendChild(parentItem);
 
-            item.appendChild(upBtn);
-            item.appendChild(downBtn);
-            item.appendChild(label);
-            list.appendChild(item);
+                // Child rows
+                const presentChildren = group.presentChildren;
+                presentChildren.forEach((sectionName, cIdx) => {
+                    const childItem = document.createElement('li');
+                    childItem.className = 'section-order-item section-order-child';
+
+                    const isFirstChild = cIdx === 0;
+                    const isLastChild = cIdx === presentChildren.length - 1;
+
+                    childItem.appendChild(makeOrderBtn('▲', `Move ${sectionName} up`, isFirstChild, () => {
+                        const prev = presentChildren[cIdx - 1];
+                        const idxA = fullOrder.indexOf(prev);
+                        const idxB = fullOrder.indexOf(sectionName);
+                        [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+                        renderList();
+                        applyAndRerender(elements);
+                    }));
+                    childItem.appendChild(makeOrderBtn('▼', `Move ${sectionName} down`, isLastChild, () => {
+                        const next = presentChildren[cIdx + 1];
+                        const idxA = fullOrder.indexOf(sectionName);
+                        const idxB = fullOrder.indexOf(next);
+                        [fullOrder[idxA], fullOrder[idxB]] = [fullOrder[idxB], fullOrder[idxA]];
+                        renderList();
+                        applyAndRerender(elements);
+                    }));
+
+                    const id = `adv-pl-${sectionName.replace(/ /g, '-')}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = id;
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = id;
+                    checkbox.checked = advSettings.provinceLogs.visible[sectionName];
+                    checkbox.addEventListener('change', () => {
+                        advSettings.provinceLogs.visible[sectionName] = checkbox.checked;
+                        applyAndRerender(elements);
+                    });
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(' ' + sectionName));
+                    childItem.appendChild(label);
+                    list.appendChild(childItem);
+                });
+            }
         });
     }
 
