@@ -219,5 +219,73 @@ assertContains(manaOutput, 'Sabotage Wizards: 1 occurrence, 0 days', 'Instant ma
 // Summary
 // =============================================================================
 
+// =============================================================================
+// applyProvinceNewsSettings unit tests
+// =============================================================================
+
+console.log('\n--- applyProvinceNewsSettings ---');
+
+const ui = require('../js/ui.js');
+const { applyProvinceNewsSettings, advSettings } = ui;
+
+const origPN = JSON.parse(JSON.stringify(advSettings.provinceNews));
+
+function resetPN() {
+    advSettings.provinceNews.sectionOrder   = ['Thievery Impacts', 'Spell Impacts', 'Aid Received'];
+    advSettings.provinceNews.visible        = { 'Thievery Impacts': true, 'Spell Impacts': true, 'Aid Received': true };
+    advSettings.provinceNews.showSourceIdentifiers = true;
+    advSettings.provinceNews.discordCopy    = false;
+}
+
+// Synthetic province news output — sections separated by \n\n + name (no colon needed as marker)
+const pnSynth = [
+    'Province News Report',
+    'Feb 1 YR1 to Feb 4 YR3',
+    '',
+    'Thievery Impacts:',
+    '  7 operations detected',
+    '    Attacker Province (1:1)',
+    '  from unknown sources',
+    '',
+    'Spell Impacts:',
+    '  3 attempts',
+    '    Caster Province (2:2)',
+    '',
+    'Aid Received:',
+    '  5,000 gold coins'
+].join('\n');
+
+// showSourceIdentifiers = false strips 4-space-indented attacker lines
+resetPN();
+advSettings.provinceNews.showSourceIdentifiers = false;
+let pnResult = applyProvinceNewsSettings(pnSynth);
+assert(!pnResult.includes('Attacker Province (1:1)'), 'showSourceIdentifiers=false removes attacker ID from Thievery Impacts');
+assert(!pnResult.includes('Caster Province (2:2)'), 'showSourceIdentifiers=false removes caster ID from Spell Impacts');
+assert(pnResult.includes('7 operations detected'), 'showSourceIdentifiers=false keeps non-indented Thievery Impacts lines');
+
+// showSourceIdentifiers = true keeps all lines
+resetPN();
+advSettings.provinceNews.showSourceIdentifiers = true;
+pnResult = applyProvinceNewsSettings(pnSynth);
+assert(pnResult.includes('Attacker Province (1:1)'), 'showSourceIdentifiers=true keeps attacker ID lines');
+assert(pnResult.includes('Caster Province (2:2)'), 'showSourceIdentifiers=true keeps caster ID lines');
+
+// Section visibility — hide Spell Impacts
+resetPN();
+advSettings.provinceNews.visible['Spell Impacts'] = false;
+pnResult = applyProvinceNewsSettings(pnSynth);
+assert(!pnResult.includes('Spell Impacts:'), 'Spell Impacts hidden when visible=false');
+assert(pnResult.includes('Thievery Impacts:'), 'Thievery Impacts visible when visible=true');
+assert(pnResult.includes('Aid Received:'), 'Aid Received visible when visible=true');
+
+// Section reordering — Aid Received before Thievery Impacts
+resetPN();
+advSettings.provinceNews.sectionOrder = ['Aid Received', 'Thievery Impacts', 'Spell Impacts'];
+pnResult = applyProvinceNewsSettings(pnSynth);
+assert(pnResult.indexOf('Aid Received:') < pnResult.indexOf('Thievery Impacts:'), 'Aid Received before Thievery when reordered');
+
+// Restore
+Object.assign(advSettings.provinceNews, origPN);
+
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===`);
 if (failed > 0) process.exit(1);

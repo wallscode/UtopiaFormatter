@@ -1807,3 +1807,8 @@ function toDiscordProvinceLogs(text) {
 
     return out.join('\n');
 }
+
+// ── Node.js test exports ──────────────────────────────────────────────────────
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { applyProvinceLogsSettings, applyKingdomNewsSettings, applyProvinceNewsSettings, advSettings };
+}

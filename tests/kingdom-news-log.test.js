@@ -359,4 +359,105 @@ try {
     console.log('❌ Test 8 failed with error:', error.message);
 }
 
+// ─── Test 9: applyKingdomNewsSettings filter tests ────────────────────────────
+console.log('\n🧪 Test 9: applyKingdomNewsSettings filter tests...');
+try {
+    const ui = require('../js/ui.js');
+    const { applyKingdomNewsSettings, advSettings } = ui;
+    const { assert, summary } = makeAssert();
+
+    const origKN = JSON.parse(JSON.stringify(advSettings.kingdomNews));
+
+    // Synthetic text — starts with ** so /\n\*\* / doesn't match → returns filtered text
+    const synth = [
+        '** The Kingdom of 4:1 **',
+        '-- Trad March: 10 (200 acres)',
+        '-- Ambush: 5 (100 acres)',
+        '-- Learn: 2 (5,000 books)',
+        '-- Dragons Started: 2',
+        '-- Dragons Cancelled: 1',
+        '-- Rituals Started: 3',
+        '-- Rituals Failed: 1',
+        '-- Ritual Coverage: 15%',
+        '-- War Declarations: 1',
+        '-- Formal Ceasefires: 1'
+    ].join('\n');
+
+    function resetKN() {
+        Object.assign(advSettings.kingdomNews, {
+            showAttacks: true, showTradMarch: true, showLearn: true,
+            showMassacre: true, showPlunder: true,
+            showDragons: true, showDragonCancellations: true,
+            showKingdomRelations: true, showWarDeclarations: true, showCeasefires: true,
+            showRituals: true, showRitualsFailed: true, showRitualCoverage: true,
+            uniqueWindow: 6, uniquesWithKingdoms: false, warOnly: false, warDetected: false,
+            sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
+            discordCopy: false
+        });
+    }
+
+    // showTradMarch = false removes Trad March, keeps other attacks
+    resetKN();
+    advSettings.kingdomNews.showTradMarch = false;
+    let r = applyKingdomNewsSettings(synth);
+    assert('showTradMarch=false removes Trad March lines', r.includes('-- Trad March:'), false);
+    assert('showTradMarch=false keeps Ambush lines', r.includes('-- Ambush:'), true);
+
+    // showAttacks = false removes all attack sub-type lines
+    resetKN();
+    advSettings.kingdomNews.showAttacks = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showAttacks=false removes Trad March', r.includes('-- Trad March:'), false);
+    assert('showAttacks=false removes Ambush', r.includes('-- Ambush:'), false);
+    assert('showAttacks=false removes Learn', r.includes('-- Learn:'), false);
+
+    // showDragons = false removes dragon lines
+    resetKN();
+    advSettings.kingdomNews.showDragons = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showDragons=false removes Dragons Started', r.includes('-- Dragons Started:'), false);
+
+    // showDragonCancellations = false (with showDragons=true) removes only cancellations
+    resetKN();
+    advSettings.kingdomNews.showDragonCancellations = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showDragonCancellations=false removes Dragons Cancelled', r.includes('-- Dragons Cancelled:'), false);
+    assert('showDragonCancellations=false keeps Dragons Started', r.includes('-- Dragons Started:'), true);
+
+    // showRituals = false removes Rituals Started/Completed
+    resetKN();
+    advSettings.kingdomNews.showRituals = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showRituals=false removes Rituals Started', r.includes('-- Rituals Started:'), false);
+
+    // showRitualsFailed = false removes Rituals Failed, keeps Rituals Started
+    resetKN();
+    advSettings.kingdomNews.showRitualsFailed = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showRitualsFailed=false removes Rituals Failed', r.includes('-- Rituals Failed:'), false);
+    assert('showRitualsFailed=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
+
+    // showKingdomRelations = false removes War Declarations and Ceasefires
+    resetKN();
+    advSettings.kingdomNews.showKingdomRelations = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showKingdomRelations=false removes War Declarations', r.includes('-- War Declarations:'), false);
+    assert('showKingdomRelations=false removes Formal Ceasefires', r.includes('-- Formal Ceasefires:'), false);
+
+    // showRitualCoverage = false removes Ritual Coverage
+    resetKN();
+    advSettings.kingdomNews.showRitualCoverage = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showRitualCoverage=false removes Ritual Coverage', r.includes('-- Ritual Coverage:'), false);
+    assert('showRitualCoverage=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
+
+    // Restore
+    Object.assign(advSettings.kingdomNews, origKN);
+
+    const { passed, failed } = summary();
+    console.log(`${failed === 0 ? '✅' : '❌'} applyKingdomNewsSettings filter tests — ${passed} passed, ${failed} failed`);
+} catch (error) {
+    console.log('❌ Test 9 failed with error:', error.message);
+}
+
 console.log('\n=== KINGDOM NEWS LOG TESTS COMPLETE ===\n');
