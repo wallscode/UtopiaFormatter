@@ -1305,7 +1305,10 @@ function applyProvinceLogsSettings(text) {
 
     // Add or strip per-line averages
     if (!advSettings.provinceLogs.showAverages) {
-        output = output.split('\n').map(line => line.replace(/ \(\d+ ops Avg: \S+\)$/, '')).join('\n');
+        // Strip subcomponent avg annotations (4-space-indented lines: Greater Arson buildings, Propaganda troops)
+        output = output.split('\n').map(line =>
+            /^    /.test(line) ? line.replace(/ \(\d+ ops, avg [^)]+\)$/, '') : line
+        ).join('\n');
     }
 
     if (!advSettings.provinceLogs.showFailedThievery) {

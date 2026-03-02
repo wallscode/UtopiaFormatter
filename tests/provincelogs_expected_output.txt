@@ -3,16 +3,16 @@ Summary of Province Log Events from UtopiaFormatter.com
 
 Thievery Summary:
   13 Greater Arson:
-    33 Watch Towers
-    32 Hospitals
-    31 Homes
-    17 Guilds
-    12 Banks
+    33 Watch Towers (3 ops, avg 11)
+    32 Hospitals (3 ops, avg 10.7)
+    31 Homes (3 ops, avg 10.3)
+    17 Guilds (2 ops, avg 8.5)
+    12 Banks (2 ops, avg 6)
   11 Propaganda:
-    49 wizards
-    30 specialist troops
-    28 elites
-    23 thieves
+    49 wizards (2 ops, avg 24.5)
+    30 specialist troops (2 ops, avg 15)
+    28 elites (5 ops, avg 5.6)
+    23 thieves (2 ops, avg 11.5)
   9 Arson for a total of 85 acres
   7 Bribe Generals ops
   5 Incite Riots for a total of 24 days
@@ -25,9 +25,9 @@ Thievery Summary:
   359 thieves lost in successful operations
 
 Resources Stolen:
-  1,404,731 gold coins (24 ops Avg: 59k)
-  597,907 bushels (15 ops Avg: 40k)
-  746,273 runes (51 ops Avg: 15k)
+  1,404,731 gold coins (24 ops, avg 59k)
+  597,907 bushels (15 ops, avg 40k)
+  746,273 runes (51 ops, avg 15k)
   50 war horses
 
 Spell Summary:

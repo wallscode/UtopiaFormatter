@@ -481,7 +481,9 @@ function formatProvinceLogs(text) {
     const thieveryCounts = {};
     const thieveryImpacts = {};
     const greaterArsonBuildingCounts = {};
+    const greaterArsonBuildingOpCounts = {};
     const propagandaCounts = {};
+    const propagandaOpCounts = {};
     
     let dragonTroopsTotal = 0;
     let dragonPointsTotal = 0;
@@ -530,13 +532,16 @@ function formatProvinceLogs(text) {
         thieveryCounts[o.name] = 0; 
         thieveryImpacts[o.name] = 0; 
     });
-    PROVINCE_LOGS_CONFIG.BUILDINGS.forEach(b => { 
-        greaterArsonBuildingCounts[b] = 0; 
+    PROVINCE_LOGS_CONFIG.BUILDINGS.forEach(b => {
+        greaterArsonBuildingCounts[b] = 0;
+        greaterArsonBuildingOpCounts[b] = 0;
     });
     PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.forEach(p => {
         propagandaCounts[p] = 0;
+        propagandaOpCounts[p] = 0;
     });
     propagandaCounts['elites'] = 0;
+    propagandaOpCounts['elites'] = 0;
     PROVINCE_LOGS_CONFIG.AID_RESOURCES.forEach(r => {
         aidTotals[r] = 0;
     });
@@ -621,6 +626,7 @@ function formatProvinceLogs(text) {
                                 b => b.toLowerCase() === gaRawType.toLowerCase()
                             ) || gaRawType;
                             greaterArsonBuildingCounts[normalized] = (greaterArsonBuildingCounts[normalized] || 0) + gaAmount;
+                            greaterArsonBuildingOpCounts[normalized] = (greaterArsonBuildingOpCounts[normalized] || 0) + 1;
                             thieveryCounts["Greater Arson"]++;
                             matchedOpName = 'Greater Arson';
                             matchedImpact = gaAmount;
@@ -637,6 +643,7 @@ function formatProvinceLogs(text) {
                             const namedTroop = PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.find(p => p.toLowerCase() === troopName);
                             const key = namedTroop || 'elites';
                             propagandaCounts[key] = (propagandaCounts[key] || 0) + troopCount;
+                            propagandaOpCounts[key] = (propagandaOpCounts[key] || 0) + 1;
                             matchedOpName = 'Propaganda';
                             matchedImpact = troopCount; matchedUnit = troopName;
                         }
@@ -894,7 +901,10 @@ function formatProvinceLogs(text) {
                 .filter(([, c]) => c > 0)
                 .sort((a, b) => b[1] - a[1])
                 .forEach(([pName, pCount]) => {
-                    output += `    ${pCount} ${pName}\n`;
+                    const opCount = propagandaOpCounts[pName] || 0;
+                    const avg = opCount > 0 ? pCount / opCount : 0;
+                    const avgStr = Number.isInteger(avg) ? `${avg}` : avg.toFixed(1);
+                    output += `    ${pCount} ${pName} (${opCount} ops, avg ${avgStr})\n`;
                 });
         } else if (op.unique_impact && name === "Greater Arson") {
             output += `  ${count} Greater Arson:\n`;
@@ -902,7 +912,10 @@ function formatProvinceLogs(text) {
                 .filter(([, c]) => c > 0)
                 .sort((a, b) => b[1] - a[1])
                 .forEach(([bName, bCount]) => {
-                    output += `    ${bCount} ${bName}\n`;
+                    const opCount = greaterArsonBuildingOpCounts[bName] || 0;
+                    const avg = opCount > 0 ? bCount / opCount : 0;
+                    const avgStr = Number.isInteger(avg) ? `${avg}` : avg.toFixed(1);
+                    output += `    ${bCount} ${bName} (${opCount} ops, avg ${avgStr})\n`;
                 });
         } else if (op.unique_impact && (name === "Bribe Generals" || name === "Bribe Thieves")) {
             output += `  ${count} ${name} ops\n`;
@@ -935,7 +948,7 @@ function formatProvinceLogs(text) {
         if (count === 0) return '';
         const avg = Math.round(total / count);
         const avgStr = avg >= 1000 ? `${Math.round(avg / 1000)}k` : `${avg}`;
-        return ` (${count} ops Avg: ${avgStr})`;
+        return ` (${count} ops, avg ${avgStr})`;
     }
     output += "\nResources Stolen:\n";
     if (goldCoinsStolen > 0) output += `  ${formatNumber(goldCoinsStolen)} gold coins${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
