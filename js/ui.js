@@ -906,11 +906,16 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
 
     renderList();
 
-    // ── Averages ─────────────────────────────────────────────────────────────
+    // ── Display Options ───────────────────────────────────────────────────────
     const avgTitle = document.createElement('div');
     avgTitle.className = 'adv-group-title';
     avgTitle.textContent = 'Display Options';
     rightCol.appendChild(avgTitle);
+
+    const thieverySpellsTitle = document.createElement('div');
+    thieverySpellsTitle.className = 'adv-subgroup-title';
+    thieverySpellsTitle.textContent = 'Thievery and Spells';
+    rightCol.appendChild(thieverySpellsTitle);
 
     const avgGroup = document.createElement('div');
     avgGroup.className = 'adv-group';
@@ -992,6 +997,11 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     successLossGroup.appendChild(successLossLabel);
     rightCol.appendChild(successLossGroup);
 
+    const constructionTitle = document.createElement('div');
+    constructionTitle.className = 'adv-subgroup-title';
+    constructionTitle.textContent = 'Construction & Exploring';
+    rightCol.appendChild(constructionTitle);
+
     const razedGroup = document.createElement('div');
     razedGroup.className = 'adv-group';
 
@@ -1031,6 +1041,11 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     exploreLabel.appendChild(document.createTextNode(' Show exploration soldier & cost details'));
     exploreGroup.appendChild(exploreLabel);
     rightCol.appendChild(exploreGroup);
+
+    const militaryTitle = document.createElement('div');
+    militaryTitle.className = 'adv-subgroup-title';
+    militaryTitle.textContent = 'Military';
+    rightCol.appendChild(militaryTitle);
 
     const releaseGroup = document.createElement('div');
     releaseGroup.className = 'adv-group';
@@ -1111,6 +1126,11 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     wagesLabel.appendChild(document.createTextNode(' Show military wages'));
     wagesGroup.appendChild(wagesLabel);
     rightCol.appendChild(wagesGroup);
+
+    const miscTitle = document.createElement('div');
+    miscTitle.className = 'adv-subgroup-title';
+    miscTitle.textContent = 'Miscellaneous';
+    rightCol.appendChild(miscTitle);
 
     const plDiscordGroup = document.createElement('div');
     plDiscordGroup.className = 'adv-group';

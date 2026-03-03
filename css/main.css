@@ -186,6 +186,16 @@ section > label {
     margin: 1rem 0 0.5rem;
 }
 
+.adv-subgroup-title {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #4e5560;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0.75rem 0 0.2rem;
+    padding-left: 0.1rem;
+}
+
 .adv-group {
     display: flex;
     align-items: center;
