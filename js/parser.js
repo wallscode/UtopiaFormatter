@@ -894,6 +894,8 @@ function formatProvinceLogs(text) {
                    !(line.includes("You will pay") && line.includes("of military wages")) &&
                    !line.includes("Your topic was created successfully") &&
                    !line.includes("Post edited successfully") &&
+                   !line.includes("Your message was successfully sent.") &&
+                   !line.includes("Your reply was posted successfully.") &&
                    !line.includes("The power of Mana Well surges through your forces") &&
                    !line.includes("Drawing from the ancient Mana Well")) {
             logUnrecognizedLine(line, 'province-logs');
