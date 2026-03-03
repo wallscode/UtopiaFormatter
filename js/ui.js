@@ -60,6 +60,7 @@ const advSettings = {
         },
         showAverages: false,
         showFailedThievery: true,
+        showFailedSpellAttempts: false,
         showSuccessThieveryLosses: false,
         showRazedBuildings: false,
         showTroopsReleased: false,
@@ -951,6 +952,26 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     failedGroup.appendChild(failedLabel);
     rightCol.appendChild(failedGroup);
 
+    const failedSpellGroup = document.createElement('div');
+    failedSpellGroup.className = 'adv-group';
+
+    const failedSpellLabel = document.createElement('label');
+    failedSpellLabel.htmlFor = 'adv-pl-showFailedSpellAttempts';
+
+    const failedSpellCheckbox = document.createElement('input');
+    failedSpellCheckbox.type = 'checkbox';
+    failedSpellCheckbox.id = 'adv-pl-showFailedSpellAttempts';
+    failedSpellCheckbox.checked = advSettings.provinceLogs.showFailedSpellAttempts;
+    failedSpellCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showFailedSpellAttempts = failedSpellCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    failedSpellLabel.appendChild(failedSpellCheckbox);
+    failedSpellLabel.appendChild(document.createTextNode(' Show failed spell attempts'));
+    failedSpellGroup.appendChild(failedSpellLabel);
+    rightCol.appendChild(failedSpellGroup);
+
     const successLossGroup = document.createElement('div');
     successLossGroup.className = 'adv-group';
 
@@ -1314,16 +1335,31 @@ function applyProvinceLogsSettings(text) {
     if (!advSettings.provinceLogs.showFailedThievery) {
         // Thievery Summary: remove "N failed thievery attempts" line
         output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
-        // Thievery Targets: remove "    Failed: N (N thieves lost)" lines
-        output = output.split('\n').filter(line => !/^    Failed: \d+/.test(line)).join('\n');
+        // Thievery Targets: remove "    Failed: N (N thieves lost)" lines (distinguished by trailing parens)
+        output = output.split('\n').filter(line => !/^    Failed: \d+ \(/.test(line)).join('\n');
         // Thievery Targets: strip "(N failed)" annotation from province header lines
         output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
         // Thievery by Op Type: remove entire "Failed — N ops:" block and its province sub-lines
-        let skipBlock = false;
+        let skipThieveryBlock = false;
         output = output.split('\n').filter(line => {
-            if (/^  Failed —/.test(line)) { skipBlock = true; return false; }
-            if (skipBlock && /^    /.test(line)) { return false; }
-            skipBlock = false;
+            if (/^  Failed — \d+ ops:/.test(line)) { skipThieveryBlock = true; return false; }
+            if (skipThieveryBlock && /^    /.test(line)) { return false; }
+            skipThieveryBlock = false;
+            return true;
+        }).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showFailedSpellAttempts) {
+        // Spell Targets: remove "    Failed: N" lines (no trailing content, unlike thievery)
+        output = output.split('\n').filter(line => !/^    Failed: \d+$/.test(line)).join('\n');
+        // Spell Targets: strip "(N failed)" annotation from province header lines
+        output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
+        // Spell by Spell Type: remove entire "Failed — N casts:" block and its province sub-lines
+        let skipSpellBlock = false;
+        output = output.split('\n').filter(line => {
+            if (/^  Failed — \d+ casts:/.test(line)) { skipSpellBlock = true; return false; }
+            if (skipSpellBlock && /^    /.test(line)) { return false; }
+            skipSpellBlock = false;
             return true;
         }).join('\n');
     }

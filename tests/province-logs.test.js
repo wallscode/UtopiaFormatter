@@ -416,10 +416,11 @@ function runApplySettingsTests() {
     const origSettings = JSON.parse(JSON.stringify(advSettings.provinceLogs));
 
     function resetSettings() {
-        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Spell Summary', 'Aid Summary'];
-        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Thievery Targets': true, 'Thievery by Op Type': true, 'Spell Summary': true, 'Aid Summary': true };
+        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Spell Summary', 'Spell Targets', 'Spell by Spell Type', 'Aid Summary'];
+        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Thievery Targets': true, 'Thievery by Op Type': true, 'Spell Summary': true, 'Spell Targets': true, 'Spell by Spell Type': true, 'Aid Summary': true };
         advSettings.provinceLogs.showAverages = false;
         advSettings.provinceLogs.showFailedThievery = true;
+        advSettings.provinceLogs.showFailedSpellAttempts = true;
         advSettings.provinceLogs.showSuccessThieveryLosses = true;
         advSettings.provinceLogs.showRazedBuildings = true;
         advSettings.provinceLogs.showDraftPercentage = true;
@@ -455,6 +456,20 @@ function runApplySettingsTests() {
         '',
         'Spell Summary:',
         '  10 Meteor Showers for a total of 50 days',
+        '',
+        'Spell Targets:',
+        '  Caster Province (2:1) — 6 casts (3 failed):',
+        '    Meteor Showers: 3 (10 days)',
+        '    Failed: 3',
+        '  Other Caster (2:2) — 4 casts:',
+        '    Meteor Showers: 4 (8 days)',
+        '',
+        'Spell by Spell Type:',
+        '  Meteor Showers — 7 casts (18 days):',
+        '    Caster Province (2:1): 3 (10 days)',
+        '    Other Caster (2:2): 4 (8 days)',
+        '  Failed — 3 casts:',
+        '    Caster Province (2:1): 3 (9:9)',
         '',
         'Aid Summary:',
         '  1,000 gold coins',
@@ -514,7 +529,20 @@ function runApplySettingsTests() {
     assert('showFailedThievery=false removes Failed block province lines from Thievery by Op Type', result.includes('Enemy Province (1:1): 2 (30 thieves lost)'), false);
     assert('showFailedThievery=false keeps successful op lines in Thievery by Op Type', result.includes('Tower Robbery — 3 ops'), true);
 
-    // 6. showSuccessThieveryLosses = false removes thieves-lost lines
+    // 6. showFailedSpellAttempts = false removes failed spell lines across Spell Targets and Spell by Spell Type
+    console.log('--- showFailedSpellAttempts ---');
+    resetSettings();
+    advSettings.provinceLogs.showFailedSpellAttempts = false;
+    result = applyProvinceLogsSettings(synth);
+    assert('showFailedSpellAttempts=false removes Failed: lines from Spell Targets', result.includes('Failed: 3'), false);
+    assert('showFailedSpellAttempts=false strips (N failed) from Spell Targets header', result.includes('(3 failed)'), false);
+    assert('showFailedSpellAttempts=false keeps Spell Targets province header without (N failed)', result.includes('Caster Province (2:1) — 6 casts:'), true);
+    assert('showFailedSpellAttempts=false removes Failed block header from Spell by Spell Type', result.includes('Failed — 3 casts:'), false);
+    assert('showFailedSpellAttempts=false removes Failed block province lines from Spell by Spell Type', result.includes('Caster Province (2:1): 3 (9:9)'), false);
+    assert('showFailedSpellAttempts=false keeps successful spell lines in Spell by Spell Type', result.includes('Meteor Showers — 7 casts'), true);
+    assert('showFailedSpellAttempts=false does not affect Thievery Targets Failed lines', result.includes('Failed: 2 (30 thieves lost)'), true);
+
+    // 7. showSuccessThieveryLosses = false removes thieves-lost lines
     console.log('--- showSuccessThieveryLosses ---');
     resetSettings();
     advSettings.provinceLogs.showSuccessThieveryLosses = false;
