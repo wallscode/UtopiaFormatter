@@ -266,36 +266,67 @@ function handleClear(elements) {
  */
 async function handleCopy(elements) {
     const outputText = elements.outputText.value.trim();
-    
+
     if (!outputText) {
         showCopyFeedback(elements.copyFeedback, 'No text to copy!', 'error');
         return;
     }
 
     try {
-        // Use modern Clipboard API with fallback for mobile
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(outputText);
-            showCopyFeedback(elements.copyFeedback, 'Copied to clipboard!', 'success');
-        } else {
-            // Fallback for older browsers and some mobile contexts
-            fallbackCopyToClipboard(outputText);
-            showCopyFeedback(elements.copyFeedback, 'Copied to clipboard!', 'success');
-        }
-        
+        await writeToClipboard(outputText);
+        showCopyFeedback(elements.copyFeedback, 'Copied to clipboard!', 'success');
+
         // Select the text for visual feedback and manual copy fallback
         elements.outputText.select();
-        elements.outputText.setSelectionRange(0, 99999); // For mobile
-        
+        elements.outputText.setSelectionRange(0, 99999);
+
     } catch (error) {
         console.error('Copy failed:', error);
-        // Always provide fallback
         fallbackCopyToClipboard(outputText);
         showCopyFeedback(elements.copyFeedback, 'Text selected - copy manually', 'warning');
-        
-        // Select text as fallback for manual copy
+
         elements.outputText.select();
         elements.outputText.setSelectionRange(0, 99999);
+    }
+}
+
+/**
+ * Converts plain text to an HTML snippet that preserves whitespace and line
+ * breaks when pasted into a WYSIWYG editor (including on mobile).
+ * @param {string} text
+ * @returns {string} HTML string
+ */
+function textToHtml(text) {
+    const escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    // Convert newlines to <br> then replace leading spaces with &nbsp; so
+    // WYSIWYG editors that strip <pre> whitespace still see the indentation.
+    const formatted = escaped
+        .replace(/\n/g, '<br>')
+        .replace(/(^|<br>)([ ]+)/g, (_, br, spaces) => br + '&nbsp;'.repeat(spaces.length));
+    return '<pre style="font-family:monospace;white-space:pre-wrap">' + formatted + '</pre>';
+}
+
+/**
+ * Writes text to the clipboard as both text/html and text/plain so that
+ * WYSIWYG editors on mobile receive the HTML version and preserve formatting.
+ * Falls back to writeText() when ClipboardItem is unavailable.
+ * @param {string} text - Plain text to copy
+ */
+async function writeToClipboard(text) {
+    if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        const htmlBlob  = new Blob([textToHtml(text)], { type: 'text/html' });
+        const textBlob  = new Blob([text],              { type: 'text/plain' });
+        await navigator.clipboard.write([new ClipboardItem({
+            'text/html':  htmlBlob,
+            'text/plain': textBlob,
+        })]);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+    } else {
+        fallbackCopyToClipboard(text);
     }
 }
 
@@ -1697,11 +1728,7 @@ async function handleDiscordCopy(elements) {
     const transformed = toDiscordFormat(outputText, lastDetectedMode);
     const charCount = transformed.length;
     try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(transformed);
-        } else {
-            fallbackCopyToClipboard(transformed);
-        }
+        await writeToClipboard(transformed);
         if (charCount <= 2000) {
             showCopyFeedback(elements.discordCopyFeedback, 'Copied for Discord!', 'success');
         } else {
