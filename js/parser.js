@@ -111,11 +111,35 @@ const PROVINCE_LOGS_CONFIG = {
         "Watch Towers", "Dungeons"
     ],
 
-    SCIENCES: [
-        "TOOLS", "ALCHEMY", "HOUSING", "PRODUCTION", "BOOKKEEPING", "ARTISAN",
-        "STRATEGY", "SIEGE", "TACTICS", "VALOR", "HEROISM", "RESILIENCE",
-        "CRIME", "CHANNELING", "SHIELDING", "CUNNING", "SORCERY", "FINESSE"
+    SCIENCE_GROUPS: [
+        { group: 'Economy', sciences: [
+            { key: 'ALCHEMY',     display: 'Alchemy',     desc: 'Income' },
+            { key: 'TOOLS',       display: 'Tools',       desc: 'Building Efficiency' },
+            { key: 'HOUSING',     display: 'Housing',     desc: 'Population' },
+            { key: 'PRODUCTION',  display: 'Production',  desc: 'Food & Runes' },
+            { key: 'BOOKKEEPING', display: 'Bookkeeping', desc: 'Wages' },
+            { key: 'ARTISAN',     display: 'Artisan',     desc: 'Construction' },
+        ]},
+        { group: 'Military', sciences: [
+            { key: 'STRATEGY',    display: 'Strategy',    desc: 'Defense' },
+            { key: 'SIEGE',       display: 'Siege',       desc: 'Battle Gains' },
+            { key: 'TACTICS',     display: 'Tactics',     desc: 'Offense' },
+            { key: 'VALOR',       display: 'Valor',       desc: 'Train Time & Drag Slaying' },
+            { key: 'HEROISM',     display: 'Heroism',     desc: 'Draft Speed & Cost' },
+            { key: 'RESILIENCE',  display: 'Resilience',  desc: 'Military Casualties' },
+        ]},
+        { group: 'Arcane Arts', sciences: [
+            { key: 'CRIME',       display: 'Crime',       desc: 'TPA' },
+            { key: 'CHANNELING',  display: 'Channeling',  desc: 'WPA' },
+            { key: 'SHIELDING',   display: 'Shielding',   desc: 'Damage Reduction' },
+            { key: 'CUNNING',     display: 'Cunning',     desc: 'Thievery Op Damage' },
+            { key: 'SORCERY',     display: 'Sorcery',     desc: 'Magic Spell Damage' },
+            { key: 'FINESSE',     display: 'Finesse',     desc: 'Reduced Losses' },
+        ]},
     ],
+    get SCIENCES() {
+        return this.SCIENCE_GROUPS.flatMap(g => g.sciences.map(s => s.key));
+    },
 
     PROPAGANDA_TROOPS: ["thieves", "soldiers", "wizards", "specialist troops"],
 
@@ -902,8 +926,7 @@ function formatProvinceLogs(text) {
                 .sort((a, b) => b[1] - a[1])
                 .forEach(([pName, pCount]) => {
                     const opCount = propagandaOpCounts[pName] || 0;
-                    const avg = opCount > 0 ? pCount / opCount : 0;
-                    const avgStr = Number.isInteger(avg) ? `${avg}` : avg.toFixed(1);
+                    const avgStr = opCount > 0 ? `${Math.round(pCount / opCount)}` : '0';
                     output += `    ${pCount} ${pName} (${opCount} ops, avg ${avgStr})\n`;
                 });
         } else if (op.unique_impact && name === "Greater Arson") {
@@ -913,8 +936,7 @@ function formatProvinceLogs(text) {
                 .sort((a, b) => b[1] - a[1])
                 .forEach(([bName, bCount]) => {
                     const opCount = greaterArsonBuildingOpCounts[bName] || 0;
-                    const avg = opCount > 0 ? bCount / opCount : 0;
-                    const avgStr = Number.isInteger(avg) ? `${avg}` : avg.toFixed(1);
+                    const avgStr = opCount > 0 ? `${Math.round(bCount / opCount)}` : '0';
                     output += `    ${bCount} ${bName} (${opCount} ops, avg ${avgStr})\n`;
                 });
         } else if (op.unique_impact && (name === "Bribe Generals" || name === "Bribe Thieves")) {
@@ -1025,10 +1047,15 @@ function formatProvinceLogs(text) {
     const anyScience = PROVINCE_LOGS_CONFIG.SCIENCES.some(s => scienceCounts[s] > 0);
     if (anyScience) {
         output += "\nScience Summary:\n";
-        PROVINCE_LOGS_CONFIG.SCIENCES
-            .filter(s => scienceCounts[s] > 0)
-            .sort((a, b) => scienceCounts[b] - scienceCounts[a])
-            .forEach(s => { output += `  ${formatNumber(scienceCounts[s])} books to ${s}\n`; });
+        for (const { group, sciences } of PROVINCE_LOGS_CONFIG.SCIENCE_GROUPS) {
+            const active = sciences.filter(s => scienceCounts[s.key] > 0);
+            if (active.length === 0) continue;
+            output += `  ${group}:\n`;
+            active.sort((a, b) => scienceCounts[b.key] - scienceCounts[a.key]);
+            for (const s of active) {
+                output += `    ${formatNumber(scienceCounts[s.key])} books to ${s.display} (${s.desc})\n`;
+            }
+        }
     }
 
     // Exploration Summary (omitted when no exploration orders detected)

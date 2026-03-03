@@ -4,15 +4,15 @@ Summary of Province Log Events from UtopiaFormatter.com
 Thievery Summary:
   13 Greater Arson:
     33 Watch Towers (3 ops, avg 11)
-    32 Hospitals (3 ops, avg 10.7)
-    31 Homes (3 ops, avg 10.3)
-    17 Guilds (2 ops, avg 8.5)
+    32 Hospitals (3 ops, avg 11)
+    31 Homes (3 ops, avg 10)
+    17 Guilds (2 ops, avg 9)
     12 Banks (2 ops, avg 6)
   11 Propaganda:
-    49 wizards (2 ops, avg 24.5)
+    49 wizards (2 ops, avg 25)
     30 specialist troops (2 ops, avg 15)
-    28 elites (5 ops, avg 5.6)
-    23 thieves (2 ops, avg 11.5)
+    28 elites (5 ops, avg 6)
+    23 thieves (2 ops, avg 12)
   9 Arson for a total of 85 acres
   7 Bribe Generals ops
   5 Incite Riots for a total of 24 days
@@ -77,17 +77,20 @@ Construction Summary:
   144 Forts razed
 
 Science Summary:
-  196,560 books to CRIME
-  103,480 books to BOOKKEEPING
-  94,920 books to STRATEGY
-  90,560 books to PRODUCTION
-  71,760 books to FINESSE
-  69,040 books to HOUSING
-  62,740 books to HEROISM
-  39,200 books to VALOR
-  39,000 books to CHANNELING
-  34,540 books to TOOLS
-  22,400 books to ALCHEMY
+  Economy:
+    103,480 books to Bookkeeping (Wages)
+    90,560 books to Production (Food & Runes)
+    69,040 books to Housing (Population)
+    34,540 books to Tools (Building Efficiency)
+    22,400 books to Alchemy (Income)
+  Military:
+    94,920 books to Strategy (Defense)
+    62,740 books to Heroism (Draft Speed & Cost)
+    39,200 books to Valor (Train Time & Drag Slaying)
+  Arcane Arts:
+    196,560 books to Crime (TPA)
+    71,760 books to Finesse (Reduced Losses)
+    39,000 books to Channeling (WPA)
 
 Exploration Summary:
   778 acres explored

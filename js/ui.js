@@ -1312,7 +1312,20 @@ function applyProvinceLogsSettings(text) {
     }
 
     if (!advSettings.provinceLogs.showFailedThievery) {
+        // Thievery Summary: remove "N failed thievery attempts" line
         output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
+        // Thievery Targets: remove "    Failed: N (N thieves lost)" lines
+        output = output.split('\n').filter(line => !/^    Failed: \d+/.test(line)).join('\n');
+        // Thievery Targets: strip "(N failed)" annotation from province header lines
+        output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
+        // Thievery by Op Type: remove entire "Failed — N ops:" block and its province sub-lines
+        let skipBlock = false;
+        output = output.split('\n').filter(line => {
+            if (/^  Failed —/.test(line)) { skipBlock = true; return false; }
+            if (skipBlock && /^    /.test(line)) { return false; }
+            skipBlock = false;
+            return true;
+        }).join('\n');
     }
 
     if (!advSettings.provinceLogs.showSuccessThieveryLosses) {

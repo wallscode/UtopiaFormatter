@@ -416,8 +416,8 @@ function runApplySettingsTests() {
     const origSettings = JSON.parse(JSON.stringify(advSettings.provinceLogs));
 
     function resetSettings() {
-        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Spell Summary', 'Aid Summary'];
-        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Spell Summary': true, 'Aid Summary': true };
+        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Spell Summary', 'Aid Summary'];
+        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Thievery Targets': true, 'Thievery by Op Type': true, 'Spell Summary': true, 'Aid Summary': true };
         advSettings.provinceLogs.showAverages = false;
         advSettings.provinceLogs.showFailedThievery = true;
         advSettings.provinceLogs.showSuccessThieveryLosses = true;
@@ -439,6 +439,19 @@ function runApplySettingsTests() {
         '    30 Watch Towers (3 ops, avg 10)',
         '  3 failed thievery attempts (45 thieves lost)',
         '  20 thieves lost in successful operations',
+        '',
+        'Thievery Targets:',
+        '  Enemy Province (1:1) — 5 ops (2 failed):',
+        '    Tower Robbery: 3, Greater Arson: 2',
+        '    Failed: 2 (30 thieves lost)',
+        '  Other Province (1:2) — 3 ops:',
+        '    Tower Robbery: 3',
+        '',
+        'Thievery by Op Type:',
+        '  Tower Robbery — 3 ops (100,000 runes):',
+        '    Enemy Province (1:1): 3 (100,000 runes)',
+        '  Failed — 2 ops:',
+        '    Enemy Province (1:1): 2 (30 thieves lost)',
         '',
         'Spell Summary:',
         '  10 Meteor Showers for a total of 50 days',
@@ -488,12 +501,18 @@ function runApplySettingsTests() {
     // "10 Meteor Showers for a total of 50 days" → count=10, total=50, avg=5
     assert('showAverages=true appends (avg 5) to Meteor Showers line', result.includes('(avg 5)'), true);
 
-    // 5. showFailedThievery = false removes failed lines
+    // 5. showFailedThievery = false removes failed lines across all three sections
     console.log('--- showFailedThievery ---');
     resetSettings();
     advSettings.provinceLogs.showFailedThievery = false;
     result = applyProvinceLogsSettings(synth);
-    assert('showFailedThievery=false removes failed thievery lines', result.includes('failed thievery attempt'), false);
+    assert('showFailedThievery=false removes failed thievery attempt line', result.includes('failed thievery attempt'), false);
+    assert('showFailedThievery=false removes Failed: lines from Thievery Targets', result.includes('Failed: 2 (30 thieves lost)'), false);
+    assert('showFailedThievery=false strips (N failed) from Thievery Targets header', result.includes('(2 failed)'), false);
+    assert('showFailedThievery=false keeps province header without (N failed)', result.includes('Enemy Province (1:1) — 5 ops:'), true);
+    assert('showFailedThievery=false removes Failed block header from Thievery by Op Type', result.includes('Failed — 2 ops:'), false);
+    assert('showFailedThievery=false removes Failed block province lines from Thievery by Op Type', result.includes('Enemy Province (1:1): 2 (30 thieves lost)'), false);
+    assert('showFailedThievery=false keeps successful op lines in Thievery by Op Type', result.includes('Tower Robbery — 3 ops'), true);
 
     // 6. showSuccessThieveryLosses = false removes thieves-lost lines
     console.log('--- showSuccessThieveryLosses ---');
