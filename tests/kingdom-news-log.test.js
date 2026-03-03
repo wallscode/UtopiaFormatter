@@ -392,6 +392,13 @@ try {
             showRituals: true, showRitualsFailed: true, showRitualCoverage: true,
             uniqueWindow: 6, uniquesWithKingdoms: false, warOnly: false, warDetected: false,
             sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
+            visible: {
+                'Own Kingdom Summary':   true,
+                'Per-Kingdom Summaries': true,
+                'Uniques':               true,
+                'Highlights':            true,
+                'Kingdom Relations':     true,
+            },
             discordCopy: false
         });
     }
@@ -450,6 +457,44 @@ try {
     r = applyKingdomNewsSettings(synth);
     assert('showRitualCoverage=false removes Ritual Coverage', r.includes('-- Ritual Coverage:'), false);
     assert('showRitualCoverage=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
+
+    // Section visibility — use a synth with full section blocks
+    const sectionSynth = [
+        'Kingdom News Report',
+        '',
+        '** Own Kingdom (1:1) Summary **',
+        '-- Trad March: 3 attacks',
+        '',
+        '** The Kingdom of 4:1 **',
+        '-- Trad March: 2 attacks',
+        '',
+        '** Uniques for 4:1 **',
+        '-- Unique attacks: 1',
+        '',
+        '** Highlights **',
+        '-- Most land gained: Province A',
+        '',
+        '** Kingdom Relations **',
+        '-- Formal Ceasefires: 1'
+    ].join('\n');
+
+    resetKN();
+    advSettings.kingdomNews.visible['Highlights'] = false;
+    r = applyKingdomNewsSettings(sectionSynth);
+    assert('visible[Highlights]=false removes Highlights block', r.includes('** Highlights **'), false);
+    assert('visible[Highlights]=false keeps Own Kingdom Summary', r.includes('** Own Kingdom (1:1) Summary **'), true);
+
+    resetKN();
+    advSettings.kingdomNews.visible['Own Kingdom Summary'] = false;
+    r = applyKingdomNewsSettings(sectionSynth);
+    assert('visible[Own Kingdom Summary]=false removes that block', r.includes('** Own Kingdom (1:1) Summary **'), false);
+    assert('visible[Own Kingdom Summary]=false keeps Per-Kingdom blocks', r.includes('** The Kingdom of 4:1 **'), true);
+
+    resetKN();
+    advSettings.kingdomNews.visible['Kingdom Relations'] = false;
+    r = applyKingdomNewsSettings(sectionSynth);
+    assert('visible[Kingdom Relations]=false removes Kingdom Relations block', r.includes('** Kingdom Relations **'), false);
+    assert('visible[Kingdom Relations]=false keeps Highlights', r.includes('** Highlights **'), true);
 
     // Restore
     Object.assign(advSettings.kingdomNews, origKN);

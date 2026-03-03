@@ -24,6 +24,13 @@ const advSettings = {
         showCeasefires: true,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
+        visible: {
+            'Own Kingdom Summary':  true,
+            'Per-Kingdom Summaries': true,
+            'Uniques':               true,
+            'Highlights':            true,
+            'Kingdom Relations':     true,
+        },
         uniquesWithKingdoms: false,
         warOnly: false,
         warDetected: false,
@@ -662,10 +669,10 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     knDiscordGroup.appendChild(knDiscordLabel);
     rightCol.appendChild(knDiscordGroup);
 
-    // ── Section Order ────────────────────────────────────────────────────────
+    // ── Sections (reorder + show/hide) ───────────────────────────────────────
     const orderTitle = document.createElement('div');
     orderTitle.className = 'adv-group-title';
-    orderTitle.textContent = 'Section Order';
+    orderTitle.textContent = 'Sections';
     rightCol.appendChild(orderTitle);
 
     const list = document.createElement('ul');
@@ -708,12 +715,23 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
                 }
             });
 
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = sectionName;
+            const id = `adv-kn-vis-${sectionName.replace(/ /g, '-')}`;
+            const visLabel = document.createElement('label');
+            visLabel.htmlFor = id;
+            const visCb = document.createElement('input');
+            visCb.type = 'checkbox';
+            visCb.id = id;
+            visCb.checked = advSettings.kingdomNews.visible[sectionName] !== false;
+            visCb.addEventListener('change', () => {
+                advSettings.kingdomNews.visible[sectionName] = visCb.checked;
+                applyAndRerender(elements);
+            });
+            visLabel.appendChild(visCb);
+            visLabel.appendChild(document.createTextNode(' ' + sectionName));
 
             item.appendChild(upBtn);
             item.appendChild(downBtn);
-            item.appendChild(nameSpan);
+            item.appendChild(visLabel);
             list.appendChild(item);
         });
     }
@@ -1271,6 +1289,7 @@ function applyKingdomNewsSettings(text) {
     const resultBlocks = [];
 
     for (const section of s.sectionOrder) {
+        if (s.visible && s.visible[section] === false) continue;
         if (section === 'Own Kingdom Summary') {
             resultBlocks.push(...ownKingdomSummaryBlocks);
         } else if (section === 'Per-Kingdom Summaries') {
