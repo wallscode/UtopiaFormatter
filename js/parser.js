@@ -1421,7 +1421,8 @@ function parseKingdomNewsLog(inputText, options) {
                 const isWarDeclaration = line.includes('declared WAR');
                 const isKnownSentinel = isWarDeclaration ||
                                         line.includes('withdrawn from war') ||
-                                        line.includes('post-war period');
+                                        line.includes('post-war period') ||
+                                        line.includes('lords of Utopia pass over this kingdom');
                 if (isWarDeclaration && currentDate) {
                     const isWeDeclared = /We have declared WAR/i.test(line);
                     const m = line.match(/\((\d+):(\d+)\)/);
