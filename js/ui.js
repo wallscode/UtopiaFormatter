@@ -292,7 +292,8 @@ async function handleCopy(elements) {
 
 /**
  * Converts plain text to an HTML snippet that preserves whitespace and line
- * breaks when pasted into a WYSIWYG editor (including on mobile).
+ * breaks when pasted into a WYSIWYG editor on mobile.
+ * Uses <p> (not <pre>) to match the forum's native post structure.
  * @param {string} text
  * @returns {string} HTML string
  */
@@ -302,21 +303,23 @@ function textToHtml(text) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
     // Convert newlines to <br> then replace leading spaces with &nbsp; so
-    // WYSIWYG editors that strip <pre> whitespace still see the indentation.
+    // indentation is preserved when the WYSIWYG editor strips bare spaces.
     const formatted = escaped
         .replace(/\n/g, '<br>')
         .replace(/(^|<br>)([ ]+)/g, (_, br, spaces) => br + '&nbsp;'.repeat(spaces.length));
-    return '<pre style="font-family:monospace;white-space:pre-wrap">' + formatted + '</pre>';
+    return '<p>' + formatted + '</p>';
 }
 
 /**
- * Writes text to the clipboard as both text/html and text/plain so that
- * WYSIWYG editors on mobile receive the HTML version and preserve formatting.
- * Falls back to writeText() when ClipboardItem is unavailable.
+ * Writes text to the clipboard.
+ * On mobile: writes both text/html and text/plain via ClipboardItem so that
+ * WYSIWYG editors preserve newlines and spacing (mobile editors strip plain text).
+ * On desktop: writes plain text only — the forum editor already handles it correctly.
  * @param {string} text - Plain text to copy
  */
 async function writeToClipboard(text) {
-    if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
         const htmlBlob  = new Blob([textToHtml(text)], { type: 'text/html' });
         const textBlob  = new Blob([text],              { type: 'text/plain' });
         await navigator.clipboard.write([new ClipboardItem({
