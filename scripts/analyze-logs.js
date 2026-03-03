@@ -502,6 +502,18 @@ async function main() {
         } else {
             console.log('No log events found in ./logs/.');
         }
+
+        // Delete processed log files so they are not re-analysed on the next run.
+        let deleted = 0;
+        for (const f of files) {
+            try {
+                fs.unlinkSync(f);
+                deleted++;
+            } catch (err) {
+                console.warn(`  Warning: could not delete ${f}: ${err.message}`);
+            }
+        }
+        console.log(`Deleted ${deleted} log file(s) from ./logs/.`);
     } else {
         console.log('No .jsonl files found under ./logs/.' +
             (NO_SYNC ? ' Run without --no-sync to fetch from S3.' : ''));
