@@ -145,8 +145,8 @@ function runProvinceLogsTest() {
                 expected: true
             },
             {
-                name: 'Contains Resources Stolen',
-                test: (text) => text.includes('Resources Stolen:'),
+                name: 'Contains Resources Stolen from Opponents',
+                test: (text) => text.includes('Resources Stolen from Opponents:'),
                 expected: true
             },
             {
@@ -352,25 +352,25 @@ function runValueAssertionTests() {
         console.log('--- Ritual Summary ---');
         assertContains(output, '37 successful ritual casts', 'Ritual: 37 successful casts');
 
-        // ── Thievery Targets ──────────────────────────────────────────────────
-        console.log('--- Thievery Targets ---');
-        const thiefStart = output.indexOf('Thievery Targets:');
-        const thiefEnd   = output.indexOf('\n\nSpell Targets:');
+        // ── Thievery Targets by Province ──────────────────────────────────────
+        console.log('--- Thievery Targets by Province ---');
+        const thiefStart = output.indexOf('Thievery Targets by Province:');
+        const thiefEnd   = output.indexOf('\n\nSpell Targets by Province:');
         const thiefSection = output.substring(thiefStart, thiefEnd);
-        assert('Thievery Targets: 28 distinct provinces', (thiefSection.match(/— \d+ op/g) || []).length, 28);
-        assertNotContains(thiefSection, 'Unknown', 'No Unknown entries in Thievery Targets');
+        assert('Thievery Targets by Province: 28 distinct provinces', (thiefSection.match(/— \d+ op/g) || []).length, 28);
+        assertNotContains(thiefSection, 'Unknown', 'No Unknown entries in Thievery Targets by Province');
         assertContains(output, 'Willaimia Sherman (4:11) — 47 ops', 'Willaimia Sherman 47 ops (highest)');
 
-        // ── Spell Targets ─────────────────────────────────────────────────────
-        console.log('--- Spell Targets ---');
-        const spellTgtStart = output.indexOf('Spell Targets:');
-        const spellTgtEnd   = output.indexOf('\n\nThievery by Op Type:');
+        // ── Spell Targets by Province ─────────────────────────────────────────
+        console.log('--- Spell Targets by Province ---');
+        const spellTgtStart = output.indexOf('Spell Targets by Province:');
+        const spellTgtEnd   = output.indexOf('\n\nThievery Targets by Op Type:');
         const spellTgtSection = output.substring(spellTgtStart, spellTgtEnd);
-        assert('Spell Targets: 39 distinct provinces', (spellTgtSection.match(/— \d+ cast/g) || []).length, 39);
+        assert('Spell Targets by Province: 39 distinct provinces', (spellTgtSection.match(/— \d+ cast/g) || []).length, 39);
         assertContains(output, 'Back From The Edge (4:8) — 24 casts', 'Back From The Edge: 24 casts (highest)');
 
-        // ── Thievery by Op Type ───────────────────────────────────────────────
-        console.log('--- Thievery by Op Type ---');
+        // ── Thievery Targets by Op Type ───────────────────────────────────────
+        console.log('--- Thievery Targets by Op Type ---');
         assertContains(output, 'Tower Robbery — 51 ops (746,273 runes):', 'Tower Robbery: 51 ops, 746,273 runes');
         assertContains(output, 'Vault Robbery — 24 ops (1,404,731 gold coins):', 'Vault Robbery: 24 ops');
         assertContains(output, 'Granary Robbery — 15 ops (597,907 bushels):', 'Granary Robbery: 15 ops');
@@ -381,8 +381,8 @@ function runValueAssertionTests() {
         const mysticIdx  = output.indexOf('mystic (4:8):', towerStart);
         assert('Tower Robbery: impact sort — to hell and back before mystic', hellIdx < mysticIdx && hellIdx !== -1, true);
 
-        // ── Spell by Spell Type ───────────────────────────────────────────────
-        console.log('--- Spell by Spell Type ---');
+        // ── Spell Targets by Spell Type ───────────────────────────────────────
+        console.log('--- Spell Targets by Spell Type ---');
         assertContains(output, 'Meteor Showers — 62 casts (493 days):', 'Meteor Showers 62 casts in by-type');
         assertContains(output, 'Mystic Vortex — 50 casts (107 active spells):', 'Mystic Vortex 50 casts in by-type');
         // Impact-descending: Back From The Edge (34 days) before muguiying (23 days) under Meteor Showers
@@ -416,8 +416,8 @@ function runApplySettingsTests() {
     const origSettings = JSON.parse(JSON.stringify(advSettings.provinceLogs));
 
     function resetSettings() {
-        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Spell Summary', 'Spell Targets', 'Spell by Spell Type', 'Aid Summary'];
-        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Thievery Targets': true, 'Thievery by Op Type': true, 'Spell Summary': true, 'Spell Targets': true, 'Spell by Spell Type': true, 'Aid Summary': true };
+        advSettings.provinceLogs.sectionOrder = ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary'];
+        advSettings.provinceLogs.visible = { 'Thievery Summary': true, 'Thievery Targets by Province': true, 'Thievery Targets by Op Type': true, 'Spell Summary': true, 'Spell Targets by Province': true, 'Spell Targets by Spell Type': true, 'Aid Summary': true };
         advSettings.provinceLogs.showAverages = false;
         advSettings.provinceLogs.showFailedThievery = true;
         advSettings.provinceLogs.showFailedSpellAttempts = true;
@@ -441,14 +441,14 @@ function runApplySettingsTests() {
         '  3 failed thievery attempts (45 thieves lost)',
         '  20 thieves lost in successful operations',
         '',
-        'Thievery Targets:',
+        'Thievery Targets by Province:',
         '  Enemy Province (1:1) — 5 ops (2 failed):',
         '    Tower Robbery: 3, Greater Arson: 2',
         '    Failed: 2 (30 thieves lost)',
         '  Other Province (1:2) — 3 ops:',
         '    Tower Robbery: 3',
         '',
-        'Thievery by Op Type:',
+        'Thievery Targets by Op Type:',
         '  Tower Robbery — 3 ops (100,000 runes):',
         '    Enemy Province (1:1): 3 (100,000 runes)',
         '  Failed — 2 ops:',
@@ -457,14 +457,14 @@ function runApplySettingsTests() {
         'Spell Summary:',
         '  10 Meteor Showers for a total of 50 days',
         '',
-        'Spell Targets:',
+        'Spell Targets by Province:',
         '  Caster Province (2:1) — 6 casts (3 failed):',
         '    Meteor Showers: 3 (10 days)',
         '    Failed: 3',
         '  Other Caster (2:2) — 4 casts:',
         '    Meteor Showers: 4 (8 days)',
         '',
-        'Spell by Spell Type:',
+        'Spell Targets by Spell Type:',
         '  Meteor Showers — 7 casts (18 days):',
         '    Caster Province (2:1): 3 (10 days)',
         '    Other Caster (2:2): 4 (8 days)',

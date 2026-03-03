@@ -30,10 +30,10 @@ const advSettings = {
         discordCopy: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen', 'Spell Summary', 'Spell Targets', 'Spell by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
+        sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
         sectionGroups: [
-            { label: 'Thievery', children: ['Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen'] },
-            { label: 'Spells',   children: ['Spell Summary', 'Spell Targets', 'Spell by Spell Type'] },
+            { label: 'Thievery', children: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents'] },
+            { label: 'Spells',   children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type'] },
             { label: 'Aid Summary',          children: ['Aid Summary'] },
             { label: 'Dragon Summary',       children: ['Dragon Summary'] },
             { label: 'Ritual Summary',       children: ['Ritual Summary'] },
@@ -44,12 +44,12 @@ const advSettings = {
         ],
         visible: {
             'Thievery Summary': true,
-            'Thievery Targets': false,
-            'Thievery by Op Type': false,
-            'Resources Stolen': true,
+            'Thievery Targets by Province': false,
+            'Thievery Targets by Op Type': false,
+            'Resources Stolen from Opponents': true,
             'Spell Summary': true,
-            'Spell Targets': false,
-            'Spell by Spell Type': false,
+            'Spell Targets by Province': false,
+            'Spell Targets by Spell Type': false,
             'Aid Summary': true,
             'Dragon Summary': true,
             'Ritual Summary': false,
@@ -1083,7 +1083,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     });
 
     draftLabel.appendChild(draftCheckbox);
-    draftLabel.appendChild(document.createTextNode(' Show draft percentage'));
+    draftLabel.appendChild(document.createTextNode(' Show draft percentage changes'));
     draftGroup.appendChild(draftLabel);
     rightCol.appendChild(draftGroup);
 
@@ -1103,7 +1103,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     });
 
     draftRateLabel.appendChild(draftRateCheckbox);
-    draftRateLabel.appendChild(document.createTextNode(' Show draft rate setting'));
+    draftRateLabel.appendChild(document.createTextNode(' Show draft rate changes'));
     draftRateGroup.appendChild(draftRateLabel);
     rightCol.appendChild(draftRateGroup);
 
@@ -1123,7 +1123,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     });
 
     wagesLabel.appendChild(wagesCheckbox);
-    wagesLabel.appendChild(document.createTextNode(' Show military wages'));
+    wagesLabel.appendChild(document.createTextNode(' Show military wage changes'));
     wagesGroup.appendChild(wagesLabel);
     rightCol.appendChild(wagesGroup);
 
@@ -1148,7 +1148,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     });
 
     plDiscordLabel.appendChild(plDiscordCheckbox);
-    plDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
+    plDiscordLabel.appendChild(document.createTextNode(' Show Copy for Discord button'));
     plDiscordGroup.appendChild(plDiscordLabel);
     rightCol.appendChild(plDiscordGroup);
 }
@@ -1304,8 +1304,8 @@ function applyKingdomNewsSettings(text) {
  */
 function applyProvinceLogsSettings(text) {
     const sectionNames = [
-        'Thievery Summary', 'Thievery Targets', 'Thievery by Op Type', 'Resources Stolen',
-        'Spell Summary', 'Spell Targets', 'Spell by Spell Type',
+        'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
+        'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
         'Aid Summary', 'Dragon Summary', 'Ritual Summary',
         'Construction Summary', 'Science Summary',
         'Exploration Summary', 'Military Training'

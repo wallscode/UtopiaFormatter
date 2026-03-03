@@ -24,7 +24,7 @@ Thievery Summary:
   76 failed thievery attempts (1589 thieves lost)
   359 thieves lost in successful operations
 
-Resources Stolen:
+Resources Stolen from Opponents:
   1,404,731 gold coins (24 ops, avg 59k)
   597,907 bushels (15 ops, avg 40k)
   746,273 runes (51 ops, avg 15k)
@@ -106,7 +106,7 @@ Military Training:
   Draft rate: Normal
   Military wages: 200%
 
-Thievery Targets:
+Thievery Targets by Province:
   Willaimia Sherman (4:11) — 47 ops (1 failed):
     Greater Arson: 13 (33 Watch Towers, 32 Hospitals, 31 Homes, 17 Guilds, 12 Banks)
     Propaganda: 11 (130 specialist troops)
@@ -207,7 +207,7 @@ Thievery Targets:
   Maj Gen Robert Ross (4:11) — 1 op (1 failed):
     Failed: 1 (8 thieves lost)
 
-Spell Targets:
+Spell Targets by Province:
   Back From The Edge (4:8) — 24 casts (2 failed):
     Meteor Showers: 4 (34 days)
     Mystic Vortex: 4 (17 active spells)
@@ -369,7 +369,7 @@ Spell Targets:
   William Wallace (4:11) — 1 cast:
     Meteor Showers: 1 (8 days)
 
-Thievery by Op Type:
+Thievery Targets by Op Type:
   Tower Robbery — 51 ops (746,273 runes):
     to hell and back (3:9): 3 (164,991 runes)
     mystic (4:8): 5 (113,133 runes)
@@ -457,7 +457,7 @@ Thievery by Op Type:
     Maj Gen Robert Ross (4:11): 1 (8 thieves lost)
     Willaimia Sherman (4:11): 1 (9 thieves lost)
 
-Spell by Spell Type:
+Spell Targets by Spell Type:
   Meteor Showers — 62 casts (493 days):
     Back From The Edge (4:8): 4 (34 days)
     Alchemia (4:11): 4 (33 days)

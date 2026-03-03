@@ -972,7 +972,7 @@ function formatProvinceLogs(text) {
         const avgStr = avg >= 1000 ? `${Math.round(avg / 1000)}k` : `${avg}`;
         return ` (${count} ops, avg ${avgStr})`;
     }
-    output += "\nResources Stolen:\n";
+    output += "\nResources Stolen from Opponents:\n";
     if (goldCoinsStolen > 0) output += `  ${formatNumber(goldCoinsStolen)} gold coins${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
     if (bushelsStolen > 0) output += `  ${formatNumber(bushelsStolen)} bushels${robberyDetail(bushelsStolen, granaryRobberyCount)}\n`;
     if (runesStolen > 0) output += `  ${formatNumber(runesStolen)} runes${robberyDetail(runesStolen, towerRobberyCount)}\n`;
@@ -1091,7 +1091,7 @@ function formatProvinceLogs(text) {
         }
         // Sort targets by total op count descending
         const sorted = [...byTarget.entries()].sort((a, b) => b[1].length - a[1].length);
-        let ttOut = '\nThievery Targets:\n';
+        let ttOut = '\nThievery Targets by Province:\n';
         for (const [target, ops] of sorted) {
             const successes = ops.filter(o => o.success);
             const failures  = ops.filter(o => !o.success);
@@ -1146,7 +1146,7 @@ function formatProvinceLogs(text) {
             byTarget.get(op.target).push(op);
         }
         const sorted = [...byTarget.entries()].sort((a, b) => b[1].length - a[1].length);
-        let stOut = '\nSpell Targets:\n';
+        let stOut = '\nSpell Targets by Province:\n';
         for (const [target, ops] of sorted) {
             const successes = ops.filter(o => o.success);
             const failures  = ops.filter(o => !o.success);
@@ -1183,7 +1183,7 @@ function formatProvinceLogs(text) {
             byType.get(op.type).push(op);
         }
         const sortedTypes = [...byType.entries()].sort((a, b) => b[1].length - a[1].length);
-        let tboOut = '\nThievery by Op Type:\n';
+        let tboOut = '\nThievery Targets by Op Type:\n';
         for (const [opType, ops] of sortedTypes) {
             // Aggregate totals for header
             let totalImpact = 0;
@@ -1254,7 +1254,7 @@ function formatProvinceLogs(text) {
             bySpell.get(op.spell).push(op);
         }
         const sortedSpells = [...bySpell.entries()].sort((a, b) => b[1].length - a[1].length);
-        let sbsOut = '\nSpell by Spell Type:\n';
+        let sbsOut = '\nSpell Targets by Spell Type:\n';
         for (const [spell, ops] of sortedSpells) {
             let totalImpact = 0;
             let impactUnit = null;
