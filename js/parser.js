@@ -1361,6 +1361,8 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireProposals: [],
         ceasefireWithdrawals: [],
         ceasefireEntered: 0,
+        ceasefireAccepted: 0,
+        ceasefireProposedByUs: 0,
         warDeclarations: [],
         ritualCoverage: [],
         highlights: {
@@ -1962,6 +1964,18 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "Fluffys Hostile pso (5:8) has accepted our ceasefire proposal! It will be unbreakable until..."
+    if (line.includes('has accepted our ceasefire proposal')) {
+        data.ceasefireAccepted++;
+        return true;
+    }
+
+    // "We have proposed a ceasefire offer to Fluffys Hostile pso (5:8). If accepted..."
+    if (line.includes('have proposed a ceasefire offer to')) {
+        data.ceasefireProposedByUs++;
+        return true;
+    }
+
     return false;
 }
 
@@ -2265,6 +2279,10 @@ function formatKingdomNewsOutput(data, windowDays) {
     const krLines = [];
     if (data.ceasefireProposals.length > 0)
         krLines.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
+    if (data.ceasefireProposedByUs > 0)
+        krLines.push(`-- Ceasefire Proposals Made: ${data.ceasefireProposedByUs}`);
+    if (data.ceasefireAccepted > 0)
+        krLines.push(`-- Ceasefire Proposals Accepted: ${data.ceasefireAccepted}`);
     if (data.ceasefireWithdrawals.length > 0)
         krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
     if (data.ceasefireEntered > 0)
