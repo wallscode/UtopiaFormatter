@@ -131,7 +131,6 @@ section > label {
    ===================================================== */
 
 .adv-panel {
-    grid-column: 1 / -1;
     padding: 0;
     overflow: hidden;
 }
