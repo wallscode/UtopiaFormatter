@@ -1387,6 +1387,7 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireProposedByUs: 0,
         warDeclarations: [],
         ritualCoverage: [],
+        truncatedLines: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
             mostLandLostTrad: { province: '', acres: 0 },
@@ -1456,7 +1457,22 @@ function parseKingdomNewsLog(inputText, options) {
                     });
                 }
                 if (!isKnownSentinel) {
-                    logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
+                    // Detect lines that look like truncated attack lines — the user
+                    // copied a partial line so the standard attack regex can't match.
+                    // Pattern 1: "N - Name (K:K) attacked" — ends with "attacked" but
+                    //   no target province or result was included.
+                    // Pattern 2: "N - Name (K:K) invaded N - Name (K:K) and captured N acres"
+                    //   — "of land" is missing, meaning the copy stopped mid-line.
+                    const isTruncated =
+                        /\d+ - [^()]+\(\d+:\d+\)\s+attacked\s*$/.test(attackLine) ||
+                        (/captured \d+ acres/.test(attackLine) &&
+                         !/captured \d+ acres of land/.test(attackLine) &&
+                         /\d+ - [^()]+\(\d+:\d+\)/.test(attackLine));
+                    if (isTruncated) {
+                        data.truncatedLines.push(attackLine.trim());
+                    } else {
+                        logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
+                    }
                 }
             }
 
@@ -2086,6 +2102,18 @@ function formatKingdomNewsOutput(data, windowDays) {
                 output.push(`Warning: war opponent could not be identified \u2014 no filtering applied`);
             }
         }
+    }
+
+    // Truncated-line warning — shown when the user copied partial lines
+    if (data.truncatedLines && data.truncatedLines.length > 0) {
+        output.push('');
+        output.push('WARNING: Some input lines appear to have been cut off and could not be parsed.');
+        output.push('This usually happens when text is copied without selecting the full line.');
+        output.push('Affected line(s):');
+        for (const tl of data.truncatedLines) {
+            output.push('  - "' + tl + '"');
+        }
+        output.push('');
     }
 
     // Date range (use dateToNumber for reliable day count)
