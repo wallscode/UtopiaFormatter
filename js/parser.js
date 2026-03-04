@@ -490,8 +490,11 @@ function formatProvinceLogs(text) {
         throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
     }
 
-    // Split input text into lines, trim whitespace, and remove empty lines
+    // Split input text into lines, trim whitespace, and remove empty lines.
+    // Keep only lines that contain a date prefix ("Month Day of YRX") — anything
+    // else is extra content copied from the page (leading or trailing) and is ignored.
     let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    lines = lines.filter(line => /\bYR\d+\b/.test(line));
 
     // Remove date prefix and time stamps
     lines = lines.map(line => line.replace(/^.*?YR\d+\s*/, '').trim())
@@ -1333,15 +1336,21 @@ function parseKingdomNewsLog(inputText, options) {
     let cleanedText = parseText(inputText);
     const lines = cleanedText.split('\n').map(line => line.trim()).filter(line => line);
     
-    // Find the first line that starts with a date in the format "Month Day of YR#"
+    // Find the first and last lines that start with a date ("Month Day of YR#").
+    // Lines outside that range are extra content copied from the page and are ignored.
     const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
     const startIndex = lines.findIndex(line => dateRegex.test(line));
-    
+
     if (startIndex === -1) {
         throw new ParseError('Could not find date line in Kingdom News log', 'NO_DATE_FOUND');
     }
-    
-    const relevantLines = lines.slice(startIndex);
+
+    let endIndex = startIndex;
+    for (let i = lines.length - 1; i > startIndex; i--) {
+        if (dateRegex.test(lines[i])) { endIndex = i; break; }
+    }
+
+    const relevantLines = lines.slice(startIndex, endIndex + 1);
 
     // Determine own kingdom from the text before main parse
     const detectedOwnKingdom = detectOwnKingdom(relevantLines);
