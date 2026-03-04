@@ -312,20 +312,43 @@ function textToHtml(text) {
 
 /**
  * Writes text to the clipboard.
- * On mobile: writes both text/html and text/plain via ClipboardItem so that
- * WYSIWYG editors preserve newlines and spacing (mobile editors strip plain text).
+ * On mobile: uses a hidden contenteditable div + execCommand('copy') to write HTML
+ * to the clipboard. iOS Safari does not support text/html in ClipboardItem, so the
+ * legacy execCommand path is used instead — WYSIWYG editors read it as HTML and
+ * preserve line breaks and spacing.
  * On desktop: writes plain text only — the forum editor already handles it correctly.
  * @param {string} text - Plain text to copy
  */
 async function writeToClipboard(text) {
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
-        const htmlBlob  = new Blob([textToHtml(text)], { type: 'text/html' });
-        const textBlob  = new Blob([text],              { type: 'text/plain' });
-        await navigator.clipboard.write([new ClipboardItem({
-            'text/html':  htmlBlob,
-            'text/plain': textBlob,
-        })]);
+    if (isMobile) {
+        const div = document.createElement('div');
+        div.contentEditable = 'true';
+        div.innerHTML = textToHtml(text);
+        div.style.position = 'fixed';
+        div.style.left = '-999999px';
+        div.style.top = '-999999px';
+        div.style.opacity = '0';
+        document.body.appendChild(div);
+        div.focus();
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.warn('Mobile HTML copy failed, falling back to plain text:', err);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                fallbackCopyToClipboard(text);
+            }
+        } finally {
+            sel.removeAllRanges();
+            document.body.removeChild(div);
+        }
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
     } else {

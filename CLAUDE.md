@@ -63,6 +63,7 @@ When modifying parsing logic, run the relevant test and compare output against t
 This project uses `tk` (ticket) for issue tracking. Tickets are stored as markdown files in `.tickets/` and committed to the repo.
 
 ```bash
+tk create "title" -d "description" --design "..." --acceptance "..."  # create ticket (NOT tk new)
 tk ls          # list all tickets
 tk ready       # tickets with no unresolved dependencies
 tk blocked     # tickets waiting on other tickets
