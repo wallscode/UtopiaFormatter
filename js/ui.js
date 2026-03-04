@@ -291,68 +291,38 @@ async function handleCopy(elements) {
 }
 
 /**
- * Converts plain text to an HTML snippet that preserves whitespace and line
- * breaks when pasted into a WYSIWYG editor on mobile.
- * Uses <pre> so literal newlines render correctly regardless of surrounding CSS.
- * Inline styles override <pre>'s default monospace font and prevent overflow:
- *   font-family/size: inherit  — matches forum body font
- *   white-space: pre-wrap      — preserves newlines and wraps long lines
- *   overflow-wrap: break-word  — prevents horizontal overflow
+ * Converts plain text to a string where newlines and leading spaces are replaced
+ * with HTML markup (<br> and &nbsp;).
+ * The mobile Utopia forum editor interprets pasted content as HTML: real newlines
+ * are stripped on submit, but <br> and &nbsp; are preserved and rendered correctly.
  * @param {string} text
- * @returns {string} HTML string
+ * @returns {string} HTML-markup string (no wrapper tag)
  */
-function textToHtml(text) {
-    const escaped = text
+function textToMobileHtml(text) {
+    return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    return '<pre style="font-family:inherit;font-size:inherit;white-space:pre-wrap;overflow-wrap:break-word;">'
-        + escaped + '</pre>';
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>')
+        .replace(/(^|<br>)([ ]+)/g, (_, br, spaces) => br + '&nbsp;'.repeat(spaces.length));
 }
 
 /**
  * Writes text to the clipboard.
- * On mobile: uses a hidden contenteditable div + execCommand('copy') to write HTML
- * to the clipboard. iOS Safari does not support text/html in ClipboardItem, so the
- * legacy execCommand path is used instead — WYSIWYG editors read it as HTML and
- * preserve line breaks and spacing.
- * On desktop: writes plain text only — the forum editor already handles it correctly.
+ * On mobile: writes plain text containing <br> and &nbsp; markup. The mobile
+ * Utopia forum editor interprets these as HTML, preserving line breaks and spacing.
+ * Real newlines are stripped by the mobile editor on submit, so they cannot be used.
+ * On desktop: writes plain text with real newlines — the desktop forum editor
+ * preserves them correctly and treats <br> as literal text.
  * @param {string} text - Plain text to copy
  */
 async function writeToClipboard(text) {
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
-        const div = document.createElement('div');
-        div.contentEditable = 'true';
-        div.innerHTML = textToHtml(text);
-        div.style.position = 'fixed';
-        div.style.left = '-999999px';
-        div.style.top = '-999999px';
-        div.style.opacity = '0';
-        document.body.appendChild(div);
-        div.focus();
-        const range = document.createRange();
-        range.selectNodeContents(div);
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.warn('Mobile HTML copy failed, falling back to plain text:', err);
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                await navigator.clipboard.writeText(text);
-            } else {
-                fallbackCopyToClipboard(text);
-            }
-        } finally {
-            sel.removeAllRanges();
-            document.body.removeChild(div);
-        }
-    } else if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
+    const mobileText = isMobile ? textToMobileHtml(text) : text;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(mobileText);
     } else {
-        fallbackCopyToClipboard(text);
+        fallbackCopyToClipboard(mobileText);
     }
 }
 
