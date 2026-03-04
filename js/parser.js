@@ -494,11 +494,11 @@ function calculateUniques(log, windowDays) {
 }
 
 /**
- * Parses the pasted log text and returns a formatted summary string
+ * Parses Province Logs text and returns the raw data object.
  * @param {string} text - Raw province log text
- * @returns {string} - Formatted summary of province log events
+ * @returns {Object} Accumulated data (counters, impacts, etc.)
  */
-function formatProvinceLogs(text) {
+function accumulateProvinceLogsData(text) {
     if (!text || text.trim() === '') {
         throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
     }
@@ -918,6 +918,45 @@ function formatProvinceLogs(text) {
         }
     }
 
+    return {
+        spellCounts, spellImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
+        propagandaCounts, propagandaOpCounts,
+        dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
+        greaterArsonOpsCount, ritualCasts, failedThieveryCount,
+        thiervesLostCount, successThiervesLostCount,
+        stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
+        draftPercent, draftRate, militaryWagesPercent,
+        exploreAcres, exploreSoldiers, exploreCost,
+        constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
+        thiefOps, spellOps,
+        goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
+        vaultRobberyCount, granaryRobberyCount, towerRobberyCount
+    };
+}
+
+/**
+ * Builds the formatted Province Logs output string from accumulated data.
+ * @param {Object} data - Data object returned by accumulateProvinceLogsData
+ * @returns {string} Formatted summary string
+ */
+function formatProvinceLogsFromData(data) {
+    const {
+        spellCounts, spellImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
+        propagandaCounts, propagandaOpCounts,
+        dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
+        greaterArsonOpsCount, ritualCasts, failedThieveryCount,
+        thiervesLostCount, successThiervesLostCount,
+        stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
+        draftPercent, draftRate, militaryWagesPercent,
+        exploreAcres, exploreSoldiers, exploreCost,
+        constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
+        thiefOps, spellOps,
+        goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
+        vaultRobberyCount, granaryRobberyCount, towerRobberyCount
+    } = data;
+
     // Build output
     let output = "\nSummary of Province Log Events from UtopiaFormatter.com\n" + "-".repeat(40) + "\n";
 
@@ -1314,6 +1353,17 @@ function formatProvinceLogs(text) {
     }
 
     return output.trim();
+}
+
+/**
+ * Parses the pasted log text and returns a formatted summary string.
+ * Thin wrapper around accumulateProvinceLogsData + formatProvinceLogsFromData.
+ * @param {string} text - Raw province log text
+ * @returns {string} - Formatted summary of province log events
+ */
+function formatProvinceLogs(text) {
+    const data = accumulateProvinceLogsData(text);
+    return formatProvinceLogsFromData(data);
 }
 
 /**
@@ -2963,13 +3013,16 @@ function formatProvinceNewsOutput(data) {
 }
 
 /**
- * Parses Province News text into a formatted summary.
- * Province News uses "Month Day of YR##[tab]Event" format.
- * @param {string} text - Raw Province News input
- * @param {Object} options - (reserved for future use)
- * @returns {string} - Formatted output
+ * Parses Province News text and returns the raw data object.
+ * NOTE: Does NOT apply normalizeWhitespace — that would destroy tab delimiters.
+ * @param {string} text - Raw province news text
+ * @param {Object} [options]
+ * @returns {Object} Accumulated Province News data
  */
-function parseProvinceNews(text, options = {}) {
+function accumulateProvinceNewsData(text, options = {}) {
+    if (!text || text.trim() === '') {
+        throw new ParseError(ERROR_MESSAGES.EMPTY_INPUT, 'EMPTY_INPUT');
+    }
     // Apply HTML cleaning but NOT normalizeWhitespace (would destroy tab delimiters)
     let cleaned = removeHtmlTags(text);
     cleaned = removeHtmlEntities(cleaned);
@@ -3041,7 +3094,142 @@ function parseProvinceNews(text, options = {}) {
         parseProvinceNewsLine(ev, dateStr, data);
     }
 
+    return data;
+}
+
+/**
+ * Parses Province News text into a formatted summary.
+ * Thin wrapper around accumulateProvinceNewsData + formatProvinceNewsOutput.
+ * Province News uses "Month Day of YR##[tab]Event" format.
+ * @param {string} text - Raw Province News input
+ * @param {Object} options - (reserved for future use)
+ * @returns {string} - Formatted output
+ */
+function parseProvinceNews(text, options = {}) {
+    const data = accumulateProvinceNewsData(text, options);
     return formatProvinceNewsOutput(data);
+}
+
+/**
+ * Generates a Combined Province Summary from both Province Logs and Province News text.
+ * Produces a single output that merges both parsers' data. The Aid section shows
+ * aid sent (Province Logs), aid received (Province News), and the net for each resource.
+ * All other sections pass through from their respective parsers.
+ *
+ * @param {string} logsText - Raw Province Logs text
+ * @param {string} newsText - Raw Province News text
+ * @returns {string} Combined formatted summary
+ */
+function formatCombinedProvinceSummary(logsText, newsText) {
+    const logsData = accumulateProvinceLogsData(logsText);
+    const newsData = accumulateProvinceNewsData(newsText);
+
+    // Get full formatted outputs from each parser (used to extract pass-through sections)
+    const logsOutput = formatProvinceLogsFromData(logsData);
+    const newsOutput = formatProvinceNewsOutput(newsData);
+
+    // Helper: extract named sections from a formatted text block.
+    // Province Logs sections use "SectionName:" markers; Province News use "SectionName" (no colon).
+    // Returns: { sectionName: contentString (without leading \n\n) }
+    function extractSections(text, names, useColon) {
+        const sections = {};
+        for (const name of names) {
+            const marker = '\n\n' + name + (useColon ? ':' : '');
+            const start = text.indexOf(marker);
+            if (start === -1) continue;
+            let end = text.length;
+            for (const other of names) {
+                if (other === name) continue;
+                const otherMarker = '\n\n' + other + (useColon ? ':' : '');
+                const otherStart = text.indexOf(otherMarker);
+                if (otherStart > start && otherStart < end) end = otherStart;
+            }
+            // Also check cross-type boundaries
+            sections[name] = text.substring(start + 2, end);
+        }
+        return sections;
+    }
+
+    const logsSectionNames = [
+        'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type',
+        'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province',
+        'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary',
+        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'
+    ];
+    const newsSectionNames = [
+        'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
+        'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes', 'Starvation'
+    ];
+
+    const logsSections = extractSections(logsOutput, logsSectionNames, true);
+    const newsSections = extractSections(newsOutput, newsSectionNames, false);
+
+    // Resource mapping: Province Logs key -> Province News key
+    const aidResourceMap = [
+        { label: 'Gold coins',    logsKey: 'gold coins',         newsKey: 'gold'         },
+        { label: 'Runes',         logsKey: 'runes',              newsKey: 'runes'        },
+        { label: 'Bushels',       logsKey: 'bushels',            newsKey: 'bushels'      },
+        { label: 'Soldiers',      logsKey: 'soldiers',           newsKey: 'soldiers'     },
+        { label: 'Explore pool',  logsKey: 'explore pool acres', newsKey: 'exploreAcres' }
+    ];
+
+    // Build combined Aid section
+    const aidLines = ['Aid Summary:'];
+    let hasAnyAid = false;
+    for (const res of aidResourceMap) {
+        const sent     = logsData.aidTotals[res.logsKey] || 0;
+        const newsRes  = newsData.aidByResource[res.newsKey];
+        const received = newsRes ? newsRes.total : 0;
+        const lost     = (res.newsKey === 'exploreAcres' && newsRes) ? newsRes.lost : 0;
+        if (sent === 0 && received === 0) continue;
+        hasAnyAid = true;
+
+        const net = sent - received;
+        let netStr;
+        if (net === 0)      netStr = 'even';
+        else if (net > 0)   netStr = formatNumber(net) + ' sent';
+        else                netStr = formatNumber(-net) + ' received';
+
+        let line = `  ${res.label}:  Sent: ${formatNumber(sent)}  |  Received: ${formatNumber(received)}  |  Net: ${netStr}`;
+        if (res.newsKey === 'exploreAcres' && lost > 0) line += `  (${formatNumber(lost)} lost in transit)`;
+        aidLines.push(line);
+    }
+    if (!hasAnyAid) aidLines.push('  No aid activity recorded.');
+    const combinedAidSection = aidLines.join('\n');
+
+    // Build the date range header lines
+    const out = [];
+    out.push('Combined Province Summary from UtopiaFormatter.com');
+    if (newsData.firstDate && newsData.lastDate) {
+        const span = dateToNumber(newsData.lastDate) - dateToNumber(newsData.firstDate) + 1;
+        out.push(`Province News:  ${newsData.firstDate} - ${newsData.lastDate} (${span} days)`);
+    }
+
+    // Combined Aid section comes first
+    out.push('');
+    out.push(combinedAidSection);
+
+    // Province Logs pass-through sections (excluding Aid Summary — it's replaced above)
+    const logsPassthrough = [
+        'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type',
+        'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province',
+        'Spell Targets by Spell Type', 'Dragon Summary', 'Ritual Summary',
+        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'
+    ];
+    for (const name of logsPassthrough) {
+        if (logsSections[name]) out.push('\n' + logsSections[name]);
+    }
+
+    // Province News pass-through sections (excluding Aid Received — replaced above)
+    const newsPassthrough = [
+        'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
+        'Daily Login Bonus', 'Scientists Gained', 'War Outcomes', 'Starvation'
+    ];
+    for (const name of newsPassthrough) {
+        if (newsSections[name]) out.push('\n' + newsSections[name]);
+    }
+
+    return out.join('\n').trim();
 }
 
 // =============================================================================
@@ -3103,6 +3291,10 @@ module.exports = {
     parseProvinceNews,
     parseText,
     formatProvinceLogs,
+    accumulateProvinceLogsData,
+    formatProvinceLogsFromData,
+    accumulateProvinceNewsData,
+    formatCombinedProvinceSummary,
     
     // Text cleaning utilities
     removeHtmlTags,

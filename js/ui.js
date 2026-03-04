@@ -91,6 +91,70 @@ const advSettings = {
         },
         showSourceIdentifiers: false,
         discordCopy: false
+    },
+    combinedProvince: {
+        sectionOrder: [
+            'Aid Summary',
+            'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
+            'Thievery Impacts', 'Shadowlight Thief IDs',
+            'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
+            'Spell Impacts',
+            'Attacks Suffered', 'Military Training',
+            'Exploration Summary', 'Construction Summary', 'Science Summary',
+            'Dragon Summary', 'Ritual Summary',
+            'War Outcomes', 'Daily Login Bonus', 'Scientists Gained',
+        ],
+        sectionGroups: [
+            { label: 'Aid Summary',              children: ['Aid Summary'] },
+            { label: 'Offensive Thievery',       children: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents'] },
+            { label: 'Defensive Thievery',       children: ['Thievery Impacts', 'Shadowlight Thief IDs'] },
+            { label: 'Offensive Spells',         children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type'] },
+            { label: 'Defensive Spells',         children: ['Spell Impacts'] },
+            { label: 'Military',                 children: ['Attacks Suffered', 'Military Training'] },
+            { label: 'Exploration Summary',      children: ['Exploration Summary'] },
+            { label: 'Construction Summary',     children: ['Construction Summary'] },
+            { label: 'Science Summary',          children: ['Science Summary'] },
+            { label: 'Dragon Summary',           children: ['Dragon Summary'] },
+            { label: 'Ritual Summary',           children: ['Ritual Summary'] },
+            { label: 'War Outcomes',             children: ['War Outcomes'] },
+            { label: 'Daily Login Bonus',        children: ['Daily Login Bonus'] },
+            { label: 'Scientists Gained',        children: ['Scientists Gained'] },
+        ],
+        visible: {
+            'Aid Summary':                   true,
+            'Thievery Summary':              true,
+            'Thievery Targets by Province':  false,
+            'Thievery Targets by Op Type':   false,
+            'Resources Stolen from Opponents': true,
+            'Thievery Impacts':              true,
+            'Shadowlight Thief IDs':         false,
+            'Spell Summary':                 true,
+            'Spell Targets by Province':     false,
+            'Spell Targets by Spell Type':   false,
+            'Spell Impacts':                 true,
+            'Attacks Suffered':              true,
+            'Military Training':             false,
+            'Exploration Summary':           false,
+            'Construction Summary':          false,
+            'Science Summary':               false,
+            'Dragon Summary':                true,
+            'Ritual Summary':                false,
+            'War Outcomes':                  false,
+            'Daily Login Bonus':             true,
+            'Scientists Gained':             false,
+        },
+        showAverages:               false,
+        showFailedThievery:         true,
+        showFailedSpellAttempts:    false,
+        showSuccessThieveryLosses:  false,
+        showRazedBuildings:         false,
+        showTroopsReleased:         false,
+        showDraftPercentage:        false,
+        showDraftRate:              false,
+        showMilitaryWages:          false,
+        exploreDetails:             false,
+        showSourceIdentifiers:      false,
+        discordCopy: false
     }
 };
 
@@ -112,7 +176,8 @@ function getDomElements() {
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
         advToggle: document.getElementById('adv-toggle'),
-        parseStatus: document.getElementById('parse-status')
+        parseStatus: document.getElementById('parse-status'),
+        provinceNewsText: document.getElementById('province-news-text')
     };
 }
 
@@ -151,6 +216,24 @@ function setupEventListeners(elements) {
         updateParseButtonState(elements);
     });
 
+    // Province News textarea - enable/disable parse button when content added
+    if (elements.provinceNewsText) {
+        elements.provinceNewsText.addEventListener('input', () => {
+            updateParseButtonState(elements);
+        });
+        // Auto-detect combined mode on paste
+        elements.provinceNewsText.addEventListener('paste', () => {
+            setTimeout(() => autoDetectMode(elements), 0);
+        });
+        // Ctrl+Enter from Province News textarea also triggers parse
+        elements.provinceNewsText.addEventListener('keydown', (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                event.preventDefault();
+                handleParse(elements);
+            }
+        });
+    }
+
     // Keyboard shortcuts for better UX
     document.addEventListener('keydown', (event) => {
         handleKeyboardShortcuts(event, elements);
@@ -175,13 +258,50 @@ function setupEventListeners(elements) {
  */
 function handleParse(elements) {
     const inputText = elements.inputText.value.trim();
+    const newsText = elements.provinceNewsText ? elements.provinceNewsText.value.trim() : '';
 
-    if (!inputText) {
+    if (!inputText && !newsText) {
         showMessage(elements.outputText, 'Please enter some text to parse.', 'error', elements.parseStatus);
         return;
     }
 
-    const detectedMode = detectInputType(inputText);
+    // Combined mode: both textareas have content and the main input is Province Logs
+    const isCombined = !!(inputText && newsText && detectInputType(inputText) === 'province-logs');
+
+    if (isCombined) {
+        elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
+        elements.detectBadge.classList.remove('hidden');
+        try {
+            let parsedText = formatCombinedProvinceSummary(inputText, newsText);
+            lastRawParsed = parsedText;
+            parsedText = applyCombinedProvinceSettings(parsedText);
+            lastRawInput = inputText;
+            lastDetectedMode = 'combined-province';
+            elements.outputText.value = parsedText;
+            autoResizeOutput(elements.outputText);
+            showMessage(elements.outputText, 'Province Logs + Province News combined successfully!', 'success', elements.parseStatus);
+            elements.outputText.focus();
+            showAdvancedPanel(elements);
+            updateDiscordButtonVisibility(elements, 'combined-province');
+            if (window.innerWidth < 768) {
+                const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                elements.outputText.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+            }
+        } catch (error) {
+            console.error('Parsing error:', error);
+            showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
+        }
+        return;
+    }
+
+    // Single-input mode: use existing logic
+    const effectiveInput = inputText || newsText;
+    if (!effectiveInput) {
+        showMessage(elements.outputText, 'Please enter some text to parse.', 'error', elements.parseStatus);
+        return;
+    }
+
+    const detectedMode = detectInputType(effectiveInput);
 
     if (!detectedMode) {
         showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error', elements.parseStatus);
@@ -195,27 +315,27 @@ function handleParse(elements) {
     try {
         let parsedText;
         if (detectedMode === 'kingdom-news-log') {
-            advSettings.kingdomNews.warDetected = hasWarEvents(inputText);
+            advSettings.kingdomNews.warDetected = hasWarEvents(effectiveInput);
             if (!advSettings.kingdomNews.warDetected) {
                 advSettings.kingdomNews.warOnly = false;
             }
-            parsedText = parseKingdomNewsLog(inputText, {
+            parsedText = parseKingdomNewsLog(effectiveInput, {
                 uniqueWindow: advSettings.kingdomNews.uniqueWindow,
                 warOnly: advSettings.kingdomNews.warOnly
             });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
         } else if (detectedMode === 'province-news') {
-            parsedText = parseProvinceNews(inputText);
+            parsedText = parseProvinceNews(effectiveInput);
             lastRawParsed = parsedText;
             parsedText = applyProvinceNewsSettings(parsedText);
         } else {
-            parsedText = formatProvinceLogs(inputText);
+            parsedText = formatProvinceLogs(effectiveInput);
             lastRawParsed = parsedText;
             parsedText = applyProvinceLogsSettings(parsedText);
         }
 
-        lastRawInput = inputText;
+        lastRawInput = effectiveInput;
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
         autoResizeOutput(elements.outputText);
@@ -243,6 +363,7 @@ function handleParse(elements) {
 function handleClear(elements) {
     elements.inputText.value = '';
     elements.outputText.value = '';
+    if (elements.provinceNewsText) elements.provinceNewsText.value = '';
     elements.detectBadge.classList.add('hidden');
     updateParseButtonState(elements);
 
@@ -369,11 +490,18 @@ function fallbackCopyToClipboard(text) {
  */
 function autoDetectMode(elements) {
     const text = elements.inputText.value;
-    if (!text.trim()) return;
+    const newsText = elements.provinceNewsText ? elements.provinceNewsText.value : '';
 
-    const detected = detectInputType(text);
+    if (text.trim() && newsText.trim() && detectInputType(text.trim()) === 'province-logs') {
+        elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
+        elements.detectBadge.classList.remove('hidden');
+        return;
+    }
+
+    const effective = text.trim() || newsText.trim();
+    if (!effective) return;
+    const detected = detectInputType(effective);
     if (!detected) return;
-
     const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };
     elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detected]}`;
     elements.detectBadge.classList.remove('hidden');
@@ -384,7 +512,8 @@ function autoDetectMode(elements) {
  * @param {Object} elements - DOM elements object
  */
 function updateParseButtonState(elements) {
-    const hasText = elements.inputText.value.trim().length > 0;
+    const hasText = elements.inputText.value.trim().length > 0
+                 || (elements.provinceNewsText && elements.provinceNewsText.value.trim().length > 0);
     elements.parseBtn.disabled = !hasText;
     elements.parseBtn.style.opacity = hasText ? '1' : '0.6';
 }
@@ -485,6 +614,11 @@ function renderAdvancedSettings(elements) {
     rightCol.className = 'adv-col adv-col-right';
     container.appendChild(leftCol);
     container.appendChild(rightCol);
+
+    if (lastDetectedMode === 'combined-province') {
+        renderCombinedProvincePanel(elements);
+        return;
+    }
 
     if (lastDetectedMode === 'kingdom-news-log') {
         renderKingdomNewsSettings(leftCol, rightCol, elements);
@@ -1226,6 +1360,8 @@ function applyAndRerender(elements) {
             parsedText = parseProvinceNews(lastRawInput);
             lastRawParsed = parsedText;
             parsedText = applyProvinceNewsSettings(parsedText);
+        } else if (lastDetectedMode === 'combined-province') {
+            parsedText = applyCombinedProvinceSettings(lastRawParsed);
         } else {
             parsedText = formatProvinceLogs(lastRawInput);
             lastRawParsed = parsedText;
@@ -1684,6 +1820,262 @@ function applyProvinceNewsSettings(text) {
 }
 
 /**
+ * Applies combined province advanced settings to the raw combined output text.
+ * Extracts sections from both Province Logs and Province News pass-through content,
+ * applies visibility/ordering from advSettings.combinedProvince, and applies
+ * all display toggles.
+ * @param {string} text - Raw output from formatCombinedProvinceSummary
+ * @returns {string} Filtered and reordered combined output
+ */
+function applyCombinedProvinceSettings(text) {
+    const s = advSettings.combinedProvince;
+
+    // All section names in the combined output — logs sections use ":", news sections don't
+    const logsSectionNames = [
+        'Aid Summary',
+        'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
+        'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
+        'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary',
+        'Exploration Summary', 'Military Training'
+    ];
+    const newsSectionNames = [
+        'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
+        'Daily Login Bonus', 'Scientists Gained', 'War Outcomes', 'Starvation'
+    ];
+    const allSectionNames = [...logsSectionNames, ...newsSectionNames];
+
+    // Find header (everything before the first recognised section)
+    let firstSectionStart = text.length;
+    for (const name of allSectionNames) {
+        const withColon = text.indexOf('\n\n' + name + ':');
+        const withoutColon = text.indexOf('\n\n' + name + '\n');
+        const idx = withColon !== -1 ? (withoutColon !== -1 ? Math.min(withColon, withoutColon) : withColon)
+                                      : withoutColon;
+        if (idx !== -1 && idx < firstSectionStart) firstSectionStart = idx;
+    }
+    const header = text.substring(0, firstSectionStart);
+
+    // Extract each section
+    const sections = {};
+    for (const name of allSectionNames) {
+        // Try both colon and non-colon markers
+        let start = text.indexOf('\n\n' + name + ':');
+        if (start === -1) start = text.indexOf('\n\n' + name + '\n');
+        if (start === -1) continue;
+
+        let end = text.length;
+        for (const other of allSectionNames) {
+            if (other === name) continue;
+            let otherStart = text.indexOf('\n\n' + other + ':');
+            if (otherStart === -1) otherStart = text.indexOf('\n\n' + other + '\n');
+            if (otherStart > start && otherStart < end) end = otherStart;
+        }
+        sections[name] = text.substring(start + 2, end);
+    }
+
+    // Apply Province News showSourceIdentifiers toggle
+    if (!s.showSourceIdentifiers) {
+        for (const sectionName of ['Thievery Impacts', 'Spell Impacts']) {
+            if (sections[sectionName]) {
+                sections[sectionName] = sections[sectionName]
+                    .split('\n')
+                    .filter(line => !line.startsWith('    '))
+                    .join('\n');
+            }
+        }
+    }
+
+    // Reconstruct in the user-defined order, skipping hidden sections
+    let result = header;
+    for (const name of s.sectionOrder) {
+        if (s.visible[name] && sections[name]) {
+            result += '\n\n' + sections[name];
+        }
+    }
+
+    let output = result.trim();
+
+    // Apply Province Logs display toggles (same logic as applyProvinceLogsSettings)
+    if (!s.showAverages) {
+        output = output.split('\n').map(line =>
+            /^    /.test(line) ? line.replace(/ \(\d+ ops, avg [^)]+\)$/, '') : line
+        ).join('\n');
+    }
+    if (!s.showFailedThievery) {
+        output = output.split('\n').filter(line => !/failed thievery attempt/.test(line)).join('\n');
+        output = output.split('\n').filter(line => !/^    Failed: \d+ \(/.test(line)).join('\n');
+        output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
+        let skipThieveryBlock = false;
+        output = output.split('\n').filter(line => {
+            if (/^  Failed — \d+ ops:/.test(line)) { skipThieveryBlock = true; return false; }
+            if (skipThieveryBlock && /^    /.test(line)) { return false; }
+            skipThieveryBlock = false;
+            return true;
+        }).join('\n');
+    }
+    if (!s.showFailedSpellAttempts) {
+        output = output.split('\n').filter(line => !/^    Failed: \d+$/.test(line)).join('\n');
+        output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
+        let skipSpellBlock = false;
+        output = output.split('\n').filter(line => {
+            if (/^  Failed — \d+ casts:/.test(line)) { skipSpellBlock = true; return false; }
+            if (skipSpellBlock && /^    /.test(line)) { return false; }
+            skipSpellBlock = false;
+            return true;
+        }).join('\n');
+    }
+    if (!s.showSuccessThieveryLosses) {
+        output = output.split('\n').filter(line => !/thieves lost in successful operations/.test(line)).join('\n');
+    }
+    if (!s.showRazedBuildings) {
+        output = output.split('\n').filter(line => !/ razed$/.test(line)).join('\n');
+    }
+    if (!s.showDraftPercentage) {
+        output = output.split('\n').filter(line => !/Draft:/.test(line)).join('\n');
+    }
+    if (!s.showDraftRate) {
+        output = output.split('\n').filter(line => !/Draft rate:/.test(line)).join('\n');
+    }
+    if (!s.showMilitaryWages) {
+        output = output.split('\n').filter(line => !/Military wages:/.test(line)).join('\n');
+    }
+    if (!s.showTroopsReleased) {
+        output = output.split('\n').filter(line => !/ released$/.test(line)).join('\n');
+    }
+    if (!s.exploreDetails) {
+        output = output.split('\n').filter(line => !/soldiers sent at a cost of/.test(line)).join('\n');
+    }
+
+    return output;
+}
+
+/**
+ * Renders the Advanced Settings panel for Combined Province mode.
+ * Provides section visibility/ordering (superset of Province Logs + Province News)
+ * and all display toggles from both parsers.
+ */
+function renderCombinedProvincePanel(elements) {
+    const container = elements.advContent;
+    container.innerHTML = '';
+    const s = advSettings.combinedProvince;
+
+    // Two-column layout (reuse existing adv-panel CSS)
+    const cols = document.createElement('div');
+    cols.className = 'adv-two-col';
+    container.appendChild(cols);
+
+    // Left column: Sections (visibility + ordering)
+    const leftCol = document.createElement('div');
+    leftCol.className = 'adv-col';
+    cols.appendChild(leftCol);
+    const sectionsHeading = document.createElement('h3');
+    sectionsHeading.className = 'adv-col-heading';
+    sectionsHeading.textContent = 'Sections';
+    leftCol.appendChild(sectionsHeading);
+
+    // Build section groups UI (same pattern as Province Logs panel)
+    const groups = s.sectionGroups;
+    const visibleGroups = groups.filter(g => g.children.some(c => s.sectionOrder.includes(c)));
+
+    function swapGroups(gA, gB) {
+        const orderArr = s.sectionOrder;
+        const firstA = orderArr.findIndex(n => gA.children.includes(n));
+        const firstB = orderArr.findIndex(n => gB.children.includes(n));
+        if (firstA === -1 || firstB === -1) return;
+        const minIdx = Math.min(firstA, firstB);
+        const maxIdx = Math.max(firstA, firstB);
+        const aChildren = orderArr.filter(n => gA.children.includes(n));
+        const bChildren = orderArr.filter(n => gB.children.includes(n));
+        const between = orderArr.slice(minIdx, maxIdx + Math.max(aChildren.length, bChildren.length)).filter(n => !gA.children.includes(n) && !gB.children.includes(n));
+        const [first, second] = firstA < firstB ? [bChildren, aChildren] : [aChildren, bChildren];
+        const newSegment = [...first, ...between, ...second];
+        s.sectionOrder.splice(minIdx, newSegment.length, ...newSegment);
+        renderCombinedProvincePanel(elements);
+        applyAndRerender(elements);
+    }
+
+    visibleGroups.forEach((group, gIdx) => {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'adv-section-group';
+        leftCol.appendChild(groupDiv);
+        const isLastGroup = gIdx === visibleGroups.length - 1;
+
+        const upBtn = document.createElement('button');
+        upBtn.className = 'adv-move-btn';
+        upBtn.textContent = '▲';
+        upBtn.disabled = gIdx === 0;
+        upBtn.setAttribute('aria-label', `Move ${group.label} up`);
+        upBtn.addEventListener('click', () => swapGroups(group, visibleGroups[gIdx - 1]));
+
+        const downBtn = document.createElement('button');
+        downBtn.className = 'adv-move-btn';
+        downBtn.textContent = '▼';
+        downBtn.disabled = isLastGroup;
+        downBtn.setAttribute('aria-label', `Move ${group.label} down`);
+        downBtn.addEventListener('click', () => swapGroups(group, visibleGroups[gIdx + 1]));
+
+        group.children.forEach((sectionName, cIdx) => {
+            const row = document.createElement('div');
+            row.className = 'adv-section-row';
+            if (cIdx === 0) { row.appendChild(upBtn); row.appendChild(downBtn); }
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'adv-cp-vis-' + sectionName.replace(/\s+/g, '-');
+            checkbox.checked = s.visible[sectionName];
+            checkbox.addEventListener('change', () => {
+                s.visible[sectionName] = checkbox.checked;
+                applyAndRerender(elements);
+            });
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = cIdx === 0 ? group.label : sectionName;
+            row.appendChild(checkbox);
+            row.appendChild(label);
+            groupDiv.appendChild(row);
+        });
+    });
+
+    // Right column: Display Options
+    const rightCol = document.createElement('div');
+    rightCol.className = 'adv-col';
+    cols.appendChild(rightCol);
+    const dispHeading = document.createElement('h3');
+    dispHeading.className = 'adv-col-heading';
+    dispHeading.textContent = 'Display Options';
+    rightCol.appendChild(dispHeading);
+
+    function addToggle(id, label, getter, setter) {
+        const row = document.createElement('div');
+        row.className = 'adv-option-row';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.id = id;
+        cb.checked = getter();
+        cb.addEventListener('change', () => { setter(cb.checked); applyAndRerender(elements); });
+        const lbl = document.createElement('label');
+        lbl.htmlFor = id;
+        lbl.textContent = label;
+        row.appendChild(cb);
+        row.appendChild(lbl);
+        rightCol.appendChild(row);
+    }
+
+    addToggle('adv-cp-showAverages',              'Show averages in Thievery',          () => s.showAverages,              v => { s.showAverages = v; });
+    addToggle('adv-cp-showFailedThievery',         'Show failed thievery operations',    () => s.showFailedThievery,        v => { s.showFailedThievery = v; });
+    addToggle('adv-cp-showFailedSpellAttempts',    'Show failed spell attempts',          () => s.showFailedSpellAttempts,   v => { s.showFailedSpellAttempts = v; });
+    addToggle('adv-cp-showSuccessThieveryLosses',  'Show thieves lost on success',        () => s.showSuccessThieveryLosses, v => { s.showSuccessThieveryLosses = v; });
+    addToggle('adv-cp-showRazedBuildings',         'Show razed buildings',               () => s.showRazedBuildings,        v => { s.showRazedBuildings = v; });
+    addToggle('adv-cp-exploreDetails',             'Show explore details',               () => s.exploreDetails,            v => { s.exploreDetails = v; });
+    addToggle('adv-cp-showTroopsReleased',         'Show troops released',               () => s.showTroopsReleased,        v => { s.showTroopsReleased = v; });
+    addToggle('adv-cp-showDraftPercentage',        'Show draft percentage',              () => s.showDraftPercentage,       v => { s.showDraftPercentage = v; });
+    addToggle('adv-cp-showDraftRate',              'Show draft rate',                    () => s.showDraftRate,             v => { s.showDraftRate = v; });
+    addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
+    addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
+}
+
+/**
  * Handles keyboard shortcuts for better UX
  * @param {KeyboardEvent} event - Keyboard event
  * @param {Object} elements - DOM elements object
@@ -1714,9 +2106,10 @@ function handleKeyboardShortcuts(event, elements) {
  */
 function updateDiscordButtonVisibility(elements, mode) {
     if (!elements.discordCopyBtn) return;
-    const modeKey = mode === 'kingdom-news-log' ? 'kingdomNews'
-                  : mode === 'province-news'     ? 'provinceNews'
-                  :                               'provinceLogs';
+    const modeKey = mode === 'kingdom-news-log'    ? 'kingdomNews'
+                  : mode === 'province-news'        ? 'provinceNews'
+                  : mode === 'combined-province'    ? 'combinedProvince'
+                  :                                   'provinceLogs';
     const show = mode && advSettings[modeKey] && advSettings[modeKey].discordCopy;
     elements.discordCopyBtn.classList.toggle('hidden', !show);
 }
@@ -1933,5 +2326,5 @@ function toDiscordProvinceLogs(text) {
 
 // ── Node.js test exports ──────────────────────────────────────────────────────
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { applyProvinceLogsSettings, applyKingdomNewsSettings, applyProvinceNewsSettings, advSettings };
+    module.exports = { applyProvinceLogsSettings, applyKingdomNewsSettings, applyProvinceNewsSettings, applyCombinedProvinceSettings, advSettings };
 }

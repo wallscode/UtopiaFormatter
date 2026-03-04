@@ -1,6 +1,6 @@
 ---
 id: Uto-of2a
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-04T21:45:48Z
