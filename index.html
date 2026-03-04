@@ -11,6 +11,9 @@
     <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!-- Visually-hidden live region for parse status announcements -->
+    <div id="parse-status" class="visually-hidden" role="status" aria-live="assertive" aria-atomic="true"></div>
     <header>
         <div class="header-content">
             <img src="img/scroll_blue.png" alt="Utopia scroll logo" class="site-logo">
@@ -21,7 +24,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" id="main-content">
         <div class="left-col">
             <section class="input-section">
                 <h2>Input Text</h2>
@@ -70,14 +73,14 @@
                 <button id="copy-btn">Copy to Clipboard</button>
                 <button id="discord-copy-btn" class="hidden">Copy for Discord</button>
             </div>
-            <div id="copy-feedback" class="feedback hidden">Copied to clipboard!</div>
-            <div id="discord-copy-feedback" class="feedback hidden"></div>
+            <div id="copy-feedback" class="feedback hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div id="discord-copy-feedback" class="feedback hidden" role="status" aria-live="polite" aria-atomic="true"></div>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2026 UtopiaFormatter &mdash; Built for improving collaboration in the Utopia Kingdom Forum</p>
-        <p class="footer-issues">Found a bug or want a feature? <a href="https://github.com/wallscode/UtopiaFormatter/issues" target="_blank" rel="noopener">Submit an issue on GitHub</a></p>
+        <p class="footer-issues">Found a bug or want a feature? <a href="https://github.com/wallscode/UtopiaFormatter/issues" target="_blank" rel="noopener">Submit an issue on GitHub<span class="visually-hidden"> (opens in new tab)</span></a></p>
     </footer>
 
     <script>window.APP_CONFIG = window.APP_CONFIG || { logEndpoint: null };</script>

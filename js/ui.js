@@ -111,7 +111,8 @@ function getDomElements() {
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
-        advToggle: document.getElementById('adv-toggle')
+        advToggle: document.getElementById('adv-toggle'),
+        parseStatus: document.getElementById('parse-status')
     };
 }
 
@@ -176,14 +177,14 @@ function handleParse(elements) {
     const inputText = elements.inputText.value.trim();
 
     if (!inputText) {
-        showMessage(elements.outputText, 'Please enter some text to parse.', 'error');
+        showMessage(elements.outputText, 'Please enter some text to parse.', 'error', elements.parseStatus);
         return;
     }
 
     const detectedMode = detectInputType(inputText);
 
     if (!detectedMode) {
-        showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error');
+        showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error', elements.parseStatus);
         return;
     }
 
@@ -218,7 +219,8 @@ function handleParse(elements) {
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
         autoResizeOutput(elements.outputText);
-        showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success');
+        showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success', elements.parseStatus);
+        elements.outputText.focus();
 
         showAdvancedPanel(elements);
         updateDiscordButtonVisibility(elements, detectedMode);
@@ -230,7 +232,7 @@ function handleParse(elements) {
 
     } catch (error) {
         console.error('Parsing error:', error);
-        showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error');
+        showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
     }
 }
 
@@ -403,17 +405,24 @@ function autoResizeOutput(el) {
  * @param {string} message - Message to display
  * @param {string} type - 'success' or 'error'
  */
-function showMessage(target, message, type) {
+function showMessage(target, message, type, parseStatusEl) {
     const originalValue = target.value;
     const originalPlaceholder = target.placeholder;
-    
-    target.value = message;
+    const prefix = type === 'error' ? 'Error: ' : 'Success: ';
+
+    target.value = prefix + message;
     target.style.color = type === 'error' ? '#e53e3e' : '#38a169';
-    
+
+    // Announce to screen readers via the dedicated assertive live region
+    if (parseStatusEl) {
+        parseStatusEl.textContent = prefix + message;
+    }
+
     setTimeout(() => {
         target.value = originalValue;
         target.placeholder = originalPlaceholder;
         target.style.color = '';
+        if (parseStatusEl) parseStatusEl.textContent = '';
     }, 2000);
 }
 

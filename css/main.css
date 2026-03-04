@@ -220,7 +220,7 @@ section > label {
 .adv-subgroup-title {
     font-size: 0.68rem;
     font-weight: 600;
-    color: #4e5560;
+    color: #7a8290; /* was #4e5560 — failed 4.5:1 contrast against dark background */
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0.75rem 0 0.2rem;
@@ -440,7 +440,6 @@ textarea {
 }
 
 textarea:focus {
-    outline: none;
     border-color: #8aafc8;
     box-shadow: 0 0 0 3px rgba(138, 175, 200, 0.2);
 }
@@ -618,6 +617,38 @@ footer {
 /* Utility classes */
 .hidden {
     display: none !important;
+}
+
+/* Visually hidden — accessible to screen readers, invisible to sighted users */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* Skip navigation link — appears on keyboard focus, hidden otherwise */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background: #8aafc8;
+    color: #0d0d0f;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    top: 0;
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
