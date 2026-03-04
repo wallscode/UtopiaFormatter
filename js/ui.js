@@ -293,7 +293,11 @@ async function handleCopy(elements) {
 /**
  * Converts plain text to an HTML snippet that preserves whitespace and line
  * breaks when pasted into a WYSIWYG editor on mobile.
- * Uses <p> (not <pre>) to match the forum's native post structure.
+ * Uses <pre> so literal newlines render correctly regardless of surrounding CSS.
+ * Inline styles override <pre>'s default monospace font and prevent overflow:
+ *   font-family/size: inherit  — matches forum body font
+ *   white-space: pre-wrap      — preserves newlines and wraps long lines
+ *   overflow-wrap: break-word  — prevents horizontal overflow
  * @param {string} text
  * @returns {string} HTML string
  */
@@ -302,12 +306,8 @@ function textToHtml(text) {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-    // Convert newlines to <br> then replace leading spaces with &nbsp; so
-    // indentation is preserved when the WYSIWYG editor strips bare spaces.
-    const formatted = escaped
-        .replace(/\n/g, '<br>')
-        .replace(/(^|<br>)([ ]+)/g, (_, br, spaces) => br + '&nbsp;'.repeat(spaces.length));
-    return '<p>' + formatted + '</p>';
+    return '<pre style="font-family:inherit;font-size:inherit;white-space:pre-wrap;overflow-wrap:break-word;">'
+        + escaped + '</pre>';
 }
 
 /**
