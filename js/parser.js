@@ -1390,6 +1390,7 @@ function parseKingdomNewsLog(inputText, options) {
 
     for (const line of relevantLines) {
         const dateMatch = line.match(dateRegex);
+        if (!dateMatch) continue; // skip non-date lines (garbage in the middle of pasted content)
         if (dateMatch) {
             currentDate = dateMatch[0];
             if (!data.startDate) {
