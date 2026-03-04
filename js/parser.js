@@ -1522,7 +1522,7 @@ function parseKingdomNewsLog(inputText, options) {
                          /\d+ - [^()]+\(\d+:\d+\)/.test(attackLine));
                     if (isTruncated) {
                         data.truncatedLines.push(attackLine.trim());
-                    } else {
+                    } else if (!/^Edition\w+ YR\d+/.test(attackLine.trim())) {
                         logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
                     }
                 }
@@ -2816,8 +2816,10 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
     }
 
     // -- Unrecognised event (logged for future pattern addition)
-    // No pattern matched — log for analysis
-    logUnrecognizedLine(eventText, 'province-news');
+    // No pattern matched — log for analysis (Edition header lines are silently skipped)
+    if (!/^Edition\w+ YR\d+/.test(eventText)) {
+        logUnrecognizedLine(eventText, 'province-news');
+    }
 }
 
 /**
