@@ -913,7 +913,9 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Your message was successfully sent.") &&
                    !line.includes("Your reply was posted successfully.") &&
                    !line.includes("The power of Mana Well surges through your forces") &&
-                   !line.includes("Drawing from the ancient Mana Well")) {
+                   !line.includes("Drawing from the ancient Mana Well") &&
+                   !line.includes("The natural leyline energies surrounding your province") &&
+                   !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs');
         }
     }
