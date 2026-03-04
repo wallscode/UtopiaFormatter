@@ -16,6 +16,10 @@ const ERROR_MESSAGES = {
 // Number of in-game days that constitute one unique attack window
 const UNIQUE_WINDOW_DAYS = 6;
 
+// Utopia calendar dimensions used in dateToNumber
+const MONTHS_PER_YEAR = 7;   // Utopia has 7 months per year
+const DAYS_PER_MONTH  = 24;  // Each Utopia month has 24 days
+
 // Province Logs configuration
 const PROVINCE_LOGS_CONFIG = {
     SPELLS: [
@@ -259,6 +263,15 @@ function pluralize(n, word) {
 }
 
 /**
+ * Parses a game number string (which may contain commas) to an integer.
+ * @param {string} str - e.g. "1,234" or "500"
+ * @returns {number}
+ */
+function parseGameInt(str) {
+    return parseInt(str.replace(/,/g, ''), 10);
+}
+
+/**
  * Converts a Kingdom News date string to a numeric day value for window comparisons.
  * @param {string} dateStr - e.g. "February 1 of YR0"
  * @returns {number} - Day offset from start of YR0
@@ -271,7 +284,7 @@ function dateToNumber(dateStr) {
     const monthIdx = months.indexOf(parts[1]);
     const day = parseInt(parts[2]);
     const year = parseInt(parts[3]);
-    return year * 7 * 24 + monthIdx * 24 + (day - 1);
+    return year * MONTHS_PER_YEAR * DAYS_PER_MONTH + monthIdx * DAYS_PER_MONTH + (day - 1);
 }
 
 /**
@@ -590,7 +603,7 @@ function formatProvinceLogs(text) {
                     if (spell.impact) {
                         const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i"));
                         if (match) {
-                            impactValue = parseInt(match[1].replace(/,/g, ""));
+                            impactValue = parseGameInt(match[1]);
                             spellImpacts[spell.name] += impactValue;
                         }
                     }
@@ -612,7 +625,7 @@ function formatProvinceLogs(text) {
         if (line.includes("We have sent")) {
             const match = line.match(/We have sent\s+([\d,]+)\s+(soldiers|gold coins|bushels|runes|explore pool acres)/i);
             if (match) {
-                aidTotals[match[2].toLowerCase()] += parseInt(match[1].replace(/,/g, ""));
+                aidTotals[match[2].toLowerCase()] += parseGameInt(match[1]);
             }
         }
         
@@ -630,9 +643,9 @@ function formatProvinceLogs(text) {
                     if (line.includes(op.text) && line.includes("buildings")) {
                         thieveryCounts[op.name]++;
                         const match = line.match(/([\d,]+)\s+acres/i);
-                        if (match) thieveryImpacts[op.name] += parseInt(match[1].replace(/,/g, ""));
+                        if (match) thieveryImpacts[op.name] += parseGameInt(match[1]);
                         matchedOpName = op.name;
-                        if (match) { matchedImpact = parseInt(match[1].replace(/,/g, "")); matchedUnit = 'acres'; }
+                        if (match) { matchedImpact = parseGameInt(match[1]); matchedUnit = 'acres'; }
                     }
                 } else if (op.name === "Greater Arson" && op.unique_impact) {
                     if (line.includes(op.text) && !line.includes("buildings")) {
@@ -642,10 +655,10 @@ function formatProvinceLogs(text) {
                         const acresOfM = line.match(/burned down ([\d,]+) acres of ([^.(]+)/i);
                         const plainM = line.match(/burned down ([\d,]+) ([^.(]+)/i);
                         if (acresOfM) {
-                            gaAmount = parseInt(acresOfM[1].replace(/,/g, ''));
+                            gaAmount = parseGameInt(acresOfM[1]);
                             gaRawType = acresOfM[2].trim();
                         } else if (plainM) {
-                            gaAmount = parseInt(plainM[1].replace(/,/g, ''));
+                            gaAmount = parseGameInt(plainM[1]);
                             gaRawType = plainM[2].trim().replace(/\.$/, '').trim();
                         }
                         if (gaRawType) {
@@ -665,7 +678,7 @@ function formatProvinceLogs(text) {
                         const m = line.match(/We have converted ([\d,]+) (?:of the enemy's )?(.+?) (?:from the enemy|to our)/i);
                         if (m) {
                             thieveryCounts["Propaganda"]++;
-                            const troopCount = parseInt(m[1].replace(/,/g, ''));
+                            const troopCount = parseGameInt(m[1]);
                             const troopName = m[2].trim().toLowerCase();
                             const namedTroop = PROVINCE_LOGS_CONFIG.PROPAGANDA_TROOPS.find(p => p.toLowerCase() === troopName);
                             const key = namedTroop || 'elites';
@@ -689,7 +702,7 @@ function formatProvinceLogs(text) {
                     if (op.impact) {
                         const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(op.impact)}`, "i"));
                         if (match) {
-                            const val = parseInt(match[1].replace(/,/g, ""));
+                            const val = parseGameInt(match[1]);
                             thieveryImpacts[op.name] += val;
                             matchedImpact = val;
                             matchedUnit = op.impact === 'of them' ? 'peasants' : op.impact === 'day' ? 'days' : op.impact;
@@ -699,10 +712,10 @@ function formatProvinceLogs(text) {
             }
             // Also capture stolen resources from this line if present (Vault/Granary/Tower Robbery)
             if (!matchedOpName) {
-                if (line.includes('gold coins')) { matchedOpName = 'Vault Robbery'; const m = line.match(/([\d,]+)\s+gold coins/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'gold coins'; } }
-                else if (line.includes('bushels')) { matchedOpName = 'Granary Robbery'; const m = line.match(/([\d,]+)\s+bushels/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'bushels'; } }
-                else if (line.includes('runes') && !line.includes('begin casting')) { matchedOpName = 'Tower Robbery'; const m = line.match(/([\d,]+)\s+runes/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'runes'; } }
-                else if (line.includes('war horses')) { matchedOpName = 'Steal War Horses'; const m = line.match(/([\d,]+)\s+war horses/i); if (m) { matchedImpact = parseInt(m[1].replace(/,/g,'')); matchedUnit = 'war horses'; } }
+                if (line.includes('gold coins')) { matchedOpName = 'Vault Robbery'; const m = line.match(/([\d,]+)\s+gold coins/i); if (m) { matchedImpact = parseGameInt(m[1]); matchedUnit = 'gold coins'; } }
+                else if (line.includes('bushels')) { matchedOpName = 'Granary Robbery'; const m = line.match(/([\d,]+)\s+bushels/i); if (m) { matchedImpact = parseGameInt(m[1]); matchedUnit = 'bushels'; } }
+                else if (line.includes('runes') && !line.includes('begin casting')) { matchedOpName = 'Tower Robbery'; const m = line.match(/([\d,]+)\s+runes/i); if (m) { matchedImpact = parseGameInt(m[1]); matchedUnit = 'runes'; } }
+                else if (line.includes('war horses')) { matchedOpName = 'Steal War Horses'; const m = line.match(/([\d,]+)\s+war horses/i); if (m) { matchedImpact = parseGameInt(m[1]); matchedUnit = 'war horses'; } }
             }
             if (thiefTargetM) {
                 thiefOps.push({ target: thiefTargetM[1], type: matchedOpName, success: true, impact: matchedImpact, impactUnit: matchedUnit });
@@ -717,19 +730,19 @@ function formatProvinceLogs(text) {
         // Parse dragon donations
         if (line.includes("to the quest of launching a dragon")) {
             const goldMatch = line.match(/([\d,]+)\s+gold coins/i);
-            if (goldMatch) dragonGoldDonated += parseInt(goldMatch[1].replace(/,/g, ""));
+            if (goldMatch) dragonGoldDonated += parseGameInt(goldMatch[1]);
             
             const bushelsMatch = line.match(/([\d,]+)\s+bushels/i);
-            if (bushelsMatch) dragonBushelsDonated += parseInt(bushelsMatch[1].replace(/,/g, ""));
+            if (bushelsMatch) dragonBushelsDonated += parseGameInt(bushelsMatch[1]);
         }
         
         // Parse dragon troops/points
         if (line.includes("the dragon is weakened by") && line.includes("troops")) {
             const troopsMatch = line.match(/([\d,]+)\s+troops/i);
-            if (troopsMatch) dragonTroopsTotal += parseInt(troopsMatch[1].replace(/,/g, ""));
+            if (troopsMatch) dragonTroopsTotal += parseGameInt(troopsMatch[1]);
             
             const pointsMatch = line.match(/([\d,]+)\s+points/i);
-            if (pointsMatch) dragonPointsTotal += parseInt(pointsMatch[1].replace(/,/g, ""));
+            if (pointsMatch) dragonPointsTotal += parseGameInt(pointsMatch[1]);
         }
         
         // Parse construction orders (handles single and multi-building formats)
@@ -739,7 +752,7 @@ function formatProvinceLogs(text) {
             for (const seg of segments) {
                 const m = seg.match(/^([\d,]+)\s+(.+)$/);
                 if (!m) continue;
-                const count = parseInt(m[1].replace(/,/g, ''));
+                const count = parseGameInt(m[1]);
                 const buildingText = m[2].trim().toLowerCase();
                 for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
                     const bl = b.toLowerCase();
@@ -760,7 +773,7 @@ function formatProvinceLogs(text) {
             for (const seg of segments) {
                 const m = seg.match(/^([\d,]+)\s+(.+)$/);
                 if (!m) continue;
-                const count = parseInt(m[1].replace(/,/g, ''));
+                const count = parseGameInt(m[1]);
                 const buildingText = m[2].trim().toLowerCase();
                 for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
                     const bl = b.toLowerCase();
@@ -778,10 +791,10 @@ function formatProvinceLogs(text) {
         if (line.includes("Sources have indicated the mission was foiled")) {
             failedThieveryCount++;
             const lostMatch = line.match(/We lost ([\d,]+) thieves?/i);
-            if (lostMatch) thiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
+            if (lostMatch) thiervesLostCount += parseGameInt(lostMatch[1]);
             const failTargetM = line.match(/\(([^()]+\(\d+:\d+\)),\s*sent (\d+)\)/);
             if (failTargetM) {
-                const lost = lostMatch ? parseInt(lostMatch[1].replace(/,/g, "")) : 0;
+                const lost = lostMatch ? parseGameInt(lostMatch[1]) : 0;
                 thiefOps.push({ target: failTargetM[1], type: null, success: false, impact: lost || null, impactUnit: lost ? 'thieves lost' : null });
             }
         }
@@ -789,7 +802,7 @@ function formatProvinceLogs(text) {
         // Parse thieves lost in successful operations
         if (line.includes("We lost") && (line.includes("thieves in the operation") || line.includes("thief in the operation"))) {
             const lostMatch = line.match(/We lost ([\d,]+) thie(?:f|ves?) in the operation/i);
-            if (lostMatch) successThiervesLostCount += parseInt(lostMatch[1].replace(/,/g, ""));
+            if (lostMatch) successThiervesLostCount += parseGameInt(lostMatch[1]);
         }
 
         // Parse Steal War Horses thievery op
@@ -797,8 +810,8 @@ function formatProvinceLogs(text) {
             const m = line.match(/release ([\d,]+) horses.*bring back ([\d,]+)/i);
             if (m) {
                 stealHorsesOps++;
-                stealHorsesReleased += parseInt(m[1].replace(/,/g, ''));
-                stealHorsesBroughtBack += parseInt(m[2].replace(/,/g, ''));
+                stealHorsesReleased += parseGameInt(m[1]);
+                stealHorsesBroughtBack += parseGameInt(m[2]);
             }
         }
 
@@ -825,16 +838,16 @@ function formatProvinceLogs(text) {
             const acresMatch = line.match(/to explore ([\d,]+) acres/i);
             const soldiersMatch = line.match(/expedition of ([\d,]+) soldiers/i);
             const costMatch = line.match(/cost of ([\d,]+) gold coins/i);
-            if (acresMatch) exploreAcres += parseInt(acresMatch[1].replace(/,/g, ""));
-            if (soldiersMatch) exploreSoldiers += parseInt(soldiersMatch[1].replace(/,/g, ""));
-            if (costMatch) exploreCost += parseInt(costMatch[1].replace(/,/g, ""));
+            if (acresMatch) exploreAcres += parseGameInt(acresMatch[1]);
+            if (soldiersMatch) exploreSoldiers += parseGameInt(soldiersMatch[1]);
+            if (costMatch) exploreCost += parseGameInt(costMatch[1]);
         }
 
         // Parse military training orders
         if (line.includes("You have ordered that") && line.includes("be trained")) {
             const match = line.match(/You have ordered that ([\d,]+) (.+?) be trained/i);
             if (match) {
-                const count = parseInt(match[1].replace(/,/g, ""));
+                const count = parseGameInt(match[1]);
                 const unit = match[2].trim().toLowerCase();
                 trainingCounts[unit] = (trainingCounts[unit] || 0) + count;
             }
@@ -844,7 +857,7 @@ function formatProvinceLogs(text) {
         if (line.includes("You have ordered that") && line.includes("be released from duty")) {
             const match = line.match(/You have ordered that ([\d,]+) (.+?) be released from duty/i);
             if (match) {
-                const count = parseInt(match[1].replace(/,/g, ""));
+                const count = parseGameInt(match[1]);
                 const unit = match[2].trim().toLowerCase();
                 releaseCounts[unit] = (releaseCounts[unit] || 0) + count;
             }
@@ -854,7 +867,7 @@ function formatProvinceLogs(text) {
         if (line.includes("books allocated to")) {
             const match = line.match(/([\d,]+) books allocated to (\w+)/i);
             if (match) {
-                const count = parseInt(match[1].replace(/,/g, ""));
+                const count = parseGameInt(match[1]);
                 const science = match[2].toUpperCase();
                 if (PROVINCE_LOGS_CONFIG.SCIENCES.includes(science)) {
                     scienceCounts[science] += count;
@@ -866,16 +879,16 @@ function formatProvinceLogs(text) {
         if (line.includes("Our thieves have returned with") || line.includes("Our thieves were able to steal")) {
             if (line.includes("gold coins")) {
                 const match = line.match(/([\d,]+)\s+gold coins/i);
-                if (match) { goldCoinsStolen += parseInt(match[1].replace(/,/g, "")); vaultRobberyCount++; }
+                if (match) { goldCoinsStolen += parseGameInt(match[1]); vaultRobberyCount++; }
             } else if (line.includes("bushels")) {
                 const match = line.match(/([\d,]+)\s+bushels/i);
-                if (match) { bushelsStolen += parseInt(match[1].replace(/,/g, "")); granaryRobberyCount++; }
+                if (match) { bushelsStolen += parseGameInt(match[1]); granaryRobberyCount++; }
             } else if (line.includes("runes")) {
                 const match = line.match(/([\d,]+)\s+runes/i);
-                if (match) { runesStolen += parseInt(match[1].replace(/,/g, "")); towerRobberyCount++; }
+                if (match) { runesStolen += parseGameInt(match[1]); towerRobberyCount++; }
             } else if (line.includes("war horses")) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
-                if (match) warHorsesStolen += parseInt(match[1].replace(/,/g, ""));
+                if (match) warHorsesStolen += parseGameInt(match[1]);
             }
         } else if (!line.includes("begin casting") &&
                    !line.includes("We have sent") &&
@@ -1711,7 +1724,7 @@ function parseAttackLine(line, data, dateStr) {
         attackType = 'learn';
         const booksMatch = line.match(/([\d,]+)\s+books/);
         if (booksMatch) {
-            acres = parseInt(booksMatch[1].replace(/,/g, ''));
+            acres = parseGameInt(booksMatch[1]);
         }
         isActualAttack = false; // Learn attacks steal books, not land
     } else if (line.includes('attempted to invade') || line.includes('attempted an invasion')) {
@@ -1809,7 +1822,13 @@ function parseAttackLine(line, data, dateStr) {
 }
 
 /**
- * Parses special lines (dragons, rituals, etc.)
+ * Attempts to parse a special event line (dragons, rituals, ceasefire, etc.)
+ * that does not match the standard attack format.
+ * Mutates `provinces` and `kingdoms` via closure when a match is found.
+ * @param {string} line - A single cleaned event line (date prefix already stripped)
+ * @param {string} currentDate - The current date string (e.g. "February 1 of YR0")
+ * @param {string} ownKingdom - Own kingdom ID (e.g. "5:1")
+ * @returns {boolean} true if the line was recognised and handled; false otherwise
  */
 function parseSpecialLine(line, data) {
     const own = data.ownKingdomId;
@@ -1991,7 +2010,14 @@ function parseSpecialLine(line, data) {
 }
 
 /**
- * Updates highlights based on attack data
+ * Updates the highlights record for the best/notable attacks in the log.
+ * Only considers attacks where the attacker or defender belongs to the own kingdom,
+ * so highlights reflect the own-kingdom perspective (biggest land gain, most bounces, etc.).
+ * Mutates the `highlights` object in place.
+ * @param {Object} highlights - Accumulated highlights object to update
+ * @param {Object} attack - Parsed attack record from parseAttackLine
+ * @param {boolean} isAttackerOwn - True if attacker is in own kingdom
+ * @param {boolean} isDefenderOwn - True if defender is in own kingdom
  */
 function updateHighlights(data, attackType, attacker, defender, acres, people, isAttackerOwn, isDefenderOwn) {
     if (attackType === 'tradMarch' && acres > 0) {
@@ -2330,47 +2356,47 @@ function pnMonthYear(dateStr) {
 /**
  * Parses a single Province News event line (date prefix already stripped).
  * Mutates the data object in-place.
- * @param {string} ev - Event text (date prefix removed)
+ * @param {string} eventText - Event text (date prefix removed)
  * @param {string} dateStr - Original date string e.g. "February 1 of YR1"
  * @param {Object} data - Accumulator object
  */
-function parseProvinceNewsLine(ev, dateStr, data) {
+function parseProvinceNewsLine(eventText, dateStr, data) {
     // Strip Faery leyline prefix that can prepend spell attempt lines
     const faeryPrefix = "Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. ";
-    if (ev.startsWith(faeryPrefix)) ev = ev.slice(faeryPrefix.length);
+    if (eventText.startsWith(faeryPrefix)) eventText = eventText.slice(faeryPrefix.length);
 
-    let m;
-
+    // -- Land & population events
     // Monthly Land
-    m = ev.match(/Our people decided to explore new territories and have settled (\d+) acres of new land\./);
-    if (m) {
-        data.monthlyLand.push({ month: pnMonthYear(dateStr), acres: parseInt(m[1]) });
+    const landM = eventText.match(/Our people decided to explore new territories and have settled (\d+) acres of new land\./);
+    if (landM) {
+        data.monthlyLand.push({ month: pnMonthYear(dateStr), acres: parseInt(landM[1]) });
         return;
     }
 
     // Monthly Income
-    m = ev.match(/generate ([\d,]+) gold coins\. Additionally, your scholars .+ contributing ([\d,]+) books/);
-    if (m) {
+    const incomeM = eventText.match(/generate ([\d,]+) gold coins\. Additionally, your scholars .+ contributing ([\d,]+) books/);
+    if (incomeM) {
         data.monthlyIncome.push({
             month: pnMonthYear(dateStr),
-            gold: parseInt(m[1].replace(/,/g, '')),
-            books: parseInt(m[2].replace(/,/g, ''))
+            gold: parseGameInt(incomeM[1]),
+            books: parseGameInt(incomeM[2])
         });
         return;
     }
 
     // New Scientist
-    m = ev.match(/A new scientist, Recruit (.+?) \((.+?)\), has emerged/);
-    if (m) {
-        data.scientists.push({ name: m[1], field: m[2] });
+    const scientistM = eventText.match(/A new scientist, Recruit (.+?) \((.+?)\), has emerged/);
+    if (scientistM) {
+        data.scientists.push({ name: scientistM[1], field: scientistM[2] });
         return;
     }
 
+    // -- Aid and resources received
     // Aid Received — Runes
-    m = ev.match(/We have received a shipment of ([\d,]+) runes from (.+?) \((.+?)\)\./);
-    if (m) {
-        const amount = parseInt(m[1].replace(/,/g, ''));
-        const sender = `${m[2]} (${m[3]})`;
+    const aidRunesM = eventText.match(/We have received a shipment of ([\d,]+) runes from (.+?) \((.+?)\)\./);
+    if (aidRunesM) {
+        const amount = parseGameInt(aidRunesM[1]);
+        const sender = `${aidRunesM[2]} (${aidRunesM[3]})`;
         data.aidByResource.runes.total += amount;
         data.aidByResource.runes.shipments++;
         data.aidByResource.runes.senders[sender] = (data.aidByResource.runes.senders[sender] || 0) + amount;
@@ -2378,10 +2404,10 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     }
 
     // Aid Received — Gold coins
-    m = ev.match(/We have received a shipment of ([\d,]+) gold coins from (.+?) \((.+?)\)\./);
-    if (m) {
-        const amount = parseInt(m[1].replace(/,/g, ''));
-        const sender = `${m[2]} (${m[3]})`;
+    const aidGoldM = eventText.match(/We have received a shipment of ([\d,]+) gold coins from (.+?) \((.+?)\)\./);
+    if (aidGoldM) {
+        const amount = parseGameInt(aidGoldM[1]);
+        const sender = `${aidGoldM[2]} (${aidGoldM[3]})`;
         data.aidByResource.gold.total += amount;
         data.aidByResource.gold.shipments++;
         data.aidByResource.gold.senders[sender] = (data.aidByResource.gold.senders[sender] || 0) + amount;
@@ -2389,10 +2415,10 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     }
 
     // Aid Received — Bushels
-    m = ev.match(/We have received a shipment of ([\d,]+) bushels from (.+?) \((.+?)\)\./);
-    if (m) {
-        const amount = parseInt(m[1].replace(/,/g, ''));
-        const sender = `${m[2]} (${m[3]})`;
+    const aidBushelsM = eventText.match(/We have received a shipment of ([\d,]+) bushels from (.+?) \((.+?)\)\./);
+    if (aidBushelsM) {
+        const amount = parseGameInt(aidBushelsM[1]);
+        const sender = `${aidBushelsM[2]} (${aidBushelsM[3]})`;
         data.aidByResource.bushels.total += amount;
         data.aidByResource.bushels.shipments++;
         data.aidByResource.bushels.senders[sender] = (data.aidByResource.bushels.senders[sender] || 0) + amount;
@@ -2400,11 +2426,11 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     }
 
     // Aid Received — Explore pool acres
-    m = ev.match(/We have received a shipment of ([\d,]+) explore pool acres \((\d+) acres lost!\) from (.+?) \((.+?)\)\./);
-    if (m) {
-        const gross = parseInt(m[1].replace(/,/g, ''));
-        const lost = parseInt(m[2]);
-        const sender = `${m[3]} (${m[4]})`;
+    const aidExploreM = eventText.match(/We have received a shipment of ([\d,]+) explore pool acres \((\d+) acres lost!\) from (.+?) \((.+?)\)\./);
+    if (aidExploreM) {
+        const gross = parseGameInt(aidExploreM[1]);
+        const lost = parseInt(aidExploreM[2]);
+        const sender = `${aidExploreM[3]} (${aidExploreM[4]})`;
         data.aidByResource.exploreAcres.total += gross;
         data.aidByResource.exploreAcres.lost += lost;
         data.aidByResource.exploreAcres.shipments++;
@@ -2413,10 +2439,10 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     }
 
     // Aid Received — Soldiers
-    m = ev.match(/We have received a shipment of ([\d,]+) soldiers from (.+?) \((.+?)\)\./);
-    if (m) {
-        const amount = parseInt(m[1].replace(/,/g, ''));
-        const sender = `${m[2]} (${m[3]})`;
+    const aidSoldiersM = eventText.match(/We have received a shipment of ([\d,]+) soldiers from (.+?) \((.+?)\)\./);
+    if (aidSoldiersM) {
+        const amount = parseGameInt(aidSoldiersM[1]);
+        const sender = `${aidSoldiersM[2]} (${aidSoldiersM[3]})`;
         data.aidByResource.soldiers.total += amount;
         data.aidByResource.soldiers.shipments++;
         data.aidByResource.soldiers.senders[sender] = (data.aidByResource.soldiers.senders[sender] || 0) + amount;
@@ -2424,137 +2450,139 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     }
 
     // Resources Stolen — Runes
-    m = ev.match(/([\d,]+) runes of our runes were stolen!/);
-    if (m) {
-        data.stolen.runes += parseInt(m[1].replace(/,/g, ''));
+    const stolenRunesM = eventText.match(/([\d,]+) runes of our runes were stolen!/);
+    if (stolenRunesM) {
+        data.stolen.runes += parseGameInt(stolenRunesM[1]);
         return;
     }
 
     // Resources Stolen — Gold coins
-    m = ev.match(/([\d,]+) gold coins were stolen from our coffers!/);
-    if (m) {
-        data.stolen.gold += parseInt(m[1].replace(/,/g, ''));
+    const stolenGoldM = eventText.match(/([\d,]+) gold coins were stolen from our coffers!/);
+    if (stolenGoldM) {
+        data.stolen.gold += parseGameInt(stolenGoldM[1]);
         return;
     }
 
     // Resources Stolen — Bushels (Uto-9row — pattern inferred; confirm from real log data)
-    m = ev.match(/([\d,]+) bushels.*stolen/i);
-    if (m) {
-        data.stolen.bushels += parseInt(m[1].replace(/,/g, ''));
+    const stolenBushelsM = eventText.match(/([\d,]+) bushels.*stolen/i);
+    if (stolenBushelsM) {
+        data.stolen.bushels += parseGameInt(stolenBushelsM[1]);
         return;
     }
 
     // Resources Stolen — War Horses (Uto-9row — TODO: log text unknown, confirm from real data)
-    // m = ev.match(/TODO war horses stolen pattern/);
-    // if (m) { data.stolen.warHorses += ...; return; }
+    // const stolenHorsesM = eventText.match(/TODO war horses stolen pattern/);
+    // if (stolenHorsesM) { data.stolen.warHorses += ...; return; }
 
     // Shadowlight — Attacker identified (check before thievery interception)
-    m = ev.match(/Shadowlight has revealed that (.+?) \((.+?)\) was responsible for this attack\./);
-    if (m) {
-        data.shadowlightAttackers.push(`${m[1]} (${m[2]})`);
+    const shadowAttackerM = eventText.match(/Shadowlight has revealed that (.+?) \((.+?)\) was responsible for this attack\./);
+    if (shadowAttackerM) {
+        data.shadowlightAttackers.push(`${shadowAttackerM[1]} (${shadowAttackerM[2]})`);
         return;
     }
 
     // Thievery — Shadowlight intercepted (prevented)
-    m = ev.match(/Shadowlight has revealed thieves from (.+?) \((.+?)\) causing trouble and prevented/);
-    if (m) {
+    const shadowInterceptM = eventText.match(/Shadowlight has revealed thieves from (.+?) \((.+?)\) causing trouble and prevented/);
+    if (shadowInterceptM) {
         data.thieveryIntercepted++;
-        const source = `${m[1]} (${m[2]})`;
+        const source = `${shadowInterceptM[1]} (${shadowInterceptM[2]})`;
         data.interceptedBySource[source] = (data.interceptedBySource[source] || 0) + 1;
         return;
     }
 
     // Thievery — Known source
-    m = ev.match(/We have found thieves from (.+?) \((.+?)\) causing trouble within our lands!/);
-    if (m) {
-        const source = `${m[1]} (${m[2]})`;
+    const thiefKnownM = eventText.match(/We have found thieves from (.+?) \((.+?)\) causing trouble within our lands!/);
+    if (thiefKnownM) {
+        const source = `${thiefKnownM[1]} (${thiefKnownM[2]})`;
         data.thieveryDetected++;
         data.thieveryBySource[source] = (data.thieveryBySource[source] || 0) + 1;
         return;
     }
 
     // Thievery — Unknown source
-    if (ev.indexOf('We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.') !== -1) {
+    if (eventText.indexOf('We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.') !== -1) {
         data.thieveryDetected++;
         data.thieveryUnknown++;
         return;
     }
 
     // Spell Attempts
-    m = ev.match(/Our mages noticed a possible spell attempt by (.+?) \((.+?)\) causing trouble on our lands!/);
-    if (m) {
-        const source = `${m[1]} (${m[2]})`;
+    const spellAttemptM = eventText.match(/Our mages noticed a possible spell attempt by (.+?) \((.+?)\) causing trouble on our lands!/);
+    if (spellAttemptM) {
+        const source = `${spellAttemptM[1]} (${spellAttemptM[2]})`;
         data.spellAttempts++;
         data.spellsBySource[source] = (data.spellsBySource[source] || 0) + 1;
         return;
     }
 
+    // -- Casualties and combat events
     // Attacks Suffered
-    m = ev.match(/Forces from (.+) \((\d+:\d+)\) came through and ravaged our lands! They (captured ([\d,]+) acres|looted ([\d,]+) books)/);
-    if (m) {
+    const attackM = eventText.match(/Forces from (.+) \((\d+:\d+)\) came through and ravaged our lands! They (captured ([\d,]+) acres|looted ([\d,]+) books)/);
+    if (attackM) {
         data.attacks.push({
-            attacker: m[1].trim(),
-            kingdom: m[2],
-            acresCaptured: m[4] ? parseInt(m[4].replace(/,/g, '')) : 0,
-            booksLooted: m[5] ? parseInt(m[5].replace(/,/g, '')) : 0
+            attacker: attackM[1].trim(),
+            kingdom: attackM[2],
+            acresCaptured: attackM[4] ? parseGameInt(attackM[4]) : 0,
+            booksLooted: attackM[5] ? parseGameInt(attackM[5]) : 0
         });
         return;
     }
 
     // Meteor shower — damage ticks (count days of damage and casualties)
-    m = ev.match(/Meteors rain across the lands and kill (.+)!/);
-    if (m) {
-        const cs = m[1];
-        const peas = cs.match(/(\d+) peasants?/);
-        const sol  = cs.match(/(\d+) soldiers?/);
-        const mags = cs.match(/(\d+) Magicians?/);
-        const bsts = cs.match(/(\d+) Beastmasters?/);
-        if (peas) data.meteorCasualties.peasants    += parseInt(peas[1]);
-        if (sol)  data.meteorCasualties.soldiers    += parseInt(sol[1]);
-        if (mags) data.meteorCasualties.Magicians   += parseInt(mags[1]);
-        if (bsts) data.meteorCasualties.Beastmasters += parseInt(bsts[1]);
+    const meteorM = eventText.match(/Meteors rain across the lands and kill (.+)!/);
+    if (meteorM) {
+        const casualtyStr = meteorM[1];
+        const peasantsM = casualtyStr.match(/(\d+) peasants?/);
+        const soldiersM  = casualtyStr.match(/(\d+) soldiers?/);
+        const magiciansM = casualtyStr.match(/(\d+) Magicians?/);
+        const beastsM = casualtyStr.match(/(\d+) Beastmasters?/);
+        if (peasantsM) data.meteorCasualties.peasants    += parseInt(peasantsM[1]);
+        if (soldiersM)  data.meteorCasualties.soldiers    += parseInt(soldiersM[1]);
+        if (magiciansM) data.meteorCasualties.Magicians   += parseInt(magiciansM[1]);
+        if (beastsM) data.meteorCasualties.Beastmasters += parseInt(beastsM[1]);
         data.meteorDays++;
         return;
     }
 
     // Meteor shower — start announcement (no data to extract beyond noting it)
-    if (ev.indexOf('Meteors rain across our lands') !== -1) return;
+    if (eventText.indexOf('Meteors rain across our lands') !== -1) return;
 
+    // -- Incoming spells and thievery ops
     // Rioting
-    m = ev.match(/Rioting has started amongst our people\. Our tax collection efforts will be hampered for (\d+) days!/);
-    if (m) {
+    const riotM = eventText.match(/Rioting has started amongst our people\. Our tax collection efforts will be hampered for (\d+) days!/);
+    if (riotM) {
         data.rioting.count++;
-        data.rioting.totalDays += parseInt(m[1]);
+        data.rioting.totalDays += parseInt(riotM[1]);
         return;
     }
 
     // Pitfalls
-    m = ev.match(/Pitfalls are haunting our lands for (\d+) days/);
-    if (m) {
+    const pitfallM = eventText.match(/Pitfalls are haunting our lands for (\d+) days/);
+    if (pitfallM) {
         data.pitfalls.count++;
-        data.pitfalls.totalDays += parseInt(m[1]);
+        data.pitfalls.totalDays += parseInt(pitfallM[1]);
         return;
     }
 
     // Mana disruption — lasting effect
-    m = ev.match(/Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for (\d+) days?!/);
-    if (m) {
+    const manaDisM = eventText.match(/Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for (\d+) days?!/);
+    if (manaDisM) {
         data.manaDis.count++;
-        data.manaDis.totalDays += parseInt(m[1]);
+        data.manaDis.totalDays += parseInt(manaDisM[1]);
         return;
     }
 
     // Mana disruption — instant recovery (0 days)
-    if (ev.indexOf("Our Wizards' ability to regain their mana has been disrupted! Fortunately") !== -1) {
+    if (eventText.indexOf("Our Wizards' ability to regain their mana has been disrupted! Fortunately") !== -1) {
         data.manaDis.count++;
         return;
     }
 
     // Greed (Soldier upkeep demands)
-    m = ev.match(/Enemies have convinced our soldiers to demand more money for upkeep for (\d+) days\./);
-    if (m) {
+    const greedM = eventText.match(/Enemies have convinced our soldiers to demand more money for upkeep for (\d+) days\./);
+    if (greedM) {
         data.greed.count++;
-        data.greed.totalDays += parseInt(m[1]);
+        data.greed.totalDays += parseInt(greedM[1]);
         return;
     }
 
@@ -2563,128 +2591,130 @@ function parseProvinceNewsLine(ev, dateStr, data) {
     // victim-perspective wording. Update the regex once real Province News data is seen.
 
     // Blizzard ("Blizzards will beset the works of [province] for N days!" → victim view)
-    m = ev.match(/[Bb]lizzard.{0,80}?(\d+) days?/);
-    if (m) { data.blizzard.count++; data.blizzard.totalDays += parseInt(m[1]); return; }
+    const blizzardM = eventText.match(/[Bb]lizzard.{0,80}?(\d+) days?/);
+    if (blizzardM) { data.blizzard.count++; data.blizzard.totalDays += parseInt(blizzardM[1]); return; }
 
     // Chastity ("womenfolk have taken a vow of chastity for N days!")
-    m = ev.match(/vow of chastity for (\d+) days?/);
-    if (m) { data.chastity.count++; data.chastity.totalDays += parseInt(m[1]); return; }
+    const chastityM = eventText.match(/vow of chastity for (\d+) days?/);
+    if (chastityM) { data.chastity.count++; data.chastity.totalDays += parseInt(chastityM[1]); return; }
 
     // Droughts ("A drought will reign over our lands for N days!")
-    m = ev.match(/[Dd]rought.{0,80}?(\d+) days?/);
-    if (m) { data.droughts.count++; data.droughts.totalDays += parseInt(m[1]); return; }
+    const droughtsM = eventText.match(/[Dd]rought.{0,80}?(\d+) days?/);
+    if (droughtsM) { data.droughts.count++; data.droughts.totalDays += parseInt(droughtsM[1]); return; }
 
     // Explosions ("Explosions will rock our aid shipments for N days!")
-    m = ev.match(/[Ee]xplosion.{0,80}?(\d+) days?/);
-    if (m) { data.explosions.count++; data.explosions.totalDays += parseInt(m[1]); return; }
+    const explosionsM = eventText.match(/[Ee]xplosion.{0,80}?(\d+) days?/);
+    if (explosionsM) { data.explosions.count++; data.explosions.totalDays += parseInt(explosionsM[1]); return; }
 
     // Expose Thieves ("Enemies have exposed our thieves for N days!" or similar)
-    m = ev.match(/[Ee]xpos(?:e|ed).{0,80}?(?:thieves?|stealth).{0,80}?(\d+) days?/);
-    if (m) { data.exposeThieves.count++; data.exposeThieves.totalDays += parseInt(m[1]); return; }
+    const exposeThievesM = eventText.match(/[Ee]xpos(?:e|ed).{0,80}?(?:thieves?|stealth).{0,80}?(\d+) days?/);
+    if (exposeThievesM) { data.exposeThieves.count++; data.exposeThieves.totalDays += parseInt(exposeThievesM[1]); return; }
 
     // Gluttony ("The gluttony of our people has increased for N days!")
-    m = ev.match(/[Gg]luttony.{0,80}?(\d+) days?/);
-    if (m) { data.gluttony.count++; data.gluttony.totalDays += parseInt(m[1]); return; }
+    const gluttonyM = eventText.match(/[Gg]luttony.{0,80}?(\d+) days?/);
+    if (gluttonyM) { data.gluttony.count++; data.gluttony.totalDays += parseInt(gluttonyM[1]); return; }
 
     // Magic Ward ("A Magic Ward has been placed on our lands for N days!" or similar)
-    m = ev.match(/[Mm]agic [Ww]ard.{0,80}?(\d+) days?/);
-    if (m) { data.magicWard.count++; data.magicWard.totalDays += parseInt(m[1]); return; }
+    const magicWardM = eventText.match(/[Mm]agic [Ww]ard.{0,80}?(\d+) days?/);
+    if (magicWardM) { data.magicWard.count++; data.magicWard.totalDays += parseInt(magicWardM[1]); return; }
 
     // Nightfall (wiki: "8 ticks"; Province News may say days or ticks)
-    m = ev.match(/[Nn]ightfall.{0,80}?(\d+) (?:days?|ticks?)/);
-    if (m) { data.nightfall.count++; data.nightfall.totalDays += parseInt(m[1]); return; }
+    const nightfallM = eventText.match(/[Nn]ightfall.{0,80}?(\d+) (?:days?|ticks?)/);
+    if (nightfallM) { data.nightfall.count++; data.nightfall.totalDays += parseInt(nightfallM[1]); return; }
 
     // Sloth ("Slothful behavior has gripped our province for N days!" or similar)
-    m = ev.match(/[Ss]loth.{0,80}?(\d+) days?/);
-    if (m) { data.sloth.count++; data.sloth.totalDays += parseInt(m[1]); return; }
+    const slothM = eventText.match(/[Ss]loth.{0,80}?(\d+) days?/);
+    if (slothM) { data.sloth.count++; data.sloth.totalDays += parseInt(slothM[1]); return; }
 
     // Storms ("Storms will ravage our lands for N days!")
-    m = ev.match(/[Ss]torms?.{0,80}?(\d+) days?/);
-    if (m) { data.storms.count++; data.storms.totalDays += parseInt(m[1]); return; }
+    const stormsM = eventText.match(/[Ss]torms?.{0,80}?(\d+) days?/);
+    if (stormsM) { data.storms.count++; data.storms.totalDays += parseInt(stormsM[1]); return; }
 
     // Troop desertions — wizards
-    m = ev.match(/(\d+) wizards of our wizards abandoned us hoping for a better life!/);
-    if (m) {
-        const count = parseInt(m[1]);
+    const desertionWizardsM = eventText.match(/(\d+) wizards of our wizards abandoned us hoping for a better life!/);
+    if (desertionWizardsM) {
+        const count = parseInt(desertionWizardsM[1]);
         data.desertions.total += count;
         data.desertions.byType['wizards'] = (data.desertions.byType['wizards'] || 0) + count;
         return;
     }
 
     // Troop desertions — specialist troops
-    m = ev.match(/(\d+) of our specialist troops abandoned us hoping for a better life!/);
-    if (m) {
-        const count = parseInt(m[1]);
+    const desertionSpecialistM = eventText.match(/(\d+) of our specialist troops abandoned us hoping for a better life!/);
+    if (desertionSpecialistM) {
+        const count = parseInt(desertionSpecialistM[1]);
         data.desertions.total += count;
         data.desertions.byType['specialist troops'] = (data.desertions.byType['specialist troops'] || 0) + count;
         return;
     }
 
     // Troop desertions — named type (e.g. "10 Beastmasters abandoned us...")
-    m = ev.match(/^(\d+) (\w+) abandoned us hoping for a better life!/);
-    if (m) {
-        const count = parseInt(m[1]);
-        const type = m[2];
+    const desertionNamedM = eventText.match(/^(\d+) (\w+) abandoned us hoping for a better life!/);
+    if (desertionNamedM) {
+        const count = parseInt(desertionNamedM[1]);
+        const type = desertionNamedM[2];
         data.desertions.total += count;
         data.desertions.byType[type] = (data.desertions.byType[type] || 0) + count;
         return;
     }
 
     // Turncoat general discovered
-    if (ev.indexOf('We have discovered a turncoat general leading our military. He has been executed for treason!') !== -1) {
+    if (eventText.indexOf('We have discovered a turncoat general leading our military. He has been executed for treason!') !== -1) {
         data.turncoatGenerals++;
         return;
     }
 
     // Failed propaganda
-    if (ev.indexOf('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.') !== -1) {
+    if (eventText.indexOf('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.') !== -1) {
         data.failedPropaganda++;
         return;
     }
 
     // War outcome — land penalty
-    m = ev.match(/as a result of our failed war .+ We have given up (\d+) acres .+ (\d+) acres has gone to our enemies .+ and (\d+) acres for our Kingdom/);
-    if (m) {
+    const warLandM = eventText.match(/as a result of our failed war .+ We have given up (\d+) acres .+ (\d+) acres has gone to our enemies .+ and (\d+) acres for our Kingdom/);
+    if (warLandM) {
         data.warLandPenalty = {
-            total: parseInt(m[1]),
-            toEnemies: parseInt(m[2]),
-            redistributed: parseInt(m[3])
+            total: parseInt(warLandM[1]),
+            toEnemies: parseInt(warLandM[2]),
+            redistributed: parseInt(warLandM[3])
         };
         return;
     }
 
     // War outcome — resource bonus
-    m = ev.match(/as a result of our war .+ We have received ([\d,]+) free building credits .+ We have received ([\d,]+) free specialist credits .+ We have received ([\d,]+) science books/);
-    if (m) {
+    const warResourceM = eventText.match(/as a result of our war .+ We have received ([\d,]+) free building credits .+ We have received ([\d,]+) free specialist credits .+ We have received ([\d,]+) science books/);
+    if (warResourceM) {
         data.warResourceBonus = {
-            buildingCredits: parseInt(m[1].replace(/,/g, '')),
-            specialistCredits: parseInt(m[2].replace(/,/g, '')),
-            scienceBooks: parseInt(m[3].replace(/,/g, ''))
+            buildingCredits: parseGameInt(warResourceM[1]),
+            specialistCredits: parseGameInt(warResourceM[2]),
+            scienceBooks: parseGameInt(warResourceM[3])
         };
         return;
     }
 
+    // -- Daily login bonus
     // Daily login bonus (Uto-akkk)
-    if (ev.startsWith('Your people appreciate')) {
-        if (ev.includes('extreme')) {
+    if (eventText.startsWith('Your people appreciate')) {
+        if (eventText.includes('extreme')) {
             data.loginBonus.extreme++;
-        } else if (ev.includes('impressive')) {
+        } else if (eventText.includes('impressive')) {
             data.loginBonus.impressive++;
         } else {
             data.loginBonus.unknown++;
-            logUnrecognizedLine(ev, 'province-news'); // capture 1-hr tier text when seen
+            logUnrecognizedLine(eventText, 'province-news'); // capture 1-hr tier text when seen
         }
-        const acresM = ev.match(/([\d,]+)\s+acres/i);
-        if (acresM) data.loginBonus.acres += parseInt(acresM[1].replace(/,/g, ''));
-        const goldM = ev.match(/([\d,]+)\s+gold coins/i);
-        if (goldM) data.loginBonus.gold += parseInt(goldM[1].replace(/,/g, ''));
-        const booksM = ev.match(/([\d,]+)\s+(?:science )?books/i);
-        if (booksM) data.loginBonus.books += parseInt(booksM[1].replace(/,/g, ''));
+        const acresM = eventText.match(/([\d,]+)\s+acres/i);
+        if (acresM) data.loginBonus.acres += parseGameInt(acresM[1]);
+        const goldM = eventText.match(/([\d,]+)\s+gold coins/i);
+        if (goldM) data.loginBonus.gold += parseGameInt(goldM[1]);
+        const booksM = eventText.match(/([\d,]+)\s+(?:science )?books/i);
+        if (booksM) data.loginBonus.books += parseGameInt(booksM[1]);
         return;
     }
 
+    // -- Starvation events
     // Starvation — "Our people are starving! We have lost N peasants, N Magicians, N Beastmasters and N thieves."
-    if (ev.startsWith('Our people are starving!')) {
+    if (eventText.startsWith('Our people are starving!')) {
         data.starvation.count++;
         const types = [
             { re: /(\d+) peasants?/,      key: 'peasants' },
@@ -2695,7 +2725,7 @@ function parseProvinceNewsLine(ev, dateStr, data) {
             { re: /(\d+) Elf Lords?/,     key: 'Elf Lords' },
         ];
         for (const { re, key } of types) {
-            const tm = ev.match(re);
+            const tm = eventText.match(re);
             if (tm) {
                 const n = parseInt(tm[1]);
                 data.starvation.total += n;
@@ -2705,8 +2735,9 @@ function parseProvinceNewsLine(ev, dateStr, data) {
         return;
     }
 
+    // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis
-    logUnrecognizedLine(ev, 'province-news');
+    logUnrecognizedLine(eventText, 'province-news');
 }
 
 /**
@@ -2723,6 +2754,7 @@ function formatProvinceNewsOutput(data) {
         out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);
     }
 
+    // -- Land summary: daily login bonus, monthly land grants, scientists
     // Daily Login Bonus — monthly grants + "Your people appreciate" events (Uto-akkk, Uto-l42y)
     const totalLoginAcres = data.monthlyLand.reduce((s, e) => s + e.acres, 0) + data.loginBonus.acres;
     const totalLoginGold  = data.monthlyIncome.reduce((s, e) => s + e.gold, 0) + data.loginBonus.gold;
@@ -2756,6 +2788,7 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    // -- Aid received summary
     // Aid Received
     const ar = data.aidByResource;
     const hasAid = ar.gold.total > 0 || ar.bushels.total > 0 || ar.runes.total > 0 ||
@@ -2770,6 +2803,7 @@ function formatProvinceNewsOutput(data) {
         if (ar.exploreAcres.total > 0) out.push(`  ${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
     }
 
+    // -- Thievery impacts: stolen resources, detected/intercepted ops
     // Thievery Impacts — includes stolen resources (Uto-hb3m), source tracking, and op impacts
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
         data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
@@ -2805,6 +2839,7 @@ function formatProvinceNewsOutput(data) {
         if (data.turncoatGenerals > 0)  out.push(`  Bribe General: ${data.turncoatGenerals}`);
     }
 
+    // -- Spell impacts: attempts, meteor shower, and duration spells
     // Spell Impacts — spell attempts + magical hazards merged (Uto-l42y, Uto-ccjb, Uto-ig81, Uto-v63f)
     const durationSpells = [
         data.pitfalls, data.greed,
@@ -2844,6 +2879,7 @@ function formatProvinceNewsOutput(data) {
         if (data.storms.count > 0)        out.push(`  Storms: ${pluralize(data.storms.count, 'occurrence')}, ${data.storms.totalDays} days`);
     }
 
+    // -- Shadowlight attacker identification
     // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
     if (data.shadowlightAttackers.length > 0) {
         out.push('');
@@ -2851,6 +2887,7 @@ function formatProvinceNewsOutput(data) {
         for (const a of data.shadowlightAttackers) out.push(`  ${a}`);
     }
 
+    // -- Attacks suffered by this province
     // Attacks Suffered
     if (data.attacks.length > 0) {
         const totalAcres = data.attacks.reduce((s, a) => s + a.acresCaptured, 0);
@@ -2869,6 +2906,7 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    // -- Starvation losses
     // Starvation
     if (data.starvation.count > 0) {
         out.push('');
@@ -2878,6 +2916,7 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    // -- War outcome bonuses and penalties
     // War Outcomes
     if (data.warLandPenalty || data.warResourceBonus) {
         out.push('');
@@ -2959,7 +2998,7 @@ function parseProvinceNews(text, options = {}) {
         starvation:           { count: 0, total: 0, byType: {} }
     };
 
-    const dateLineRe = /^(\w+ \d+ of YR\d+)\t(.+)$/;
+    const dateLineRe = /^((?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+)\t(.+)$/;
 
     for (const line of cleaned.split('\n')) {
         const match = line.match(dateLineRe);
