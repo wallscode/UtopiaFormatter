@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'self';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Utopia Formatter - Text Formatter for Utopia Forum</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -83,8 +85,8 @@
         <p class="footer-issues">Found a bug or want a feature? <a href="https://github.com/wallscode/UtopiaFormatter/issues" target="_blank" rel="noopener">Submit an issue on GitHub<span class="visually-hidden"> (opens in new tab)</span></a></p>
     </footer>
 
-    <script>window.APP_CONFIG = window.APP_CONFIG || { logEndpoint: null };</script>
-    <script src="js/config.js" onerror="/* config.js not present — logging disabled */"></script>
+    <script src="js/app-config-default.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/parser.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>

@@ -91,11 +91,16 @@ function showErrorToUser(error) {
         max-width: 300px;
         z-index: 1000;
     `;
-    errorDiv.innerHTML = `
-        <strong>NewsParser Error</strong><br>
-        ${error.message}<br>
-        <small>Please refresh the page and try again.</small>
-    `;
+    // Build the error message using DOM APIs to avoid XSS via error.message
+    const title = document.createElement('strong');
+    title.textContent = 'NewsParser Error';
+    const msg = document.createTextNode(' — ' + error.message);
+    const hint = document.createElement('small');
+    hint.textContent = 'Please refresh the page and try again.';
+    errorDiv.appendChild(title);
+    errorDiv.appendChild(msg);
+    errorDiv.appendChild(document.createElement('br'));
+    errorDiv.appendChild(hint);
     
     document.body.appendChild(errorDiv);
 }
