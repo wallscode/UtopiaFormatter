@@ -78,6 +78,7 @@ jobs:
             --include "js/parser.js" \
             --include "js/ui.js" \
             --include "js/main.js" \
+            --include "emphieltes/*" \
             --no-progress
 
       # Invalidate the entire distribution after every deploy so users always
