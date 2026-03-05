@@ -34,7 +34,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Fool's Gold", text: "to worthless lead", impact: "gold coins" },
         { name: "Gluttony", text: "The gluttony of", impact: "days" },
         { name: "Greed", text: "soldiers to turn greedy", impact: "days" },
-        { name: "Lightning Strike", text: "Lightning strikes the Towers", impact: "runes" },
+        { name: "Lightning Strike", text: "Lightning strikes the Towers", impact: "runes", impactRegex: /incinerates ([\d,]+) runes/i },
         { name: "Land Lust", text: "Our Land Lust over", impact: "acres" },
         { name: "Magic Ward", text: "Magic Ward", impact: "" },
         { name: "Meteor Showers", text: "Meteors will rain across the lands", impact: "days" },
@@ -601,7 +601,8 @@ function accumulateProvinceLogsData(text) {
                     spellCounts[spell.name]++;
                     let impactValue = null;
                     if (spell.impact) {
-                        const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i"));
+                        const re = spell.impactRegex || new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i");
+                        const match = line.match(re);
                         if (match) {
                             impactValue = parseGameInt(match[1]);
                             spellImpacts[spell.name] += impactValue;

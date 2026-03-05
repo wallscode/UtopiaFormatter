@@ -328,7 +328,7 @@ function runValueAssertionTests() {
         assertContains(output, '10 Pitfalls for a total of 119 days', 'Pitfalls: 10, 119 days');
         assertContains(output, '4 Amnesia for a total of 322,673 books', 'Amnesia: 4, 322,673 books');
         assertContains(output, '4 Droughts for a total of 53 days', 'Droughts: 4, 53 days');
-        assertContains(output, '4 Lightning Strike for a total of 14,884 runes', 'Lightning Strike: 4, 14,884 runes');
+        assertContains(output, '4 Lightning Strike for a total of 121,091 runes', 'Lightning Strike: 4, 121,091 runes');
         assertContains(output, '4 Nightmares for a total of 1,450 troops', 'Nightmares: 4, 1,450 troops');
         assertContains(output, '3 Fireball for a total of 3,639 peasants', 'Fireball: 3, 3,639 peasants');
         assertContains(output, '3 Land Lust for a total of 81 acres', 'Land Lust: 3, 81 acres');

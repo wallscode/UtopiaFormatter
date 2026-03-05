@@ -37,7 +37,7 @@ Spell Summary:
   10 Pitfalls for a total of 119 days
   4 Amnesia for a total of 322,673 books
   4 Droughts for a total of 53 days
-  4 Lightning Strike for a total of 14,884 runes
+  4 Lightning Strike for a total of 121,091 runes
   4 Nightmares for a total of 1,450 troops
   3 Fireball for a total of 3,639 peasants
   3 Gluttony for a total of 45 days
@@ -278,7 +278,7 @@ Spell Targets by Province:
     Mystic Vortex: 8 (25 active spells)
     Failed: 1
   Mat Phoria Salleh (4:11) — 9 casts (6 failed):
-    Lightning Strike: 2 (6,662 runes)
+    Lightning Strike: 2 (76,229 runes)
     Meteor Showers: 1 (10 days)
     Failed: 6
   ARRROT (4:8) — 8 casts (5 failed):
@@ -329,7 +329,7 @@ Spell Targets by Province:
     Meteor Showers: 3 (25 days)
     Failed: 2
   shiver me timbers (4:8) — 4 casts:
-    Lightning Strike: 2 (8,222 runes)
+    Lightning Strike: 2 (44,862 runes)
     Meteor Showers: 1 (8 days)
     Chastity: 1 (7 days)
   Frost (4:8) — 4 casts (1 failed):
@@ -534,9 +534,9 @@ Spell Targets by Spell Type:
     wayshegoes (4:8): 1 (12 days)
     Ragnar Crashbrok (4:11): 1 (11 days)
     SafeHaven (4:8): 1 (10 days)
-  Lightning Strike — 4 casts (14,884 runes):
-    shiver me timbers (4:8): 2 (8,222 runes)
-    Mat Phoria Salleh (4:11): 2 (6,662 runes)
+  Lightning Strike — 4 casts (121,091 runes):
+    Mat Phoria Salleh (4:11): 2 (76,229 runes)
+    shiver me timbers (4:8): 2 (44,862 runes)
   Droughts — 4 casts (53 days):
     Back From The Edge (4:8): 2 (23 days)
     aaaaaargh (4:8): 1 (16 days)
