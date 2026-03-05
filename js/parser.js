@@ -509,6 +509,18 @@ function accumulateProvinceLogsData(text) {
     let lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     lines = lines.filter(line => /\bYR\d+\b/.test(line));
 
+    // Capture min/max date range before stripping prefixes, so out-of-order input
+    // still produces a correct (non-negative) day span.
+    let minDateVal = null, minDateStr = null, maxDateVal = null, maxDateStr = null;
+    const plDateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    for (const rawLine of lines) {
+        const dm = rawLine.match(plDateRegex);
+        if (!dm) continue;
+        const dv = dateToNumber(dm[0]);
+        if (minDateVal === null || dv < minDateVal) { minDateVal = dv; minDateStr = dm[0]; }
+        if (maxDateVal === null || dv > maxDateVal) { maxDateVal = dv; maxDateStr = dm[0]; }
+    }
+
     // Remove date prefix and time stamps
     lines = lines.map(line => line.replace(/^.*?YR\d+\s*/, '').trim())
                  .filter(line => !/^\d{2}:\d{2}\b/.test(line))
@@ -922,6 +934,7 @@ function accumulateProvinceLogsData(text) {
     }
 
     return {
+        minDateStr, minDateVal, maxDateStr, maxDateVal,
         spellCounts, spellImpacts, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
@@ -961,7 +974,12 @@ function formatProvinceLogsFromData(data) {
     } = data;
 
     // Build output
-    let output = "\nSummary of Province Log Events from UtopiaFormatter.com\n" + "-".repeat(40) + "\n";
+    let output = "\nSummary of Province Log Events from UtopiaFormatter.com\n";
+    if (data.minDateStr && data.maxDateStr) {
+        const span = data.maxDateVal - data.minDateVal + 1;
+        output += `${data.minDateStr} - ${data.maxDateStr} (${span} days)\n`;
+    }
+    output += "-".repeat(40) + "\n";
 
     // Thievery Summary
     output += "\nThievery Summary:\n";
@@ -1427,8 +1445,10 @@ function parseKingdomNewsLog(inputText, options) {
 
     // Parse data structure
     const data = {
-        startDate: null,
-        endDate: null,
+        minDateVal: null,
+        minDateStr: null,
+        maxDateVal: null,
+        maxDateStr: null,
         kingdoms: {},
         ownKingdomId: detectedOwnKingdom,
         warPeriods,
@@ -1460,9 +1480,9 @@ function parseKingdomNewsLog(inputText, options) {
         if (!dateMatch) continue; // skip non-date lines (garbage in the middle of pasted content)
         if (dateMatch) {
             currentDate = dateMatch[0];
-            if (!data.startDate) {
-                data.startDate = currentDate;
-            }
+            const dv = dateToNumber(currentDate);
+            if (data.minDateVal === null || dv < data.minDateVal) { data.minDateVal = dv; data.minDateStr = currentDate; }
+            if (data.maxDateVal === null || dv > data.maxDateVal) { data.maxDateVal = dv; data.maxDateStr = currentDate; }
             // Continue processing this line as an attack line too
         }
 
@@ -1534,11 +1554,6 @@ function parseKingdomNewsLog(inputText, options) {
                 break;
             }
         }
-    }
-    
-    // Update end date to the last attack date, or keep the current end date if no attacks found
-    if (lastAttackDate) {
-        data.endDate = lastAttackDate;
     }
     
     // Generate formatted output
@@ -2169,12 +2184,12 @@ function formatKingdomNewsOutput(data, windowDays) {
         output.push('');
     }
 
-    // Date range (use dateToNumber for reliable day count)
-    if (data.startDate && data.endDate) {
-        const startParts = data.startDate.match(/^(\w+) (\d+) of (YR\d+)/);
-        const endParts   = data.endDate.match(/^(\w+) (\d+) of (YR\d+)/);
+    // Date range (min/max across all dates seen — handles out-of-order input)
+    if (data.minDateStr && data.maxDateStr) {
+        const startParts = data.minDateStr.match(/^(\w+) (\d+) of (YR\d+)/);
+        const endParts   = data.maxDateStr.match(/^(\w+) (\d+) of (YR\d+)/);
         if (startParts && endParts) {
-            const totalDays = dateToNumber(data.endDate) - dateToNumber(data.startDate) + 1;
+            const totalDays = data.maxDateVal - data.minDateVal + 1;
             output.push(`${startParts[1]} ${startParts[2]}, ${startParts[3]} - ${endParts[1]} ${endParts[2]}, ${endParts[3]} (${totalDays} days)`);
         }
     }
@@ -2832,9 +2847,9 @@ function formatProvinceNewsOutput(data) {
     const out = [];
 
     out.push('Province News Report from UtopiaFormatter.com');
-    if (data.firstDate && data.lastDate) {
-        const span = dateToNumber(data.lastDate) - dateToNumber(data.firstDate) + 1;
-        out.push(`${data.firstDate} - ${data.lastDate} (${span} days)`);
+    if (data.minDateStr && data.maxDateStr) {
+        const span = data.maxDateVal - data.minDateVal + 1;
+        out.push(`${data.minDateStr} - ${data.maxDateStr} (${span} days)`);
     }
 
     // -- Land summary: daily login bonus, monthly land grants, scientists
@@ -3035,8 +3050,10 @@ function accumulateProvinceNewsData(text, options = {}) {
     cleaned = removeProblematicCharacters(cleaned);
 
     const data = {
-        firstDate: null,
-        lastDate: null,
+        minDateVal: null,
+        minDateStr: null,
+        maxDateVal: null,
+        maxDateStr: null,
         monthlyLand: [],
         monthlyIncome: [],
         loginBonus:           { extreme: 0, impressive: 0, unknown: 0, acres: 0, gold: 0, books: 0 },
@@ -3093,8 +3110,9 @@ function accumulateProvinceNewsData(text, options = {}) {
         const dateStr = match[1];
         const ev = match[2].trim();
 
-        if (!data.firstDate) data.firstDate = dateStr;
-        data.lastDate = dateStr;
+        const dv = dateToNumber(dateStr);
+        if (data.minDateVal === null || dv < data.minDateVal) { data.minDateVal = dv; data.minDateStr = dateStr; }
+        if (data.maxDateVal === null || dv > data.maxDateVal) { data.maxDateVal = dv; data.maxDateStr = dateStr; }
 
         parseProvinceNewsLine(ev, dateStr, data);
     }
@@ -3205,9 +3223,13 @@ function formatCombinedProvinceSummary(logsText, newsText) {
     // Build the date range header lines
     const out = [];
     out.push('Combined Province Summary from UtopiaFormatter.com');
-    if (newsData.firstDate && newsData.lastDate) {
-        const span = dateToNumber(newsData.lastDate) - dateToNumber(newsData.firstDate) + 1;
-        out.push(`Province News:  ${newsData.firstDate} - ${newsData.lastDate} (${span} days)`);
+    if (logsData.minDateStr && logsData.maxDateStr) {
+        const span = logsData.maxDateVal - logsData.minDateVal + 1;
+        out.push(`Province Logs:  ${logsData.minDateStr} - ${logsData.maxDateStr} (${span} days)`);
+    }
+    if (newsData.minDateStr && newsData.maxDateStr) {
+        const span = newsData.maxDateVal - newsData.minDateVal + 1;
+        out.push(`Province News:  ${newsData.minDateStr} - ${newsData.maxDateStr} (${span} days)`);
     }
 
     // Combined Aid section comes first
