@@ -428,11 +428,6 @@ function setSecondaryInputVisible(visible, mode, elements) {
  * @param {Object} elements - DOM elements object
  */
 function renderSecondaryInputToggle(container, mode, elements) {
-    const title = document.createElement('div');
-    title.className = 'adv-group-title';
-    title.textContent = 'Combined Summary';
-    container.appendChild(title);
-
     const label = document.createElement('label');
     label.className = 'adv-checkbox-label';
 
@@ -997,8 +992,6 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
  * @param {Object} elements - DOM elements object
  */
 function renderProvinceLogsSettings(leftCol, rightCol, elements) {
-    renderSecondaryInputToggle(leftCol, 'province-logs', elements);
-
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {
@@ -1423,6 +1416,8 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     plDiscordLabel.appendChild(document.createTextNode(' Show Copy for Discord button'));
     plDiscordGroup.appendChild(plDiscordLabel);
     rightCol.appendChild(plDiscordGroup);
+
+    renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 }
 
 /**
@@ -1712,8 +1707,6 @@ function applyProvinceLogsSettings(text) {
  * @param {Object} elements - DOM elements object
  */
 function renderProvinceNewsSettings(leftCol, rightCol, elements) {
-    renderSecondaryInputToggle(leftCol, 'province-news', elements);
-
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {
@@ -1848,6 +1841,8 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     pnDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
     pnDiscordGroup.appendChild(pnDiscordLabel);
     rightCol.appendChild(pnDiscordGroup);
+
+    renderSecondaryInputToggle(rightCol, 'province-news', elements);
 }
 
 /**
