@@ -1390,9 +1390,9 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     miscTitle.textContent = 'Miscellaneous';
     rightCol.appendChild(miscTitle);
 
-    renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
-
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
+
+    renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
 /**
@@ -1798,9 +1798,9 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     srcGroup.appendChild(srcLabel);
     rightCol.appendChild(srcGroup);
 
-    renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
-
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
+
+    renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
 /**
