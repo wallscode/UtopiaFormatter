@@ -196,7 +196,7 @@ This role must be the **minimum possible**. The only thing this Lambda needs to 
         "logs:CreateLogStream",
         "logs:PutLogEvents"
       ],
-      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/utopia-log-handler:*"
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/<function-name>:*"
     }
   ]
 }
@@ -219,7 +219,7 @@ This role must be the **minimum possible**. The only thing this Lambda needs to 
       "Sid": "AllowLambdaPutOnly",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::YOUR-ACCOUNT-ID:role/utopia-log-lambda-role"
+        "AWS": "arn:aws:iam::YOUR-ACCOUNT-ID:role/&lt;lambda-execution-role-name&gt;"
       },
       "Action": "s3:PutObject",
       "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/logs/*"
@@ -236,7 +236,7 @@ This role must be the **minimum possible**. The only thing this Lambda needs to 
       "Condition": {
         "ArnNotEquals": {
           "aws:PrincipalArn": [
-            "arn:aws:iam::YOUR-ACCOUNT-ID:role/utopia-log-lambda-role",
+            "arn:aws:iam::YOUR-ACCOUNT-ID:role/&lt;lambda-execution-role-name&gt;",
             "arn:aws:iam::YOUR-ACCOUNT-ID:root"
           ]
         }
@@ -318,7 +318,7 @@ find ./logs -mtime -7 -name '*.jsonl' | xargs cat | jq -r '.line' | sort | uniq 
 ## Deployment Steps
 
 1. Create S3 bucket with settings above (Block All Public Access, SSE-S3, lifecycle rule)
-2. Create IAM role `utopia-log-lambda-role` with the inline policy above (NOT the managed policy)
+2. Create IAM role `&lt;lambda-execution-role-name&gt;` with the inline policy above (NOT the managed policy)
 3. Apply S3 bucket policy (copy template above, substitute account ID and bucket name)
 4. Deploy Lambda function with `LOG_BUCKET` env var, set reserved concurrency to 10
 5. Create HTTP API Gateway, add `POST /log` route → Lambda integration

@@ -34,7 +34,7 @@ Settings to match prod distribution:
 Add an additional statement to allow the new dev CloudFront distribution's OAC to read from the bucket (same s3:GetObject permission, scoped to the new distribution's ARN via AWS:SourceArn condition).
 
 ### 3. Update IAM role permissions
-Add cloudfront:CreateInvalidation permission for the new dev distribution ARN to the UtopiaFormatterGitHubActions role.
+Add cloudfront:CreateInvalidation permission for the new dev distribution ARN to the GitHub Actions IAM role.
 
 ### 4. Update GitHub Secrets
 - S3_BUCKET_DEV → set to the same bucket name as S3_BUCKET_PROD
