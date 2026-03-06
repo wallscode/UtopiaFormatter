@@ -444,11 +444,14 @@ function setSecondaryInputVisible(visible, mode, elements) {
  * @param {Object} elements - DOM elements object
  */
 function renderSecondaryInputToggle(container, mode, elements) {
-    const label = document.createElement('label');
-    label.className = 'adv-checkbox-label';
+    const group = document.createElement('div');
+    group.className = 'adv-group';
+
+    const id = mode === 'province-logs' ? 'adv-secondary-input-pl' : 'adv-secondary-input-pn';
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    checkbox.id = id;
     checkbox.checked = secondaryInputVisible;
 
     const labelText = mode === 'province-logs'
@@ -463,9 +466,12 @@ function renderSecondaryInputToggle(container, mode, elements) {
         }
     });
 
+    const label = document.createElement('label');
+    label.htmlFor = id;
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(' ' + labelText));
-    container.appendChild(label);
+    group.appendChild(label);
+    container.appendChild(group);
 }
 
 /**
