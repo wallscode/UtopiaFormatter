@@ -5,10 +5,9 @@ A static web tool that parses raw game data from the Utopia online text game int
 ## Features
 
 - **Auto-detection**: Paste any supported text — the parser identifies the input type automatically
-- **Three parsing modes**: Kingdom News Log, Province News, Province Logs (see below)
+- **Four parsing modes**: Kingdom News Log, Province News, Province Logs, Combined Province Summary
 - **Advanced Settings**: Per-mode toggles for section visibility, display options, and ordering
-- **Wide mode**: Header toggle expands the layout to 95vw on large monitors (persisted via localStorage)
-- **Clipboard support**: One-click copy to clipboard
+- **Clipboard support**: Copy to Clipboard (device-aware formatting), Copy for Discord, and an alternate copy button (Raw Text on mobile / Copy for Mobile on desktop) — all configurable in Advanced Settings
 - **Keyboard shortcuts**: `Ctrl+Enter` to parse, `Esc` to clear, `Ctrl+Shift+C` to copy
 - **Mobile responsive**: Works on all device sizes
 - **No build step**: Pure HTML/CSS/Vanilla JS — open `index.html` or serve statically
@@ -26,19 +25,22 @@ Parses kingdom-vs-kingdom combat reports. Detects your own kingdom dynamically a
 - Bounces (failed attacks)
 - Unique attacks per province (configurable window, default 6 in-game days)
 - Dragon and ritual events (own kingdom and enemy)
-- Ceasefire proposals and withdrawals
+- War declarations, ceasefire proposals and acceptances
 
 **Output sections** (reorderable in Advanced Settings):
 - Own Kingdom Summary
 - Per-Kingdom Summaries
 - Uniques
 - Highlights
+- Kingdom Relations
 
 **Advanced Settings options:**
-- Show/hide learn, massacre, plunder, dragon, ritual, ceasefire events
+- Show/hide learn, massacre, plunder, dragon cancellations, rituals failed, ritual coverage, kingdom relations
 - Unique attack window (days)
 - War-only filter (show only attacks involving war opponent)
-- Section order
+- Uniques grouped with kingdoms
+- Section visibility and order
+- Copy for Discord, alt copy button
 
 ---
 
@@ -47,30 +49,33 @@ Parses kingdom-vs-kingdom combat reports. Detects your own kingdom dynamically a
 Parses the Province News tab — the log of events that happened *to* your province.
 
 **Tracked data:**
-- **Daily Login Bonus**: acres, gold, science books; tier counts (extreme / impressive)
-- **Scientists Gained**: new scientists grouped by field
+- **Attacks Suffered**: per-attacker acres captured or books looted (learn)
+- **Thievery Impacts**: detected ops by source, Shadowlight interceptions, Incite Riots (count + days), Sabotage Wizards (count + days), Propaganda desertions (by troop type), Bribe Generals, turncoat generals, failed propaganda; resources stolen (gold, runes, bushels)
+- **Shadowlight Thief IDs**: provinces identified as attacking you via Shadowlight
+- **Spell Impacts**: spell attempts by source, Meteor Showers (days + casualties), Pitfalls (count + days), Greed (count + days), and other received spells
 - **Aid Received**: gold, runes, bushels, soldiers, explore pool acres (with transit loss)
-- **Resources Stolen**: gold, runes, bushels, war horses
-- **Thievery Impacts**: detected ops by source, Shadowlight interceptions by source, Incite Riots (count + days), Sabotage Wizards (count + days), Propaganda desertions (by troop type), Bribe Generals, failed propaganda
-- **Spell Impacts**: spell attempts by source, Meteor Showers (days + casualties), Pitfalls, Greed (count + days)
-- **Shadowlight Attacker IDs**: provinces identified attacking you
-- **Attacks Suffered**: per-attacker acres captured or books looted
+- **Daily Login Bonus**: acres, gold, science books; tier counts (extreme / impressive); includes monthly land and income grants
+- **Scientists Gained**: new scientists grouped by field
 - **War Outcomes**: land penalty or resource bonus from war resolution
 
-**Output sections** (reorderable, default order):
-1. Thievery Impacts *(visible)*
-2. Spell Impacts *(visible)*
-3. Aid Received *(visible)*
-4. Scientists Gained *(visible)*
-5. Daily Login Bonus *(visible)*
-6. Resources Stolen *(hidden)*
-7. Shadowlight Attacker IDs *(hidden)*
-8. Attacks Suffered *(hidden)*
-9. War Outcomes *(hidden)*
+**Output sections** (reorderable, default visibility):
+
+| Section | Default |
+|---|---|
+| Attacks Suffered | visible |
+| Thievery Impacts | visible |
+| Shadowlight Thief IDs | hidden |
+| Spell Impacts | visible |
+| Aid Received | visible |
+| Daily Login Bonus | visible |
+| Scientists Gained | hidden |
+| War Outcomes | hidden |
 
 **Advanced Settings options:**
 - Section visibility and order
-- Show attacker names in Thievery & Spell Impacts (source identifier lines, hidden by default)
+- Show source identifiers (attacker/caster names in Thievery and Spell Impacts)
+- Combined Summary toggle (reveals secondary input for Province Logs)
+- Copy for Discord, alt copy button
 
 ---
 
@@ -79,24 +84,28 @@ Parses the Province News tab — the log of events that happened *to* your provi
 Parses the Province Logs tab — the log of actions *your* province took.
 
 **Tracked data:**
-- **Thievery Summary**: all 16 sabotage operations with success/failure counts and impact totals; individual building counts for Greater Arson; resource totals for Rob the Granaries/Vaults/Towers; horse counts for Steal War Horses
-- **Resources Stolen**: gold, runes, bushels
-- **Spell Summary**: 22 offensive spell types with cast count, duration, and impact totals
-- **Aid Summary**: resources sent to kingdommates (gold, runes, bushels, soldiers)
-- **Dragon Summary**: dragon troop donations
-- **Ritual Summary**: rituals started, completed, failed
-- **Construction Summary**: buildings constructed
+- **Thievery Summary**: all thievery operations with success/failure counts and impact totals; individual building counts for Greater Arson; resource totals for Vault/Granary/Tower Robbery; horse counts for Steal War Horses
+- **Resources Stolen from Opponents**: gold, runes, bushels, war horses
+- **Spell Summary**: 22 offensive spell types with cast count and impact totals
+- **Aid Summary**: resources sent to kingdommates (gold, runes, bushels, soldiers, explore pool acres)
+- **Dragon Summary**: gold/bushel donations, troop weakening contributions
+- **Ritual Summary**: ritual casts
+- **Construction Summary**: buildings constructed and demolished
 - **Science Summary**: books invested by field
-- **Exploration Summary**: acres explored, explore costs
-- **Military Training**: troops trained
+- **Exploration Summary**: acres explored and explore costs
+- **Military Training**: troops trained and released
 
-**Output sections** (reorderable in Advanced Settings):
+**Output sections** (reorderable in Advanced Settings, default visibility):
 
 | Section | Default |
 |---|---|
 | Thievery Summary | visible |
-| Resources Stolen | visible |
+| Thievery Targets by Province | hidden |
+| Thievery Targets by Op Type | hidden |
+| Resources Stolen from Opponents | visible |
 | Spell Summary | visible |
+| Spell Targets by Province | hidden |
+| Spell Targets by Spell Type | hidden |
 | Aid Summary | visible |
 | Dragon Summary | visible |
 | Ritual Summary | hidden |
@@ -106,14 +115,28 @@ Parses the Province Logs tab — the log of actions *your* province took.
 | Military Training | hidden |
 
 **Advanced Settings options:**
-- Section visibility and order
-- Show/hide per-operation robbery counts and averages
+- Section visibility and order (groups stay together; groups reorderable relative to each other)
 - Show/hide failed thievery attempts
 - Show/hide thief losses on successful ops
-- Show/hide razed buildings, released troops
-- Show/hide draft rate, draft percentage, military wages
+- Show/hide failed spell attempts
+- Show/hide razed buildings
+- Show/hide released troops
+- Show/hide draft percentage, draft rate, military wages
 - Show/hide exploration detail lines
 - Show/hide per-operation averages
+- Combined Summary toggle (reveals secondary input for Province News)
+- Copy for Discord, alt copy button
+
+---
+
+### Combined Province Summary
+
+Triggered automatically when both the primary and secondary textareas have content and one contains Province Logs and the other contains Province News. The secondary input is revealed via the "Combined Summary" toggle in Advanced Settings.
+
+Merges both parsers into a single unified output — Aid Summary shows sent, received, and net for each resource; all other sections are drawn from their respective parsers.
+
+**Default section order:**
+Aid Summary → Offensive Thievery → Defensive Thievery → Offensive Spells → Defensive Spells → Military → Exploration Summary → Construction Summary → Science Summary → Dragon Summary → Ritual Summary → War Outcomes → Daily Login Bonus → Scientists Gained
 
 ---
 
@@ -130,20 +153,28 @@ UtopiaFormatter/
 ├── css/
 │   └── main.css                        # Stylesheet (dark mode only)
 ├── js/
+│   ├── app-config-default.js           # Default APP_CONFIG values
+│   ├── config.js                       # Generated in CI from secrets (gitignored)
+│   ├── config.example.js               # Template for local config.js
 │   ├── parser.js                       # All parsing logic (~1,300 lines)
 │   ├── ui.js                           # DOM manipulation and event handling
 │   └── main.js                         # App initialization
+├── docs/
+│   ├── spec.md                         # Behavioural specification for AI agents
+│   └── Utopia Game Parser Requirements.md  # Game mechanics and parsing specs
+├── emphieltes/
+│   └── index.html                      # Emphieltes redirect page
 ├── tests/
-│   ├── parser.test.js                  # HTML cleaning utility tests
+│   ├── parser.test.js                  # HTML cleaning and detectInputType tests
 │   ├── kingdom-news-log.test.js        # Kingdom News Log tests
 │   ├── province-logs.test.js           # Province Logs tests
 │   ├── province-news.test.js           # Province News tests
+│   ├── combined-province.test.js       # Combined Province Summary tests
 │   ├── Kingdom News original.txt       # Kingdom News test input (493 lines)
 │   ├── Kingdom News Report target format.txt  # Expected Kingdom News output
-│   ├── provincelogs.txt                # Province Logs test input (1,172 lines)
+│   ├── provincelogs.txt                # Province Logs test input
 │   ├── provincelogs_expected_output.txt
 │   └── ProvinceNewsExample.txt         # Province News test input
-├── Utopia Game Parser Requirements.md  # Game mechanics and parsing specs
 ├── CLAUDE.md                           # AI assistant project instructions
 └── README.md                           # This file
 ```
@@ -159,16 +190,18 @@ No package.json or test runner required — tests use Node.js directly:
 /opt/homebrew/bin/node tests/kingdom-news-log.test.js
 /opt/homebrew/bin/node tests/province-logs.test.js
 /opt/homebrew/bin/node tests/province-news.test.js
+/opt/homebrew/bin/node tests/combined-province.test.js
 ```
 
 ### Test Coverage
 
 | File | What it tests |
 |---|---|
-| `parser.test.js` | HTML tag removal, entity cleanup, whitespace and line break normalization |
-| `kingdom-news-log.test.js` | Per-province attack counts, unique window algorithm, highlights |
-| `province-logs.test.js` | Thievery, spells, aid, dragon, ritual parsing against 1,172-line real-world input |
-| `province-news.test.js` | All Province News sections against real-world example file |
+| `parser.test.js` | HTML cleaning utilities, `detectInputType` (all markers, priority ordering, null cases) |
+| `kingdom-news-log.test.js` | Full output format match, per-province attack/unique counts, `calculateUniques` unit tests, `applyKingdomNewsSettings` filter tests |
+| `province-logs.test.js` | Full output match against expected file, 54 value assertions across all sections, `applyProvinceLogsSettings` filter tests, `accumulateProvinceLogsData` unit tests for every input line type |
+| `province-news.test.js` | Full parse against real-world example file, section value assertions, `applyProvinceNewsSettings` filter tests, synthetic unit tests for every input line type |
+| `combined-province.test.js` | Combined output structure, aid net calculation, `accumulateProvinceLogsData` / `accumulateProvinceNewsData` accumulator contracts |
 
 ---
 
