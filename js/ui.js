@@ -35,7 +35,8 @@ const advSettings = {
         uniquesWithKingdoms: false,
         warOnly: false,
         warDetected: false,
-        discordCopy: false
+        discordCopy: false,
+        showAltCopy: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
@@ -76,7 +77,8 @@ const advSettings = {
         showDraftRate: false,
         showMilitaryWages: false,
         exploreDetails: false,
-        discordCopy: false
+        discordCopy: false,
+        showAltCopy: false
     },
     provinceNews: {
         sectionOrder: ['Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts', 'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes'],
@@ -91,7 +93,8 @@ const advSettings = {
             'War Outcomes':         false
         },
         showSourceIdentifiers: false,
-        discordCopy: false
+        discordCopy: false,
+        showAltCopy: false
     },
     combinedProvince: {
         sectionOrder: [
@@ -155,7 +158,8 @@ const advSettings = {
         showMilitaryWages:          false,
         exploreDetails:             false,
         showSourceIdentifiers:      false,
-        discordCopy: false
+        discordCopy: false,
+        showAltCopy: false
     }
 };
 
@@ -173,6 +177,8 @@ function getDomElements() {
         copyFeedback: document.getElementById('copy-feedback'),
         discordCopyBtn: document.getElementById('discord-copy-btn'),
         discordCopyFeedback: document.getElementById('discord-copy-feedback'),
+        altCopyBtn: document.getElementById('alt-copy-btn'),
+        altCopyFeedback: document.getElementById('alt-copy-feedback'),
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
@@ -212,6 +218,13 @@ function setupEventListeners(elements) {
     elements.discordCopyBtn.addEventListener('click', () => {
         handleDiscordCopy(elements);
     });
+
+    // Alt copy button (plain text on mobile, mobile HTML on desktop)
+    if (elements.altCopyBtn) {
+        elements.altCopyBtn.addEventListener('click', () => {
+            handleAltCopy(elements);
+        });
+    }
 
     // Input textarea - enable/disable parse button based on content
     elements.inputText.addEventListener('input', () => {
@@ -292,6 +305,7 @@ function handleParse(elements) {
             elements.outputText.focus();
             showAdvancedPanel(elements);
             updateDiscordButtonVisibility(elements, 'combined-province');
+            updateAltCopyButtonVisibility(elements, 'combined-province');
             if (window.innerWidth < 768) {
                 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 elements.outputText.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
@@ -353,6 +367,7 @@ function handleParse(elements) {
 
         showAdvancedPanel(elements);
         updateDiscordButtonVisibility(elements, detectedMode);
+        updateAltCopyButtonVisibility(elements, detectedMode);
 
         if (window.innerWidth < 768) {
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -376,6 +391,7 @@ function handleClear(elements) {
     elements.detectBadge.classList.add('hidden');
     secondaryInputVisible = false;
     setSecondaryInputVisible(false, null, elements);
+    if (elements.altCopyBtn) elements.altCopyBtn.classList.add('hidden');
     updateParseButtonState(elements);
 
     // Reset war detection state
@@ -891,30 +907,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     }
 
     // ── Display Options ───────────────────────────────────────────────────────
-    const knDisplayTitle = document.createElement('div');
-    knDisplayTitle.className = 'adv-group-title';
-    knDisplayTitle.textContent = 'Display Options';
-    rightCol.appendChild(knDisplayTitle);
-
-    const knDiscordGroup = document.createElement('div');
-    knDiscordGroup.className = 'adv-group';
-
-    const knDiscordLabel = document.createElement('label');
-    knDiscordLabel.htmlFor = 'adv-kn-discordCopy';
-
-    const knDiscordCheckbox = document.createElement('input');
-    knDiscordCheckbox.type = 'checkbox';
-    knDiscordCheckbox.id = 'adv-kn-discordCopy';
-    knDiscordCheckbox.checked = advSettings.kingdomNews.discordCopy;
-    knDiscordCheckbox.addEventListener('change', () => {
-        advSettings.kingdomNews.discordCopy = knDiscordCheckbox.checked;
-        applyAndRerender(elements);
-    });
-
-    knDiscordLabel.appendChild(knDiscordCheckbox);
-    knDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
-    knDiscordGroup.appendChild(knDiscordLabel);
-    rightCol.appendChild(knDiscordGroup);
+    renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 
     // ── Sections (reorder + show/hide) ───────────────────────────────────────
     const orderTitle = document.createElement('div');
@@ -1397,25 +1390,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     miscTitle.textContent = 'Miscellaneous';
     rightCol.appendChild(miscTitle);
 
-    const plDiscordGroup = document.createElement('div');
-    plDiscordGroup.className = 'adv-group';
-
-    const plDiscordLabel = document.createElement('label');
-    plDiscordLabel.htmlFor = 'adv-pl-discordCopy';
-
-    const plDiscordCheckbox = document.createElement('input');
-    plDiscordCheckbox.type = 'checkbox';
-    plDiscordCheckbox.id = 'adv-pl-discordCopy';
-    plDiscordCheckbox.checked = advSettings.provinceLogs.discordCopy;
-    plDiscordCheckbox.addEventListener('change', () => {
-        advSettings.provinceLogs.discordCopy = plDiscordCheckbox.checked;
-        applyAndRerender(elements);
-    });
-
-    plDiscordLabel.appendChild(plDiscordCheckbox);
-    plDiscordLabel.appendChild(document.createTextNode(' Show Copy for Discord button'));
-    plDiscordGroup.appendChild(plDiscordLabel);
-    rightCol.appendChild(plDiscordGroup);
+    renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 }
@@ -1449,6 +1424,7 @@ function applyAndRerender(elements) {
         elements.outputText.value = parsedText;
         autoResizeOutput(elements.outputText);
         updateDiscordButtonVisibility(elements, lastDetectedMode);
+        updateAltCopyButtonVisibility(elements, lastDetectedMode);
     } catch (error) {
         console.error('Error re-rendering with settings:', error);
     }
@@ -1822,25 +1798,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     srcGroup.appendChild(srcLabel);
     rightCol.appendChild(srcGroup);
 
-    const pnDiscordGroup = document.createElement('div');
-    pnDiscordGroup.className = 'adv-group';
-
-    const pnDiscordLabel = document.createElement('label');
-    pnDiscordLabel.htmlFor = 'adv-pn-discordCopy';
-
-    const pnDiscordCheckbox = document.createElement('input');
-    pnDiscordCheckbox.type = 'checkbox';
-    pnDiscordCheckbox.id = 'adv-pn-discordCopy';
-    pnDiscordCheckbox.checked = advSettings.provinceNews.discordCopy;
-    pnDiscordCheckbox.addEventListener('change', () => {
-        advSettings.provinceNews.discordCopy = pnDiscordCheckbox.checked;
-        applyAndRerender(elements);
-    });
-
-    pnDiscordLabel.appendChild(pnDiscordCheckbox);
-    pnDiscordLabel.appendChild(document.createTextNode(' Copy for Discord'));
-    pnDiscordGroup.appendChild(pnDiscordLabel);
-    rightCol.appendChild(pnDiscordGroup);
+    renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
 }
@@ -2154,6 +2112,8 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showDraftRate',              'Show draft rate',                    () => s.showDraftRate,             v => { s.showDraftRate = v; });
     addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
+
+    renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
 /**
@@ -2218,6 +2178,139 @@ async function handleDiscordCopy(elements) {
         fallbackCopyToClipboard(transformed);
         showCopyFeedback(elements.discordCopyFeedback, 'Text copied \u2014 paste into Discord', 'warning');
     }
+}
+
+/**
+ * Handles the alt copy button: plain text on mobile, mobile HTML on desktop.
+ */
+async function handleAltCopy(elements) {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+        await copyPlainText(elements);
+    } else {
+        await copyMobileHtml(elements);
+    }
+}
+
+/**
+ * Copies the output as plain text (always, regardless of device).
+ * This is the desktop copy path made available on mobile via Advanced Settings.
+ */
+async function copyPlainText(elements) {
+    const outputText = elements.outputText.value.trim();
+    if (!outputText) {
+        showCopyFeedback(elements.altCopyFeedback, 'No text to copy!', 'error');
+        return;
+    }
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(outputText);
+        } else {
+            fallbackCopyToClipboard(outputText);
+        }
+        showCopyFeedback(elements.altCopyFeedback, 'Copied!', 'success');
+    } catch (err) {
+        fallbackCopyToClipboard(outputText);
+        showCopyFeedback(elements.altCopyFeedback, 'Text selected — copy manually', 'warning');
+        elements.outputText.select();
+        elements.outputText.setSelectionRange(0, 99999);
+    }
+}
+
+/**
+ * Copies the output as mobile HTML (always, regardless of device).
+ * This is the mobile copy path made available on desktop via Advanced Settings.
+ */
+async function copyMobileHtml(elements) {
+    const outputText = elements.outputText.value.trim();
+    if (!outputText) {
+        showCopyFeedback(elements.altCopyFeedback, 'No text to copy!', 'error');
+        return;
+    }
+    const mobileText = textToMobileHtml(outputText);
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(mobileText);
+        } else {
+            fallbackCopyToClipboard(mobileText);
+        }
+        showCopyFeedback(elements.altCopyFeedback, 'Copied for mobile!', 'success');
+    } catch (err) {
+        fallbackCopyToClipboard(mobileText);
+        showCopyFeedback(elements.altCopyFeedback, 'Text selected — copy manually', 'warning');
+    }
+}
+
+/**
+ * Shows or hides the alt copy button and sets its label based on device.
+ */
+function updateAltCopyButtonVisibility(elements, mode) {
+    if (!elements.altCopyBtn) return;
+    const modeKey = mode === 'kingdom-news-log'    ? 'kingdomNews'
+                  : mode === 'province-news'        ? 'provinceNews'
+                  : mode === 'combined-province'    ? 'combinedProvince'
+                  :                                   'provinceLogs';
+    const show = mode && advSettings[modeKey] && advSettings[modeKey].showAltCopy;
+    if (show) {
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        elements.altCopyBtn.textContent = isMobile ? 'Copy Raw Text' : 'Copy for Mobile';
+    }
+    elements.altCopyBtn.classList.toggle('hidden', !show);
+}
+
+/**
+ * Renders the "Copy Buttons" section in Advanced Settings.
+ * Includes the Discord toggle and the device-dynamic alt copy toggle.
+ * @param {HTMLElement} container - Right column element to append into
+ * @param {string} modeKey - advSettings key ('kingdomNews', 'provinceLogs', etc.)
+ * @param {string} idPrefix - Short prefix for element IDs ('kn', 'pl', 'pn', 'cp')
+ * @param {Object} elements - DOM elements object
+ */
+function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
+    const title = document.createElement('div');
+    title.className = 'adv-group-title';
+    title.textContent = 'Copy Buttons';
+    container.appendChild(title);
+
+    // Discord toggle
+    const discordGroup = document.createElement('div');
+    discordGroup.className = 'adv-group';
+    const discordLabel = document.createElement('label');
+    discordLabel.htmlFor = `adv-${idPrefix}-discordCopy`;
+    const discordCheckbox = document.createElement('input');
+    discordCheckbox.type = 'checkbox';
+    discordCheckbox.id = `adv-${idPrefix}-discordCopy`;
+    discordCheckbox.checked = advSettings[modeKey].discordCopy;
+    discordCheckbox.addEventListener('change', () => {
+        advSettings[modeKey].discordCopy = discordCheckbox.checked;
+        applyAndRerender(elements);
+    });
+    discordLabel.appendChild(discordCheckbox);
+    discordLabel.appendChild(document.createTextNode(' Copy for Discord'));
+    discordGroup.appendChild(discordLabel);
+    container.appendChild(discordGroup);
+
+    // Alt copy toggle (device-dynamic label)
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const altCopyGroup = document.createElement('div');
+    altCopyGroup.className = 'adv-group';
+    const altCopyLabel = document.createElement('label');
+    altCopyLabel.htmlFor = `adv-${idPrefix}-altCopy`;
+    const altCopyCheckbox = document.createElement('input');
+    altCopyCheckbox.type = 'checkbox';
+    altCopyCheckbox.id = `adv-${idPrefix}-altCopy`;
+    altCopyCheckbox.checked = advSettings[modeKey].showAltCopy;
+    const altCopyLabelText = isMobile
+        ? 'Copy Raw Text'
+        : 'Copy Text for KD Forum on Mobile';
+    altCopyCheckbox.addEventListener('change', () => {
+        advSettings[modeKey].showAltCopy = altCopyCheckbox.checked;
+        updateAltCopyButtonVisibility(elements, lastDetectedMode);
+    });
+    altCopyLabel.appendChild(altCopyCheckbox);
+    altCopyLabel.appendChild(document.createTextNode(' ' + altCopyLabelText));
+    altCopyGroup.appendChild(altCopyLabel);
+    container.appendChild(altCopyGroup);
 }
 
 /**
