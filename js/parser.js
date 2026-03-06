@@ -3033,10 +3033,12 @@ function formatProvinceNewsOutput(data) {
         out.push('');
         out.push('War Outcomes:');
         if (data.warLandPenalty) {
+            out.push('  War Result: Defeat');
             const p = data.warLandPenalty;
             out.push(`  Land given up: ${p.total} acres (${p.toEnemies} to enemies, ${p.redistributed} redistributed)`);
         }
         if (data.warResourceBonus) {
+            out.push('  War Result: Victory');
             const b = data.warResourceBonus;
             out.push(`  Resources received: ${formatNumber(b.buildingCredits)} building credits, ${formatNumber(b.specialistCredits)} specialist credits, ${formatNumber(b.scienceBooks)} science books`);
         }

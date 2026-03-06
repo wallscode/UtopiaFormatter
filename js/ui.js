@@ -88,7 +88,7 @@ const advSettings = {
             'Shadowlight Thief IDs': false,
             'Spell Impacts':        true,
             'Aid Received':         true,
-            'Daily Login Bonus':    true,
+            'Daily Login Bonus':    false,
             'Scientists Gained':    false,
             'War Outcomes':         false
         },

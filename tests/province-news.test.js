@@ -174,6 +174,8 @@ assertContains(output, 'books (learn)', 'Learn attack entry present');
 
 console.log('\n--- War Outcomes ---');
 assertContains(output, 'War Outcomes:', 'War Outcomes section present');
+assertContains(output, 'War Result: Defeat', 'War result defeat indicated');
+assertContains(output, 'War Result: Victory', 'War result victory indicated');
 assertContains(output, 'Land given up: 90 acres (30 to enemies, 60 redistributed)', 'War land penalty correct');
 assertContains(output, '1,140 building credits', 'War resource bonus building credits');
 assertContains(output, '1,710 specialist credits', 'War resource bonus specialist credits');
