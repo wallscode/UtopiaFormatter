@@ -141,10 +141,6 @@ const PROVINCE_LOGS_CONFIG = {
             { key: 'FINESSE',     display: 'Finesse',     desc: 'Reduced Losses' },
         ]},
     ],
-    get SCIENCES() {
-        return this.SCIENCE_GROUPS.flatMap(g => g.sciences.map(s => s.key));
-    },
-
     PROPAGANDA_TROOPS: ["thieves", "soldiers", "wizards", "specialist troops"],
 
     AID_RESOURCES: ["soldiers", "gold coins", "bushels", "runes", "explore pool acres"]
@@ -245,6 +241,23 @@ function normalizeLineBreaks(text) {
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+// Precompute impact-extraction regexes for SPELLS and OPERATIONS so that the
+// per-line parse loops in accumulateProvinceLogsData never create RegExp objects
+// at runtime. Also freeze SCIENCES as a plain array (replaces the flatMap getter).
+PROVINCE_LOGS_CONFIG.SPELLS.forEach(spell => {
+    if (spell.impact && !spell.impactRegex) {
+        spell.impactRegex = new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, 'i');
+    }
+});
+PROVINCE_LOGS_CONFIG.OPERATIONS.forEach(op => {
+    if (op.impact) {
+        op.impactRegex = new RegExp(`([\\d,]+)\\s+${escapeRegExp(op.impact)}`, 'i');
+    }
+});
+PROVINCE_LOGS_CONFIG.SCIENCES = PROVINCE_LOGS_CONFIG.SCIENCE_GROUPS.flatMap(
+    g => g.sciences.map(s => s.key)
+);
 
 /**
  * Formats a number with commas for readability
@@ -713,7 +726,7 @@ function accumulateProvinceLogsData(text) {
                     thieveryCounts[op.name]++;
                     matchedOpName = op.name;
                     if (op.impact) {
-                        const match = line.match(new RegExp(`([\\d,]+)\\s+${escapeRegExp(op.impact)}`, "i"));
+                        const match = line.match(op.impactRegex);
                         if (match) {
                             const val = parseGameInt(match[1]);
                             thieveryImpacts[op.name] += val;
@@ -3263,41 +3276,43 @@ function formatCombinedProvinceSummary(logsText, newsText) {
 // INPUT TYPE DETECTION
 // =============================================================================
 
+// Module-level pattern arrays for detectInputType — defined once to avoid
+// recreating 21 RegExp objects on every paste event.
+const _KINGDOM_NEWS_PATTERNS = [
+    /captured [\d,]+ acres of land/i,
+    /and captured [\d,]+ acres of land/i,
+    /recaptured [\d,]+ acres of land/i,
+    /ambushed armies from/i,
+    /and razed [\d,]+ acres/i,
+    /razed [\d,]+ acres of/i,
+    /invaded and looted/i,
+    /attacked and looted/i,
+    /killed [\d,]+ people/i,
+    /invaded and pillaged/i,
+    /attacked and pillaged/i,
+    /attempted an invasion of/i,
+    /but was repelled/i,
+];
+
+const _PROVINCE_LOGS_PATTERNS = [
+    /early indications show that our operation/i,
+    /your wizards gather/i,
+    /you have ordered/i,
+    /you have given orders to commence work/i,
+    /begin casting/i,
+    /we have sent/i,
+    /our thieves have returned with/i,
+    /our thieves were able to steal/i,
+];
+
 /**
  * Detects whether pasted text is Kingdom News, Province Logs, or Province News.
  * @param {string} text - Raw input text
  * @returns {'kingdom-news-log'|'province-logs'|'province-news'|null} - Detected type, or null if unknown
  */
 function detectInputType(text) {
-    const kingdomNewsPatterns = [
-        /captured [\d,]+ acres of land/i,
-        /and captured [\d,]+ acres of land/i,
-        /recaptured [\d,]+ acres of land/i,
-        /ambushed armies from/i,
-        /and razed [\d,]+ acres/i,
-        /razed [\d,]+ acres of/i,
-        /invaded and looted/i,
-        /attacked and looted/i,
-        /killed [\d,]+ people/i,
-        /invaded and pillaged/i,
-        /attacked and pillaged/i,
-        /attempted an invasion of/i,
-        /but was repelled/i,
-    ];
-
-    const provinceLogsPatterns = [
-        /early indications show that our operation/i,
-        /your wizards gather/i,
-        /you have ordered/i,
-        /you have given orders to commence work/i,
-        /begin casting/i,
-        /we have sent/i,
-        /our thieves have returned with/i,
-        /our thieves were able to steal/i,
-    ];
-
-    const isKingdom = kingdomNewsPatterns.some(p => p.test(text));
-    const isProvince = provinceLogsPatterns.some(p => p.test(text));
+    const isKingdom = _KINGDOM_NEWS_PATTERNS.some(p => p.test(text));
+    const isProvince = _PROVINCE_LOGS_PATTERNS.some(p => p.test(text));
 
     if (isProvince && !isKingdom) return 'province-logs';
     if (isKingdom) return 'kingdom-news-log'; // kingdom takes priority if both match
