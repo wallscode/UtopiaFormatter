@@ -55,8 +55,11 @@ jobs:
 
       # Sync only the deployable site files to S3.
       # --exclude "*" then --include selectively ensures tests/, infra/, .tickets/,
-      # source-only JS (logsparse.js, parser-backup.js), and all markdown/config
+      # docs/, source-only JS (logsparse.js, parser-backup.js), and all markdown/config
       # templates are never uploaded.
+      # docs/ is intentionally excluded — it is developer/agent documentation, not site content.
+      # IMPORTANT: new site content folders (e.g. emphieltes/) must be explicitly added
+      # below with an --include rule, or they will be silently excluded from deploys.
       # --delete removes stale objects within the target prefix only. Because all
       # other paths are matched by --exclude "*", the dev/ prefix is never touched
       # by a prod sync and vice versa.

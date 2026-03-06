@@ -34,10 +34,10 @@ Five JS modules loaded sequentially via `<script>` tags in `index.html` (no bund
 
 | File | Role |
 |---|---|
-| `js/theme.js` | Light/dark theme toggle with `localStorage` persistence |
-| `js/parser.js` | All parsing logic (1,200+ lines) — the core of the app |
-| `js/logsparse.js` | Province log parsing helpers |
-| `js/ui.js` | DOM manipulation, event listeners, keyboard shortcuts |
+| `js/app-config-default.js` | Default APP_CONFIG values |
+| `js/config.js` | Generated in CI — sets `window.APP_CONFIG.logEndpoint` (gitignored) |
+| `js/parser.js` | All parsing logic (3,000+ lines) — the core of the app |
+| `js/ui.js` | DOM manipulation, event listeners, Advanced Settings, copy handlers |
 | `js/main.js` | App initialization, DOM validation |
 
 `parser.js` uses `module.exports` to expose functions for testing in Node.js, while also running in the browser where `module` is undefined. New exports must be added to both the `module.exports` block at the bottom of `parser.js` and tested via the test files.
@@ -46,7 +46,11 @@ Five JS modules loaded sequentially via `<script>` tags in `index.html` (no bund
 
 **Kingdom News Log** (`parseKingdomNewsLog` in `parser.js`): Parses kingdom-vs-kingdom attack data. Extracts attack types (traditional march, conquest, ambush, raze, learn, massacre, plunder, bounces), computes acreage stats, and produces per-province summaries. Uses a configurable 6-day unique-attack window.
 
-**Province Logs** (`formatProvinceLogs` in `logsparse.js`): Parses individual province log entries. Tracks 22 spell types, 11+ thievery operations, resource movements (aid, stolen goods), dragon donations, and ritual completions. Handles date prefix removal and timestamp line filtering.
+**Province Logs** (`formatProvinceLogs` in `parser.js`): Parses individual province log entries. Tracks 22 spell types, 11+ thievery operations, resource movements (aid, stolen goods), dragon donations, and ritual completions. Handles date prefix removal and timestamp line filtering.
+
+**Province News** (`parseProvinceNews` in `parser.js`): Parses province-level incoming event news. Tracks attacks suffered, thievery and spell impacts, aid received, daily login bonuses, and war outcomes.
+
+**Combined Province Summary** (`formatCombinedProvinceSummary` in `parser.js`): Merges Province Logs and Province News into a single unified output. Triggered when both the primary and secondary textareas have content.
 
 
 ## Test Data
@@ -74,4 +78,6 @@ tk close <id>  # mark done
 
 ## Key Specifications
 
-`Utopia Game Parser Requirements.md` (24K) contains detailed game mechanics, attack format specs, and parsing rules. Consult it when implementing or debugging parsing behavior.
+`docs/spec.md` — current-state behavioural specification covering all parser outputs, Advanced Settings toggles, copy button behaviours, UI interactions, and architectural constraints. **Read this first** when implementing any new feature or fixing a bug.
+
+`docs/Utopia Game Parser Requirements.md` — game domain knowledge: attack formats, spell names, thievery op names, date rules, kingdom/province structure. Consult when implementing or debugging parsing behaviour.
