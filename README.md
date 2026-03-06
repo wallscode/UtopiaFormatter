@@ -141,8 +141,8 @@ UtopiaFormatter/
 │   ├── Kingdom News original.txt       # Kingdom News test input (493 lines)
 │   ├── Kingdom News Report target format.txt  # Expected Kingdom News output
 │   ├── provincelogs.txt                # Province Logs test input (1,172 lines)
-│   └── provincelogs_expected_output.txt
-├── ProvinceNewsExample.txt             # Province News test input
+│   ├── provincelogs_expected_output.txt
+│   └── ProvinceNewsExample.txt         # Province News test input
 ├── Utopia Game Parser Requirements.md  # Game mechanics and parsing specs
 ├── CLAUDE.md                           # AI assistant project instructions
 └── README.md                           # This file

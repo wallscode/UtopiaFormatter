@@ -1,0 +1,237 @@
+example text which should be ignored
+
+February 1 of YR1	Our people decided to explore new territories and have settled 15 acres of new land.
+February 1 of YR1	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 53,846 gold coins. Additionally, your scholars have been busy, contributing 4,260 books to your growing library of knowledge.
+February 7 of YR1	A new scientist, Recruit Hayyie (Economy), has emerged and has joined our academic ranks.
+February 21 of YR1	We have received a shipment of 7,500 runes from No Better Time (5:1).
+February 22 of YR1	We have received a shipment of 10,000 runes from ticking time (5:1).
+March 1 of YR1	Our people decided to explore new territories and have settled 15 acres of new land.
+March 1 of YR1	Your people appreciate the impressive dedication and time devoted to them in the last month and have worked harder to generate 23,263 gold coins. Additionally, your scholars have been busy, contributing 2,856 books to your growing library of knowledge.
+March 2 of YR1	Meteors rain across our lands, and are not expected to stop for 13 days.
+March 2 of YR1	We have received a shipment of 7,500 runes from No Better Time (5:1).
+March 2 of YR1	We have received a shipment of 22,500 runes from Ill be there in a tick (5:1).
+March 3 of YR1	Meteors rain across the lands and kill 82 peasants, 17 Magicians and 54 Beastmasters!
+March 3 of YR1	Our mages noticed a possible spell attempt by Synchronized Snow Shoveling (3:7) causing trouble on our lands!
+March 3 of YR1	Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. Our mages noticed a possible spell attempt by Synchronized Snow Shoveling (3:7) causing trouble on our lands!
+March 3 of YR1	Our mages noticed a possible spell attempt by Synchronized Snow Shoveling (3:7) causing trouble on our lands!
+March 4 of YR1	Meteors rain across the lands and kill 31 peasants, 17 Magicians and 52 Beastmasters!
+March 4 of YR1	We have received a shipment of 5,000 runes from Tea time (5:1).
+March 4 of YR1	5,827 runes of our runes were stolen!
+March 4 of YR1	4,186 runes of our runes were stolen!
+March 4 of YR1	2,846 runes of our runes were stolen!
+March 4 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 4 days!
+March 5 of YR1	Meteors rain across the lands and kill 24 peasants, 3 Magicians and 10 Beastmasters!
+March 5 of YR1	Rioting has started amongst our people. Our tax collection efforts will be hampered for 10 days!
+March 6 of YR1	Meteors rain across the lands and kill 35 peasants, 15 Magicians and 48 Beastmasters!
+March 7 of YR1	Meteors rain across the lands and kill 39 peasants, 12 Magicians and 37 Beastmasters!
+March 8 of YR1	Meteors rain across the lands and kill 102 peasants, 1 Magician and 4 Beastmasters!
+March 9 of YR1	Meteors rain across the lands and kill 83 peasants, 4 Magicians and 15 Beastmasters!
+March 10 of YR1	Meteors rain across the lands and kill 28 peasants, 5 Magicians and 18 Beastmasters!
+March 10 of YR1	We have found thieves from Skeleton Skeet Shooting (3:7) causing trouble within our lands!
+March 10 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 4 days!
+March 10 of YR1	Enemies have convinced our soldiers to demand more money for upkeep for 5 days.
+March 11 of YR1	Meteors rain across the lands and kill 38 peasants, 1 soldier, 1 Magician and 39 Beastmasters!
+March 11 of YR1	We have found thieves from Synchronized Snow Shoveling (3:7) causing trouble within our lands!
+March 12 of YR1	Meteors rain across the lands and kill 83 peasants, 1 soldier, 2 Magicians and 60 Beastmasters!
+March 13 of YR1	Meteors rain across the lands and kill 59 peasants and 2 Beastmasters!
+March 14 of YR1	Meteors rain across the lands and kill 94 peasants and 5 Beastmasters!
+March 14 of YR1	Rioting has started amongst our people. Our tax collection efforts will be hampered for 8 days!
+March 15 of YR1	Meteors rain across the lands and kill 78 peasants, 2 soldiers, 1 Magician and 57 Beastmasters!
+March 15 of YR1	Our Wizards' ability to regain their mana has been disrupted! Fortunately, our Wizards recovered quickly and remain unaffected.
+March 16 of YR1	Meteors rain across the lands and kill 104 peasants, 2 soldiers, 1 Magician and 49 Beastmasters!
+March 17 of YR1	We have found thieves from Anti-Sex Cardboard Beds (3:7) causing trouble within our lands!
+March 17 of YR1	We have found thieves from Anti-Sex Cardboard Beds (3:7) causing trouble within our lands!
+March 17 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 1 day!
+March 17 of YR1	We have received a shipment of 23,602 runes from Ill be there in a tick (5:1).
+March 18 of YR1	We have received a shipment of 2,000 runes from Stewies Time Machine (5:1).
+March 19 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 5 days!
+March 19 of YR1	We have received a shipment of 2,383 runes from Sushi Sampo Time (5:1).
+March 19 of YR1	We have received a shipment of 4,585 runes from Tea time (5:1).
+March 20 of YR1	We have received a shipment of 2,000 runes from Stewies Time Machine (5:1).
+March 21 of YR1	Meteors rain across the lands and kill 96 peasants and 1 Beastmaster!
+March 21 of YR1	We have received a shipment of 3,473 runes from Father time (5:1).
+March 22 of YR1	Meteors rain across the lands and kill 45 peasants, 2 soldiers, 17 Magicians and 57 Beastmasters!
+March 22 of YR1	A new scientist, Recruit Ezzerland (Economy), has emerged and has joined our academic ranks.
+March 22 of YR1	Our mages noticed a possible spell attempt by Snowman Tossing (3:7) causing trouble on our lands!
+March 22 of YR1	Our mages noticed a possible spell attempt by Snowman Tossing (3:7) causing trouble on our lands!
+March 22 of YR1	Our mages noticed a possible spell attempt by Snowman Tossing (3:7) causing trouble on our lands!
+March 22 of YR1	Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. Our mages noticed a possible spell attempt by Snowman Tossing (3:7) causing trouble on our lands!
+March 22 of YR1	Rioting has started amongst our people. Our tax collection efforts will be hampered for 9 days!
+March 23 of YR1	Meteors rain across the lands and kill 37 peasants and 21 Beastmasters!
+March 23 of YR1	We have received a shipment of 571 runes from Sushi Sampo Time (5:1).
+March 24 of YR1	Meteors rain across the lands and kill 96 peasants, 1 soldier, 1 Magician and 43 Beastmasters!
+March 24 of YR1	We have received a shipment of 878 runes from Sushi Sampo Time (5:1).
+April 1 of YR1	Our people decided to explore new territories and have settled 15 acres of new land.
+April 1 of YR1	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 45,314 gold coins. Additionally, your scholars have been busy, contributing 4,227 books to your growing library of knowledge.
+April 1 of YR1	Meteors rain across the lands and kill 109 peasants and 12 Beastmasters!
+April 2 of YR1	Meteors rain across the lands and kill 77 peasants and 14 Beastmasters!
+April 2 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 2 of YR1	Our Wizards' ability to regain their mana has been disrupted! Fortunately, our Wizards recovered quickly and remain unaffected.
+April 3 of YR1	Meteors rain across the lands and kill 66 peasants, 1 soldier, 1 Magician and 56 Beastmasters!
+April 3 of YR1	We have received a shipment of 2,595 runes from Sushi Sampo Time (5:1).
+April 3 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 5 days!
+April 4 of YR1	Meteors rain across the lands and kill 49 peasants and 15 Beastmasters!
+April 4 of YR1	We have received a shipment of 845 runes from Slack Time (5:1).
+April 4 of YR1	We have received a shipment of 12,054 runes from Ill be there in a tick (5:1).
+April 5 of YR1	Meteors rain across the lands and kill 52 peasants and 30 Beastmasters!
+April 6 of YR1	Meteors rain across the lands and kill 36 peasants, 1 soldier and 27 Beastmasters!
+April 7 of YR1	Meteors rain across the lands and kill 12 peasants and 19 Beastmasters!
+April 8 of YR1	Meteors rain across the lands and kill 111 peasants, 2 soldiers, 1 Magician and 58 Beastmasters!
+April 9 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 6 days!
+April 10 of YR1	924 runes of our runes were stolen!
+April 10 of YR1	We have found thieves from Nordic Noodling (3:7) causing trouble within our lands!
+April 10 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 10 of YR1	1,344 gold coins were stolen from our coffers!
+April 11 of YR1	We have received a shipment of 13,373 runes from Ill be there in a tick (5:1).
+April 16 of YR1	Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. Our mages noticed a possible spell attempt by Synchronized Snow Shoveling (3:7) causing trouble on our lands!
+April 16 of YR1	Pitfalls are haunting our lands for 19 days, causing increased defensive losses during battle.
+April 16 of YR1	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from An unknown province from Odd-lympics (3:7) came through and ravaged our lands! They captured 56 acres! We lost 1 Druid and 451 Beastmasters in this battle. We reawakened 226 of our dead troops into soldiers.
+April 17 of YR1	We have received a shipment of 30,000 gold coins from Time to Shine (5:1).
+April 18 of YR1	We have found thieves from Skeleton Skeet Shooting (3:7) causing trouble within our lands!
+April 18 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 4 days!
+April 18 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 18 of YR1	We have found thieves from Escaping Epstein Island (3:7) causing trouble within our lands!
+April 18 of YR1	We have found thieves from Escaping Epstein Island (3:7) causing trouble within our lands!
+April 18 of YR1	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from 19 - Escaping Epstein Island (3:7) came through and ravaged our lands! They captured 83 acres! We lost 28 soldiers, 1 Druid and 586 Beastmasters in this battle. It appears we have a turncoat General commanding our forces my Liege, his ill command of our forces has resulted in increased military casualties.
+April 19 of YR1	We have discovered a turncoat general leading our military. He has been executed for treason!
+April 19 of YR1	16 wizards of our wizards abandoned us hoping for a better life!
+April 19 of YR1	We have found thieves from Safe Space Igloo Building (3:7) causing trouble within our lands!
+April 19 of YR1	We have found thieves from Safe Space Igloo Building (3:7) causing trouble within our lands!
+April 19 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 19 of YR1	6 of our specialist troops abandoned us hoping for a better life!
+April 19 of YR1	We have found thieves from Safe Space Igloo Building (3:7) causing trouble within our lands!
+April 19 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 19 of YR1	We have found thieves from Safe Space Igloo Building (3:7) causing trouble within our lands!
+April 19 of YR1	10 Beastmasters abandoned us hoping for a better life!
+April 19 of YR1	Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.
+April 19 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 19 of YR1	Rioting has started amongst our people. Our tax collection efforts will be hampered for 7 days!
+April 19 of YR1	We have received a shipment of 1,834 runes from Slack Time (5:1).
+April 22 of YR1	We have received a shipment of 599 runes from Sushi Sampo Time (5:1).
+April 22 of YR1	We have received a shipment of 4,702 runes from Father time (5:1).
+April 22 of YR1	We have received a shipment of 579 runes from About time dude (5:1).
+April 23 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 23 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 4 days!
+April 23 of YR1	We have received a shipment of 110 runes from Sushi Sampo Time (5:1).
+April 24 of YR1	1,989 runes of our runes were stolen!
+April 24 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+April 24 of YR1	1,545 runes of our runes were stolen!
+April 24 of YR1	1,200 runes of our runes were stolen!
+April 24 of YR1	933 runes of our runes were stolen!
+April 24 of YR1	We have found thieves from Snowman Tossing (3:7) causing trouble within our lands!
+May 1 of YR1	Our people decided to explore new territories and have settled 15 acres of new land.
+May 1 of YR1	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 59,836 gold coins. Additionally, your scholars have been busy, contributing 4,419 books to your growing library of knowledge.
+May 3 of YR1	We have received a shipment of 3,703 runes from Slack Time (5:1).
+May 4 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 5 days!
+May 4 of YR1	We have received a shipment of 2,864 runes from Ill be there in a tick (5:1).
+May 5 of YR1	We have received a shipment of 2,071 runes from Ill be there in a tick (5:1).
+May 6 of YR1	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from 19 - Escaping Epstein Island (3:7) came through and ravaged our lands! They captured 98 acres! We lost 10 soldiers and 526 Beastmasters in this battle. We reawakened 268 of our dead troops into soldiers.
+May 6 of YR1	We have received a shipment of 5,000 runes from Its 5 OClock Somewhere (5:1).
+May 8 of YR1	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 8 of YR1	We have received a shipment of 2,567 runes from Sushi Sampo Time (5:1).
+May 10 of YR1	Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 3 days!
+May 12 of YR1	A new scientist, Recruit Gearhead (Arcane Arts), has emerged and has joined our academic ranks.
+May 12 of YR1	My, Liege, as a result of our failed war we must give up some land to our enemy and to help rebuild our Kingdom we will re-allocate some of our land to assist our Kingdom's effort to rebuild. We have given up 90 acres of our total land. 30 acres has gone to our enemies as tribute from our withdrawal and 60 acres for our Kingdom to utilize and provide to those most in need.
+May 12 of YR1	My, Liege, as a result of our war we have been provided an amalgam of resources. We have received 1,140 free building credits to rebuild our lands. We have received 1,710 free specialist credits to train our military. We have received 22,152 science books to further our academic research.
+June 1 of YR1	Our people decided to explore new territories and have settled 15 acres of new land.
+June 1 of YR1	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 62,743 gold coins. Additionally, your scholars have been busy, contributing 5,646 books to your growing library of knowledge.
+June 4 of YR1	We have received a shipment of 166 explore pool acres (84 acres lost!) from Tea time (5:1).
+June 22 of YR1	A new scientist, Recruit Thalius (Military), has emerged and has joined our academic ranks.
+February 1 of YR2	Our people decided to explore new territories and have settled 20 acres of new land.
+February 1 of YR2	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 58,847 gold coins. Additionally, your scholars have been busy, contributing 6,630 books to your growing library of knowledge.
+February 13 of YR2	Shadowlight has revealed thieves from At my signal_ unleash hell (6:1) causing trouble and prevented what may have been a successful operation within our lands!
+February 17 of YR2	A new scientist, Recruit AmrasArFeiniel (Arcane Arts), has emerged and has joined our academic ranks.
+April 1 of YR2	Our people decided to explore new territories and have settled 20 acres of new land.
+April 1 of YR2	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 56,792 gold coins. Additionally, your scholars have been busy, contributing 7,128 books to your growing library of knowledge.
+April 2 of YR2	A new scientist, Recruit Old Sam (Arcane Arts), has emerged and has joined our academic ranks.
+April 2 of YR2	We have received a shipment of 100,000 gold coins from Ill be there in a tick (5:1).
+April 3 of YR2	Shadowlight has revealed that Arancini (2:4) was responsible for this attack.
+April 17 of YR2	Shadowlight has revealed that 10_Kentucky (3:3) was responsible for this attack.
+April 18 of YR2	Shadowlight has revealed that Flandern (3:3) was responsible for this attack.
+April 19 of YR2	Pitfalls are haunting our lands for 10 days, causing increased defensive losses during battle.
+April 19 of YR2	Forces from 21 - Landman (3:3) came through and ravaged our lands! They captured 101 acres! We lost 20 soldiers, 730 Beastmasters and 893 peasants in this battle. We reawakened 375 of our dead troops into soldiers. The enemy’s ferocious battle cry tore through our ranks, leaving 228 of our population dead in its wake.
+April 21 of YR2	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from 9 - PeanutButter Pickles (2:4) came through and ravaged our lands! They looted 13,911 books! Savages! We lost 1 soldier, 267 Beastmasters and 288 peasants in this battle. We reawakened 134 of our dead troops into soldiers.
+May 1 of YR2	Our people decided to explore new territories and have settled 20 acres of new land.
+May 1 of YR2	Your people appreciate the impressive dedication and time devoted to them in the last month and have worked harder to generate 29,842 gold coins. Additionally, your scholars have been busy, contributing 5,058 books to your growing library of knowledge.
+May 4 of YR2	Shadowlight has revealed that Hammerhide (3:9) was responsible for this attack.
+May 6 of YR2	2,705 runes of our runes were stolen!
+May 6 of YR2	2,705 runes of our runes were stolen!
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	3,863 runes of our runes were stolen!
+May 6 of YR2	3,863 runes of our runes were stolen!
+May 6 of YR2	5,409 runes of our runes were stolen!
+May 6 of YR2	5,409 runes of our runes were stolen!
+May 6 of YR2	5,409 runes of our runes were stolen!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 6 of YR2	5,405 runes of our runes were stolen!
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	5,403 runes of our runes were stolen!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	5,400 runes of our runes were stolen!
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 6 of YR2	We have found thieves from Mafdet the Magnificent (3:9) causing trouble within our lands!
+May 6 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 8 of YR2	Forces from 21 - Please Use Luge (3:7) came through and ravaged our lands! They looted 15,228 books! Savages! We lost 3 soldiers, 183 Beastmasters and 245 peasants in this battle. We reawakened 93 of our dead troops into soldiers.
+May 9 of YR2	We have received a shipment of 10,000 bushels from About time dude (5:1).
+May 11 of YR2	A new scientist, Recruit Azalon (Arcane Arts), has emerged and has joined our academic ranks.
+May 11 of YR2	Shadowlight has revealed thieves from Please Use Luge (3:7) causing trouble and prevented what may have been a successful operation within our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by To resurrect the soul (5:5) causing trouble on our lands!
+May 12 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 12 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 12 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 12 of YR2	We have found thieves from capturing their chief (5:5) causing trouble within our lands!
+May 12 of YR2	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from 12 - capturing their chief (5:5) came through and ravaged our lands! They captured 54 acres! We lost 13 soldiers, 465 Beastmasters and 654 peasants in this battle. We reawakened 239 of our dead troops into soldiers.
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 12 of YR2	Our mages noticed a possible spell attempt by Borrow a corpse (5:5) causing trouble on our lands!
+May 14 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 14 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+May 14 of YR2	We have found thieves from Stomp the grass (5:5) causing trouble within our lands!
+May 23 of YR2	Shadowlight has revealed thieves from RenotS024 (3:4) causing trouble and prevented what may have been a successful operation within our lands!
+June 1 of YR2	Our people decided to explore new territories and have settled 20 acres of new land.
+June 1 of YR2	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 58,012 gold coins. Additionally, your scholars have been busy, contributing 7,752 books to your growing library of knowledge.
+June 2 of YR2	We have found thieves from Stomp the grass (5:5) causing trouble within our lands!
+June 2 of YR2	Forces from 1 - Stomp the grass (5:5) came through and ravaged our lands! They looted 20,987 books! Savages! We lost 2 Druids, 257 Beastmasters and 459 peasants in this battle. We reawakened 129 of our dead troops into soldiers.
+June 3 of YR2	Shadowlight has revealed that Rhasta its Tricksy (5:6) was responsible for this attack.
+June 5 of YR2	Shadowlight has revealed thieves from Sapper of Absalom (2:11) causing trouble and prevented what may have been a successful operation within our lands!
+June 5 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+June 5 of YR2	Our mages noticed a possible spell attempt by Undercity (2:11) causing trouble on our lands!
+June 5 of YR2	Pitfalls are haunting our lands for 6 days, causing increased defensive losses during battle.
+June 5 of YR2	Forces from 16 - Sapper of Absalom (2:11) came through and ravaged our lands! They captured 83 acres! We lost 7 Druids, 540 Beastmasters and 923 peasants in this battle. We reawakened 273 of our dead troops into soldiers.
+June 14 of YR2	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+June 14 of YR2	We have found thieves from Houston we have a problem (5:7) causing trouble within our lands!
+June 14 of YR2	We have found thieves from Houston we have a problem (5:7) causing trouble within our lands!
+June 14 of YR2	Multiple enemy generals coordinate their assault with ruthless precision, leaving your forces in disarray and suffering catastrophic casualties. Forces from 22 - Houston we have a problem (5:7) came through and ravaged our lands! They looted 12,035 books! Savages! We lost 3 soldiers, 5 Druids, 181 Beastmasters and 262 peasants in this battle. We reawakened 94 of our dead troops into soldiers.
+June 21 of YR2	A new scientist, Recruit Smiles (Arcane Arts), has emerged and has joined our academic ranks.
+June 23 of YR2	We have received a shipment of 150,000 bushels from Sushi Sampo Time (5:1).
+January 1 of YR3	Our people decided to explore new territories and have settled 25 acres of new land.
+January 1 of YR3	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 54,463 gold coins. Additionally, your scholars have been busy, contributing 7,260 books to your growing library of knowledge.
+January 9 of YR3	A new scientist, Recruit Mansoor (Arcane Arts), has emerged and has joined our academic ranks.
+January 20 of YR3	Shadowlight has revealed thieves from Djinn of Wands (1:4) causing trouble and prevented what may have been a successful operation within our lands!
+January 21 of YR3	Shadowlight has revealed thieves from swoop (2:3) causing trouble and prevented what may have been a successful operation within our lands!
+February 1 of YR3	Our people decided to explore new territories and have settled 25 acres of new land.
+February 1 of YR3	Your people appreciate the extreme dedication and time devoted to them in the last month and have worked harder to generate 55,430 gold coins. Additionally, your scholars have been busy, contributing 7,524 books to your growing library of knowledge.
+February 4 of YR3	Shadowlight has revealed thieves from Skum Phoenix (2:2) causing trouble and prevented what may have been a successful operation within our lands!
+February 4 of YR3	3,629 runes of our runes were stolen!
+February 4 of YR3	3,629 runes of our runes were stolen!
+February 4 of YR3	We have found thieves from Skum Phoenix (2:2) causing trouble within our lands!
+February 4 of YR3	3,629 runes of our runes were stolen!
+February 4 of YR3	We have found thieves causing trouble within our lands. Unfortunately, we know not where they came from.
+February 4 of YR3	3,630 runes of our runes were stolen!

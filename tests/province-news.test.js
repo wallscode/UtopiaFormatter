@@ -12,7 +12,7 @@ const {
     detectInputType
 } = require('../js/parser.js');
 
-const examplePath = path.join(__dirname, '..', 'ProvinceNewsExample.txt');
+const examplePath = path.join(__dirname, 'ProvinceNewsExample.txt');
 const exampleText = fs.readFileSync(examplePath, 'utf8');
 
 let passed = 0;

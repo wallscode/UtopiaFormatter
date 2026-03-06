@@ -19,7 +19,7 @@ const {
 } = require('../js/parser.js');
 
 const logsPath = path.join(__dirname, 'provincelogs.txt');
-const newsPath = path.join(__dirname, '..', 'ProvinceNewsExample.txt');
+const newsPath = path.join(__dirname, 'ProvinceNewsExample.txt');
 
 const logsText = fs.readFileSync(logsPath, 'utf8');
 const newsText = fs.readFileSync(newsPath, 'utf8');
