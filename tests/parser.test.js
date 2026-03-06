@@ -99,3 +99,96 @@ const whitespaceTest = parser.normalizeWhitespace('Hello    World');
 console.log(`Whitespace normalization: ${whitespaceTest === 'Hello World' ? '✅ PASSED' : '❌ FAILED'}`);
 
 console.log('\nAll tests completed!');
+
+// ─── detectInputType tests ────────────────────────────────────────────────────
+
+console.log('\n--- detectInputType ---');
+
+const { detectInputType } = parser;
+let dPassed = 0, dFailed = 0;
+function dAssert(desc, got, expected) {
+    if (got === expected) {
+        console.log(`  PASS: ${desc}`);
+        dPassed++;
+    } else {
+        console.error(`  FAIL: ${desc}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(got)}`);
+        dFailed++;
+    }
+}
+
+// Province Logs markers (each one should produce 'province-logs')
+dAssert('early indications → province-logs',
+    detectInputType('February 1 of YR0 Early indications show that our operation was a success'),
+    'province-logs');
+dAssert('your wizards gather → province-logs',
+    detectInputType('March 5 of YR1 Your wizards gather their power'),
+    'province-logs');
+dAssert('you have ordered → province-logs',
+    detectInputType('January 3 of YR2 You have ordered your troops to march'),
+    'province-logs');
+dAssert('you have given orders to commence work → province-logs',
+    detectInputType('April 2 of YR1 You have given orders to commence work on 5 Guilds'),
+    'province-logs');
+dAssert('begin casting → province-logs',
+    detectInputType('May 10 of YR0 begin casting Fireball'),
+    'province-logs');
+dAssert('we have sent → province-logs',
+    detectInputType('June 1 of YR1 We have sent 5,000 gold coins to our ally'),
+    'province-logs');
+dAssert('our thieves have returned with → province-logs',
+    detectInputType('July 20 of YR0 Our thieves have returned with 10,000 runes'),
+    'province-logs');
+dAssert('our thieves were able to steal → province-logs',
+    detectInputType('February 3 of YR2 Our thieves were able to steal 5,000 gold coins'),
+    'province-logs');
+
+// Kingdom News markers (each should produce 'kingdom-news-log')
+dAssert('captured N acres of land → kingdom-news-log',
+    detectInputType('February 1 of YR0\t15 - Province (5:1) captured 100 acres of land from 20 - Target (4:1).'),
+    'kingdom-news-log');
+dAssert('ambushed armies from → kingdom-news-log',
+    detectInputType('March 3 of YR1\t7 - Province (5:1) ambushed armies from 4:1'),
+    'kingdom-news-log');
+dAssert('razed N acres of → kingdom-news-log',
+    detectInputType('April 4 of YR1\t3 - Province (5:1) razed 50 acres of 4:1'),
+    'kingdom-news-log');
+dAssert('invaded and looted → kingdom-news-log',
+    detectInputType('May 5 of YR1\t8 - Province (5:1) invaded and looted 4:1'),
+    'kingdom-news-log');
+dAssert('killed N people → kingdom-news-log',
+    detectInputType('June 6 of YR2\t9 - Province (5:1) killed 500 people'),
+    'kingdom-news-log');
+dAssert('attempted an invasion of → kingdom-news-log',
+    detectInputType('July 7 of YR2\t2 - Province (5:1) attempted an invasion of 4:1'),
+    'kingdom-news-log');
+dAssert('but was repelled → kingdom-news-log',
+    detectInputType('January 1 of YR3\t4 - Province (5:1) attempted an invasion but was repelled'),
+    'kingdom-news-log');
+
+// Province News marker (tab-delimited date format)
+dAssert('tab-delimited date → province-news',
+    detectInputType('February 1 of YR1\tOur people decided to explore new territories'),
+    'province-news');
+
+// Null for unrecognized input
+dAssert('random text → null',
+    detectInputType('This is some random unrecognized text'),
+    null);
+dAssert('empty-ish text → null',
+    detectInputType('   '),
+    null);
+
+// Kingdom News takes priority over Province Logs when both markers are present
+const bothMarkers = 'begin casting Meteor Shower\nFebruary 1 of YR0\t15 - Province (5:1) captured 100 acres of land from 20 - Target (4:1).';
+dAssert('kingdom-news takes priority over province-logs',
+    detectInputType(bothMarkers),
+    'kingdom-news-log');
+
+// Province Logs takes priority over Province News (province-news detection reached only if no ops/spells)
+const logsAndNews = 'February 1 of YR1\tOur people decided to explore\nMarch 5 of YR0 Your wizards gather their power';
+dAssert('province-logs takes priority over province-news tab format',
+    detectInputType(logsAndNews),
+    'province-logs');
+
+console.log(`\ndetectInputType: ${dPassed} passed, ${dFailed} failed`);
+if (dFailed > 0) process.exitCode = 1;

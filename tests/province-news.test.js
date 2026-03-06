@@ -287,5 +287,188 @@ assert(pnResult.indexOf('Aid Received:') < pnResult.indexOf('Thievery Impacts:')
 // Restore
 Object.assign(advSettings.provinceNews, origPN);
 
+// =============================================================================
+// accumulateProvinceNewsData: synthetic line-type unit tests
+// Tests individual input line patterns using minimal synthetic inputs.
+// Each test sends one or a few tab-delimited Province News lines.
+// =============================================================================
+
+console.log('\n--- Synthetic line-type unit tests ---');
+
+const { accumulateProvinceNewsData } = require('../js/parser.js');
+
+function pnLine(event) {
+    return `February 1 of YR1\t${event}`;
+}
+
+function accum(lines) {
+    return accumulateProvinceNewsData(Array.isArray(lines) ? lines.join('\n') : lines);
+}
+
+// Aid received — soldiers
+(function() {
+    const d = accum(pnLine('We have received a shipment of 5,000 soldiers from Ally Province (1:1).'));
+    assert(d.aidByResource.soldiers.total === 5000, 'Aid soldiers: total parsed correctly');
+    assert(d.aidByResource.soldiers.shipments === 1, 'Aid soldiers: shipment count = 1');
+})();
+
+// Stolen bushels
+(function() {
+    const d = accum(pnLine('1,500 bushels were stolen from our stores!'));
+    assert(d.stolen.bushels === 1500, 'Stolen bushels: amount parsed correctly');
+})();
+
+// Troop desertions — wizards
+(function() {
+    const d = accum(pnLine('25 wizards of our wizards abandoned us hoping for a better life!'));
+    assert(d.desertions.total === 25, 'Desertion wizards: total = 25');
+    assert(d.desertions.byType['wizards'] === 25, 'Desertion wizards: byType entry correct');
+})();
+
+// Troop desertions — specialist troops
+(function() {
+    const d = accum(pnLine('10 of our specialist troops abandoned us hoping for a better life!'));
+    assert(d.desertions.total === 10, 'Desertion specialists: total = 10');
+    assert(d.desertions.byType['specialist troops'] === 10, 'Desertion specialists: byType entry correct');
+})();
+
+// Troop desertions — named type (e.g. Beastmasters)
+(function() {
+    const d = accum(pnLine('8 Beastmasters abandoned us hoping for a better life!'));
+    assert(d.desertions.total === 8, 'Desertion named (Beastmasters): total = 8');
+    assert(d.desertions.byType['Beastmasters'] === 8, 'Desertion named (Beastmasters): byType entry correct');
+})();
+
+// Multiple desertion types accumulated correctly
+(function() {
+    const d = accum([
+        pnLine('15 wizards of our wizards abandoned us hoping for a better life!'),
+        pnLine('5 of our specialist troops abandoned us hoping for a better life!'),
+        pnLine('3 Magicians abandoned us hoping for a better life!'),
+    ].join('\n'));
+    assert(d.desertions.total === 23, 'Multiple desertions: total = 23');
+    assert(d.desertions.byType['wizards'] === 15, 'Multiple desertions: wizards = 15');
+    assert(d.desertions.byType['specialist troops'] === 5, 'Multiple desertions: specialists = 5');
+    assert(d.desertions.byType['Magicians'] === 3, 'Multiple desertions: Magicians = 3');
+})();
+
+// Starvation — single event with multiple unit types
+(function() {
+    const d = accum(pnLine('Our people are starving! We have lost 50 peasants, 10 soldiers, 5 Magicians and 3 thieves.'));
+    assert(d.starvation.count === 1, 'Starvation: count = 1');
+    assert(d.starvation.total >= 68, 'Starvation: total casualties >= 68 (50+10+5+3)');
+    assert(d.starvation.byType['peasants'] === 50, 'Starvation: peasants = 50');
+    assert(d.starvation.byType['soldiers'] === 10, 'Starvation: soldiers = 10');
+})();
+
+// Daily login bonus — extreme tier
+(function() {
+    const d = accum(pnLine('Your people appreciate your extreme dedication and have gifted you 15 acres, 1,000 gold coins and 500 science books.'));
+    assert(d.loginBonus.extreme === 1, 'Login bonus extreme: tier counted');
+    assert(d.loginBonus.acres === 15, 'Login bonus extreme: acres parsed');
+    assert(d.loginBonus.gold === 1000, 'Login bonus extreme: gold parsed');
+})();
+
+// Daily login bonus — impressive tier
+(function() {
+    const d = accum(pnLine('Your people appreciate your impressive dedication and have gifted you 10 acres and 500 gold coins.'));
+    assert(d.loginBonus.impressive === 1, 'Login bonus impressive: tier counted');
+    assert(d.loginBonus.acres === 10, 'Login bonus impressive: acres parsed');
+})();
+
+// Turncoat general
+(function() {
+    const d = accum(pnLine('We have discovered a turncoat general leading our military. He has been executed for treason!'));
+    assert(d.turncoatGenerals === 1, 'Turncoat general: counted');
+})();
+
+// Failed propaganda
+(function() {
+    const d = accum(pnLine('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.'));
+    assert(d.failedPropaganda === 1, 'Failed propaganda: counted');
+})();
+
+// Received spells: Greed
+(function() {
+    const d = accum(pnLine('Enemies have convinced our soldiers to demand more money for upkeep for 7 days.'));
+    assert(d.greed.count === 1, 'Greed: count = 1');
+    assert(d.greed.totalDays === 7, 'Greed: totalDays = 7');
+})();
+
+// Received spells: Pitfalls with multiple occurrences
+(function() {
+    const d = accum([
+        pnLine('Pitfalls are haunting our lands for 14 days.'),
+        pnLine('Pitfalls are haunting our lands for 10 days.'),
+    ].join('\n'));
+    assert(d.pitfalls.count === 2, 'Pitfalls: count = 2');
+    assert(d.pitfalls.totalDays === 24, 'Pitfalls: totalDays = 24');
+})();
+
+// Received spells: Mana disruption lasting
+(function() {
+    const d = accum(pnLine("Our Wizards' ability to regain their mana has been disrupted! Our mana recovery will be affected for 5 days!"));
+    assert(d.manaDis.count === 1, 'Mana disruption lasting: count = 1');
+    assert(d.manaDis.totalDays === 5, 'Mana disruption lasting: totalDays = 5');
+})();
+
+// Received spells: Storms (unconfirmed pattern, uses loose regex)
+(function() {
+    const d = accum(pnLine('Storms will ravage our lands for 3 days!'));
+    assert(d.storms.count === 1, 'Storms: count = 1');
+    assert(d.storms.totalDays === 3, 'Storms: totalDays = 3');
+})();
+
+// Received spells: Chastity (unconfirmed pattern, uses loose regex)
+(function() {
+    const d = accum(pnLine('Our womenfolk have taken a vow of chastity for 8 days!'));
+    assert(d.chastity.count === 1, 'Chastity: count = 1');
+    assert(d.chastity.totalDays === 8, 'Chastity: totalDays = 8');
+})();
+
+// Received spells: Droughts (unconfirmed pattern, uses loose regex)
+(function() {
+    const d = accum(pnLine('A drought will reign over our lands for 12 days!'));
+    assert(d.droughts.count === 1, 'Droughts: count = 1');
+    assert(d.droughts.totalDays === 12, 'Droughts: totalDays = 12');
+})();
+
+// Meteor shower damage tick: multiple unit types
+(function() {
+    const d = accum([
+        pnLine('Meteors rain across the lands and kill 20 peasants and 5 soldiers!'),
+        pnLine('Meteors rain across the lands and kill 10 Magicians!'),
+    ].join('\n'));
+    assert(d.meteorDays === 2, 'Meteor ticks: 2 days counted');
+    assert(d.meteorCasualties.peasants === 20, 'Meteor casualties: peasants = 20');
+    assert(d.meteorCasualties.soldiers === 5, 'Meteor casualties: soldiers = 5');
+    assert(d.meteorCasualties.Magicians === 10, 'Meteor casualties: Magicians = 10');
+})();
+
+// Spell attempt accumulation from multiple sources
+(function() {
+    const d = accum([
+        pnLine('Our mages noticed a possible spell attempt by Alpha Province (1:1) causing trouble on our lands!'),
+        pnLine('Our mages noticed a possible spell attempt by Alpha Province (1:1) causing trouble on our lands!'),
+        pnLine('Our mages noticed a possible spell attempt by Beta Province (2:2) causing trouble on our lands!'),
+    ].join('\n'));
+    assert(d.spellAttempts === 3, 'Spell attempts: total = 3');
+    assert(d.spellsBySource['Alpha Province (1:1)'] === 2, 'Spell attempts: Alpha = 2');
+    assert(d.spellsBySource['Beta Province (2:2)'] === 1, 'Spell attempts: Beta = 1');
+})();
+
+// Attacks suffered: acres vs books
+(function() {
+    const d = accum([
+        pnLine('Forces from Raider (3:1) came through and ravaged our lands! They captured 75 acres.'),
+        pnLine('Forces from Scholar (3:2) came through and ravaged our lands! They looted 5,000 books.'),
+    ].join('\n'));
+    assert(d.attacks.length === 2, 'Attacks suffered: 2 entries');
+    const acresAtk = d.attacks.find(a => a.kingdom === '3:1');
+    const booksAtk = d.attacks.find(a => a.kingdom === '3:2');
+    assert(acresAtk && acresAtk.acresCaptured === 75, 'Attacks suffered: acres captured = 75');
+    assert(booksAtk && booksAtk.booksLooted === 5000, 'Attacks suffered: books looted = 5,000');
+})();
+
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===`);
 if (failed > 0) process.exit(1);

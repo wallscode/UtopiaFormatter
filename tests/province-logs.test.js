@@ -598,6 +598,317 @@ function runApplySettingsTests() {
     return failed === 0;
 }
 
+// ── accumulateProvinceLogsData: synthetic line-type unit tests ────────────────
+// Tests individual input line patterns using minimal synthetic inputs.
+// Lines must include a YR\d+ token; the parser strips everything up to and
+// including the YR token before processing.
+function runAccumulateUnitTests() {
+    console.log('\n=== ACCUMULATE PROVINCE LOGS DATA UNIT TESTS ===\n');
+
+    let passed = 0, failed = 0;
+    function assert(desc, got, expected) {
+        if (got === expected) { passed++; }
+        else { failed++; console.log(`  ❌ ${desc}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(got)}`); }
+    }
+
+    function pl(event) { return `February 1 of YR0 ${event}`; }
+    function accum(lines) {
+        return parser.accumulateProvinceLogsData(
+            Array.isArray(lines) ? lines.join('\n') : lines
+        );
+    }
+
+    // ── Spells ───────────────────────────────────────────────────────────────
+    // Spell target format: line ends with (Province Name (N:N)) — no ", sent N"
+    console.log('--- Spells ---');
+
+    // Meteor Showers
+    (function() {
+        const d = accum([
+            pl('begin casting Meteors will rain across the lands for 5 days (Enemy Province (1:1))'),
+            pl('begin casting Meteors will rain across the lands for 7 days (Other Foe (2:1))'),
+        ].join('\n'));
+        assert('Meteor Showers: 2 casts counted', d.spellCounts['Meteor Showers'], 2);
+        assert('Meteor Showers: 12 days impact', d.spellImpacts['Meteor Showers'], 12);
+    })();
+
+    // Lightning Strike (uses impactRegex for runes, not default)
+    (function() {
+        const d = accum(pl('begin casting Lightning strikes the Towers and incinerates 50,000 runes (Target Province (3:1))'));
+        assert('Lightning Strike: 1 cast', d.spellCounts['Lightning Strike'], 1);
+        assert('Lightning Strike: 50,000 runes impact', d.spellImpacts['Lightning Strike'], 50000);
+    })();
+
+    // Pitfalls
+    (function() {
+        const d = accum(pl('begin casting Pitfalls will haunt the lands for 10 days (Target Province (3:1))'));
+        assert('Pitfalls: 1 cast', d.spellCounts['Pitfalls'], 1);
+        assert('Pitfalls: 10 days impact', d.spellImpacts['Pitfalls'], 10);
+    })();
+
+    // Fireball
+    (function() {
+        const d = accum(pl('begin casting A fireball burns through the skies and kills 1,200 peasants (Target Province (3:1))'));
+        assert('Fireball: 1 cast', d.spellCounts['Fireball'], 1);
+        assert('Fireball: 1,200 peasants impact', d.spellImpacts['Fireball'], 1200);
+    })();
+
+    // Mystic Vortex
+    (function() {
+        const d = accum(pl('begin casting A magic vortex overcomes the province, negating 3 active spells (Target Province (3:1))'));
+        assert('Mystic Vortex: 1 cast', d.spellCounts['Mystic Vortex'], 1);
+        assert('Mystic Vortex: 3 active spells impact', d.spellImpacts['Mystic Vortex'], 3);
+    })();
+
+    // Amnesia
+    (function() {
+        const d = accum(pl('begin casting You have caused the scientists to forget 75,000 books (Target Province (3:1))'));
+        assert('Amnesia: 1 cast', d.spellCounts['Amnesia'], 1);
+        assert('Amnesia: 75,000 books impact', d.spellImpacts['Amnesia'], 75000);
+    })();
+
+    // Failed spell (but spell fails) — spell still counted; success=false in spellOps
+    (function() {
+        const d = accum(pl('begin casting Meteors will rain across the lands but the spell fails (Target Province (3:1))'));
+        assert('Failed Meteor Shower: 1 cast counted', d.spellCounts['Meteor Showers'], 1);
+        assert('Failed Meteor Shower: 0 impact', d.spellImpacts['Meteor Showers'], 0);
+        assert('Failed spell in spellOps', d.spellOps.length, 1);
+        assert('Failed spell success=false', d.spellOps[0].success, false);
+    })();
+
+    // ── Thievery Operations ───────────────────────────────────────────────────
+    // Thievery target format: (Province Name (N:N), sent N) — note comma before "sent"
+    console.log('--- Thievery Operations ---');
+
+    // Arson (burns buildings — has "buildings" in the line)
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. Our thieves burn down buildings and damage 12 acres. (Target Province (4:1), sent 5)'));
+        assert('Arson: 1 op', d.thieveryCounts['Arson'], 1);
+        assert('Arson: 12 acres impact', d.thieveryImpacts['Arson'], 12);
+    })();
+
+    // Greater Arson (burns specific building type, no "buildings" keyword)
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. Our thieves burned down 5 acres of Watch Towers (Target Province (4:1), sent 5)'));
+        assert('Greater Arson: 1 op', d.thieveryCounts['Greater Arson'], 1);
+        assert('Greater Arson: Watch Towers building type', d.greaterArsonBuildingCounts['Watch Towers'], 5);
+    })();
+
+    // Propaganda
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. We have converted 100 of the enemy\'s soldiers to our side (Target Province (4:1), sent 5)'));
+        assert('Propaganda: 1 op', d.thieveryCounts['Propaganda'], 1);
+    })();
+
+    // Bribe Generals
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. Our thieves have bribed an enemy general (Target Province (4:1), sent 5)'));
+        assert('Bribe Generals: 1 op', d.thieveryCounts['Bribe Generals'], 1);
+    })();
+
+    // Incite Riots
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. Our thieves have caused rioting for 6 days (Target Province (4:1), sent 5)'));
+        assert('Incite Riots: 1 op', d.thieveryCounts['Incite Riots'], 1);
+        assert('Incite Riots: 6 days impact', d.thieveryImpacts['Incite Riots'], 6);
+    })();
+
+    // Kidnapping
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. Our thieves kidnapped many people. 150 of them peasants (Target Province (4:1), sent 5)'));
+        assert('Kidnapping: 1 op', d.thieveryCounts['Kidnapping'], 1);
+        assert('Kidnapping: 150 peasants impact', d.thieveryImpacts['Kidnapping'], 150);
+    })();
+
+    // Night Strike
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. We eliminated 30 enemy troops (Target Province (4:1), sent 5)'));
+        assert('Night Strike: 1 op', d.thieveryCounts['Night Strike'], 1);
+        assert('Night Strike: 30 enemy troops impact', d.thieveryImpacts['Night Strike'], 30);
+    })();
+
+    // Assassinate Wizards
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. We have eliminated 25 wizards of the enemy (Target Province (4:1), sent 5)'));
+        assert('Assassinate Wizards: 1 op', d.thieveryCounts['Assassinate Wizards'], 1);
+        assert('Assassinate Wizards: 25 wizards impact', d.thieveryImpacts['Assassinate Wizards'], 25);
+    })();
+
+    // Sabotage Wizards
+    (function() {
+        const d = accum(pl('Early indications show that our operation was a success. We disrupted the ability to regain their mana for 4 days (Target Province (4:1), sent 5)'));
+        assert('Sabotage Wizards: 1 op', d.thieveryCounts['Sabotage Wizards'], 1);
+        assert('Sabotage Wizards: 4 days impact', d.thieveryImpacts['Sabotage Wizards'], 4);
+    })();
+
+    // Vault Robbery (gold coins stolen via "our thieves have returned with")
+    (function() {
+        const d = accum(pl('Our thieves have returned with 25,000 gold coins'));
+        assert('Vault Robbery: gold coins stolen = 25,000', d.goldCoinsStolen, 25000);
+        assert('Vault Robbery: count = 1', d.vaultRobberyCount, 1);
+    })();
+
+    // Granary Robbery (bushels)
+    (function() {
+        const d = accum(pl('Our thieves have returned with 10,000 bushels'));
+        assert('Granary Robbery: bushels stolen = 10,000', d.bushelsStolen, 10000);
+        assert('Granary Robbery: count = 1', d.granaryRobberyCount, 1);
+    })();
+
+    // Tower Robbery (runes)
+    (function() {
+        const d = accum(pl('Our thieves have returned with 30,000 runes'));
+        assert('Tower Robbery: runes stolen = 30,000', d.runesStolen, 30000);
+        assert('Tower Robbery: count = 1', d.towerRobberyCount, 1);
+    })();
+
+    // Steal War Horses
+    (function() {
+        const d = accum(pl('Our thieves release 100 horses from the stables and bring back 80 war horses'));
+        assert('Steal War Horses: 1 op', d.stealHorsesOps, 1);
+        assert('Steal War Horses: 100 released', d.stealHorsesReleased, 100);
+        assert('Steal War Horses: 80 brought back', d.stealHorsesBroughtBack, 80);
+        assert('War horses stolen count', d.warHorsesStolen, 0); // "bring back" path, not "returned with" path
+    })();
+
+    // Failed thievery
+    (function() {
+        const d = accum(pl('Sources have indicated the mission was foiled. We lost 15 thieves (Target Province (Enemy (4:1)), sent 20)'));
+        assert('Failed thievery: count = 1', d.failedThieveryCount, 1);
+        assert('Failed thievery: 15 thieves lost', d.thiervesLostCount, 15);
+    })();
+
+    // Thieves lost in successful op
+    (function() {
+        const d = accum(pl('We lost 3 thieves in the operation'));
+        assert('Success thieves lost: 3', d.successThiervesLostCount, 3);
+    })();
+
+    // ── Aid ───────────────────────────────────────────────────────────────────
+    console.log('--- Aid ---');
+
+    (function() {
+        const d = accum([
+            pl('We have sent 50,000 gold coins to Province A'),
+            pl('We have sent 10,000 runes to Province B'),
+            pl('We have sent 5,000 bushels to Province C'),
+            pl('We have sent 1,000 soldiers to Province D'),
+            pl('We have sent 25 explore pool acres to Province E'),
+        ].join('\n'));
+        assert('Aid gold coins: 50,000', d.aidTotals['gold coins'], 50000);
+        assert('Aid runes: 10,000', d.aidTotals['runes'], 10000);
+        assert('Aid bushels: 5,000', d.aidTotals['bushels'], 5000);
+        assert('Aid soldiers: 1,000', d.aidTotals['soldiers'], 1000);
+        assert('Aid explore pool acres: 25', d.aidTotals['explore pool acres'], 25);
+    })();
+
+    // ── Dragon ────────────────────────────────────────────────────────────────
+    console.log('--- Dragon ---');
+
+    (function() {
+        const d = accum([
+            pl('We contributed 100,000 gold coins to the quest of launching a dragon'),
+            pl('We contributed 50,000 bushels to the quest of launching a dragon'),
+            pl('We have sent 500 troops to battle the dragon; the dragon is weakened by 500 troops and 6,250 points'),
+        ].join('\n'));
+        assert('Dragon gold donated: 100,000', d.dragonGoldDonated, 100000);
+        assert('Dragon bushels donated: 50,000', d.dragonBushelsDonated, 50000);
+        assert('Dragon troops total: 500', d.dragonTroopsTotal, 500);
+        assert('Dragon points total: 6,250', d.dragonPointsTotal, 6250);
+    })();
+
+    // ── Ritual ────────────────────────────────────────────────────────────────
+    console.log('--- Ritual ---');
+
+    (function() {
+        const d = accum([
+            pl('We are now closer to completing our ritual project'),
+            pl('We are now closer to completing our ritual project'),
+            pl('We are now closer to completing our ritual project'),
+        ].join('\n'));
+        assert('Ritual casts: 3', d.ritualCasts, 3);
+    })();
+
+    // ── Construction ──────────────────────────────────────────────────────────
+    console.log('--- Construction ---');
+
+    (function() {
+        const d = accum([
+            pl('You have given orders to commence work on 10 Guilds'),
+            pl('You have given orders to commence work on 5 Homes and 3 Hospitals'),
+            pl('You have given orders to commence work on 2 Towers'),
+        ].join('\n'));
+        assert('Construction Guilds: 10', d.constructionCounts['Guilds'], 10);
+        assert('Construction Homes: 5', d.constructionCounts['Homes'], 5);
+        assert('Construction Hospitals: 3', d.constructionCounts['Hospitals'], 3);
+        assert('Construction Towers: 2', d.constructionCounts['Towers'], 2);
+    })();
+
+    // Demolition (razed)
+    (function() {
+        const d = accum(pl('You have destroyed 4 Banks'));
+        assert('Razed Banks: 4', d.razedCounts['Banks'], 4);
+    })();
+
+    // ── Science ───────────────────────────────────────────────────────────────
+    console.log('--- Science ---');
+
+    (function() {
+        const d = accum([
+            pl('500 books allocated to ALCHEMY'),
+            pl('1,000 books allocated to TACTICS'),
+            pl('750 books allocated to CHANNELING'),
+        ].join('\n'));
+        assert('Science ALCHEMY: 500', d.scienceCounts['ALCHEMY'], 500);
+        assert('Science TACTICS: 1,000', d.scienceCounts['TACTICS'], 1000);
+        assert('Science CHANNELING: 750', d.scienceCounts['CHANNELING'], 750);
+    })();
+
+    // ── Military Training & Release ───────────────────────────────────────────
+    console.log('--- Military ---');
+
+    (function() {
+        const d = accum([
+            pl('You have ordered that 200 soldiers be trained'),
+            pl('You have ordered that 50 cavalry be trained'),
+        ].join('\n'));
+        assert('Training soldiers: 200', d.trainingCounts['soldiers'], 200);
+        assert('Training cavalry: 50', d.trainingCounts['cavalry'], 50);
+    })();
+
+    (function() {
+        const d = accum(pl('You have ordered that 100 soldiers be released from duty'));
+        assert('Release soldiers: 100', d.releaseCounts['soldiers'], 100);
+    })();
+
+    // ── Exploration ───────────────────────────────────────────────────────────
+    console.log('--- Exploration ---');
+
+    (function() {
+        const d = accum(pl('You have ordered an expedition of 300 soldiers to explore 15 acres at a cost of 7,500 gold coins'));
+        assert('Explore acres: 15', d.exploreAcres, 15);
+        assert('Explore soldiers: 300', d.exploreSoldiers, 300);
+        assert('Explore cost: 7,500', d.exploreCost, 7500);
+    })();
+
+    // ── Draft & Wages ─────────────────────────────────────────────────────────
+    console.log('--- Draft & Wages ---');
+
+    (function() {
+        const d = accum([
+            pl('You will draft up to 25% of your population'),
+            pl('You have set your draft rate to Aggressive.'),
+            pl('You will pay 150% of military wages'),
+        ].join('\n'));
+        assert('Draft percent: 25', d.draftPercent, 25);
+        assert('Draft rate: Aggressive', d.draftRate, 'Aggressive');
+        assert('Military wages: 150', d.militaryWagesPercent, 150);
+    })();
+
+    console.log(`\n${failed === 0 ? '✅' : '❌'} Accumulate unit tests: ${passed} passed, ${failed} failed`);
+    return failed === 0;
+}
+
 // Run all tests
 console.log('Starting Province Logs Parser Test Suite...\n');
 
@@ -605,14 +916,16 @@ const mainTestPassed = runProvinceLogsTest();
 const componentTestsPassed = runComponentTests();
 const valueTestsPassed = runValueAssertionTests();
 const applyTestsPassed = runApplySettingsTests();
+const accumulateTestsPassed = runAccumulateUnitTests();
 
 console.log('\n=== TEST SUMMARY ===');
-console.log(`Main parsing test: ${mainTestPassed ? '✅ PASSED' : '❌ FAILED'}`);
-console.log(`Component tests: ${componentTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
-console.log(`Value assertions: ${valueTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
-console.log(`Apply settings:   ${applyTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
+console.log(`Main parsing test:    ${mainTestPassed ? '✅ PASSED' : '❌ FAILED'}`);
+console.log(`Component tests:      ${componentTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
+console.log(`Value assertions:     ${valueTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
+console.log(`Apply settings:       ${applyTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
+console.log(`Accumulate unit tests: ${accumulateTestsPassed ? '✅ PASSED' : '❌ FAILED'}`);
 
-if (mainTestPassed && componentTestsPassed && valueTestsPassed && applyTestsPassed) {
+if (mainTestPassed && componentTestsPassed && valueTestsPassed && applyTestsPassed && accumulateTestsPassed) {
     console.log('\n🎉 ALL TESTS PASSED! Province Logs Parser is working correctly.');
 } else {
     console.log('\n⚠️  Some tests failed. Please review the output above for details.');
