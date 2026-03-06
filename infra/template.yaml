@@ -130,6 +130,14 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistProd}'
+          - Sid: AllowGitHubActions
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt GitHubActionsRole.Arn
+            Action: s3:*
+            Resource:
+              - !GetAtt S3BucketProd.Arn
+              - !Sub '${S3BucketProd.Arn}/*'
 
   S3BucketPolicyDev:
     Type: AWS::S3::BucketPolicy
@@ -147,6 +155,14 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistDev}'
+          - Sid: AllowGitHubActions
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt GitHubActionsRole.Arn
+            Action: s3:*
+            Resource:
+              - !GetAtt S3BucketDev.Arn
+              - !Sub '${S3BucketDev.Arn}/*'
 
   # ── CloudFront Distributions ─────────────────────────────────────────────────
 

@@ -248,14 +248,33 @@ function getLogBucket() {
 }
 
 // ---------------------------------------------------------------------------
+// Game date format — lines starting with this pattern are header lines that
+// should never have been logged; skip them silently.
+// ---------------------------------------------------------------------------
+const GAME_DATE_REGEX = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+
+// ---------------------------------------------------------------------------
+// Known-ignorable patterns — lines reviewed and confirmed as non-content.
+// These are silently skipped without prompting or persisting to acknowledged.
+// Add entries here when a pattern is conclusively determined to need no ticket.
+// ---------------------------------------------------------------------------
+const IGNORABLE_PATTERNS = [
+    /^Edition\w+\s+YR\d+/, // Edition header lines (e.g. "EditionJanuary YR8")
+];
+
+// ---------------------------------------------------------------------------
 // Line normalisation — collapse numeric variation so structurally identical
 // lines group together regardless of amounts, kingdoms, etc.
 // ---------------------------------------------------------------------------
 function normalise(line) {
     return line
-        .replace(/\(\d+:\d+\)/g, '(K:K)')  // kingdom IDs like (4:1)
-        .replace(/\d+/g, 'N')               // all remaining digit sequences
-        .replace(/\s+/g, ' ')               // collapse whitespace
+        .replace(/\(\d+:\d+\)/g, '(K:K)')               // kingdom IDs like (4:1) → (K:K)
+        .replace(/\([^()\n]*?\s*\(K:K\)/g,               // "(Province Name (K:K)" → "(PROVINCE (K:K)"
+                 '(PROVINCE (K:K)')
+        .replace(/(\d+\s*-\s*)[^()\n]*?\s*\(K:K\)/g,     // "N - Province Name (K:K)" → "N - PROVINCE (K:K)"
+                 '$1PROVINCE (K:K)')
+        .replace(/\d+/g, 'N')                             // all remaining digit sequences → N
+        .replace(/\s+/g, ' ')                             // collapse whitespace
         .trim();
 }
 
@@ -287,8 +306,13 @@ function parseAllLogs(files) {
             try {
                 const obj = JSON.parse(raw_line);
                 if (obj && typeof obj.line === 'string') {
+                    const line = obj.line;
+                    // Skip date header lines — these are not unrecognized game content
+                    if (GAME_DATE_REGEX.test(line)) continue;
+                    // Skip lines confirmed as ignorable (reviewed, no ticket needed)
+                    if (IGNORABLE_PATTERNS.some(p => p.test(line))) continue;
                     events.push({
-                        line: obj.line,
+                        line,
                         context: typeof obj.context === 'string' ? obj.context : 'unknown',
                     });
                 }

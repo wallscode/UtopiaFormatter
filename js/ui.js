@@ -7,6 +7,7 @@
 let lastRawInput = null;
 let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
+let secondaryInputVisible = false;
 const advSettings = {
     kingdomNews: {
         showAttacks: true,
@@ -177,7 +178,8 @@ function getDomElements() {
         advContent: document.getElementById('adv-content'),
         advToggle: document.getElementById('adv-toggle'),
         parseStatus: document.getElementById('parse-status'),
-        provinceNewsText: document.getElementById('province-news-text')
+        provinceNewsText: document.getElementById('province-news-text'),
+        secondarySection: document.getElementById('secondary-input-section')
     };
 }
 
@@ -265,14 +267,21 @@ function handleParse(elements) {
         return;
     }
 
-    // Combined mode: both textareas have content and the main input is Province Logs
-    const isCombined = !!(inputText && newsText && detectInputType(inputText) === 'province-logs');
+    // Combined mode: both textareas have content and one is Province Logs and the other is Province News
+    const mainType = inputText ? detectInputType(inputText) : null;
+    const isCombinedLogsNews = !!(inputText && newsText && mainType === 'province-logs');
+    const isCombinedNewsLogs = !!(inputText && newsText && mainType === 'province-news');
+    const isCombined = isCombinedLogsNews || isCombinedNewsLogs;
 
     if (isCombined) {
-        elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
+        const logsText = isCombinedLogsNews ? inputText : newsText;
+        const pNewsText = isCombinedLogsNews ? newsText : inputText;
+        elements.detectBadge.textContent = isCombinedLogsNews
+            ? 'Auto-detected: Province Logs + Province News'
+            : 'Auto-detected: Province News + Province Logs';
         elements.detectBadge.classList.remove('hidden');
         try {
-            let parsedText = formatCombinedProvinceSummary(inputText, newsText);
+            let parsedText = formatCombinedProvinceSummary(logsText, pNewsText);
             lastRawParsed = parsedText;
             parsedText = applyCombinedProvinceSettings(parsedText);
             lastRawInput = inputText;
@@ -365,6 +374,8 @@ function handleClear(elements) {
     elements.outputText.value = '';
     if (elements.provinceNewsText) elements.provinceNewsText.value = '';
     elements.detectBadge.classList.add('hidden');
+    secondaryInputVisible = false;
+    setSecondaryInputVisible(false, null, elements);
     updateParseButtonState(elements);
 
     // Reset war detection state
@@ -381,6 +392,69 @@ function handleClear(elements) {
 
     // Focus back to input for better UX
     elements.inputText.focus();
+}
+
+/**
+ * Shows or hides the secondary input section and updates its heading/label for the given mode.
+ * @param {boolean} visible
+ * @param {string|null} mode - 'province-logs' or 'province-news' (the primary mode)
+ * @param {Object} elements - DOM elements object
+ */
+function setSecondaryInputVisible(visible, mode, elements) {
+    if (!elements.secondarySection) return;
+    if (!visible) {
+        elements.secondarySection.classList.add('hidden');
+        return;
+    }
+    elements.secondarySection.classList.remove('hidden');
+    const heading = document.getElementById('secondary-input-heading');
+    const labelEl = elements.secondarySection.querySelector('.textarea-label');
+    const textarea = elements.provinceNewsText;
+    if (mode === 'province-logs') {
+        if (heading) heading.innerHTML = 'Province News <span class="optional-label">(optional)</span>';
+        if (labelEl) labelEl.textContent = 'Paste Province News here to generate a Combined Province Summary:';
+        if (textarea) textarea.placeholder = 'Paste Province News text here...';
+    } else {
+        if (heading) heading.innerHTML = 'Province Logs <span class="optional-label">(optional)</span>';
+        if (labelEl) labelEl.textContent = 'Paste Province Logs here to generate a Combined Province Summary:';
+        if (textarea) textarea.placeholder = 'Paste Province Logs text here...';
+    }
+}
+
+/**
+ * Renders the "Combined Summary" toggle in the Advanced Settings panel.
+ * @param {HTMLElement} container - left column element
+ * @param {string} mode - 'province-logs' or 'province-news' (the primary mode)
+ * @param {Object} elements - DOM elements object
+ */
+function renderSecondaryInputToggle(container, mode, elements) {
+    const title = document.createElement('div');
+    title.className = 'adv-group-title';
+    title.textContent = 'Combined Summary';
+    container.appendChild(title);
+
+    const label = document.createElement('label');
+    label.className = 'adv-checkbox-label';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = secondaryInputVisible;
+
+    const labelText = mode === 'province-logs'
+        ? 'Show Province News input for Combined Summary'
+        : 'Show Province Logs input for Combined Summary';
+
+    checkbox.addEventListener('change', () => {
+        secondaryInputVisible = checkbox.checked;
+        setSecondaryInputVisible(secondaryInputVisible, mode, elements);
+        if (!secondaryInputVisible && elements.provinceNewsText) {
+            elements.provinceNewsText.value = '';
+        }
+    });
+
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(' ' + labelText));
+    container.appendChild(label);
 }
 
 /**
@@ -492,10 +566,18 @@ function autoDetectMode(elements) {
     const text = elements.inputText.value;
     const newsText = elements.provinceNewsText ? elements.provinceNewsText.value : '';
 
-    if (text.trim() && newsText.trim() && detectInputType(text.trim()) === 'province-logs') {
-        elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
-        elements.detectBadge.classList.remove('hidden');
-        return;
+    if (text.trim() && newsText.trim()) {
+        const mainType = detectInputType(text.trim());
+        if (mainType === 'province-logs') {
+            elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
+            elements.detectBadge.classList.remove('hidden');
+            return;
+        }
+        if (mainType === 'province-news') {
+            elements.detectBadge.textContent = 'Auto-detected: Province News + Province Logs';
+            elements.detectBadge.classList.remove('hidden');
+            return;
+        }
     }
 
     const effective = text.trim() || newsText.trim();
@@ -915,6 +997,8 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
  * @param {Object} elements - DOM elements object
  */
 function renderProvinceLogsSettings(leftCol, rightCol, elements) {
+    renderSecondaryInputToggle(leftCol, 'province-logs', elements);
+
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {
@@ -1628,6 +1712,8 @@ function applyProvinceLogsSettings(text) {
  * @param {Object} elements - DOM elements object
  */
 function renderProvinceNewsSettings(leftCol, rightCol, elements) {
+    renderSecondaryInputToggle(leftCol, 'province-news', elements);
+
     // Determine which sections are present in the parsed output
     const presentSections = new Set();
     if (lastRawParsed) {

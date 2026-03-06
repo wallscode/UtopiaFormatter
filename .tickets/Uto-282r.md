@@ -1,6 +1,6 @@
 ---
 id: Uto-282r
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-04T12:15:22Z
