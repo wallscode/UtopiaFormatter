@@ -546,7 +546,13 @@ button:active {
     border: 1px solid #744210;
 }
 
-/* Keyboard shortcuts hint */
+/* Keyboard shortcuts hint — hidden on touch devices (shortcuts require a physical keyboard) */
+@media (pointer: coarse) {
+    .kbd-shortcuts {
+        display: none;
+    }
+}
+
 .kbd-shortcuts {
     margin-top: 0.75rem;
     font-size: 0.85rem;
