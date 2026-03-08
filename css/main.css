@@ -263,6 +263,89 @@ section > label {
     text-align: center;
 }
 
+/* ── Hint (?) tooltip ─────────────────────────────────────────────────────── */
+
+/* Wrapper provides the hover target and tooltip anchor */
+.adv-hint-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* The ? button */
+.adv-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #3a3a3e;
+    background: #1a1a1f;
+    color: #7a8290;
+    font-size: 0.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.adv-hint:hover,
+.adv-hint:focus-visible {
+    color: #8aafc8;
+    border-color: #8aafc8;
+    outline: 2px solid #8aafc8;
+    outline-offset: 1px;
+}
+
+/* Tooltip bubble */
+.adv-hint-tooltip {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e24;
+    color: #d4d8de;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #3a3a3e;
+    width: 220px;
+    white-space: normal;
+    z-index: 200;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+/* Arrow pointing up toward the ? */
+.adv-hint-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: #3a3a3e;
+}
+
+/* Show on desktop hover over the whole wrapper (satisfies WCAG 1.4.13 — hoverable) */
+.adv-hint-wrap:hover .adv-hint-tooltip,
+/* Show when the ? button is focused (keyboard access) */
+.adv-hint-wrap:focus-within .adv-hint-tooltip,
+/* Show when toggled open on touch */
+.adv-hint-wrap.is-open .adv-hint-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
 /* Parent-child checkbox groups in Show/Hide */
 .adv-parent-group {
     grid-column: 1 / -1;

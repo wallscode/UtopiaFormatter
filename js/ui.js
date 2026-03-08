@@ -8,6 +8,7 @@ let lastRawInput = null;
 let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
+let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
         showAttacks: true,
@@ -265,6 +266,18 @@ function setupEventListeners(elements) {
         }
     });
 
+    // Close hint tooltips when clicking outside any hint button (touch support)
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.adv-hint-wrap.is-open').forEach(w => w.classList.remove('is-open'));
+    });
+
+    // Close hint tooltips on Escape (WCAG 1.4.13 — dismissible)
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.adv-hint-wrap.is-open').forEach(w => w.classList.remove('is-open'));
+        }
+    });
+
 }
 
 /**
@@ -468,9 +481,14 @@ function renderSecondaryInputToggle(container, mode, elements) {
 
     const label = document.createElement('label');
     label.htmlFor = id;
+    const secondaryHintText = mode === 'province-logs'
+        ? 'Show a second input box to paste Province News. When both inputs have content, a Combined Province Summary is generated'
+        : 'Show a second input box to paste Province Logs. When both inputs have content, a Combined Province Summary is generated';
+
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(' ' + labelText));
     group.appendChild(label);
+    group.appendChild(makeHint(secondaryHintText));
     container.appendChild(group);
 }
 
@@ -729,6 +747,47 @@ function renderAdvancedSettings(elements) {
 }
 
 /**
+ * Creates an accessible hint (?) button with a tooltip.
+ * - Desktop: tooltip appears on hover over the wrapper or focus of the button.
+ * - Touch: button click toggles .is-open on the wrapper; outside click / Escape closes it.
+ * WCAG: role="tooltip", aria-describedby, aria-label, keyboard accessible, hoverable (WCAG 1.4.13).
+ * @param {string} text - Tooltip content
+ * @returns {HTMLElement} Wrapper span containing the button and tooltip
+ */
+function makeHint(text) {
+    const id = `adv-hint-${++_hintCounter}`;
+
+    const wrap = document.createElement('span');
+    wrap.className = 'adv-hint-wrap';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'adv-hint';
+    btn.setAttribute('aria-label', 'More information');
+    btn.setAttribute('aria-describedby', id);
+    btn.textContent = '?';
+
+    btn.addEventListener('click', e => {
+        e.stopPropagation();
+        // Close any other open tooltip
+        document.querySelectorAll('.adv-hint-wrap.is-open').forEach(w => {
+            if (w !== wrap) w.classList.remove('is-open');
+        });
+        wrap.classList.toggle('is-open');
+    });
+
+    const tooltip = document.createElement('span');
+    tooltip.className = 'adv-hint-tooltip';
+    tooltip.id = id;
+    tooltip.setAttribute('role', 'tooltip');
+    tooltip.textContent = text;
+
+    wrap.appendChild(btn);
+    wrap.appendChild(tooltip);
+    return wrap;
+}
+
+/**
  * Renders Kingdom News filter controls (show/hide attack types, unique window, section order)
  * @param {HTMLElement} container - The adv-content element
  * @param {Object} elements - DOM elements object
@@ -743,29 +802,32 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     const checkboxGroups = [
         {
             parentKey: 'showAttacks', parentLabel: 'Attacks',
+            hint: 'Show or hide all attack types in the output',
             children: [
-                { key: 'showTradMarch', label: 'Trad March' },
-                { key: 'showLearn',     label: 'Learn'      },
-                { key: 'showMassacre',  label: 'Massacre'   },
-                { key: 'showPlunder',   label: 'Plunder'    },
+                { key: 'showTradMarch', label: 'Trad March', hint: 'Include Traditional March attacks (land capture)' },
+                { key: 'showLearn',     label: 'Learn',      hint: 'Include Learn attacks (books looted from a province)' },
+                { key: 'showMassacre',  label: 'Massacre',   hint: 'Include Massacre attacks (peasants killed)' },
+                { key: 'showPlunder',   label: 'Plunder',    hint: 'Include Plunder attacks (resources looted)' },
             ]
         },
         {
             parentKey: 'showDragons', parentLabel: 'Dragons',
+            hint: 'Show dragon events — launches, completions, and enemy dragons killed',
             children: [
-                { key: 'showDragonCancellations', label: 'Dragon Cancellations' },
+                { key: 'showDragonCancellations', label: 'Dragon Cancellations', hint: 'Show when a kingdom cancels their dragon project' },
             ]
         },
         {
             parentKey: 'showKingdomRelations', parentLabel: 'Kingdom Relations',
+            hint: 'Show war and ceasefire events between kingdoms',
             children: [
-                { key: 'showWarDeclarations', label: 'War Declarations' },
-                { key: 'showCeasefires',      label: 'Ceasefires'       },
+                { key: 'showWarDeclarations', label: 'War Declarations', hint: 'Show which kingdoms declared war and when' },
+                { key: 'showCeasefires',      label: 'Ceasefires',       hint: 'Show ceasefire proposals, acceptances, and formal entries' },
             ]
         },
-        { key: 'showRituals',        label: 'Rituals started/completed'    },
-        { key: 'showRitualsFailed',  label: 'Rituals failed (summoning)'   },
-        { key: 'showRitualCoverage', label: 'Ritual coverage of our lands' },
+        { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions' },
+        { key: 'showRitualsFailed',  label: 'Rituals failed (summoning)',   hint: 'Show failed ritual summoning attempts' },
+        { key: 'showRitualCoverage', label: 'Ritual coverage of our lands', hint: 'For each attack your province suffered, note whether ritual coverage was active' },
     ];
 
     function makeCheckbox(key, id) {
@@ -796,6 +858,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
             parentLabel.appendChild(parentCb);
             parentLabel.appendChild(document.createTextNode(' ' + item.parentLabel));
             parentRow.appendChild(parentLabel);
+            if (item.hint) parentRow.appendChild(makeHint(item.hint));
             wrapper.appendChild(parentRow);
 
             // Children container
@@ -812,6 +875,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
                 childLabel.appendChild(childCb);
                 childLabel.appendChild(document.createTextNode(' ' + child.label));
                 childRow.appendChild(childLabel);
+                if (child.hint) childRow.appendChild(makeHint(child.hint));
                 childrenDiv.appendChild(childRow);
             }
 
@@ -833,6 +897,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
             label.appendChild(cb);
             label.appendChild(document.createTextNode(' ' + item.label));
             group.appendChild(label);
+            if (item.hint) group.appendChild(makeHint(item.hint));
             leftCol.appendChild(group);
         }
     }
@@ -866,6 +931,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
 
     windowLabel.appendChild(windowInput);
     windowGroup.appendChild(windowLabel);
+    windowGroup.appendChild(makeHint('Attacks by the same province within this many in-game days count as one unique. Set to 0 to count every attack as its own unique.'));
     leftCol.appendChild(windowGroup);
 
     // ── Uniques Grouping ─────────────────────────────────────────────────────
@@ -887,6 +953,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     groupingLabel.appendChild(groupingCheckbox);
     groupingLabel.appendChild(document.createTextNode(' Uniques grouped with Kingdoms'));
     groupingGroup.appendChild(groupingLabel);
+    groupingGroup.appendChild(makeHint('Show unique attack counts under each kingdom\'s summary instead of in a separate Uniques section'));
     leftCol.appendChild(groupingGroup);
 
     // ── War Only (only shown when war events detected) ────────────────────────
@@ -909,6 +976,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         warLabel.appendChild(warCheckbox);
         warLabel.appendChild(document.createTextNode(' War Only \u2014 show attacks involving war opponent only'));
         warGroup.appendChild(warLabel);
+        warGroup.appendChild(makeHint('Filter the output to only show attacks between your kingdom and your war opponent during the war period'));
         leftCol.appendChild(warGroup);
     }
 
@@ -1199,6 +1267,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     avgLabel.appendChild(avgCheckbox);
     avgLabel.appendChild(document.createTextNode(' Show averages'));
     avgGroup.appendChild(avgLabel);
+    avgGroup.appendChild(makeHint('Show the average impact per operation, e.g. average acres per Greater Arson op or average books per Amnesia'));
     rightCol.appendChild(avgGroup);
 
     const failedGroup = document.createElement('div');
@@ -1219,6 +1288,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     failedLabel.appendChild(failedCheckbox);
     failedLabel.appendChild(document.createTextNode(' Show failed thievery attempts'));
     failedGroup.appendChild(failedLabel);
+    failedGroup.appendChild(makeHint('Include failed thievery ops and any thieves lost in the Thievery Summary'));
     rightCol.appendChild(failedGroup);
 
     const failedSpellGroup = document.createElement('div');
@@ -1239,6 +1309,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     failedSpellLabel.appendChild(failedSpellCheckbox);
     failedSpellLabel.appendChild(document.createTextNode(' Show failed spell attempts'));
     failedSpellGroup.appendChild(failedSpellLabel);
+    failedSpellGroup.appendChild(makeHint('Include spells that were attempted but failed to land in the Spell Targets breakdown'));
     rightCol.appendChild(failedSpellGroup);
 
     const successLossGroup = document.createElement('div');
@@ -1259,6 +1330,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     successLossLabel.appendChild(successLossCheckbox);
     successLossLabel.appendChild(document.createTextNode(' Show thieves lost in successful operations'));
     successLossGroup.appendChild(successLossLabel);
+    successLossGroup.appendChild(makeHint('Include thief casualty counts from operations that succeeded (separate from failed op losses)'));
     rightCol.appendChild(successLossGroup);
 
     const constructionTitle = document.createElement('div');
@@ -1284,6 +1356,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     razedLabel.appendChild(razedCheckbox);
     razedLabel.appendChild(document.createTextNode(' Show razed building summary'));
     razedGroup.appendChild(razedLabel);
+    razedGroup.appendChild(makeHint('Include buildings demolished by your province in the Construction Summary'));
     rightCol.appendChild(razedGroup);
 
     const exploreGroup = document.createElement('div');
@@ -1304,6 +1377,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     exploreLabel.appendChild(exploreCheckbox);
     exploreLabel.appendChild(document.createTextNode(' Show exploration soldier & cost details'));
     exploreGroup.appendChild(exploreLabel);
+    exploreGroup.appendChild(makeHint('Show the number of soldiers sent and gold spent per exploration order in the Exploration Summary'));
     rightCol.appendChild(exploreGroup);
 
     const militaryTitle = document.createElement('div');
@@ -1329,6 +1403,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     releaseLabel.appendChild(releaseCheckbox);
     releaseLabel.appendChild(document.createTextNode(' Show troops released from duty'));
     releaseGroup.appendChild(releaseLabel);
+    releaseGroup.appendChild(makeHint('Include troop release orders in the Military Training section'));
     rightCol.appendChild(releaseGroup);
 
     const draftGroup = document.createElement('div');
@@ -1349,6 +1424,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     draftLabel.appendChild(draftCheckbox);
     draftLabel.appendChild(document.createTextNode(' Show draft percentage changes'));
     draftGroup.appendChild(draftLabel);
+    draftGroup.appendChild(makeHint('Include draft percentage orders (e.g. "draft up to 15% of population") in the Military Training section'));
     rightCol.appendChild(draftGroup);
 
     const draftRateGroup = document.createElement('div');
@@ -1369,6 +1445,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     draftRateLabel.appendChild(draftRateCheckbox);
     draftRateLabel.appendChild(document.createTextNode(' Show draft rate changes'));
     draftRateGroup.appendChild(draftRateLabel);
+    draftRateGroup.appendChild(makeHint('Include draft rate setting changes (e.g. "Intensive") in the Military Training section'));
     rightCol.appendChild(draftRateGroup);
 
     const wagesGroup = document.createElement('div');
@@ -1389,6 +1466,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     wagesLabel.appendChild(wagesCheckbox);
     wagesLabel.appendChild(document.createTextNode(' Show military wage changes'));
     wagesGroup.appendChild(wagesLabel);
+    wagesGroup.appendChild(makeHint('Include military wage percentage changes in the Military Training section'));
     rightCol.appendChild(wagesGroup);
 
     const miscTitle = document.createElement('div');
@@ -1802,6 +1880,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     srcLabel.appendChild(srcCheckbox);
     srcLabel.appendChild(document.createTextNode(' Show attacker names in Thievery & Spell Impacts'));
     srcGroup.appendChild(srcLabel);
+    srcGroup.appendChild(makeHint('Show which province or kingdom was responsible for each thievery op and spell impact'));
     rightCol.appendChild(srcGroup);
 
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
@@ -2294,6 +2373,7 @@ function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
     discordLabel.appendChild(discordCheckbox);
     discordLabel.appendChild(document.createTextNode(' Copy for Discord'));
     discordGroup.appendChild(discordLabel);
+    discordGroup.appendChild(makeHint('Show a "Copy for Discord" button that formats the output with Discord markdown (bold headers, code blocks)'));
     container.appendChild(discordGroup);
 
     // Alt copy toggle (device-dynamic label)
@@ -2316,6 +2396,9 @@ function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
     altCopyLabel.appendChild(altCopyCheckbox);
     altCopyLabel.appendChild(document.createTextNode(' ' + altCopyLabelText));
     altCopyGroup.appendChild(altCopyLabel);
+    altCopyGroup.appendChild(makeHint(isMobile
+        ? 'Show a "Copy Raw Text" button that copies plain unformatted text'
+        : 'Show a "Copy for Mobile" button that copies text formatted for pasting on mobile browsers'));
     container.appendChild(altCopyGroup);
 }
 
