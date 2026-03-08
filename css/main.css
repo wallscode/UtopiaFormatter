@@ -889,12 +889,10 @@ footer {
 
 .ev-stat-row {
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
     padding: 0.12rem 0;
     font-size: 0.85rem;
     color: #d4d8de;
-    gap: 0.5rem;
 }
 
 .ev-stat-label {
@@ -905,8 +903,6 @@ footer {
 .ev-stat-value {
     font-weight: 600;
     font-family: 'Courier New', monospace;
-    text-align: right;
-    word-break: break-all;
 }
 
 .ev-stat-value.ev-pos { color: #68d391; }

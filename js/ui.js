@@ -2835,7 +2835,7 @@ function renderSectionLines(card, lines) {
                 row.className = 'ev-stat-row';
                 const lbl = document.createElement('span');
                 lbl.className = 'ev-stat-label';
-                lbl.textContent = kvMatch[1];
+                lbl.textContent = kvMatch[1] + ': ';
                 const val = document.createElement('span');
                 val.className = 'ev-stat-value';
                 val.textContent = kvMatch[2];
@@ -2991,7 +2991,7 @@ function renderKnBlockLines(card, lines) {
                 row.className = 'ev-stat-row';
                 const lbl = document.createElement('span');
                 lbl.className = 'ev-stat-label';
-                lbl.textContent = kvMatch[1];
+                lbl.textContent = kvMatch[1] + ': ';
                 const val = document.createElement('span');
                 val.className = 'ev-stat-value';
                 val.textContent = kvMatch[2];
