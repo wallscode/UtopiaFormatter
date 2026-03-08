@@ -68,7 +68,7 @@ function initializeUIState(elements) {
     // Focus on input textarea for better UX
     elements.inputText.focus();
     
-    elements.inputText.placeholder = 'Paste your Kingdom News or Province Logs text here...';
+    elements.inputText.placeholder = 'Paste your Kingdom News, Province News, or Province Logs text here...';
     elements.outputText.placeholder = 'Formatted output will appear here...';
 }
 
