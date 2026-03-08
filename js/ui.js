@@ -785,6 +785,19 @@ function makeHint(text) {
             if (w !== wrap) w.classList.remove('is-open');
         });
         wrap.classList.toggle('is-open');
+        // Clamp tooltip within viewport after opening
+        if (wrap.classList.contains('is-open')) {
+            tooltip.style.transform = 'translateX(-50%)';
+            const rect = tooltip.getBoundingClientRect();
+            const margin = 8;
+            if (rect.right > window.innerWidth - margin) {
+                const overflow = rect.right - (window.innerWidth - margin);
+                tooltip.style.transform = `translateX(calc(-50% - ${overflow}px))`;
+            } else if (rect.left < margin) {
+                const overflow = margin - rect.left;
+                tooltip.style.transform = `translateX(calc(-50% + ${overflow}px))`;
+            }
+        }
     });
 
     const tooltip = document.createElement('span');
