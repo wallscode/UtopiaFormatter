@@ -36,7 +36,8 @@ const advSettings = {
         warOnly: false,
         warDetected: false,
         discordCopy: false,
-        showAltCopy: false
+        showAltCopy: false,
+        enhancedView: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
@@ -78,7 +79,8 @@ const advSettings = {
         showMilitaryWages: false,
         exploreDetails: false,
         discordCopy: false,
-        showAltCopy: false
+        showAltCopy: false,
+        enhancedView: false
     },
     provinceNews: {
         sectionOrder: ['Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts', 'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes'],
@@ -94,7 +96,8 @@ const advSettings = {
         },
         showSourceIdentifiers: false,
         discordCopy: false,
-        showAltCopy: false
+        showAltCopy: false,
+        enhancedView: false
     },
     combinedProvince: {
         sectionOrder: [
@@ -159,7 +162,8 @@ const advSettings = {
         exploreDetails:             false,
         showSourceIdentifiers:      false,
         discordCopy: false,
-        showAltCopy: false
+        showAltCopy: false,
+        enhancedView: false
     }
 };
 
@@ -185,7 +189,8 @@ function getDomElements() {
         advToggle: document.getElementById('adv-toggle'),
         parseStatus: document.getElementById('parse-status'),
         provinceNewsText: document.getElementById('province-news-text'),
-        secondarySection: document.getElementById('secondary-input-section')
+        secondarySection: document.getElementById('secondary-input-section'),
+        enhancedOutput: document.getElementById('enhanced-output')
     };
 }
 
@@ -312,6 +317,7 @@ function handleParse(elements) {
             lastRawInput = inputText;
             lastDetectedMode = 'combined-province';
             elements.outputText.value = parsedText;
+            updateEnhancedView(elements);
             autoResizeOutput(elements.outputText);
             showMessage(elements.outputText, 'Province Logs + Province News combined successfully!', 'success', elements.parseStatus);
             elements.outputText.focus();
@@ -373,6 +379,7 @@ function handleParse(elements) {
         lastRawInput = effectiveInput;
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
+        updateEnhancedView(elements);
         autoResizeOutput(elements.outputText);
         showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success', elements.parseStatus);
         elements.outputText.focus();
@@ -414,6 +421,11 @@ function handleClear(elements) {
     lastRawInput = null;
     lastDetectedMode = null;
     lastRawParsed = null;
+    if (elements.enhancedOutput) {
+        elements.enhancedOutput.innerHTML = '';
+        elements.enhancedOutput.classList.add('hidden');
+    }
+    elements.outputText.classList.remove('hidden');
     elements.advPanel.classList.add('hidden');
     elements.advToggle.setAttribute('aria-expanded', 'false');
     elements.advContent.setAttribute('hidden', '');
@@ -1048,6 +1060,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     }
 
     // ── Display Options ───────────────────────────────────────────────────────
+    renderEnhancedViewToggle(rightCol, 'kingdomNews', elements);
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
 
@@ -1474,6 +1487,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
 
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 
+    renderEnhancedViewToggle(rightCol, 'provinceLogs', elements);
     renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
@@ -1504,6 +1518,7 @@ function applyAndRerender(elements) {
             parsedText = applyProvinceLogsSettings(parsedText);
         }
         elements.outputText.value = parsedText;
+        updateEnhancedView(elements);
         autoResizeOutput(elements.outputText);
         updateDiscordButtonVisibility(elements, lastDetectedMode);
         updateAltCopyButtonVisibility(elements, lastDetectedMode);
@@ -1883,6 +1898,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
 
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
 
+    renderEnhancedViewToggle(rightCol, 'provinceNews', elements);
     renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
@@ -2196,6 +2212,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 
+    renderEnhancedViewToggle(rightCol, 'combinedProvince', elements);
     renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
@@ -2583,6 +2600,426 @@ function toDiscordProvinceLogs(text) {
     }
 
     return out.join('\n');
+}
+
+// ── Enhanced Output View ──────────────────────────────────────────────────────
+
+/**
+ * Renders the Enhanced View toggle in Advanced Settings.
+ */
+function renderEnhancedViewToggle(container, modeKey, elements) {
+    const group = document.createElement('div');
+    group.className = 'adv-group';
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = `adv-${modeKey}-enhancedView`;
+    cb.checked = advSettings[modeKey].enhancedView;
+    cb.addEventListener('change', () => {
+        advSettings[modeKey].enhancedView = cb.checked;
+        updateEnhancedView(elements);
+    });
+    label.htmlFor = cb.id;
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' Enhanced view'));
+    group.appendChild(label);
+    group.appendChild(makeHint('Replace the plain text output box with a styled card view. Copy buttons still use the plain text.'));
+    container.appendChild(group);
+}
+
+/**
+ * Returns the advSettings key for a given parser mode string.
+ */
+function modeKeyFor(mode) {
+    if (mode === 'kingdom-news-log')  return 'kingdomNews';
+    if (mode === 'province-news')     return 'provinceNews';
+    if (mode === 'combined-province') return 'combinedProvince';
+    return 'provinceLogs';
+}
+
+/**
+ * Shows/hides the enhanced output div vs the textarea based on current settings,
+ * then renders (or clears) the enhanced view.
+ */
+function updateEnhancedView(elements) {
+    if (!elements.enhancedOutput) return;
+    const mode = lastDetectedMode;
+    const modeKey = modeKeyFor(mode);
+    const enhanced = mode && advSettings[modeKey] && advSettings[modeKey].enhancedView;
+
+    if (enhanced) {
+        elements.outputText.classList.add('hidden');
+        elements.enhancedOutput.classList.remove('hidden');
+        renderEnhancedView(elements);
+    } else {
+        elements.enhancedOutput.classList.add('hidden');
+        elements.outputText.classList.remove('hidden');
+        elements.enhancedOutput.innerHTML = '';
+    }
+}
+
+/**
+ * Dispatches to mode-specific enhanced view renderer.
+ */
+function renderEnhancedView(elements) {
+    const container = elements.enhancedOutput;
+    const text = elements.outputText.value;
+    container.innerHTML = '';
+    if (!text) return;
+
+    const grid = document.createElement('div');
+    grid.className = 'ev-grid';
+    container.appendChild(grid);
+
+    const mode = lastDetectedMode;
+    if (mode === 'kingdom-news-log') {
+        renderEnhancedKingdomNews(grid, text);
+    } else {
+        renderEnhancedSections(grid, text, mode);
+    }
+}
+
+// ── Province Logs / Province News / Combined enhanced view ────────────────────
+
+/** Section left-border accent colours by section name */
+const EV_SECTION_COLORS = {
+    'Thievery Summary':               '#c8a450',
+    'Thievery Targets by Province':   '#c8a450',
+    'Thievery Targets by Op Type':    '#c8a450',
+    'Resources Stolen from Opponents':'#4aaa6a',
+    'Thievery Impacts':               '#4a9aba',
+    'Shadowlight Thief IDs':          '#4a9aba',
+    'Spell Summary':                  '#9a7acc',
+    'Spell Targets by Province':      '#9a7acc',
+    'Spell Targets by Spell Type':    '#9a7acc',
+    'Spell Impacts':                  '#4a9aba',
+    'Aid Summary':                    '#4aaa6a',
+    'Aid Received':                   '#4aaa6a',
+    'Attacks Suffered':               '#c87070',
+    'Military Training':              '#c87850',
+    'Dragon Summary':                 '#c87850',
+    'Ritual Summary':                 '#9a7acc',
+    'Construction Summary':           '#7a8aaa',
+    'Science Summary':                '#aab050',
+    'Exploration Summary':            '#4a9aba',
+    'Daily Login Bonus':              '#c8a450',
+    'Scientists Gained':              '#aab050',
+    'War Outcomes':                   '#c87070',
+};
+
+/**
+ * Renders Province Logs / Province News / Combined enhanced view.
+ * Parses the plain text output into section cards.
+ */
+function renderEnhancedSections(grid, text, mode) {
+    const lines = text.split('\n');
+    let headerLines = [];
+    let sections = [];
+    let currentSection = null;
+    let inHeader = true;
+
+    for (const line of lines) {
+        // Separator line (dashes) — skip
+        if (/^-{3,}$/.test(line.trim())) continue;
+
+        // Section header: non-empty, no leading space, ends with ':'
+        if (line.length > 0 && !line.startsWith(' ') && line.endsWith(':')) {
+            inHeader = false;
+            currentSection = { title: line.slice(0, -1), lines: [] };
+            sections.push(currentSection);
+            continue;
+        }
+
+        if (inHeader) {
+            headerLines.push(line);
+        } else if (currentSection) {
+            currentSection.lines.push(line);
+        }
+    }
+
+    // Render header
+    const titleLine = headerLines.find(l => l.trim().length > 0 && !l.startsWith('Date') && !l.match(/^\d/));
+    const dateLine  = headerLines.find(l => l.match(/^(Date|May|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec|\d)/i) || l.includes(' of YR') || l.includes(' - '));
+
+    if (titleLine || dateLine) {
+        const hdr = document.createElement('div');
+        hdr.className = 'ev-report-header';
+        if (titleLine) {
+            const t = document.createElement('div');
+            t.className = 'ev-report-title';
+            t.textContent = titleLine.trim();
+            hdr.appendChild(t);
+        }
+        if (dateLine) {
+            const d = document.createElement('div');
+            d.className = 'ev-report-meta';
+            d.textContent = dateLine.trim();
+            hdr.appendChild(d);
+        }
+        grid.appendChild(hdr);
+    }
+
+    // Render each section as a card
+    for (const section of sections) {
+        // Skip entirely empty sections
+        if (section.lines.every(l => l.trim() === '')) continue;
+
+        const card = document.createElement('div');
+        card.className = 'ev-card';
+        const accentColor = EV_SECTION_COLORS[section.title];
+        if (accentColor) card.style.borderLeftColor = accentColor;
+
+        const cardTitle = document.createElement('div');
+        cardTitle.className = 'ev-card-title';
+        cardTitle.textContent = section.title;
+        card.appendChild(cardTitle);
+
+        renderSectionLines(card, section.lines);
+        grid.appendChild(card);
+    }
+}
+
+/**
+ * Renders section body lines into a card element.
+ * Handles:
+ *   "  Item text" — plain list item (2-space indent)
+ *   "    Sub item" — deeper list item (4-space indent)
+ *   "  SubSection:" — sub-section header
+ */
+function renderSectionLines(card, lines) {
+    // Trim trailing empty lines
+    let end = lines.length;
+    while (end > 0 && lines[end - 1].trim() === '') end--;
+
+    let currentSubsection = null;
+
+    for (let i = 0; i < end; i++) {
+        const line = lines[i];
+        if (line.trim() === '') {
+            // Small gap between sub-groups
+            if (currentSubsection) {
+                const hr = document.createElement('hr');
+                hr.className = 'ev-divider';
+                card.appendChild(hr);
+                currentSubsection = null;
+            }
+            continue;
+        }
+
+        // 4-space or deeper → sub-list item
+        if (line.startsWith('    ')) {
+            const el = document.createElement('div');
+            el.className = 'ev-list-item';
+            el.textContent = line.trimStart();
+            card.appendChild(el);
+            continue;
+        }
+
+        // 2-space sub-section header (ends with ':')
+        if (line.startsWith('  ') && line.trimEnd().endsWith(':') && !line.includes('(')) {
+            const el = document.createElement('div');
+            el.className = 'ev-subsection';
+            el.textContent = line.trim().slice(0, -1);
+            card.appendChild(el);
+            currentSubsection = el;
+            continue;
+        }
+
+        // 2-space plain item
+        if (line.startsWith('  ')) {
+            const text = line.trimStart();
+            // Check if it's a "Key: Value" style line
+            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            if (kvMatch) {
+                const row = document.createElement('div');
+                row.className = 'ev-stat-row';
+                const lbl = document.createElement('span');
+                lbl.className = 'ev-stat-label';
+                lbl.textContent = kvMatch[1];
+                const val = document.createElement('span');
+                val.className = 'ev-stat-value';
+                val.textContent = kvMatch[2];
+                row.appendChild(lbl);
+                row.appendChild(val);
+                card.appendChild(row);
+            } else {
+                const el = document.createElement('div');
+                el.className = 'ev-plain-row';
+                el.textContent = text;
+                card.appendChild(el);
+            }
+            continue;
+        }
+
+        // Non-indented line within section body (e.g. province target header)
+        const el = document.createElement('div');
+        el.className = 'ev-plain-row';
+        el.style.fontWeight = '600';
+        el.style.color = '#8aafc8';
+        el.style.marginTop = '0.35rem';
+        el.textContent = line;
+        card.appendChild(el);
+    }
+}
+
+// ── Kingdom News enhanced view ────────────────────────────────────────────────
+
+/**
+ * Renders Kingdom News enhanced view.
+ * Parses ** Block Title ** delimiters into cards.
+ */
+function renderEnhancedKingdomNews(grid, text) {
+    const lines = text.split('\n');
+
+    // Collect header lines (before first ** block)
+    let headerLines = [];
+    let blocks = [];
+    let currentBlock = null;
+    let pastHeader = false;
+
+    for (const line of lines) {
+        if (line.startsWith('** ') && line.endsWith(' **')) {
+            pastHeader = true;
+            currentBlock = { title: line.slice(3, -3).trim(), lines: [] };
+            blocks.push(currentBlock);
+        } else if (!pastHeader) {
+            headerLines.push(line);
+        } else if (currentBlock) {
+            currentBlock.lines.push(line);
+        }
+    }
+
+    // Render report header
+    const titleLine = headerLines.find(l => l.trim().length > 0);
+    const rangeLine = headerLines.find(l => l.startsWith('Range:'));
+
+    if (titleLine || rangeLine) {
+        const hdr = document.createElement('div');
+        hdr.className = 'ev-report-header';
+        if (titleLine) {
+            const t = document.createElement('div');
+            t.className = 'ev-report-title';
+            t.textContent = titleLine.trim();
+            hdr.appendChild(t);
+        }
+        if (rangeLine) {
+            const d = document.createElement('div');
+            d.className = 'ev-report-meta';
+            d.textContent = rangeLine.replace(/^Range:\s*/, '');
+            hdr.appendChild(d);
+        }
+        grid.appendChild(hdr);
+    }
+
+    // Render each block as a card
+    for (const block of blocks) {
+        if (block.lines.every(l => l.trim() === '')) continue;
+
+        const card = document.createElement('div');
+        card.className = 'ev-kn-block';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'ev-kn-block-title';
+        if (/^Own Kingdom/.test(block.title)) {
+            titleEl.classList.add('ev-own-kn');
+        }
+        titleEl.textContent = block.title;
+        card.appendChild(titleEl);
+
+        renderKnBlockLines(card, block.lines);
+        grid.appendChild(card);
+    }
+}
+
+/**
+ * Renders lines within a Kingdom News block into the card.
+ */
+function renderKnBlockLines(card, lines) {
+    let end = lines.length;
+    while (end > 0 && lines[end - 1].trim() === '') end--;
+
+    let inProvinces = false;
+    let inRelations = false;
+
+    for (let i = 0; i < end; i++) {
+        const line = lines[i];
+
+        if (line.trim() === '') {
+            inProvinces = false;
+            inRelations = false;
+            const hr = document.createElement('hr');
+            hr.className = 'ev-divider';
+            card.appendChild(hr);
+            continue;
+        }
+
+        // Sub-section headers like "Provinces:" or "War Events:"
+        if (!line.startsWith(' ') && line.endsWith(':')) {
+            inProvinces = line.startsWith('Provinces');
+            inRelations = !inProvinces;
+            const el = document.createElement('div');
+            el.className = 'ev-subsection';
+            el.textContent = line.slice(0, -1);
+            card.appendChild(el);
+            continue;
+        }
+
+        // Province rows (indented, under "Provinces:")
+        if (inProvinces && line.startsWith('  ')) {
+            const el = document.createElement('div');
+            el.className = 'ev-province-row';
+            el.textContent = line.trimStart();
+            card.appendChild(el);
+            continue;
+        }
+
+        // Relation/event lines
+        if (inRelations && line.startsWith('  ')) {
+            const el = document.createElement('div');
+            el.className = 'ev-list-item';
+            el.textContent = line.trimStart();
+            card.appendChild(el);
+            continue;
+        }
+
+        // "-- Key: Value" stat lines
+        if (line.startsWith('-- ')) {
+            const text = line.slice(3);
+            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            if (kvMatch) {
+                const row = document.createElement('div');
+                row.className = 'ev-stat-row';
+                const lbl = document.createElement('span');
+                lbl.className = 'ev-stat-label';
+                lbl.textContent = kvMatch[1];
+                const val = document.createElement('span');
+                val.className = 'ev-stat-value';
+                val.textContent = kvMatch[2];
+                row.appendChild(lbl);
+                row.appendChild(val);
+                card.appendChild(row);
+                continue;
+            }
+        }
+
+        // "Total ..." summary lines
+        if (/^Total /.test(line)) {
+            const el = document.createElement('div');
+            el.className = 'ev-plain-row';
+            el.style.fontWeight = '600';
+            el.style.color = '#8aafc8';
+            el.style.marginTop = '0.2rem';
+            el.textContent = line;
+            card.appendChild(el);
+            continue;
+        }
+
+        // Highlights / other flush-left lines
+        const el = document.createElement('div');
+        el.className = 'ev-plain-row';
+        el.textContent = line;
+        card.appendChild(el);
+    }
 }
 
 // ── Node.js test exports ──────────────────────────────────────────────────────
