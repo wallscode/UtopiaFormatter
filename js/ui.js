@@ -20,7 +20,6 @@ const advSettings = {
         showDragonCancellations: false,
         showRituals: true,
         showRitualsFailed: false,
-        showRitualCoverage: true,
         showKingdomRelations: false,
         showWarDeclarations: true,
         showCeasefires: true,
@@ -894,9 +893,8 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
                 { key: 'showCeasefires',      label: 'Ceasefires',       hint: 'Show ceasefire proposals, acceptances, and formal entries' },
             ]
         },
-        { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions' },
+        { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions. Completions include the ritual type name (e.g. Haste, Barrier).' },
         { key: 'showRitualsFailed',  label: 'Rituals failed (summoning)',   hint: 'Show failed ritual summoning attempts' },
-        { key: 'showRitualCoverage', label: 'Ritual coverage of our lands', hint: 'For each attack your province suffered, note whether ritual coverage was active' },
     ];
 
     function makeCheckbox(key, id) {
@@ -1540,7 +1538,7 @@ function applyKingdomNewsSettings(text) {
         if ((!s.showKingdomRelations || !s.showCeasefires)      && /^-- (Ceasefire|Formal Ceasefires)/.test(line)) return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
         if (!s.showRitualsFailed       && /^-- Rituals Failed:/.test(line))                         return false;
-        if (!s.showRitualCoverage      && /^-- Ritual Coverage:/.test(line))                        return false;
+
         return true;
     }).join('\n');
 

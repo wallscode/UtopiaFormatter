@@ -377,8 +377,8 @@ try {
         '-- Dragons Started: 2',
         '-- Dragons Cancelled: 1',
         '-- Rituals Started: 3',
+        '-- Rituals Completed: 2 (Haste, Barrier)',
         '-- Rituals Failed: 1',
-        '-- Ritual Coverage: 15%',
         '-- War Declarations: 1',
         '-- Formal Ceasefires: 1'
     ].join('\n');
@@ -389,7 +389,7 @@ try {
             showMassacre: true, showPlunder: true,
             showDragons: true, showDragonCancellations: true,
             showKingdomRelations: true, showWarDeclarations: true, showCeasefires: true,
-            showRituals: true, showRitualsFailed: true, showRitualCoverage: true,
+            showRituals: true, showRitualsFailed: true,
             uniqueWindow: 6, uniquesWithKingdoms: false, warOnly: false, warDetected: false,
             sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
             visible: {
@@ -436,6 +436,7 @@ try {
     advSettings.kingdomNews.showRituals = false;
     r = applyKingdomNewsSettings(synth);
     assert('showRituals=false removes Rituals Started', r.includes('-- Rituals Started:'), false);
+    assert('showRituals=false removes Rituals Completed', r.includes('-- Rituals Completed:'), false);
 
     // showRitualsFailed = false removes Rituals Failed, keeps Rituals Started
     resetKN();
@@ -450,13 +451,6 @@ try {
     r = applyKingdomNewsSettings(synth);
     assert('showKingdomRelations=false removes War Declarations', r.includes('-- War Declarations:'), false);
     assert('showKingdomRelations=false removes Formal Ceasefires', r.includes('-- Formal Ceasefires:'), false);
-
-    // showRitualCoverage = false removes Ritual Coverage
-    resetKN();
-    advSettings.kingdomNews.showRitualCoverage = false;
-    r = applyKingdomNewsSettings(synth);
-    assert('showRitualCoverage=false removes Ritual Coverage', r.includes('-- Ritual Coverage:'), false);
-    assert('showRitualCoverage=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
 
     // Section visibility — use a synth with full section blocks
     const sectionSynth = [

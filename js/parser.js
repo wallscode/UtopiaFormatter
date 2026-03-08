@@ -1472,7 +1472,6 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireAccepted: 0,
         ceasefireProposedByUs: 0,
         warDeclarations: [],
-        ritualCoverage: [],
         truncatedLines: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
@@ -1982,7 +1981,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: [], ritualsFailed: 0
                 };
             }
             const tm = line.match(/has begun the (\w+) Dragon project/);
@@ -2006,7 +2005,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: [], ritualsFailed: 0
                 };
             }
             const tm = line.match(/\bA (\w+) Dragon,/);
@@ -2034,18 +2033,12 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
-    // "Our ritual [name] has been completed!" — successful ritual cast
-    if (line.includes('Our ritual') && line.includes('completed')) {
-        if (own && data.kingdoms[own]) {
-            data.kingdoms[own].ritualsCompleted++;
-        }
-        return true;
-    }
-
-    // "A ritual is covering our lands! (Haste)" — active ritual coverage
+    // "A ritual is covering our lands! (Haste)" — successful ritual completion
     if (line.includes('A ritual is covering our lands')) {
-        const m = line.match(/\((\w+)\)/);
-        data.ritualCoverage.push(m ? m[1] : 'Unknown');
+        if (own && data.kingdoms[own]) {
+            const m = line.match(/\((\w+)\)/);
+            data.kingdoms[own].ritualsCompleted.push(m ? m[1] : null);
+        }
         return true;
     }
 
@@ -2063,7 +2056,7 @@ function parseSpecialLine(line, data) {
                     learn: { count: 0, acres: 0 }, massacre: { count: 0, people: 0 },
                     plunder: { count: 0, acres: 0 }, bouncesMade: 0, bouncesSuffered: 0,
                     dragonsStarted: [], dragonsCompleted: [], dragonsKilled: [],
-                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: 0, ritualsFailed: 0
+                    dragonsCancelled: 0, ritualsStarted: [], ritualsCompleted: [], ritualsFailed: 0
                 };
             }
             data.kingdoms[kId].dragonsCancelled++;
@@ -2247,7 +2240,7 @@ function formatKingdomNewsOutput(data, windowDays) {
             output.push(`-- Dragons Cancelled: ${ownKingdom.dragonsCancelled}`);
         if (ownKingdom.ritualsStarted.length > 0)
             output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted.length}${dragonTypeSuffix(ownKingdom.ritualsStarted)}`);
-        if (ownKingdom.ritualsCompleted > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted}`);
+        if (ownKingdom.ritualsCompleted.length > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted.length}${dragonTypeSuffix(ownKingdom.ritualsCompleted)}`);
         if ((ownKingdom.ritualsFailed || 0) > 0) output.push(`-- Rituals Failed: ${ownKingdom.ritualsFailed}`);
 
         output.push(`Total Attacks Suffered: ${ownKingdom.attacksSuffered} (${ownKingdom.acresLost} acres)`);
@@ -2288,12 +2281,6 @@ function formatKingdomNewsOutput(data, windowDays) {
             .reduce((sum, [, kData]) => sum + (kData.dragonsCancelled || 0), 0);
         if (enemyDragonsCancelled > 0)
             output.push(`-- Enemy Dragons Cancelled: ${enemyDragonsCancelled}`);
-        if (data.ritualCoverage.length > 0) {
-            const rtCounts = {};
-            for (const t of data.ritualCoverage) rtCounts[t] = (rtCounts[t] || 0) + 1;
-            const typeStr = Object.entries(rtCounts).map(([t, n]) => n > 1 ? `${t} x${n}` : t).join(', ');
-            output.push(`-- Ritual Coverage: ${data.ritualCoverage.length} (${typeStr})`);
-        }
         output.push('');
 
         // ── Own Kingdom Province Breakdown ───────────────────────────────
