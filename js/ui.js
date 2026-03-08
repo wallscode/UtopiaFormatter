@@ -793,6 +793,75 @@ function makeHint(text) {
  * @param {Object} elements - DOM elements object
  */
 function renderKingdomNewsSettings(leftCol, rightCol, elements) {
+    // ── Sections (reorder + show/hide) ───────────────────────────────────────
+    const orderTitle = document.createElement('div');
+    orderTitle.className = 'adv-group-title';
+    orderTitle.textContent = 'Sections';
+    leftCol.appendChild(orderTitle);
+
+    const list = document.createElement('ul');
+    list.className = 'section-order-list';
+    leftCol.appendChild(list);
+
+    function renderOrderList() {
+        list.innerHTML = '';
+        const order = advSettings.kingdomNews.sectionOrder;
+
+        order.forEach((sectionName, index) => {
+            const item = document.createElement('li');
+            item.className = 'section-order-item';
+
+            const upBtn = document.createElement('button');
+            upBtn.className = 'order-btn';
+            upBtn.textContent = '▲';
+            upBtn.disabled = index === 0;
+            upBtn.title = 'Move up';
+            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
+            upBtn.addEventListener('click', () => {
+                if (index > 0) {
+                    [order[index - 1], order[index]] = [order[index], order[index - 1]];
+                    renderOrderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const downBtn = document.createElement('button');
+            downBtn.className = 'order-btn';
+            downBtn.textContent = '▼';
+            downBtn.disabled = index === order.length - 1;
+            downBtn.title = 'Move down';
+            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
+            downBtn.addEventListener('click', () => {
+                if (index < order.length - 1) {
+                    [order[index], order[index + 1]] = [order[index + 1], order[index]];
+                    renderOrderList();
+                    applyAndRerender(elements);
+                }
+            });
+
+            const id = `adv-kn-vis-${sectionName.replace(/ /g, '-')}`;
+            const visLabel = document.createElement('label');
+            visLabel.htmlFor = id;
+            const visCb = document.createElement('input');
+            visCb.type = 'checkbox';
+            visCb.id = id;
+            visCb.checked = advSettings.kingdomNews.visible[sectionName] !== false;
+            visCb.addEventListener('change', () => {
+                advSettings.kingdomNews.visible[sectionName] = visCb.checked;
+                applyAndRerender(elements);
+            });
+            visLabel.appendChild(visCb);
+            visLabel.appendChild(document.createTextNode(' ' + sectionName));
+
+            item.appendChild(upBtn);
+            item.appendChild(downBtn);
+            item.appendChild(visLabel);
+            list.appendChild(item);
+        });
+    }
+
+    renderOrderList();
+
     // ── Show / Hide ──────────────────────────────────────────────────────────
     const showHideTitle = document.createElement('div');
     showHideTitle.className = 'adv-group-title';
@@ -982,75 +1051,6 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
 
     // ── Display Options ───────────────────────────────────────────────────────
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
-
-    // ── Sections (reorder + show/hide) ───────────────────────────────────────
-    const orderTitle = document.createElement('div');
-    orderTitle.className = 'adv-group-title';
-    orderTitle.textContent = 'Sections';
-    rightCol.appendChild(orderTitle);
-
-    const list = document.createElement('ul');
-    list.className = 'section-order-list';
-    rightCol.appendChild(list);
-
-    function renderOrderList() {
-        list.innerHTML = '';
-        const order = advSettings.kingdomNews.sectionOrder;
-
-        order.forEach((sectionName, index) => {
-            const item = document.createElement('li');
-            item.className = 'section-order-item';
-
-            const upBtn = document.createElement('button');
-            upBtn.className = 'order-btn';
-            upBtn.textContent = '▲';
-            upBtn.disabled = index === 0;
-            upBtn.title = 'Move up';
-            upBtn.setAttribute('aria-label', `Move ${sectionName} up`);
-            upBtn.addEventListener('click', () => {
-                if (index > 0) {
-                    [order[index - 1], order[index]] = [order[index], order[index - 1]];
-                    renderOrderList();
-                    applyAndRerender(elements);
-                }
-            });
-
-            const downBtn = document.createElement('button');
-            downBtn.className = 'order-btn';
-            downBtn.textContent = '▼';
-            downBtn.disabled = index === order.length - 1;
-            downBtn.title = 'Move down';
-            downBtn.setAttribute('aria-label', `Move ${sectionName} down`);
-            downBtn.addEventListener('click', () => {
-                if (index < order.length - 1) {
-                    [order[index], order[index + 1]] = [order[index + 1], order[index]];
-                    renderOrderList();
-                    applyAndRerender(elements);
-                }
-            });
-
-            const id = `adv-kn-vis-${sectionName.replace(/ /g, '-')}`;
-            const visLabel = document.createElement('label');
-            visLabel.htmlFor = id;
-            const visCb = document.createElement('input');
-            visCb.type = 'checkbox';
-            visCb.id = id;
-            visCb.checked = advSettings.kingdomNews.visible[sectionName] !== false;
-            visCb.addEventListener('change', () => {
-                advSettings.kingdomNews.visible[sectionName] = visCb.checked;
-                applyAndRerender(elements);
-            });
-            visLabel.appendChild(visCb);
-            visLabel.appendChild(document.createTextNode(' ' + sectionName));
-
-            item.appendChild(upBtn);
-            item.appendChild(downBtn);
-            item.appendChild(visLabel);
-            list.appendChild(item);
-        });
-    }
-
-    renderOrderList();
 }
 
 /**
