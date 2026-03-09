@@ -1010,3 +1010,145 @@ footer {
     color: #7a8290;
     margin-left: 0.5rem;
 }
+
+/* ── Variant B: Compact Table (Uto-bdna) ─────────────────────────────────── */
+.ev-b-card {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #2a2a2e;
+}
+
+.ev-b-header {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.ev-b-table {
+    background: #1a1a1f;
+}
+
+.ev-b-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.83rem;
+    color: #d4d8de;
+}
+
+.ev-b-row.ev-b-alt {
+    background: #16161a;
+}
+
+.ev-b-row.ev-b-sub {
+    padding-left: 1.4rem;
+    font-size: 0.8rem;
+    color: #b8bec8;
+}
+
+.ev-b-row.ev-b-section-label {
+    font-weight: 700;
+    color: #7a8290;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding-top: 0.4rem;
+    padding-bottom: 0.2rem;
+    background: #1e1e24;
+}
+
+.ev-b-label {
+    color: #b8bec8;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.ev-b-value {
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    text-align: right;
+}
+
+/* ── Variant C: Dashboard (Uto-bdna) ─────────────────────────────────────── */
+.ev-c-card {
+    background: #1a1a1f;
+    border: 1px solid #2a2a2e;
+    border-top: 3px solid #555566;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+}
+
+.ev-c-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #8aafc8;
+    margin-bottom: 0.5rem;
+}
+
+.ev-c-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.ev-c-chip {
+    background: #22222a;
+    border: 1px solid #2a2a2e;
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    text-align: center;
+    min-width: 4.5rem;
+}
+
+.ev-c-chip-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #d4d8de;
+    font-family: 'Courier New', monospace;
+}
+
+.ev-c-chip-label {
+    font-size: 0.7rem;
+    color: #7a8290;
+    margin-top: 0.1rem;
+}
+
+.ev-c-details {
+    margin-top: 0.3rem;
+}
+
+.ev-c-details summary {
+    font-size: 0.8rem;
+    color: #7a8290;
+    cursor: pointer;
+    padding: 0.2rem 0;
+}
+
+.ev-c-details summary:hover {
+    color: #8aafc8;
+}
+
+.ev-c-detail-item {
+    font-size: 0.82rem;
+    color: #b8bec8;
+    padding: 0.1rem 0 0.1rem 0.3rem;
+}
+
+@media (max-width: 768px) {
+    .ev-c-chips {
+        gap: 0.35rem;
+    }
+    .ev-c-chip {
+        min-width: 3.5rem;
+        padding: 0.3rem 0.4rem;
+    }
+    .ev-c-chip-value {
+        font-size: 0.95rem;
+    }
+    .ev-c-details[open] {
+        /* details start collapsed on mobile */
+    }
+}
