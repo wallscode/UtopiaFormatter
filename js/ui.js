@@ -10,7 +10,6 @@ let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
 let showRawText = false;
 let singleColumnLayout = false;
-let cardStyle = 'clean';
 let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
@@ -1087,7 +1086,6 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     // ── Display Options ───────────────────────────────────────────────────────
     renderRawTextToggle(rightCol, elements);
     renderLayoutToggle(rightCol);
-    renderCardStyleToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
 
@@ -1516,7 +1514,6 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
 
     renderRawTextToggle(rightCol, elements);
     renderLayoutToggle(rightCol);
-    renderCardStyleToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
@@ -1929,7 +1926,6 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
 
     renderRawTextToggle(rightCol, elements);
     renderLayoutToggle(rightCol);
-    renderCardStyleToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
@@ -2245,7 +2241,6 @@ function renderCombinedProvincePanel(elements) {
 
     renderRawTextToggle(rightCol, elements);
     renderLayoutToggle(rightCol);
-    renderCardStyleToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
@@ -2686,59 +2681,6 @@ function renderLayoutToggle(container) {
 }
 
 /**
- * Renders the Card Style radio group in Advanced Settings.
- * Temporary toggle — remove this function, its call sites, the CSS classes,
- * and the cardStyle variable when a design decision is made.
- */
-function renderCardStyleToggle(container, elements) {
-    const group = document.createElement('div');
-    group.className = 'adv-group';
-    group.style.flexDirection = 'column';
-    group.style.alignItems = 'flex-start';
-
-    const labelText = document.createElement('span');
-    labelText.style.fontSize = '0.9rem';
-    labelText.style.color = '#d4d8de';
-    labelText.style.marginBottom = '0.25rem';
-    labelText.textContent = 'Card style:';
-    group.appendChild(labelText);
-
-    const options = [
-        { value: 'clean', label: 'Clean Cards' },
-        { value: 'table', label: 'Compact Table' },
-        { value: 'dashboard', label: 'Dashboard' },
-    ];
-
-    for (const opt of options) {
-        const radioLabel = document.createElement('label');
-        radioLabel.style.display = 'flex';
-        radioLabel.style.alignItems = 'center';
-        radioLabel.style.gap = '0.4rem';
-        radioLabel.style.fontSize = '0.85rem';
-        radioLabel.style.color = '#d4d8de';
-        radioLabel.style.cursor = 'pointer';
-
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'cardStyle';
-        radio.value = opt.value;
-        radio.checked = cardStyle === opt.value;
-        radio.style.accentColor = '#8aafc8';
-        radio.addEventListener('change', () => {
-            cardStyle = opt.value;
-            renderEnhancedView(elements);
-        });
-
-        radioLabel.appendChild(radio);
-        radioLabel.appendChild(document.createTextNode(opt.label));
-        group.appendChild(radioLabel);
-    }
-
-    group.appendChild(makeHint('Switch between three visual styles for the formatted output cards. Clean Cards is the default; Compact Table shows data in rows; Dashboard highlights key metrics.'));
-    container.appendChild(group);
-}
-
-/**
  * Returns the advSettings key for a given parser mode string.
  */
 function modeKeyFor(mode) {
@@ -2784,16 +2726,8 @@ function renderEnhancedView(elements) {
     container.appendChild(grid);
 
     const mode = lastDetectedMode;
-    if (cardStyle === 'table') {
-        if (mode === 'kingdom-news-log') renderTableKingdomNews(grid, text);
-        else renderTableSections(grid, text, mode);
-    } else if (cardStyle === 'dashboard') {
-        if (mode === 'kingdom-news-log') renderDashboardKingdomNews(grid, text);
-        else renderDashboardSections(grid, text, mode);
-    } else {
-        if (mode === 'kingdom-news-log') renderEnhancedKingdomNews(grid, text);
-        else renderEnhancedSections(grid, text, mode);
-    }
+    if (mode === 'kingdom-news-log') renderEnhancedKingdomNews(grid, text);
+    else renderEnhancedSections(grid, text, mode);
 }
 
 // ── Province Logs / Province News / Combined enhanced view ────────────────────
