@@ -280,6 +280,15 @@ function setupEventListeners(elements) {
         }
     });
 
+    // Tap collapsed input section to re-expand (mobile, Uto-b2kf)
+    document.querySelectorAll('.input-section').forEach(section => {
+        section.addEventListener('click', () => {
+            if (section.classList.contains('collapsed')) {
+                section.classList.remove('collapsed');
+            }
+        });
+    });
+
 }
 
 /**
@@ -325,6 +334,7 @@ function handleParse(elements) {
                 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
             }
+            collapseInputOnMobile(elements);
         } catch (error) {
             console.error('Parsing error:', error);
             showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
@@ -389,6 +399,8 @@ function handleParse(elements) {
             elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
         }
 
+        collapseInputOnMobile(elements);
+
     } catch (error) {
         console.error('Parsing error:', error);
         showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
@@ -425,6 +437,9 @@ function handleClear(elements) {
     elements.advPanel.classList.add('hidden');
     elements.advToggle.setAttribute('aria-expanded', 'false');
     elements.advContent.setAttribute('hidden', '');
+
+    // Re-expand any collapsed input sections (Uto-b2kf)
+    expandInputSections();
 
     // Focus back to input for better UX
     elements.inputText.focus();
@@ -3059,6 +3074,33 @@ function renderKnBlockLines(card, lines) {
         el.textContent = line;
         card.appendChild(el);
     }
+}
+
+// ── Auto-collapse input on mobile (Uto-b2kf) ────────────────────────────────
+
+/**
+ * After a successful parse on mobile, collapse input sections so the output
+ * gets maximum screen space.  Tapping the collapsed heading re-expands.
+ */
+function collapseInputOnMobile(elements) {
+    if (window.innerWidth >= 768) return;
+
+    const inputSection = elements.inputText.closest('.input-section');
+    if (inputSection) {
+        inputSection.classList.add('collapsed');
+    }
+
+    const secondarySection = elements.secondarySection;
+    if (secondarySection && !secondarySection.classList.contains('hidden')) {
+        secondarySection.classList.add('collapsed');
+    }
+}
+
+/**
+ * Remove collapsed state from all input sections (used on Clear).
+ */
+function expandInputSections() {
+    document.querySelectorAll('.input-section.collapsed').forEach(s => s.classList.remove('collapsed'));
 }
 
 // ── Node.js test exports ──────────────────────────────────────────────────────

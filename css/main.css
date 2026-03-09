@@ -988,3 +988,25 @@ footer {
         padding: 0.5rem 0.6rem;
     }
 }
+
+/* ── Collapsed input section on mobile (Uto-b2kf) ───────────────────────── */
+.input-section.collapsed > *:not(h2) {
+    display: none !important;
+}
+
+.input-section.collapsed {
+    cursor: pointer;
+    padding-bottom: 0.5rem;
+}
+
+.input-section.collapsed h2 {
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.input-section.collapsed h2::after {
+    content: ' \25B6';
+    font-size: 0.7rem;
+    color: #7a8290;
+    margin-left: 0.5rem;
+}
