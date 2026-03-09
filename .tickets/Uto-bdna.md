@@ -1,6 +1,6 @@
 ---
 id: Uto-bdna
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-03-09T19:47:51Z
