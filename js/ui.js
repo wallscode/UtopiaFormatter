@@ -9,6 +9,7 @@ let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
 let showRawText = false;
+let singleColumnLayout = false;
 let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
@@ -1069,6 +1070,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
 
     // ── Display Options ───────────────────────────────────────────────────────
     renderRawTextToggle(rightCol, elements);
+    renderLayoutToggle(rightCol);
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
 
@@ -1496,6 +1498,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 
     renderRawTextToggle(rightCol, elements);
+    renderLayoutToggle(rightCol);
     renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
@@ -1907,6 +1910,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
 
     renderRawTextToggle(rightCol, elements);
+    renderLayoutToggle(rightCol);
     renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
@@ -2221,6 +2225,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 
     renderRawTextToggle(rightCol, elements);
+    renderLayoutToggle(rightCol);
     renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
@@ -2632,6 +2637,31 @@ function renderRawTextToggle(container, elements) {
     label.appendChild(document.createTextNode(' Show raw text'));
     group.appendChild(label);
     group.appendChild(makeHint('Show the plain text output below the formatted view. This is the exact text that Copy to Clipboard uses.'));
+    container.appendChild(group);
+}
+
+/**
+ * Renders the Single-column layout toggle in Advanced Settings.
+ * Temporary toggle — remove this function, its call sites, the CSS class,
+ * and the singleColumnLayout variable when a layout decision is made.
+ */
+function renderLayoutToggle(container) {
+    const group = document.createElement('div');
+    group.className = 'adv-group';
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = 'adv-singleColumnLayout';
+    cb.checked = singleColumnLayout;
+    cb.addEventListener('change', () => {
+        singleColumnLayout = cb.checked;
+        document.querySelector('main.container').classList.toggle('single-col', singleColumnLayout);
+    });
+    label.htmlFor = cb.id;
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(' Single-column layout'));
+    group.appendChild(label);
+    group.appendChild(makeHint('Switch to a single-column layout where the output flows below the input at full width instead of side by side.'));
     container.appendChild(group);
 }
 

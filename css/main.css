@@ -123,6 +123,17 @@ main {
     .adv-panel {
         grid-column: 1 / -1;
     }
+
+    /* Single-column layout toggle (temporary — remove when layout decision is made) */
+    main.single-col {
+        grid-template-columns: 1fr;
+    }
+    main.single-col .left-col {
+        display: contents;
+    }
+    main.single-col .left-col > * {
+        margin-bottom: 1rem;
+    }
 }
 
 /* Section styling */
