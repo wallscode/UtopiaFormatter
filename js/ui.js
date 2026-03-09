@@ -2880,7 +2880,7 @@ function renderSectionLines(card, lines) {
         if (line.startsWith('  ')) {
             const text = line.trimStart();
             // Check if it's a "Key: Value" style line
-            const kvMatch = text.match(/^(.+?):\s*(.+)$/);
+            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
@@ -3036,7 +3036,7 @@ function renderKnBlockLines(card, lines) {
         // "-- Key: Value" stat lines
         if (line.startsWith('-- ')) {
             const text = line.slice(3);
-            const kvMatch = text.match(/^(.+?):\s*(.+)$/);
+            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
