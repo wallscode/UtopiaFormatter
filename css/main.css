@@ -99,7 +99,7 @@ main {
         align-items: start;
     }
 
-    /* Left column: flex stack so adv-panel sits directly below input-section,
+    /* Left column: flex stack so input sections stack vertically,
        independent of the output section's height. */
     .left-col {
         display: flex;
@@ -117,6 +117,11 @@ main {
     .output-section,
     .adv-panel {
         order: unset;
+    }
+
+    /* Advanced Settings spans full width below both columns */
+    .adv-panel {
+        grid-column: 1 / -1;
     }
 }
 
@@ -834,14 +839,6 @@ footer {
 
 .enhanced-output {
     width: 100%;
-    min-height: 120px;
-    background: #0d0d0f;
-    border: 2px solid #2a2a2e;
-    border-radius: 8px;
-    padding: 1rem;
-    overflow-y: auto;
-    max-height: 80vh;
-    box-sizing: border-box;
 }
 
 .ev-grid {
@@ -976,14 +973,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .enhanced-output {
-        padding: 0.6rem;
-        max-height: 70vh;
-    }
     .ev-card {
         padding: 0.5rem 0.6rem;
-    }
-    .ev-stat-row {
-        font-size: 0.82rem;
     }
 }

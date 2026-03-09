@@ -8,6 +8,7 @@ let lastRawInput = null;
 let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
+let showRawText = false;
 let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
@@ -36,8 +37,7 @@ const advSettings = {
         warOnly: false,
         warDetected: false,
         discordCopy: false,
-        showAltCopy: false,
-        enhancedView: false
+        showAltCopy: false
     },
     provinceLogs: {
         sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
@@ -79,8 +79,7 @@ const advSettings = {
         showMilitaryWages: false,
         exploreDetails: false,
         discordCopy: false,
-        showAltCopy: false,
-        enhancedView: false
+        showAltCopy: false
     },
     provinceNews: {
         sectionOrder: ['Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts', 'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes'],
@@ -96,8 +95,7 @@ const advSettings = {
         },
         showSourceIdentifiers: false,
         discordCopy: false,
-        showAltCopy: false,
-        enhancedView: false
+        showAltCopy: false
     },
     combinedProvince: {
         sectionOrder: [
@@ -162,8 +160,7 @@ const advSettings = {
         exploreDetails:             false,
         showSourceIdentifiers:      false,
         discordCopy: false,
-        showAltCopy: false,
-        enhancedView: false
+        showAltCopy: false
     }
 };
 
@@ -317,16 +314,15 @@ function handleParse(elements) {
             lastRawInput = inputText;
             lastDetectedMode = 'combined-province';
             elements.outputText.value = parsedText;
-            updateEnhancedView(elements);
+            updateOutputView(elements);
             autoResizeOutput(elements.outputText);
             showMessage(elements.outputText, 'Province Logs + Province News combined successfully!', 'success', elements.parseStatus);
-            elements.outputText.focus();
             showAdvancedPanel(elements);
             updateDiscordButtonVisibility(elements, 'combined-province');
             updateAltCopyButtonVisibility(elements, 'combined-province');
             if (window.innerWidth < 768) {
                 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                elements.outputText.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+                elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
             }
         } catch (error) {
             console.error('Parsing error:', error);
@@ -379,10 +375,9 @@ function handleParse(elements) {
         lastRawInput = effectiveInput;
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
-        updateEnhancedView(elements);
+        updateOutputView(elements);
         autoResizeOutput(elements.outputText);
         showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success', elements.parseStatus);
-        elements.outputText.focus();
 
         showAdvancedPanel(elements);
         updateDiscordButtonVisibility(elements, detectedMode);
@@ -390,7 +385,7 @@ function handleParse(elements) {
 
         if (window.innerWidth < 768) {
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            elements.outputText.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+            elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
         }
 
     } catch (error) {
@@ -1073,7 +1068,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     }
 
     // ── Display Options ───────────────────────────────────────────────────────
-    renderEnhancedViewToggle(rightCol, 'kingdomNews', elements);
+    renderRawTextToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
 
@@ -1500,7 +1495,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
 
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 
-    renderEnhancedViewToggle(rightCol, 'provinceLogs', elements);
+    renderRawTextToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
@@ -1531,7 +1526,7 @@ function applyAndRerender(elements) {
             parsedText = applyProvinceLogsSettings(parsedText);
         }
         elements.outputText.value = parsedText;
-        updateEnhancedView(elements);
+        updateOutputView(elements);
         autoResizeOutput(elements.outputText);
         updateDiscordButtonVisibility(elements, lastDetectedMode);
         updateAltCopyButtonVisibility(elements, lastDetectedMode);
@@ -1911,7 +1906,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
 
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
 
-    renderEnhancedViewToggle(rightCol, 'provinceNews', elements);
+    renderRawTextToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
@@ -2225,7 +2220,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 
-    renderEnhancedViewToggle(rightCol, 'combinedProvince', elements);
+    renderRawTextToggle(rightCol, elements);
     renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
@@ -2618,25 +2613,25 @@ function toDiscordProvinceLogs(text) {
 // ── Enhanced Output View ──────────────────────────────────────────────────────
 
 /**
- * Renders the Enhanced View toggle in Advanced Settings.
+ * Renders the Show Raw Text toggle in Advanced Settings.
  */
-function renderEnhancedViewToggle(container, modeKey, elements) {
+function renderRawTextToggle(container, elements) {
     const group = document.createElement('div');
     group.className = 'adv-group';
     const label = document.createElement('label');
     const cb = document.createElement('input');
     cb.type = 'checkbox';
-    cb.id = `adv-${modeKey}-enhancedView`;
-    cb.checked = advSettings[modeKey].enhancedView;
+    cb.id = 'adv-showRawText';
+    cb.checked = showRawText;
     cb.addEventListener('change', () => {
-        advSettings[modeKey].enhancedView = cb.checked;
-        updateEnhancedView(elements);
+        showRawText = cb.checked;
+        updateOutputView(elements);
     });
     label.htmlFor = cb.id;
     label.appendChild(cb);
-    label.appendChild(document.createTextNode(' Enhanced view'));
+    label.appendChild(document.createTextNode(' Show raw text'));
     group.appendChild(label);
-    group.appendChild(makeHint('Replace the plain text output box with a styled card view. Copy buttons still use the plain text.'));
+    group.appendChild(makeHint('Show the plain text output below the formatted view. This is the exact text that Copy to Clipboard uses.'));
     container.appendChild(group);
 }
 
@@ -2651,23 +2646,24 @@ function modeKeyFor(mode) {
 }
 
 /**
- * Shows/hides the enhanced output div vs the textarea based on current settings,
- * then renders (or clears) the enhanced view.
+ * Shows the enhanced view as the primary output and optionally shows
+ * the raw textarea below it when showRawText is enabled.
  */
-function updateEnhancedView(elements) {
+function updateOutputView(elements) {
     if (!elements.enhancedOutput) return;
-    const mode = lastDetectedMode;
-    const modeKey = modeKeyFor(mode);
-    const enhanced = mode && advSettings[modeKey] && advSettings[modeKey].enhancedView;
+    const text = elements.outputText.value;
 
-    if (enhanced) {
-        elements.outputText.classList.add('hidden');
+    if (text) {
+        // Always show enhanced view when there's output
         elements.enhancedOutput.classList.remove('hidden');
         renderEnhancedView(elements);
+        // Show/hide textarea based on showRawText
+        elements.outputText.classList.toggle('hidden', !showRawText);
     } else {
+        // No output — show textarea (with placeholder), hide enhanced
         elements.enhancedOutput.classList.add('hidden');
-        elements.outputText.classList.remove('hidden');
         elements.enhancedOutput.innerHTML = '';
+        elements.outputText.classList.remove('hidden');
     }
 }
 
