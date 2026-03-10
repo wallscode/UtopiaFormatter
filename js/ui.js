@@ -2704,19 +2704,21 @@ function updateOutputView(elements) {
     const text = elements.outputText.value;
 
     if (text) {
-        // Hide empty state, show enhanced view
+        // Hide empty state, show enhanced view and copy button
         if (elements.outputEmptyState) elements.outputEmptyState.classList.add('hidden');
         elements.enhancedOutput.classList.remove('hidden');
+        elements.copyBtn.classList.remove('hidden');
         renderEnhancedView(elements);
         // Show/hide textarea based on showRawText
         elements.outputText.classList.toggle('hidden', !showRawText);
         if (showRawText) autoResizeOutput(elements.outputText);
     } else {
-        // No output — show empty state, hide enhanced and textarea
+        // No output — show empty state, hide enhanced, textarea, and copy button
         if (elements.outputEmptyState) elements.outputEmptyState.classList.remove('hidden');
         elements.enhancedOutput.classList.add('hidden');
         elements.enhancedOutput.innerHTML = '';
         elements.outputText.classList.add('hidden');
+        elements.copyBtn.classList.add('hidden');
     }
 }
 
