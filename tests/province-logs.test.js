@@ -497,24 +497,24 @@ function runApplySettingsTests() {
     result = applyProvinceLogsSettings(synth);
     assert('Spell Summary before Thievery when reordered', result.indexOf('Spell Summary:') < result.indexOf('Thievery Summary:'), true);
 
-    // 3. showAverages = false — Resources Stolen avg retained, subcomponent avg stripped
+    // 3. showAverages = false — all (N ops, avg X) annotations stripped (both 2-space and 4-space lines)
     console.log('--- showAverages off ---');
     resetSettings();
     advSettings.provinceLogs.showAverages = false;
     result = applyProvinceLogsSettings(synth);
-    assert('showAverages=false keeps Resources Stolen (N ops, avg X)', result.includes('(10 ops, avg 10k)'), true);
+    assert('showAverages=false strips top-level (N ops, avg X)', result.includes('(10 ops, avg 10k)'), false);
     assert('showAverages=false strips subcomponent (N ops, avg M)', result.includes('(3 ops, avg 10)'), false);
     assert('showAverages=false does not append (avg X)', result.includes('(avg 5)'), false);
 
-    // 4. showAverages = true preserves all avg annotations and appends to spell/thievery totals
+    // 4. showAverages = true preserves all avg annotations and merges avg into impact parens
     console.log('--- showAverages on ---');
     resetSettings();
     advSettings.provinceLogs.showAverages = true;
     result = applyProvinceLogsSettings(synth);
-    assert('showAverages=true keeps Resources Stolen (N ops, avg X)', result.includes('(10 ops, avg 10k)'), true);
+    assert('showAverages=true keeps top-level (N ops, avg X)', result.includes('(10 ops, avg 10k)'), true);
     assert('showAverages=true keeps subcomponent (N ops, avg M)', result.includes('(3 ops, avg 10)'), true);
-    // "10 Meteor Showers (50 days)" → count=10, total=50, avg=5
-    assert('showAverages=true appends (avg 5) to Meteor Showers line', result.includes('(avg 5)'), true);
+    // "10 Meteor Showers (50 days)" → count=10, total=50, avg=5 → merged as "(50 days, avg 5)"
+    assert('showAverages=true merges avg into impact parens', result.includes('(50 days, avg 5)'), true);
 
     // 5. showFailedThievery = false removes failed lines across all three sections
     console.log('--- showFailedThievery ---');

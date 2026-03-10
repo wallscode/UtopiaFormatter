@@ -9,7 +9,7 @@ let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
 let showRawText = false;
-let singleColumnLayout = false;
+
 let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
@@ -281,15 +281,11 @@ function setupEventListeners(elements) {
         }
     });
 
-    // Tap collapsed input section to re-expand (Uto-b2kf, Uto-2d90)
+    // Tap collapsed input section to re-expand (Uto-b2kf)
     document.querySelectorAll('.input-section').forEach(section => {
         section.addEventListener('click', () => {
             if (section.classList.contains('collapsed')) {
                 section.classList.remove('collapsed');
-                // Restore desktop grid if no input sections remain collapsed
-                if (!document.querySelector('.input-section.collapsed')) {
-                    document.querySelector('main').classList.remove('input-collapsed');
-                }
             }
         });
     });
@@ -1090,7 +1086,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
 
     // ── Display Options ───────────────────────────────────────────────────────
     renderRawTextToggle(rightCol, elements);
-    renderLayoutToggle(rightCol);
+
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
 
@@ -1518,7 +1514,7 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     renderSecondaryInputToggle(rightCol, 'province-logs', elements);
 
     renderRawTextToggle(rightCol, elements);
-    renderLayoutToggle(rightCol);
+
     renderCopyButtonsSection(rightCol, 'provinceLogs', 'pl', elements);
 }
 
@@ -1720,9 +1716,9 @@ function applyProvinceLogsSettings(text) {
 
     // Add or strip per-line averages
     if (!advSettings.provinceLogs.showAverages) {
-        // Strip subcomponent avg annotations (4-space-indented lines: Greater Arson buildings, Propaganda troops)
+        // Strip avg annotations from all lines (Resources Stolen, Propaganda sub-lines, Greater Arson sub-lines)
         output = output.split('\n').map(line =>
-            /^    /.test(line) ? line.replace(/ \(\d+ ops, avg [^)]+\)$/, '') : line
+            line.replace(/ \(\d+ ops, avg [^)]+\)$/, '')
         ).join('\n');
     }
 
@@ -1789,13 +1785,13 @@ function applyProvinceLogsSettings(text) {
     if (advSettings.provinceLogs.showAverages) {
         output = output.split('\n').map(line => {
             const m = line.match(/^\s*(\d+) ([^(]+)\(([\d,]+) ([^)]+)\)$/);
-            if (m) {
+            if (m && !/ avg /.test(line)) {
                 const count = parseInt(m[1], 10);
                 const total = parseInt(m[3].replace(/,/g, ''), 10);
                 if (count > 1) {
                     const avg = Math.round(total / count);
                     const avgStr = avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                    return `${line} (avg ${avgStr})`;
+                    return line.replace(/\)$/, `, avg ${avgStr})`);
                 }
             }
             return line;
@@ -1930,7 +1926,7 @@ function renderProvinceNewsSettings(leftCol, rightCol, elements) {
     renderSecondaryInputToggle(rightCol, 'province-news', elements);
 
     renderRawTextToggle(rightCol, elements);
-    renderLayoutToggle(rightCol);
+
     renderCopyButtonsSection(rightCol, 'provinceNews', 'pn', elements);
 }
 
@@ -2067,8 +2063,9 @@ function applyCombinedProvinceSettings(text) {
 
     // Apply Province Logs display toggles (same logic as applyProvinceLogsSettings)
     if (!s.showAverages) {
+        // Strip avg annotations from all lines (Resources Stolen, Propaganda sub-lines, Greater Arson sub-lines)
         output = output.split('\n').map(line =>
-            /^    /.test(line) ? line.replace(/ \(\d+ ops, avg [^)]+\)$/, '') : line
+            line.replace(/ \(\d+ ops, avg [^)]+\)$/, '')
         ).join('\n');
     }
     if (!s.showFailedThievery) {
@@ -2245,7 +2242,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 
     renderRawTextToggle(rightCol, elements);
-    renderLayoutToggle(rightCol);
+
     renderCopyButtonsSection(rightCol, 'combinedProvince', 'cp', elements);
 }
 
@@ -2660,31 +2657,6 @@ function renderRawTextToggle(container, elements) {
     container.appendChild(group);
 }
 
-/**
- * Renders the Single-column layout toggle in Advanced Settings.
- * Temporary toggle — remove this function, its call sites, the CSS class,
- * and the singleColumnLayout variable when a layout decision is made.
- */
-function renderLayoutToggle(container) {
-    if (window.innerWidth < 768) return;
-    const group = document.createElement('div');
-    group.className = 'adv-group';
-    const label = document.createElement('label');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.id = 'adv-singleColumnLayout';
-    cb.checked = singleColumnLayout;
-    cb.addEventListener('change', () => {
-        singleColumnLayout = cb.checked;
-        document.querySelector('main.container').classList.toggle('single-col', singleColumnLayout);
-    });
-    label.htmlFor = cb.id;
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(' Single-column layout'));
-    group.appendChild(label);
-    group.appendChild(makeHint('Switch to a single-column layout where the output flows below the input at full width instead of side by side.'));
-    container.appendChild(group);
-}
 
 /**
  * Returns the advSettings key for a given parser mode string.
@@ -3024,9 +2996,11 @@ function renderEnhancedKingdomNews(grid, text) {
         const card = document.createElement('div');
         card.className = 'ev-kn-block';
 
-        // Highlights and Kingdom Relations span both columns (Uto-2d90)
-        if (block.title === 'Highlights' || block.title === 'Kingdom Relations') {
+        // Kingdom Relations spans full row; Highlights shrinks to content width
+        if (block.title === 'Kingdom Relations') {
             card.classList.add('ev-full-width');
+        } else if (block.title === 'Highlights') {
+            card.classList.add('ev-fit-width');
         }
 
         const titleEl = document.createElement('div');
@@ -3152,7 +3126,7 @@ function renderKnBlockLines(card, lines) {
 // ── Auto-collapse input on mobile (Uto-b2kf) ────────────────────────────────
 
 /**
- * After a successful parse on mobile, collapse input sections so the output
+ * After a successful parse, collapse input sections so the output
  * gets maximum screen space.  Tapping the collapsed heading re-expands.
  */
 function collapseInputOnMobile(elements) {
@@ -3163,11 +3137,6 @@ function collapseInputOnMobile(elements) {
     if (secondarySection && !secondarySection.classList.contains('hidden')) {
         secondarySection.classList.add('collapsed');
     }
-
-    // On desktop: shrink left column so output gets more room (Uto-2d90)
-    if (window.innerWidth >= 768) {
-        document.querySelector('main').classList.add('input-collapsed');
-    }
 }
 
 /**
@@ -3175,7 +3144,6 @@ function collapseInputOnMobile(elements) {
  */
 function expandInputSections() {
     document.querySelectorAll('.input-section.collapsed').forEach(s => s.classList.remove('collapsed'));
-    document.querySelector('main').classList.remove('input-collapsed');
 }
 
 // ── Node.js test exports ──────────────────────────────────────────────────────

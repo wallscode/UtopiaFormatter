@@ -587,6 +587,7 @@ function accumulateProvinceLogsData(text) {
     let vaultRobberyCount = 0;
     let granaryRobberyCount = 0;
     let towerRobberyCount = 0;
+    let warHorsesCount = 0;
 
     // Initialize all counters to zero
     PROVINCE_LOGS_CONFIG.SPELLS.forEach(s => { 
@@ -914,7 +915,7 @@ function accumulateProvinceLogsData(text) {
                 if (match) { runesStolen += parseGameInt(match[1]); towerRobberyCount++; }
             } else if (line.includes("war horses")) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
-                if (match) warHorsesStolen += parseGameInt(match[1]);
+                if (match) { warHorsesStolen += parseGameInt(match[1]); warHorsesCount++; }
             }
         } else if (!line.includes("begin casting") &&
                    !line.includes("We have sent") &&
@@ -960,7 +961,7 @@ function accumulateProvinceLogsData(text) {
         constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
-        vaultRobberyCount, granaryRobberyCount, towerRobberyCount
+        vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     };
 }
 
@@ -983,7 +984,7 @@ function formatProvinceLogsFromData(data) {
         constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
-        vaultRobberyCount, granaryRobberyCount, towerRobberyCount
+        vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     } = data;
 
     // Build output
@@ -1067,7 +1068,7 @@ function formatProvinceLogsFromData(data) {
     if (goldCoinsStolen > 0) output += `  ${formatNumber(goldCoinsStolen)} gold coins${robberyDetail(goldCoinsStolen, vaultRobberyCount)}\n`;
     if (bushelsStolen > 0) output += `  ${formatNumber(bushelsStolen)} bushels${robberyDetail(bushelsStolen, granaryRobberyCount)}\n`;
     if (runesStolen > 0) output += `  ${formatNumber(runesStolen)} runes${robberyDetail(runesStolen, towerRobberyCount)}\n`;
-    if (warHorsesStolen > 0) output += `  ${formatNumber(warHorsesStolen)} war horses\n`;
+    if (warHorsesStolen > 0) output += `  ${formatNumber(warHorsesStolen)} war horses${robberyDetail(warHorsesStolen, warHorsesCount)}\n`;
 
     // Spell Summary
     output += "\nSpell Summary:\n";
