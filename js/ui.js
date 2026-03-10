@@ -2904,11 +2904,20 @@ function renderSectionLines(card, lines) {
         // 2-space plain item
         if (line.startsWith('  ')) {
             const text = line.trimStart();
-            // Check if it's a "Key: Value" style line.
-            // Greedy (.+) instead of lazy (.+?) so that lines with colons inside
-            // parentheticals (e.g. "Province (3:7): 56 acres") split at the LAST
-            // colon+space, not the first.
-            const kvMatch = text.match(/^(.+):\s+(.+)$/);
+            // Split "Key: Value" at the first ': ' where paren depth is 0.
+            // This handles both "Province (3:7): 56 acres" (split after the closing
+            // paren, not inside it) and "Propaganda: 32 troops (type: N, type: N)"
+            // (split at the first ': ', not deep inside the parenthetical).
+            const kvSplit = (() => {
+                let depth = 0;
+                for (let j = 0; j < text.length - 1; j++) {
+                    if (text[j] === '(') depth++;
+                    else if (text[j] === ')') depth--;
+                    else if (text[j] === ':' && text[j + 1] === ' ' && depth === 0) return j;
+                }
+                return -1;
+            })();
+            const kvMatch = kvSplit > 0 ? [null, text.slice(0, kvSplit), text.slice(kvSplit + 2)] : null;
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
@@ -3092,8 +3101,17 @@ function renderKnBlockLines(card, lines) {
         // "-- Key: Value" stat lines
         if (line.startsWith('-- ')) {
             const text = line.slice(3);
-            // Greedy (.+) to split at the LAST colon+space (handles values containing colons)
-            const kvMatch = text.match(/^(.+):\s+(.+)$/);
+            // Split at first ': ' where paren depth is 0
+            const kvSplitKn = (() => {
+                let depth = 0;
+                for (let j = 0; j < text.length - 1; j++) {
+                    if (text[j] === '(') depth++;
+                    else if (text[j] === ')') depth--;
+                    else if (text[j] === ':' && text[j + 1] === ' ' && depth === 0) return j;
+                }
+                return -1;
+            })();
+            const kvMatch = kvSplitKn > 0 ? [null, text.slice(0, kvSplitKn), text.slice(kvSplitKn + 2)] : null;
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
