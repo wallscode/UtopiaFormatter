@@ -173,7 +173,7 @@ section > label {
 
 .adv-panel {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .adv-toggle-btn {
@@ -497,11 +497,11 @@ section > label {
 /* Mobile */
 @media (max-width: 768px) {
     .adv-toggle-btn {
-        padding: 1rem 1.5rem;
+        padding: 1rem;
     }
 
     #adv-content {
-        padding: 0 1.5rem 1.5rem;
+        padding: 0 1rem 1rem;
         flex-direction: column;
     }
 }
