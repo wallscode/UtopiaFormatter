@@ -2791,6 +2791,21 @@ function renderEnhancedSections(grid, text, mode) {
             continue;
         }
 
+        // Section header with inline summary: "Section Name: summary text"
+        // Handles cases like "Attacks Suffered: 3 (1,234 acres lost)"
+        if (line.length > 0 && !line.startsWith(' ')) {
+            const colonIdx = line.indexOf(': ');
+            if (colonIdx > 0) {
+                const candidate = line.slice(0, colonIdx);
+                if (Object.prototype.hasOwnProperty.call(EV_SECTION_COLORS, candidate)) {
+                    inHeader = false;
+                    currentSection = { title: candidate, lines: [line.slice(colonIdx + 2)] };
+                    sections.push(currentSection);
+                    continue;
+                }
+            }
+        }
+
         if (inHeader) {
             headerLines.push(line);
         } else if (currentSection) {
