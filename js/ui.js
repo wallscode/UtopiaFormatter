@@ -2666,6 +2666,7 @@ function renderRawTextToggle(container, elements) {
  * and the singleColumnLayout variable when a layout decision is made.
  */
 function renderLayoutToggle(container) {
+    if (window.innerWidth < 768) return;
     const group = document.createElement('div');
     group.className = 'adv-group';
     const label = document.createElement('label');
