@@ -1008,12 +1008,15 @@ footer {
 @media (max-width: 768px) {
     .ev-card,
     .ev-kn-block {
-        flex: 0 0 100%;
-        width: 100%;
         padding: 0.75rem 0.8rem;
+        margin: 0 0.1rem;
     }
 
-    /* Long values wrap within the value span, not below the label */
+    /* Allow long values to wrap below their label rather than overflow */
+    .ev-stat-row {
+        flex-wrap: wrap;
+    }
+
     .ev-stat-value {
         overflow-wrap: break-word;
         word-break: break-word;
