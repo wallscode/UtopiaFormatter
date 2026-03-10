@@ -910,7 +910,6 @@ footer {
 
 .ev-stat-value {
     font-weight: 600;
-    font-family: 'Courier New', monospace;
 }
 
 .ev-stat-value.ev-pos { color: #68d391; }
@@ -954,6 +953,7 @@ footer {
 .ev-kn-block {
     background: #1a1a1f;
     border: 1px solid #2a2a2e;
+    border-left: 3px solid #555566;
     border-radius: 6px;
     padding: 0.6rem 0.8rem;
 }

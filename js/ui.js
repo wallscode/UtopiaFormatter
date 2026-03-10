@@ -2965,6 +2965,19 @@ function renderEnhancedKingdomNews(grid, text) {
         grid.appendChild(hdr);
     }
 
+    // Assign colors to enemy kingdoms (first pass)
+    const OWN_KN_COLOR = '#4aaa6a';
+    const ENEMY_KN_COLORS = ['#c87070', '#c8a060', '#8888cc', '#70b8c8', '#c8c060', '#a870c8'];
+    const kingdomColors = new Map();
+    let colorIdx = 0;
+    for (const block of blocks) {
+        const m = block.title.match(/^The Kingdom of (\d+:\d+)$/);
+        if (m && !kingdomColors.has(m[1])) {
+            kingdomColors.set(m[1], ENEMY_KN_COLORS[colorIdx % ENEMY_KN_COLORS.length]);
+            colorIdx++;
+        }
+    }
+
     // Render each block as a card
     for (const block of blocks) {
         if (block.lines.every(l => l.trim() === '')) continue;
@@ -2979,6 +2992,18 @@ function renderEnhancedKingdomNews(grid, text) {
         }
         titleEl.textContent = block.title;
         card.appendChild(titleEl);
+
+        // Apply left-border color by kingdom
+        const ownM = block.title.match(/^Own Kingdom/);
+        const enemyM = block.title.match(/^The Kingdom of (\d+:\d+)$/);
+        const uniquesM = block.title.match(/^Uniques for (\d+:\d+)$/);
+        if (ownM) {
+            card.style.borderLeftColor = OWN_KN_COLOR;
+        } else if (enemyM && kingdomColors.has(enemyM[1])) {
+            card.style.borderLeftColor = kingdomColors.get(enemyM[1]);
+        } else if (uniquesM && kingdomColors.has(uniquesM[1])) {
+            card.style.borderLeftColor = kingdomColors.get(uniquesM[1]);
+        }
 
         renderKnBlockLines(card, block.lines);
         grid.appendChild(card);
