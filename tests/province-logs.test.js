@@ -302,14 +302,14 @@ function runValueAssertionTests() {
         assertContains(output, '  17 Guilds', 'Greater Arson: 17 Guilds');
         assertContains(output, '  12 Banks', 'Greater Arson: 12 Banks');
         assertContains(output, '11 Propaganda:', 'Propaganda: 11 ops');
-        assertContains(output, '9 Arson for a total of 85 acres', 'Arson: 9 ops, 85 acres');
+        assertContains(output, '9 Arson (85 acres)', 'Arson: 9 ops, 85 acres');
         assertContains(output, '7 Bribe Generals ops', 'Bribe Generals: 7 ops');
-        assertContains(output, '5 Incite Riots for a total of 24 days', 'Incite Riots: 5 ops, 24 days');
-        assertContains(output, '3 Assassinate Wizards for a total of 306 wizards', 'Assassinate Wizards: 3 ops, 306 wizards');
-        assertContains(output, '3 Kidnapping for a total of 336 peasants', 'Kidnapping: 3 ops, 336 peasants');
+        assertContains(output, '5 Incite Riots (24 days)', 'Incite Riots: 5 ops, 24 days');
+        assertContains(output, '3 Assassinate Wizards (306 wizards)', 'Assassinate Wizards: 3 ops, 306 wizards');
+        assertContains(output, '3 Kidnapping (336 peasants)', 'Kidnapping: 3 ops, 336 peasants');
         assertContains(output, '2 Bribe Thieves ops', 'Bribe Thieves: 2 ops');
-        assertContains(output, '2 Night Strike for a total of 24 enemy troops', 'Night Strike: 2 ops, 24 enemy troops');
-        assertContains(output, '1 Sabotage Wizards for a total of 1 day', 'Sabotage Wizards: 1 op, 1 day');
+        assertContains(output, '2 Night Strike (24 enemy troops)', 'Night Strike: 2 ops, 24 enemy troops');
+        assertContains(output, '1 Sabotage Wizards (1 day)', 'Sabotage Wizards: 1 op, 1 day');
         assertContains(output, '76 failed thievery attempts (1589 thieves lost)', 'Failed: 76 attempts, 1589 lost');
         assertContains(output, '359 thieves lost in successful operations', '359 thieves lost in successful ops');
 
@@ -322,17 +322,17 @@ function runValueAssertionTests() {
 
         // ── Spell Summary ─────────────────────────────────────────────────────
         console.log('--- Spell Summary ---');
-        assertContains(output, '62 Meteor Showers for a total of 493 days', 'Meteor Showers: 62, 493 days');
-        assertContains(output, '50 Mystic Vortex for a total of 107 active spells', 'Mystic Vortex: 50, 107 active spells');
-        assertContains(output, '33 Chastity for a total of 185 days', 'Chastity: 33, 185 days');
-        assertContains(output, '10 Pitfalls for a total of 119 days', 'Pitfalls: 10, 119 days');
-        assertContains(output, '4 Amnesia for a total of 322,673 books', 'Amnesia: 4, 322,673 books');
-        assertContains(output, '4 Droughts for a total of 53 days', 'Droughts: 4, 53 days');
-        assertContains(output, '4 Lightning Strike for a total of 121,091 runes', 'Lightning Strike: 4, 121,091 runes');
-        assertContains(output, '4 Nightmares for a total of 1,450 troops', 'Nightmares: 4, 1,450 troops');
-        assertContains(output, '3 Fireball for a total of 3,639 peasants', 'Fireball: 3, 3,639 peasants');
-        assertContains(output, '3 Land Lust for a total of 81 acres', 'Land Lust: 3, 81 acres');
-        assertContains(output, '3 Tornadoes for a total of 1,025 acres of buildings', 'Tornadoes: 3, 1,025 acres');
+        assertContains(output, '62 Meteor Showers (493 days)', 'Meteor Showers: 62, 493 days');
+        assertContains(output, '50 Mystic Vortex (107 active spells)', 'Mystic Vortex: 50, 107 active spells');
+        assertContains(output, '33 Chastity (185 days)', 'Chastity: 33, 185 days');
+        assertContains(output, '10 Pitfalls (119 days)', 'Pitfalls: 10, 119 days');
+        assertContains(output, '4 Amnesia (322,673 books)', 'Amnesia: 4, 322,673 books');
+        assertContains(output, '4 Droughts (53 days)', 'Droughts: 4, 53 days');
+        assertContains(output, '4 Lightning Strike (121,091 runes)', 'Lightning Strike: 4, 121,091 runes');
+        assertContains(output, '4 Nightmares (1,450 troops)', 'Nightmares: 4, 1,450 troops');
+        assertContains(output, '3 Fireball (3,639 peasants)', 'Fireball: 3, 3,639 peasants');
+        assertContains(output, '3 Land Lust (81 acres)', 'Land Lust: 3, 81 acres');
+        assertContains(output, '3 Tornadoes (1,025 acres of buildings)', 'Tornadoes: 3, 1,025 acres');
 
         // ── Aid Summary ───────────────────────────────────────────────────────
         console.log('--- Aid Summary ---');
@@ -435,7 +435,7 @@ function runApplySettingsTests() {
         'Province Log Summary',
         '',
         'Thievery Summary:',
-        '  5 Tower Robbery for a total of 100,000 runes (10 ops, avg 10k)',
+        '  5 Tower Robbery (100,000 runes) (10 ops, avg 10k)',
         '  3 Greater Arson:',
         '    30 Watch Towers (3 ops, avg 10)',
         '  3 failed thievery attempts (45 thieves lost)',
@@ -455,7 +455,7 @@ function runApplySettingsTests() {
         '    Enemy Province (1:1): 2 (30 thieves lost)',
         '',
         'Spell Summary:',
-        '  10 Meteor Showers for a total of 50 days',
+        '  10 Meteor Showers (50 days)',
         '',
         'Spell Targets by Province:',
         '  Caster Province (2:1) — 6 casts (3 failed):',
@@ -513,7 +513,7 @@ function runApplySettingsTests() {
     result = applyProvinceLogsSettings(synth);
     assert('showAverages=true keeps Resources Stolen (N ops, avg X)', result.includes('(10 ops, avg 10k)'), true);
     assert('showAverages=true keeps subcomponent (N ops, avg M)', result.includes('(3 ops, avg 10)'), true);
-    // "10 Meteor Showers for a total of 50 days" → count=10, total=50, avg=5
+    // "10 Meteor Showers (50 days)" → count=10, total=50, avg=5
     assert('showAverages=true appends (avg 5) to Meteor Showers line', result.includes('(avg 5)'), true);
 
     // 5. showFailedThievery = false removes failed lines across all three sections

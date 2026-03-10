@@ -14,14 +14,14 @@ Thievery Summary:
     30 specialist troops (2 ops, avg 15)
     28 elites (5 ops, avg 6)
     23 thieves (2 ops, avg 12)
-  9 Arson for a total of 85 acres
+  9 Arson (85 acres)
   7 Bribe Generals ops
-  5 Incite Riots for a total of 24 days
-  3 Assassinate Wizards for a total of 306 wizards
-  3 Kidnapping for a total of 336 peasants
+  5 Incite Riots (24 days)
+  3 Assassinate Wizards (306 wizards)
+  3 Kidnapping (336 peasants)
   2 Bribe Thieves ops
-  2 Night Strike for a total of 24 enemy troops
-  1 Sabotage Wizards for a total of 1 day
+  2 Night Strike (24 enemy troops)
+  1 Sabotage Wizards (1 day)
   76 failed thievery attempts (1589 thieves lost)
   359 thieves lost in successful operations
 
@@ -32,21 +32,21 @@ Resources Stolen from Opponents:
   50 war horses
 
 Spell Summary:
-  62 Meteor Showers for a total of 493 days
-  50 Mystic Vortex for a total of 107 active spells
-  33 Chastity for a total of 185 days
-  10 Pitfalls for a total of 119 days
-  4 Amnesia for a total of 322,673 books
-  4 Droughts for a total of 53 days
-  4 Lightning Strike for a total of 121,091 runes
-  4 Nightmares for a total of 1,450 troops
-  3 Fireball for a total of 3,639 peasants
-  3 Gluttony for a total of 45 days
-  3 Greed for a total of 28 days
-  3 Land Lust for a total of 81 acres
-  3 Tornadoes for a total of 1,025 acres of buildings
-  2 Expose Thieves for a total of 12 days
-  1 Explosions for a total of 12 days
+  62 Meteor Showers (493 days)
+  50 Mystic Vortex (107 active spells)
+  33 Chastity (185 days)
+  10 Pitfalls (119 days)
+  4 Amnesia (322,673 books)
+  4 Droughts (53 days)
+  4 Lightning Strike (121,091 runes)
+  4 Nightmares (1,450 troops)
+  3 Fireball (3,639 peasants)
+  3 Gluttony (45 days)
+  3 Greed (28 days)
+  3 Land Lust (81 acres)
+  3 Tornadoes (1,025 acres of buildings)
+  2 Expose Thieves (12 days)
+  1 Explosions (12 days)
 
 Aid Summary:
   5,072,494 gold coins

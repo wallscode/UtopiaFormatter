@@ -1787,7 +1787,7 @@ function applyProvinceLogsSettings(text) {
 
     if (advSettings.provinceLogs.showAverages) {
         output = output.split('\n').map(line => {
-            const m = line.match(/^\s*(\d+) (.+) for a total of ([\d,]+) (.+)$/);
+            const m = line.match(/^\s*(\d+) ([^(]+)\(([\d,]+) ([^)]+)\)$/);
             if (m) {
                 const count = parseInt(m[1], 10);
                 const total = parseInt(m[3].replace(/,/g, ''), 10);

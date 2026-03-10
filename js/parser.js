@@ -1040,7 +1040,7 @@ function formatProvinceLogsFromData(data) {
             if (impactStr === "of them") {
                 impactStr = "peasants";
             }
-            output += `  ${count} ${name} for a total of ${formatNumber(totalImpact)} ${impactStr}\n`;
+            output += `  ${count} ${name} (${formatNumber(totalImpact)} ${impactStr})\n`;
         } else {
             output += `  ${count} ${name}\n`;
         }
@@ -1090,7 +1090,7 @@ function formatProvinceLogsFromData(data) {
             impact = "active spells";
         }
         if (impact) {
-            output += `  ${count} ${spell.name} for a total of ${formatNumber(totalImpact)} ${impact}\n`;
+            output += `  ${count} ${spell.name} (${formatNumber(totalImpact)} ${impact})\n`;
         } else {
             output += `  ${count} ${spell.name}\n`;
         }
