@@ -2879,8 +2879,11 @@ function renderSectionLines(card, lines) {
         // 2-space plain item
         if (line.startsWith('  ')) {
             const text = line.trimStart();
-            // Check if it's a "Key: Value" style line
-            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            // Check if it's a "Key: Value" style line.
+            // Greedy (.+) instead of lazy (.+?) so that lines with colons inside
+            // parentheticals (e.g. "Province (3:7): 56 acres") split at the LAST
+            // colon+space, not the first.
+            const kvMatch = text.match(/^(.+):\s+(.+)$/);
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
@@ -3036,7 +3039,8 @@ function renderKnBlockLines(card, lines) {
         // "-- Key: Value" stat lines
         if (line.startsWith('-- ')) {
             const text = line.slice(3);
-            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            // Greedy (.+) to split at the LAST colon+space (handles values containing colons)
+            const kvMatch = text.match(/^(.+):\s+(.+)$/);
             if (kvMatch) {
                 const row = document.createElement('div');
                 row.className = 'ev-stat-row';
@@ -3204,7 +3208,7 @@ function renderTableSections(grid, text) {
                 row.textContent = line.trim().slice(0, -1);
             } else if (line.startsWith('  ')) {
                 const text = line.trimStart();
-                const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+                const kvMatch = text.match(/^(.+):\s+(.+)$/);
                 if (kvMatch) {
                     const lbl = document.createElement('span');
                     lbl.className = 'ev-b-label';
@@ -3271,7 +3275,7 @@ function renderTableKingdomNews(grid, text) {
                 row.textContent = line.slice(0, -1);
             } else if (line.startsWith('-- ')) {
                 const text = line.slice(3);
-                const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+                const kvMatch = text.match(/^(.+):\s+(.+)$/);
                 if (kvMatch) {
                     const lbl = document.createElement('span');
                     lbl.className = 'ev-b-label';
@@ -3323,7 +3327,7 @@ function extractMetrics(lines) {
         // 2-space indented Key: Value lines become metrics
         if (line.startsWith('  ') && !line.startsWith('    ')) {
             const text = line.trimStart();
-            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            const kvMatch = text.match(/^(.+):\s+(.+)$/);
             if (kvMatch && !text.endsWith(':')) {
                 metrics.push({ label: kvMatch[1], value: kvMatch[2] });
                 continue;
@@ -3332,7 +3336,7 @@ function extractMetrics(lines) {
         // "-- Key: Value" lines (KN style) become metrics
         if (line.startsWith('-- ')) {
             const text = line.slice(3);
-            const kvMatch = text.match(/^(.+?):\s+(.+)$/);
+            const kvMatch = text.match(/^(.+):\s+(.+)$/);
             if (kvMatch) {
                 metrics.push({ label: kvMatch[1], value: kvMatch[2] });
                 continue;
