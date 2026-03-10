@@ -280,11 +280,15 @@ function setupEventListeners(elements) {
         }
     });
 
-    // Tap collapsed input section to re-expand (mobile, Uto-b2kf)
+    // Tap collapsed input section to re-expand (Uto-b2kf, Uto-2d90)
     document.querySelectorAll('.input-section').forEach(section => {
         section.addEventListener('click', () => {
             if (section.classList.contains('collapsed')) {
                 section.classList.remove('collapsed');
+                // Restore desktop grid if no input sections remain collapsed
+                if (!document.querySelector('.input-section.collapsed')) {
+                    document.querySelector('main').classList.remove('input-collapsed');
+                }
             }
         });
     });
@@ -2985,6 +2989,11 @@ function renderEnhancedKingdomNews(grid, text) {
         const card = document.createElement('div');
         card.className = 'ev-kn-block';
 
+        // Highlights and Kingdom Relations span both columns (Uto-2d90)
+        if (block.title === 'Highlights' || block.title === 'Kingdom Relations') {
+            card.classList.add('ev-full-width');
+        }
+
         const titleEl = document.createElement('div');
         titleEl.className = 'ev-kn-block-title';
         if (/^Own Kingdom/.test(block.title)) {
@@ -3109,16 +3118,17 @@ function renderKnBlockLines(card, lines) {
  * gets maximum screen space.  Tapping the collapsed heading re-expands.
  */
 function collapseInputOnMobile(elements) {
-    if (window.innerWidth >= 768) return;
-
     const inputSection = elements.inputText.closest('.input-section');
-    if (inputSection) {
-        inputSection.classList.add('collapsed');
-    }
+    if (inputSection) inputSection.classList.add('collapsed');
 
     const secondarySection = elements.secondarySection;
     if (secondarySection && !secondarySection.classList.contains('hidden')) {
         secondarySection.classList.add('collapsed');
+    }
+
+    // On desktop: shrink left column so output gets more room (Uto-2d90)
+    if (window.innerWidth >= 768) {
+        document.querySelector('main').classList.add('input-collapsed');
     }
 }
 
@@ -3127,6 +3137,7 @@ function collapseInputOnMobile(elements) {
  */
 function expandInputSections() {
     document.querySelectorAll('.input-section.collapsed').forEach(s => s.classList.remove('collapsed'));
+    document.querySelector('main').classList.remove('input-collapsed');
 }
 
 // ── Node.js test exports ──────────────────────────────────────────────────────

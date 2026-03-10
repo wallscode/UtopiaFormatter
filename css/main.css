@@ -134,6 +134,15 @@ main {
     main.single-col .left-col > * {
         margin-bottom: 1rem;
     }
+
+    /* Collapsed input: left column shrinks to minimum, output expands (Uto-2d90) */
+    main.input-collapsed {
+        grid-template-columns: auto 1fr;
+    }
+    main.input-collapsed .left-col {
+        min-width: 0;
+        max-width: 220px;
+    }
 }
 
 /* Section styling */
@@ -853,12 +862,23 @@ footer {
 }
 
 .ev-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 0.75rem;
 }
 
+@media (min-width: 768px) {
+    .ev-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.ev-full-width {
+    grid-column: 1 / -1;
+}
+
 .ev-report-header {
+    grid-column: 1 / -1;
     padding-bottom: 0.6rem;
     margin-bottom: 0.25rem;
     border-bottom: 1px solid #2a2a2e;
@@ -983,9 +1003,23 @@ footer {
     margin-top: 0.15rem;
 }
 
+/* ── Mobile ev-card fixes (Uto-b2h1) ────────────────────────────────────── */
 @media (max-width: 768px) {
-    .ev-card {
-        padding: 0.5rem 0.6rem;
+    .ev-card,
+    .ev-kn-block {
+        padding: 0.75rem 0.8rem;
+        margin: 0 0.1rem;
+    }
+
+    /* Allow long values to wrap below their label rather than overflow */
+    .ev-stat-row {
+        flex-wrap: wrap;
+    }
+
+    .ev-stat-value {
+        overflow-wrap: break-word;
+        word-break: break-word;
+        min-width: 0;
     }
 }
 
