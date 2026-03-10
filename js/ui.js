@@ -2708,6 +2708,7 @@ function updateOutputView(elements) {
         renderEnhancedView(elements);
         // Show/hide textarea based on showRawText
         elements.outputText.classList.toggle('hidden', !showRawText);
+        if (showRawText) autoResizeOutput(elements.outputText);
     } else {
         // No output — show textarea (with placeholder), hide enhanced
         elements.enhancedOutput.classList.add('hidden');
