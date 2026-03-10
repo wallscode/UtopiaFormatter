@@ -861,6 +861,20 @@ footer {
     width: 100%;
 }
 
+.output-empty-state {
+    text-align: center;
+    color: #555566;
+    font-size: 0.9rem;
+    padding: 2.5rem 1rem;
+    border: 1px dashed #2a2a2e;
+    border-radius: 8px;
+}
+
+.output-empty-state strong {
+    color: #7a8290;
+    font-weight: 600;
+}
+
 .ev-grid {
     display: flex;
     flex-wrap: wrap;

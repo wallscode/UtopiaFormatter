@@ -68,12 +68,14 @@
         <section class="output-section">
             <h2>Formatted Output</h2>
             <div id="enhanced-output" class="enhanced-output hidden" role="region" aria-label="Formatted output" aria-live="polite"></div>
+            <div id="output-empty-state" class="output-empty-state" aria-hidden="true">Paste your text and click <strong>Parse Text</strong> to see formatted output here</div>
             <textarea
                 id="output-text"
                 readonly
                 rows="10"
                 cols="80"
                 placeholder="Formatted text will appear here..."
+                class="hidden"
             ></textarea>
             <div class="button-group">
                 <button id="copy-btn">Copy to Clipboard</button>

@@ -188,7 +188,8 @@ function getDomElements() {
         parseStatus: document.getElementById('parse-status'),
         provinceNewsText: document.getElementById('province-news-text'),
         secondarySection: document.getElementById('secondary-input-section'),
-        enhancedOutput: document.getElementById('enhanced-output')
+        enhancedOutput: document.getElementById('enhanced-output'),
+        outputEmptyState: document.getElementById('output-empty-state')
     };
 }
 
@@ -2703,17 +2704,19 @@ function updateOutputView(elements) {
     const text = elements.outputText.value;
 
     if (text) {
-        // Always show enhanced view when there's output
+        // Hide empty state, show enhanced view
+        if (elements.outputEmptyState) elements.outputEmptyState.classList.add('hidden');
         elements.enhancedOutput.classList.remove('hidden');
         renderEnhancedView(elements);
         // Show/hide textarea based on showRawText
         elements.outputText.classList.toggle('hidden', !showRawText);
         if (showRawText) autoResizeOutput(elements.outputText);
     } else {
-        // No output — show textarea (with placeholder), hide enhanced
+        // No output — show empty state, hide enhanced and textarea
+        if (elements.outputEmptyState) elements.outputEmptyState.classList.remove('hidden');
         elements.enhancedOutput.classList.add('hidden');
         elements.enhancedOutput.innerHTML = '';
-        elements.outputText.classList.remove('hidden');
+        elements.outputText.classList.add('hidden');
     }
 }
 
