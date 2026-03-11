@@ -1467,12 +1467,15 @@ function parseKingdomNewsLog(inputText, options) {
         ownKingdomId: detectedOwnKingdom,
         warPeriods,
         warOnly,
-        ceasefireProposals: [],
-        ceasefireWithdrawals: [],
-        ceasefireEntered: 0,
-        ceasefireAccepted: 0,
-        ceasefireProposedByUs: 0,
+        ceasefireProposals: [],      // kingdoms that proposed to us
+        ceasefireWithdrawals: [],    // kingdoms we withdrew our proposal from
+        ceasefireEntered: [],        // kingdoms we entered a formal ceasefire with
+        ceasefireAccepted: [],       // kingdoms that accepted our proposal
+        ceasefireProposedByUs: [],   // kingdoms we proposed to
+        ceasefireDeclinedByUs: [],   // kingdoms whose proposals we declined
+        ceasefireDeclinedByThem: [], // kingdoms that declined our proposals
         warDeclarations: [],
+        warOutcomes: 0,
         truncatedLines: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
@@ -2065,35 +2068,65 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "Our kingdom is now in a post-war period." — war ended
+    if (line.includes('Our kingdom is now in a post-war period')) {
+        data.warOutcomes++;
+        return true;
+    }
+
     // "We have withdrawn our ceasefire proposal to Unnamed kingdom (5:3)."
     if (line.includes('have withdrawn our ceasefire proposal')) {
-        const m = line.match(/to Unnamed kingdom \((\d+):(\d+)\)/);
-        if (m) data.ceasefireWithdrawals.push(m[1] + ':' + m[2]);
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireWithdrawals.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
     // "Unnamed kingdom (5:3) has proposed a formal ceasefire with our kingdom."
     if (line.includes('has proposed a formal ceasefire')) {
         const m = line.match(/\((\d+):(\d+)\)/);
-        if (m) data.ceasefireProposals.push(m[1] + ':' + m[2]);
+        data.ceasefireProposals.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
     // "We have entered into a formal ceasefire with Phoenix STFO (2:2). It will be unbreakable until..."
     if (line.includes('entered into a formal ceasefire')) {
-        data.ceasefireEntered++;
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireEntered.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
     // "Fluffys Hostile pso (5:8) has accepted our ceasefire proposal! It will be unbreakable until..."
     if (line.includes('has accepted our ceasefire proposal')) {
-        data.ceasefireAccepted++;
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireAccepted.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
     // "We have proposed a ceasefire offer to Fluffys Hostile pso (5:8). If accepted..."
     if (line.includes('have proposed a ceasefire offer to')) {
-        data.ceasefireProposedByUs++;
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireProposedByUs.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
+    // "We have rejected the ceasefire offer from Unnamed kingdom (X:Y)." (inferred pattern)
+    if (line.includes('have rejected') && line.includes('ceasefire')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireDeclinedByUs.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
+    // "Unnamed kingdom (X:Y) has rejected our ceasefire offer." (inferred pattern)
+    if (line.includes('has rejected') && line.includes('ceasefire')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireDeclinedByThem.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
+    // "Utopian Problems (5:11) has declined our ceasefire proposal!"
+    if (line.includes('has declined our ceasefire proposal')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireDeclinedByThem.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
@@ -2410,23 +2443,33 @@ function formatKingdomNewsOutput(data, windowDays) {
     }
 
     // ── Kingdom Relations ─────────────────────────────────────────────────────
+    function krIds(arr) {
+        const ids = arr.filter(Boolean);
+        return ids.length > 0 ? ` (${ids.join(', ')})` : '';
+    }
     const krLines = [];
+    const warAgainstUs = data.warDeclarations.filter(w => w.who === 'them');
+    const warByUs      = data.warDeclarations.filter(w => w.who === 'us');
+    if (warAgainstUs.length > 0)
+        krLines.push(`-- War Declared Against Us: ${warAgainstUs.length}${krIds(warAgainstUs.map(w => w.kingdom))}`);
+    if (warByUs.length > 0)
+        krLines.push(`-- War Declared by Us: ${warByUs.length}${krIds(warByUs.map(w => w.kingdom))}`);
+    if (data.warOutcomes > 0)
+        krLines.push(`-- War Outcomes: ${data.warOutcomes}`);
+    if (data.ceasefireProposedByUs.length > 0)
+        krLines.push(`-- Ceasefires Proposed by Us: ${data.ceasefireProposedByUs.length}${krIds(data.ceasefireProposedByUs)}`);
     if (data.ceasefireProposals.length > 0)
-        krLines.push(`-- Ceasefire Proposals Received: ${data.ceasefireProposals.length}`);
-    if (data.ceasefireProposedByUs > 0)
-        krLines.push(`-- Ceasefire Proposals Made: ${data.ceasefireProposedByUs}`);
-    if (data.ceasefireAccepted > 0)
-        krLines.push(`-- Ceasefire Proposals Accepted: ${data.ceasefireAccepted}`);
+        krLines.push(`-- Ceasefires Proposed to Us: ${data.ceasefireProposals.length}${krIds(data.ceasefireProposals)}`);
+    if (data.ceasefireAccepted.length > 0)
+        krLines.push(`-- Ceasefires Accepted by Them: ${data.ceasefireAccepted.length}${krIds(data.ceasefireAccepted)}`);
+    if (data.ceasefireEntered.length > 0)
+        krLines.push(`-- Formal Ceasefires Entered: ${data.ceasefireEntered.length}${krIds(data.ceasefireEntered)}`);
     if (data.ceasefireWithdrawals.length > 0)
-        krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}`);
-    if (data.ceasefireEntered > 0)
-        krLines.push(`-- Formal Ceasefires Entered: ${data.ceasefireEntered}`);
-    const theyDeclaredWar = data.warDeclarations.filter(w => w.who === 'them').length;
-    const weDeclaredWar   = data.warDeclarations.filter(w => w.who === 'us').length;
-    if (theyDeclaredWar > 0)
-        krLines.push(`-- War Declarations Against Us: ${theyDeclaredWar}`);
-    if (weDeclaredWar > 0)
-        krLines.push(`-- War Declarations Made: ${weDeclaredWar}`);
+        krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}${krIds(data.ceasefireWithdrawals)}`);
+    if (data.ceasefireDeclinedByUs.length > 0)
+        krLines.push(`-- Ceasefires Declined by Us: ${data.ceasefireDeclinedByUs.length}${krIds(data.ceasefireDeclinedByUs)}`);
+    if (data.ceasefireDeclinedByThem.length > 0)
+        krLines.push(`-- Ceasefires Declined by Them: ${data.ceasefireDeclinedByThem.length}${krIds(data.ceasefireDeclinedByThem)}`);
     if (krLines.length > 0) {
         output.push('');
         output.push('** Kingdom Relations **');

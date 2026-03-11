@@ -379,8 +379,8 @@ try {
         '-- Rituals Started: 3',
         '-- Rituals Completed: 2 (Haste, Barrier)',
         '-- Rituals Failed: 1',
-        '-- War Declarations: 1',
-        '-- Formal Ceasefires: 1'
+        '-- War Declared Against Us: 1 (4:1)',
+        '-- Formal Ceasefires Entered: 1 (5:2)'
     ].join('\n');
 
     function resetKN() {
@@ -388,7 +388,6 @@ try {
             showAttacks: true, showTradMarch: true, showLearn: true,
             showMassacre: true, showPlunder: true,
             showDragons: true, showDragonCancellations: true,
-            showKingdomRelations: true, showWarDeclarations: true, showCeasefires: true,
             showRituals: true, showRitualsFailed: true,
             uniqueWindow: 6, uniquesWithKingdoms: false, warOnly: false, warDetected: false,
             sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
@@ -445,13 +444,6 @@ try {
     assert('showRitualsFailed=false removes Rituals Failed', r.includes('-- Rituals Failed:'), false);
     assert('showRitualsFailed=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
 
-    // showKingdomRelations = false removes War Declarations and Ceasefires
-    resetKN();
-    advSettings.kingdomNews.showKingdomRelations = false;
-    r = applyKingdomNewsSettings(synth);
-    assert('showKingdomRelations=false removes War Declarations', r.includes('-- War Declarations:'), false);
-    assert('showKingdomRelations=false removes Formal Ceasefires', r.includes('-- Formal Ceasefires:'), false);
-
     // Section visibility — use a synth with full section blocks
     const sectionSynth = [
         'Kingdom News Report',
@@ -469,7 +461,7 @@ try {
         '-- Most land gained: Province A',
         '',
         '** Kingdom Relations **',
-        '-- Formal Ceasefires: 1'
+        '-- Formal Ceasefires Entered: 1 (4:2)'
     ].join('\n');
 
     resetKN();

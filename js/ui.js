@@ -22,9 +22,6 @@ const advSettings = {
         showDragonCancellations: false,
         showRituals: true,
         showRitualsFailed: false,
-        showKingdomRelations: false,
-        showWarDeclarations: true,
-        showCeasefires: true,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
         visible: {
@@ -32,7 +29,7 @@ const advSettings = {
             'Per-Kingdom Summaries': true,
             'Uniques':               true,
             'Highlights':            true,
-            'Kingdom Relations':     true,
+            'Kingdom Relations':     false,
         },
         uniquesWithKingdoms: false,
         warOnly: false,
@@ -922,14 +919,6 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
                 { key: 'showDragonCancellations', label: 'Dragon Cancellations', hint: 'Show when a kingdom cancels their dragon project' },
             ]
         },
-        {
-            parentKey: 'showKingdomRelations', parentLabel: 'Kingdom Relations',
-            hint: 'Show war and ceasefire events between kingdoms',
-            children: [
-                { key: 'showWarDeclarations', label: 'War Declarations', hint: 'Show which kingdoms declared war and when' },
-                { key: 'showCeasefires',      label: 'Ceasefires',       hint: 'Show ceasefire proposals, acceptances, and formal entries' },
-            ]
-        },
         { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions. Completions include the ritual type name (e.g. Haste, Barrier).' },
         { key: 'showRitualsFailed',  label: 'Rituals failed',               hint: 'Show failed ritual summoning attempts' },
     ];
@@ -1578,9 +1567,6 @@ function applyKingdomNewsSettings(text) {
         if (!s.showDragons                              && /^-- (Enemy )?Dragons (Started|Completed):/.test(line)) return false;
         if (!s.showDragons                              && /^-- Enemy Dragons Killed:/.test(line))                  return false;
         if ((!s.showDragons || !s.showDragonCancellations) && /^-- (Enemy )?Dragons Cancelled:/.test(line))        return false;
-        // Kingdom Relations children
-        if ((!s.showKingdomRelations || !s.showWarDeclarations) && /^-- War Declarations/.test(line))              return false;
-        if ((!s.showKingdomRelations || !s.showCeasefires)      && /^-- (Ceasefire|Formal Ceasefires)/.test(line)) return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
         if (!s.showRitualsFailed       && /^-- Rituals Failed:/.test(line))                         return false;
 
@@ -1663,7 +1649,7 @@ function applyKingdomNewsSettings(text) {
         } else if (section === 'Highlights') {
             resultBlocks.push(...highlightsBlocks);
         } else if (section === 'Kingdom Relations') {
-            if (s.showKingdomRelations) resultBlocks.push(...kingdomRelationsBlocks);
+            resultBlocks.push(...kingdomRelationsBlocks);
         }
     }
 
