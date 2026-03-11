@@ -896,6 +896,7 @@ footer {
 .ev-stat-row {
     display: flex;
     align-items: baseline;
+    gap: 0.3em;
     padding: 0.12rem 0;
     font-size: 0.85rem;
     color: #d4d8de;
