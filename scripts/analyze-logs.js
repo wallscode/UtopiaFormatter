@@ -251,7 +251,7 @@ function getLogBucket() {
 // Game date format — lines starting with this pattern are header lines that
 // should never have been logged; skip them silently.
 // ---------------------------------------------------------------------------
-const GAME_DATE_REGEX = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+const GAME_DATE_REGEX = /^(January|February|March|April|May|June|July) \d{1,2} of YR\d+/;
 
 // ---------------------------------------------------------------------------
 // Known-ignorable patterns — lines reviewed and confirmed as non-content.

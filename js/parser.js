@@ -349,7 +349,7 @@ function hasWarEvents(text) {
  * @returns {Array<{startDate:string|null, startDateVal:number|null, endDate:string|null, endDateVal:number|null, opponentId:string|null, opponentName:string|null}>}
  */
 function detectWarPeriods(lines, ownKingdomId) {
-    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    const dateRegex = /^(January|February|March|April|May|June|July) \d{1,2} of YR\d+/;
     const periods = [];
     let openPeriod = null;
     let prevContentLine = null;
@@ -525,7 +525,7 @@ function accumulateProvinceLogsData(text) {
     // Capture min/max date range before stripping prefixes, so out-of-order input
     // still produces a correct (non-negative) day span.
     let minDateVal = null, minDateStr = null, maxDateVal = null, maxDateStr = null;
-    const plDateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    const plDateRegex = /^(January|February|March|April|May|June|July) \d{1,2} of YR\d+/;
     for (const rawLine of lines) {
         const dm = rawLine.match(plDateRegex);
         if (!dm) continue;
@@ -1436,7 +1436,7 @@ function parseKingdomNewsLog(inputText, options) {
     
     // Find the first and last lines that start with a date ("Month Day of YR#").
     // Lines outside that range are extra content copied from the page and are ignored.
-    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+/;
+    const dateRegex = /^(January|February|March|April|May|June|July) \d{1,2} of YR\d+/;
     const startIndex = lines.findIndex(line => dateRegex.test(line));
 
     if (startIndex === -1) {
@@ -1475,6 +1475,7 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireDeclinedByUs: [],   // kingdoms whose proposals we declined
         ceasefireDeclinedByThem: [], // kingdoms that declined our proposals
         ceasefireCancelledByUs: [],  // kingdoms whose active ceasefire we cancelled
+        aidShipments: { sent: {}, received: {} },
         warDeclarations: [],
         warOutcomes: 0,
         truncatedLines: [],
@@ -1505,7 +1506,7 @@ function parseKingdomNewsLog(inputText, options) {
 
         // Parse attack lines (skip lines that are only dates)
         if (line.trim().length > dateMatch[0].length) {
-            const attackLine = line.replace(/^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+\s*/, '');
+            const attackLine = line.replace(/^(January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/, '');
 
             // Check if this is actually an attack line
             const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed \d+ people|razed \d+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
@@ -1586,7 +1587,7 @@ function parseKingdomNewsLog(inputText, options) {
  */
 function parseAttackLine(line, data, dateStr) {
     // Remove the date part from the beginning of the line
-    const dateRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+\s*/;
+    const dateRegex = /^(January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/;
     const attackLine = line.replace(dateRegex, '');
     
     // Province identifier pattern: number - name (kingdom:id)
@@ -2075,6 +2076,19 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "Fun times has sent an aid shipment to Timeless Rock Band."
+    if (line.includes('has sent an aid shipment to')) {
+        const stripped = line.replace(/^(?:January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/, '');
+        const m = stripped.match(/^(.+?) has sent an aid shipment to (.+?)\.?$/i);
+        if (m) {
+            const src = m[1].trim();
+            const dst = m[2].trim();
+            data.aidShipments.sent[src] = (data.aidShipments.sent[src] || 0) + 1;
+            data.aidShipments.received[dst] = (data.aidShipments.received[dst] || 0) + 1;
+        }
+        return true;
+    }
+
     // "We have cancelled our ceasefire with Phoenix STFO (2:2)!"
     if (line.includes('have cancelled our ceasefire with')) {
         const m = line.match(/\((\d+):(\d+)\)/);
@@ -2484,6 +2498,24 @@ function formatKingdomNewsOutput(data, windowDays) {
         output.push('');
         output.push('** Kingdom Relations **');
         output.push(...krLines);
+    }
+
+    // ── Aid Shipments ──────────────────────────────────────────────────────────
+    const sentEntries = Object.entries(data.aidShipments.sent).sort((a, b) => b[1] - a[1]);
+    const receivedEntries = Object.entries(data.aidShipments.received).sort((a, b) => b[1] - a[1]);
+    if (sentEntries.length > 0 || receivedEntries.length > 0) {
+        output.push('');
+        output.push('** Aid Shipments **');
+        if (sentEntries.length > 0) {
+            output.push('Sent:');
+            for (const [name, count] of sentEntries)
+                output.push(`-- ${name}: ${count}`);
+        }
+        if (receivedEntries.length > 0) {
+            output.push('Received:');
+            for (const [name, count] of receivedEntries)
+                output.push(`-- ${name}: ${count}`);
+        }
     }
 
     return output.join('\n');
@@ -3157,7 +3189,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         starvation:           { count: 0, total: 0, byType: {} }
     };
 
-    const dateLineRe = /^((?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2} of YR\d+)\t(.+)$/;
+    const dateLineRe = /^((?:January|February|March|April|May|June|July) \d{1,2} of YR\d+)\t(.+)$/;
 
     for (const line of cleaned.split('\n')) {
         const match = line.match(dateLineRe);

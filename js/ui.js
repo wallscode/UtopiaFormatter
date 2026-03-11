@@ -23,13 +23,14 @@ const advSettings = {
         showRituals: true,
         showRitualsFailed: false,
         uniqueWindow: 6,
-        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
+        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations', 'Aid Shipments'],
         visible: {
             'Own Kingdom Summary':  true,
             'Per-Kingdom Summaries': true,
             'Uniques':               true,
             'Highlights':            true,
             'Kingdom Relations':     false,
+            'Aid Shipments':         false,
         },
         uniquesWithKingdoms: false,
         warOnly: false,
@@ -1591,6 +1592,7 @@ function applyKingdomNewsSettings(text) {
         if (/^\*\* Uniques for .+ \*\*/.test(firstLine))          return 'Uniques';
         if (/^\*\* Highlights \*\*/.test(firstLine))               return 'Highlights';
         if (/^\*\* Kingdom Relations \*\*/.test(firstLine))        return 'Kingdom Relations';
+        if (/^\*\* Aid Shipments \*\*/.test(firstLine))            return 'Aid Shipments';
         return 'Per-Kingdom Summaries';
     }
 
@@ -1598,6 +1600,7 @@ function applyKingdomNewsSettings(text) {
     const perKingdomPairs = []; // [{ summary: block, uniques: block|null }]
     const highlightsBlocks = [];
     const kingdomRelationsBlocks = [];
+    const aidShipmentsBlocks = [];
     let currentPair = null;
 
     for (const block of rawBlocks) {
@@ -1622,6 +1625,8 @@ function applyKingdomNewsSettings(text) {
             highlightsBlocks.push(block);
         } else if (cat === 'Kingdom Relations') {
             kingdomRelationsBlocks.push(block);
+        } else if (cat === 'Aid Shipments') {
+            aidShipmentsBlocks.push(block);
         }
     }
 
@@ -1650,6 +1655,8 @@ function applyKingdomNewsSettings(text) {
             resultBlocks.push(...highlightsBlocks);
         } else if (section === 'Kingdom Relations') {
             resultBlocks.push(...kingdomRelationsBlocks);
+        } else if (section === 'Aid Shipments') {
+            resultBlocks.push(...aidShipmentsBlocks);
         }
     }
 
