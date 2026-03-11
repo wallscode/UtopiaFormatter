@@ -3359,7 +3359,7 @@ const _KINGDOM_NEWS_PATTERNS = [
     /recaptured [\d,]+ acres of land/i,
     /ambushed armies from/i,
     /and razed [\d,]+ acres/i,
-    /razed [\d,]+ acres of/i,
+    /razed [\d,]+ acres of \d/i,
     /invaded and looted/i,
     /attacked and looted/i,
     /killed [\d,]+ people/i,
