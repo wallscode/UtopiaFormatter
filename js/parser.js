@@ -1474,6 +1474,7 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireProposedByUs: [],   // kingdoms we proposed to
         ceasefireDeclinedByUs: [],   // kingdoms whose proposals we declined
         ceasefireDeclinedByThem: [], // kingdoms that declined our proposals
+        ceasefireCancelledByUs: [],  // kingdoms whose active ceasefire we cancelled
         warDeclarations: [],
         warOutcomes: 0,
         truncatedLines: [],
@@ -2074,6 +2075,13 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "We have cancelled our ceasefire with Phoenix STFO (2:2)!"
+    if (line.includes('have cancelled our ceasefire with')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireCancelledByUs.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
     // "We have withdrawn our ceasefire proposal to Unnamed kingdom (5:3)."
     if (line.includes('have withdrawn our ceasefire proposal')) {
         const m = line.match(/\((\d+):(\d+)\)/);
@@ -2466,6 +2474,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         krLines.push(`-- Formal Ceasefires Entered: ${data.ceasefireEntered.length}${krIds(data.ceasefireEntered)}`);
     if (data.ceasefireWithdrawals.length > 0)
         krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}${krIds(data.ceasefireWithdrawals)}`);
+    if (data.ceasefireCancelledByUs.length > 0)
+        krLines.push(`-- Ceasefires Cancelled by Us: ${data.ceasefireCancelledByUs.length}${krIds(data.ceasefireCancelledByUs)}`);
     if (data.ceasefireDeclinedByUs.length > 0)
         krLines.push(`-- Ceasefires Declined by Us: ${data.ceasefireDeclinedByUs.length}${krIds(data.ceasefireDeclinedByUs)}`);
     if (data.ceasefireDeclinedByThem.length > 0)
