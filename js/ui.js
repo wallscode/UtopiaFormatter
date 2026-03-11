@@ -1038,7 +1038,12 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     windowGroup.appendChild(makeHint('Attacks by the same province within this many in-game days count as one unique. Set to 0 to count every attack as its own unique.'));
     leftCol.appendChild(windowGroup);
 
-    // ── Uniques Grouping ─────────────────────────────────────────────────────
+    // ── Display Options ───────────────────────────────────────────────────────
+    const displayTitle = document.createElement('div');
+    displayTitle.className = 'adv-subgroup-title';
+    displayTitle.textContent = 'Display Options';
+    rightCol.appendChild(displayTitle);
+
     const groupingGroup = document.createElement('div');
     groupingGroup.className = 'adv-group';
 
@@ -1058,9 +1063,8 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     groupingLabel.appendChild(document.createTextNode(' Uniques grouped with Kingdoms'));
     groupingGroup.appendChild(groupingLabel);
     groupingGroup.appendChild(makeHint('Show unique attack counts under each kingdom\'s summary instead of in a separate Uniques section'));
-    leftCol.appendChild(groupingGroup);
+    rightCol.appendChild(groupingGroup);
 
-    // ── War Only (only shown when war events detected) ────────────────────────
     if (advSettings.kingdomNews.warDetected) {
         const warGroup = document.createElement('div');
         warGroup.className = 'adv-group';
@@ -1078,17 +1082,11 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         });
 
         warLabel.appendChild(warCheckbox);
-        warLabel.appendChild(document.createTextNode(' War Only \u2014 show attacks involving war opponent only'));
+        warLabel.appendChild(document.createTextNode(' Show Only War Attacks'));
         warGroup.appendChild(warLabel);
         warGroup.appendChild(makeHint('Filter the output to only show attacks between your kingdom and your war opponent during the war period'));
-        leftCol.appendChild(warGroup);
+        rightCol.appendChild(warGroup);
     }
-
-    // ── Display Options ───────────────────────────────────────────────────────
-    const displayTitle = document.createElement('div');
-    displayTitle.className = 'adv-subgroup-title';
-    displayTitle.textContent = 'Display Options';
-    rightCol.appendChild(displayTitle);
 
     renderRawTextToggle(rightCol, elements);
 
