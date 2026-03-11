@@ -931,7 +931,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
             ]
         },
         { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions. Completions include the ritual type name (e.g. Haste, Barrier).' },
-        { key: 'showRitualsFailed',  label: 'Rituals failed (summoning)',   hint: 'Show failed ritual summoning attempts' },
+        { key: 'showRitualsFailed',  label: 'Rituals failed',               hint: 'Show failed ritual summoning attempts' },
     ];
 
     function makeCheckbox(key, id) {
@@ -1085,6 +1085,11 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     }
 
     // ── Display Options ───────────────────────────────────────────────────────
+    const displayTitle = document.createElement('div');
+    displayTitle.className = 'adv-subgroup-title';
+    displayTitle.textContent = 'Display Options';
+    rightCol.appendChild(displayTitle);
+
     renderRawTextToggle(rightCol, elements);
 
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
