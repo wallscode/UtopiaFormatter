@@ -325,7 +325,6 @@ function handleParse(elements) {
             elements.outputText.value = parsedText;
             updateOutputView(elements);
             autoResizeOutput(elements.outputText);
-            showMessage(elements.outputText, 'Province Logs + Province News combined successfully!', 'success', elements.parseStatus);
             showAdvancedPanel(elements);
             updateDiscordButtonVisibility(elements, 'combined-province');
             updateAltCopyButtonVisibility(elements, 'combined-province');
@@ -387,8 +386,6 @@ function handleParse(elements) {
         elements.outputText.value = parsedText;
         updateOutputView(elements);
         autoResizeOutput(elements.outputText);
-        showMessage(elements.outputText, `${modeLabels[detectedMode]} parsed successfully!`, 'success', elements.parseStatus);
-
         showAdvancedPanel(elements);
         updateDiscordButtonVisibility(elements, detectedMode);
         updateAltCopyButtonVisibility(elements, detectedMode);
@@ -2948,7 +2945,8 @@ function renderEnhancedKingdomNews(grid, text) {
 
     // Render report header
     const titleLine = headerLines.find(l => l.trim().length > 0);
-    const rangeLine = headerLines.find(l => l.startsWith('Range:'));
+    // Date range line is like "January 1, YR5 - January 6, YR5 (6 days)"
+    const rangeLine = headerLines.find(l => /\bYR\d+\b.+\bYR\d+\b/.test(l));
 
     if (titleLine || rangeLine) {
         const hdr = document.createElement('div');
@@ -2962,7 +2960,7 @@ function renderEnhancedKingdomNews(grid, text) {
         if (rangeLine) {
             const d = document.createElement('div');
             d.className = 'ev-report-meta';
-            d.textContent = rangeLine.replace(/^Range:\s*/, '');
+            d.textContent = rangeLine.trim();
             hdr.appendChild(d);
         }
         grid.appendChild(hdr);
