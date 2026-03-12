@@ -1598,7 +1598,8 @@ function parseAttackLine(line, data, dateStr) {
     const tradMarchInvadedPattern = /invaded.*captured (\d+) acres of land/;  // Suffered trad march with "invaded"
     const ambushMadePattern = /recaptured (\d+) acres of land/;  // Made by our kingdom
     const ambushReceivedPattern = /ambushed armies.*and took (\d+) acres of land/;  // Made into our kingdom
-    const massacrePattern = /killed ([\d,]+) people within/;
+    const massacrePattern = /killed ([\d,]+) people within/;        // "X killed N people within Y" (our massacre on them)
+    const massacreInvadedPattern = /invaded.*?killed ([\d,]+) people/; // "X invaded Y and killed N people" (their massacre on us)
     const razePattern = /razed (\d+) acres/;
     const razeInvadedPattern = /invaded.*razed (\d+) acres/;  // Suffered raze with "invaded"
     const plunderPattern = /attacked and pillaged|invaded and pillaged/;
@@ -1784,6 +1785,10 @@ function parseAttackLine(line, data, dateStr) {
     } else if (massacrePattern.test(line)) {
         attackType = 'massacre';
         people = parseGameInt(line.match(massacrePattern)[1]);
+        isActualAttack = false; // Don't count massacres as attacks for war summary
+    } else if (massacreInvadedPattern.test(line)) {
+        attackType = 'massacre';
+        people = parseGameInt(line.match(massacreInvadedPattern)[1]);
         isActualAttack = false; // Don't count massacres as attacks for war summary
     } else if (razeInvadedPattern.test(line)) {
         attackType = 'raze';
