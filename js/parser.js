@@ -2756,8 +2756,9 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
         return;
     }
 
-    // Meteor shower — start announcement (no data to extract beyond noting it)
-    if (eventText.indexOf('Meteors rain across our lands') !== -1) return;
+    // Meteor shower — start announcement "Meteors rain across our lands, and are not expected to stop for N days." (Uto-kahf)
+    const meteorStartM = eventText.match(/Meteors rain across our lands.+?(\d+) days/i);
+    if (meteorStartM) { data.meteorShower.count++; data.meteorShower.totalDays += parseInt(meteorStartM[1]); return; }
 
     // -- Incoming spells and thievery ops
     // Rioting
@@ -3055,6 +3056,7 @@ function formatProvinceNewsOutput(data) {
     // Spell Impacts — spell attempts + magical hazards merged (Uto-l42y, Uto-ccjb, Uto-ig81, Uto-v63f)
     const durationSpells = [
         data.pitfalls, data.greed,
+        data.meteorShower,
         data.blizzard, data.chastity, data.droughts, data.explosions,
         data.exposeThieves, data.gluttony, data.magicWard,
         data.nightfall, data.sloth, data.storms
@@ -3069,13 +3071,15 @@ function formatProvinceNewsOutput(data) {
             const sources = Object.entries(data.spellsBySource).sort((a, b) => b[1] - a[1]);
             for (const [src, cnt] of sources) out.push(`    ${src}: ${cnt}`);
         }
+        if (data.meteorShower.count > 0)
+            out.push(`  Meteor shower: ${pluralize(data.meteorShower.count, 'occurrence')}, ${data.meteorShower.totalDays} days`);
         if (data.meteorDays > 0) {
             const casParts = [];
             if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
             if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
             if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
-            out.push(`  Meteor shower: ${data.meteorDays} days${casParts.length ? ` (${casParts.join(', ')})` : ''}`);
+            out.push(`  Meteor shower damage: ${data.meteorDays} days${casParts.length ? ` (${casParts.join(', ')})` : ''}`);
         }
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
@@ -3201,6 +3205,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         attacks:              [],
         meteorDays:           0,
         meteorCasualties:     { peasants: 0, soldiers: 0, Magicians: 0, Beastmasters: 0 },
+        meteorShower:         { count: 0, totalDays: 0 },
         rioting:              { count: 0, totalDays: 0 },
         pitfalls:             { count: 0, totalDays: 0 },
         manaDis:              { count: 0, totalDays: 0 },
