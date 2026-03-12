@@ -490,8 +490,9 @@ async function main() {
     }
 
     // Phase 2: S3 sync
+    let bucket = null;
     if (!NO_SYNC) {
-        const bucket = getLogBucket();
+        bucket = getLogBucket();
         if (!bucket) {
             console.error('Error: LOG_BUCKET is not set.\n' +
                 'Add LOG_BUCKET=<bucket-name> to your environment or a .env file.');
@@ -538,6 +539,16 @@ async function main() {
             }
         }
         console.log(`Deleted ${deleted} log file(s) from ./logs/.`);
+
+        // Delete processed logs from S3 so they are not re-downloaded on the next run.
+        if (!NO_SYNC && bucket) {
+            console.log(`Deleting processed logs from s3://${bucket}/logs/ ...`);
+            try {
+                execSync(`aws s3 rm "s3://${bucket}/logs/" --recursive`, { stdio: 'inherit' });
+            } catch (err) {
+                console.warn(`  Warning: could not delete logs from S3: ${err.message}`);
+            }
+        }
     } else {
         console.log('No .jsonl files found under ./logs/.' +
             (NO_SYNC ? ' Run without --no-sync to fetch from S3.' : ''));
