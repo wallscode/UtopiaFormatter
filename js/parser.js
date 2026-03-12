@@ -2705,7 +2705,37 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
             attacker: attackM[1].trim(),
             kingdom: attackM[2],
             acresCaptured: attackM[4] ? parseGameInt(attackM[4]) : 0,
-            booksLooted: attackM[5] ? parseGameInt(attackM[5]) : 0
+            booksLooted: attackM[5] ? parseGameInt(attackM[5]) : 0,
+            acresRazed: 0,
+            peopleKilled: 0
+        });
+        return;
+    }
+
+    // Raze attack received — "Their armies razed N acres of buildings!" (Uto-xsf3)
+    const razeAttackM = eventText.match(/Forces from (.+?) \((\d+:\d+)\) came through and ravaged our lands! Their armies razed ([\d,]+) acres of buildings/);
+    if (razeAttackM) {
+        data.attacks.push({
+            attacker: razeAttackM[1].trim(),
+            kingdom: razeAttackM[2],
+            acresCaptured: 0,
+            booksLooted: 0,
+            acresRazed: parseGameInt(razeAttackM[3]),
+            peopleKilled: 0
+        });
+        return;
+    }
+
+    // Massacre attack received — "Their armies killed N of our peasants, thieves, and wizards!" (Uto-v8zh)
+    const massacreAttackM = eventText.match(/Forces from (.+?) \((\d+:\d+)\) came through and ravaged our lands! Their armies killed ([\d,]+) of our peasants/);
+    if (massacreAttackM) {
+        data.attacks.push({
+            attacker: massacreAttackM[1].trim(),
+            kingdom: massacreAttackM[2],
+            acresCaptured: 0,
+            booksLooted: 0,
+            acresRazed: 0,
+            peopleKilled: parseGameInt(massacreAttackM[3])
         });
         return;
     }
@@ -2768,12 +2798,10 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
         return;
     }
 
-    // Non-instant offensive spells — Province News exact message text not yet confirmed;
-    // patterns are derived from Province Logs cast messages and will match the likely
-    // victim-perspective wording. Update the regex once real Province News data is seen.
+    // Non-instant offensive spells
 
-    // Blizzard ("Blizzards will beset the works of [province] for N days!" → victim view)
-    const blizzardM = eventText.match(/[Bb]lizzard.{0,80}?(\d+) days?/);
+    // Blizzard ("Blizzards are besetting our works, and our building efficiency will be crippled by 10% for for N days!")
+    const blizzardM = eventText.match(/Blizzards are besetting our works.+?(\d+) days/i);
     if (blizzardM) { data.blizzard.count++; data.blizzard.totalDays += parseInt(blizzardM[1]); return; }
 
     // Chastity ("womenfolk have taken a vow of chastity for N days!")
@@ -2792,8 +2820,8 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
     const exposeThievesM = eventText.match(/[Ee]xpos(?:e|ed).{0,80}?(?:thieves?|stealth).{0,80}?(\d+) days?/);
     if (exposeThievesM) { data.exposeThieves.count++; data.exposeThieves.totalDays += parseInt(exposeThievesM[1]); return; }
 
-    // Gluttony ("The gluttony of our people has increased for N days!")
-    const gluttonyM = eventText.match(/[Gg]luttony.{0,80}?(\d+) days?/);
+    // Gluttony ("A fit of gluttony has descended upon our people, and they will not be sated for N days.")
+    const gluttonyM = eventText.match(/gluttony has descended upon our people.+?(\d+) days/i);
     if (gluttonyM) { data.gluttony.count++; data.gluttony.totalDays += parseInt(gluttonyM[1]); return; }
 
     // Magic Ward ("A Magic Ward has been placed on our lands for N days!" or similar)
@@ -3074,18 +3102,26 @@ function formatProvinceNewsOutput(data) {
     // -- Attacks suffered by this province
     // Attacks Suffered
     if (data.attacks.length > 0) {
-        const totalAcres = data.attacks.reduce((s, a) => s + a.acresCaptured, 0);
-        const totalBooks = data.attacks.reduce((s, a) => s + a.booksLooted, 0);
+        const totalAcres  = data.attacks.reduce((s, a) => s + (a.acresCaptured || 0), 0);
+        const totalBooks  = data.attacks.reduce((s, a) => s + (a.booksLooted   || 0), 0);
+        const totalRazed  = data.attacks.reduce((s, a) => s + (a.acresRazed    || 0), 0);
+        const totalKilled = data.attacks.reduce((s, a) => s + (a.peopleKilled  || 0), 0);
         const headerParts = [];
-        if (totalAcres > 0) headerParts.push(`${formatNumber(totalAcres)} acres lost`);
-        if (totalBooks > 0) headerParts.push(`${formatNumber(totalBooks)} books looted`);
+        if (totalAcres  > 0) headerParts.push(`${formatNumber(totalAcres)} acres lost`);
+        if (totalRazed  > 0) headerParts.push(`${formatNumber(totalRazed)} acres razed`);
+        if (totalBooks  > 0) headerParts.push(`${formatNumber(totalBooks)} books looted`);
+        if (totalKilled > 0) headerParts.push(`${formatNumber(totalKilled)} people killed`);
         out.push('');
         out.push(`Attacks Suffered: ${data.attacks.length} (${headerParts.join(', ')})`);
         for (const atk of data.attacks) {
             if (atk.acresCaptured > 0) {
-                out.push(`  ${atk.attacker} (${atk.kingdom}): ${atk.acresCaptured} acres`);
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresCaptured)} acres`);
+            } else if (atk.acresRazed > 0) {
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresRazed)} acres razed`);
             } else if (atk.booksLooted > 0) {
                 out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.booksLooted)} books (learn)`);
+            } else if (atk.peopleKilled > 0) {
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.peopleKilled)} people killed (massacre)`);
             }
         }
     }
