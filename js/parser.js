@@ -3072,7 +3072,7 @@ function formatProvinceNewsOutput(data) {
             for (const [src, cnt] of sources) out.push(`    ${src}: ${cnt}`);
         }
         if (data.meteorShower.count > 0)
-            out.push(`  Meteor shower: ${pluralize(data.meteorShower.count, 'occurrence')}, ${data.meteorShower.totalDays} days`);
+            out.push(`  Meteor shower: ${pluralize(data.meteorShower.count, 'occurrence')}`);
         if (data.meteorDays > 0) {
             const casParts = [];
             if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
