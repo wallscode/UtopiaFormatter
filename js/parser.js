@@ -320,18 +320,43 @@ function detectOwnKingdom(lines) {
         if (m) enemyKingdoms.add(m[1] + ':' + m[2]);
     }
 
-    // Second pass: count kingdom appearances in attack lines, excluding known enemies.
-    // In a symmetric war both kingdoms appear equally often, so without exclusion the
-    // first-seen kingdom wins arbitrarily. Excluding known enemies lets the own kingdom
-    // accumulate an uncontested majority.
+    // Second pass: directional voting from attack lines, excluding known enemies.
+    // Outgoing attack formats (own kingdom is FIRST mention):
+    //   "X (K:K) captured N acres of land from Y (K:K)"
+    //   "X (K:K) killed N people within Y (K:K)"
+    // Incoming attack formats (own kingdom is SECOND mention):
+    //   "X (K:K) invaded Y (K:K) and captured N acres"
+    //   "X (K:K) invaded Y (K:K) and killed N people"
+    //   "X (K:K) razed N acres of Y (K:K)"  (standalone raze)
+    // Unrecognised attack lines fall back to counting all kingdom mentions.
     const kingdomCounts = {};
+    function vote(kid, delta) {
+        if (!enemyKingdoms.has(kid)) {
+            kingdomCounts[kid] = (kingdomCounts[kid] || 0) + delta;
+        }
+    }
     for (const line of lines) {
         if (!hasAttack.test(line)) continue;
-        for (const m of line.matchAll(provincePattern)) {
-            const kid = m[1] + ':' + m[2];
-            if (!enemyKingdoms.has(kid)) {
-                kingdomCounts[kid] = (kingdomCounts[kid] || 0) + 1;
-            }
+        const kids = [...line.matchAll(provincePattern)].map(m => m[1] + ':' + m[2]);
+        if (kids.length < 2) {
+            // Only one kingdom mentioned — give it a generic vote.
+            if (kids.length === 1) vote(kids[0], 1);
+            continue;
+        }
+        const first = kids[0], second = kids[1];
+        if (/captured [\d,]+ acres of land from/i.test(line) ||
+            /killed [\d,]+ people within/i.test(line)) {
+            // Outgoing: first province is ours
+            vote(first, 2);
+        } else if (/invaded .+? and captured [\d,]+ acres/i.test(line) ||
+                   /invaded .+? and killed [\d,]+ people/i.test(line) ||
+                   /razed [\d,]+ acres of \d/i.test(line)) {
+            // Incoming: second province is ours
+            vote(second, 2);
+        } else {
+            // Fallback: count both
+            vote(first, 1);
+            vote(second, 1);
         }
     }
 
