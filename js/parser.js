@@ -2409,8 +2409,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         // ── Uniques for own kingdom ──────────────────────────────────────
         output.push(`** Uniques for ${ownKingdomId} **`);
         const ownUniquesList = Object.entries(madeUniques.perAttacker)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+            .map(([name, count]) => ({ name, count, num: parseInt(name) || 0 }))
+            .sort((a, b) => b.count - a.count || a.num - b.num);
         for (const u of ownUniquesList) {
             output.push(`${u.name} ${u.count}`);
         }
@@ -2445,8 +2445,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         output.push(`** Uniques for ${kingdomId} **`);
         const enemyUniquesList = Object.entries(sufferedUniques.perAttacker)
             .filter(([name]) => kingdomData.provinces[name] !== undefined)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+            .map(([name, count]) => ({ name, count, num: parseInt(name) || 0 }))
+            .sort((a, b) => b.count - a.count || a.num - b.num);
         for (const u of enemyUniquesList) {
             output.push(`${u.name} ${u.count}`);
         }
