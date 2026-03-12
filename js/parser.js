@@ -308,15 +308,30 @@ function dateToNumber(dateStr) {
  * @returns {string|null} - Kingdom ID e.g. '5:1', or null if undetermined
  */
 function detectOwnKingdom(lines) {
-    const kingdomCounts = {};
     const provincePattern = /\((\d+):(\d+)\)/g;
     const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed \d+ acres|invaded and looted|attacked and looted|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
 
+    // First pass: identify kingdoms that are explicitly enemies via war/dragon markers.
+    // "X (K:K) has declared WAR with our kingdom!" and "X (K:K) has begun ... against us!"
+    // both unambiguously identify K:K as an enemy kingdom.
+    const enemyKingdoms = new Set();
+    for (const line of lines) {
+        const m = line.match(/\((\d+):(\d+)\)[^(]*(?:declared WAR with our kingdom|against us)/);
+        if (m) enemyKingdoms.add(m[1] + ':' + m[2]);
+    }
+
+    // Second pass: count kingdom appearances in attack lines, excluding known enemies.
+    // In a symmetric war both kingdoms appear equally often, so without exclusion the
+    // first-seen kingdom wins arbitrarily. Excluding known enemies lets the own kingdom
+    // accumulate an uncontested majority.
+    const kingdomCounts = {};
     for (const line of lines) {
         if (!hasAttack.test(line)) continue;
         for (const m of line.matchAll(provincePattern)) {
             const kid = m[1] + ':' + m[2];
-            kingdomCounts[kid] = (kingdomCounts[kid] || 0) + 1;
+            if (!enemyKingdoms.has(kid)) {
+                kingdomCounts[kid] = (kingdomCounts[kid] || 0) + 1;
+            }
         }
     }
 
