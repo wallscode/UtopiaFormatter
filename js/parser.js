@@ -310,7 +310,7 @@ function dateToNumber(dateStr) {
 function detectOwnKingdom(lines) {
     const kingdomCounts = {};
     const provincePattern = /\((\d+):(\d+)\)/g;
-    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed \d+ acres|invaded and looted|attacked and looted|killed \d+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
+    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed \d+ acres|invaded and looted|attacked and looted|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
 
     for (const line of lines) {
         if (!hasAttack.test(line)) continue;
@@ -1509,7 +1509,7 @@ function parseKingdomNewsLog(inputText, options) {
             const attackLine = line.replace(/^(January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/, '');
 
             // Check if this is actually an attack line
-            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed \d+ people|razed \d+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
+            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed [\d,]+ people|razed \d+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
 
             // War Only filter: skip events that don't involve the war opponent in the war window
             if (warOnly && warPeriods.length > 0) {
@@ -1598,7 +1598,7 @@ function parseAttackLine(line, data, dateStr) {
     const tradMarchInvadedPattern = /invaded.*captured (\d+) acres of land/;  // Suffered trad march with "invaded"
     const ambushMadePattern = /recaptured (\d+) acres of land/;  // Made by our kingdom
     const ambushReceivedPattern = /ambushed armies.*and took (\d+) acres of land/;  // Made into our kingdom
-    const massacrePattern = /killed (\d+) people within/;
+    const massacrePattern = /killed ([\d,]+) people within/;
     const razePattern = /razed (\d+) acres/;
     const razeInvadedPattern = /invaded.*razed (\d+) acres/;  // Suffered raze with "invaded"
     const plunderPattern = /attacked and pillaged|invaded and pillaged/;
@@ -1783,7 +1783,7 @@ function parseAttackLine(line, data, dateStr) {
         isActualAttack = true;
     } else if (massacrePattern.test(line)) {
         attackType = 'massacre';
-        people = parseInt(line.match(massacrePattern)[1]);
+        people = parseGameInt(line.match(massacrePattern)[1]);
         isActualAttack = false; // Don't count massacres as attacks for war summary
     } else if (razeInvadedPattern.test(line)) {
         attackType = 'raze';
