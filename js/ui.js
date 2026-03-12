@@ -68,7 +68,7 @@ const advSettings = {
             'Military Training': false
         },
         showAverages: false,
-        showFailedThievery: true,
+        showFailedThievery: false,
         showFailedSpellAttempts: false,
         showSuccessThieveryLosses: false,
         showRazedBuildings: false,
@@ -148,7 +148,7 @@ const advSettings = {
             'Scientists Gained':             false,
         },
         showAverages:               false,
-        showFailedThievery:         true,
+        showFailedThievery:         false,
         showFailedSpellAttempts:    false,
         showSuccessThieveryLosses:  false,
         showRazedBuildings:         false,
