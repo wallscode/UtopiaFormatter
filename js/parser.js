@@ -1006,6 +1006,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("We are now closer to completing our ritual project") &&
                    !line.includes("to the quest of launching a dragon") &&
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
+                   !line.includes("You have voted for") &&
                    !line.includes("You have given orders to commence work on") &&
                    !line.includes("You have cancelled") &&
                    !line.includes("You have destroyed") &&
