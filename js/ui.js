@@ -1708,7 +1708,7 @@ function applyProvinceLogsSettings(text) {
     // Find header (everything before the first section)
     let firstSectionStart = text.length;
     for (const name of sectionNames) {
-        const idx = text.indexOf('\n\n' + name + ':');
+        const idx = text.indexOf('\n\n' + name);
         if (idx !== -1 && idx < firstSectionStart) firstSectionStart = idx;
     }
     const header = text.substring(0, firstSectionStart);
@@ -1716,13 +1716,13 @@ function applyProvinceLogsSettings(text) {
     // Extract each section's content (without the leading \n\n)
     const sections = {};
     for (const name of sectionNames) {
-        const start = text.indexOf('\n\n' + name + ':');
+        const start = text.indexOf('\n\n' + name);
         if (start === -1) continue;
 
         let end = text.length;
         for (const other of sectionNames) {
             if (other === name) continue;
-            const otherStart = text.indexOf('\n\n' + other + ':');
+            const otherStart = text.indexOf('\n\n' + other);
             if (otherStart > start && otherStart < end) end = otherStart;
         }
         sections[name] = text.substring(start + 2, end); // +2 to skip leading \n\n
@@ -1827,6 +1827,13 @@ function applyProvinceLogsSettings(text) {
             return line;
         }).join('\n');
     }
+
+    // Add bullet characters to indented list lines
+    output = output.split('\n').map(line => {
+        if (line.startsWith('    ')) return '  \u00B7 ' + line.slice(4);
+        if (line.startsWith('  ')) return '\u2022 ' + line.slice(2);
+        return line;
+    }).join('\n');
 
     return output;
 }
@@ -2043,10 +2050,7 @@ function applyCombinedProvinceSettings(text) {
     // Find header (everything before the first recognised section)
     let firstSectionStart = text.length;
     for (const name of allSectionNames) {
-        const withColon = text.indexOf('\n\n' + name + ':');
-        const withoutColon = text.indexOf('\n\n' + name + '\n');
-        const idx = withColon !== -1 ? (withoutColon !== -1 ? Math.min(withColon, withoutColon) : withColon)
-                                      : withoutColon;
+        const idx = text.indexOf('\n\n' + name);
         if (idx !== -1 && idx < firstSectionStart) firstSectionStart = idx;
     }
     const header = text.substring(0, firstSectionStart);
@@ -2054,16 +2058,13 @@ function applyCombinedProvinceSettings(text) {
     // Extract each section
     const sections = {};
     for (const name of allSectionNames) {
-        // Try both colon and non-colon markers
-        let start = text.indexOf('\n\n' + name + ':');
-        if (start === -1) start = text.indexOf('\n\n' + name + '\n');
+        const start = text.indexOf('\n\n' + name);
         if (start === -1) continue;
 
         let end = text.length;
         for (const other of allSectionNames) {
             if (other === name) continue;
-            let otherStart = text.indexOf('\n\n' + other + ':');
-            if (otherStart === -1) otherStart = text.indexOf('\n\n' + other + '\n');
+            const otherStart = text.indexOf('\n\n' + other);
             if (otherStart > start && otherStart < end) end = otherStart;
         }
         sections[name] = text.substring(start + 2, end);
@@ -2782,6 +2783,12 @@ const EV_SECTION_COLORS = {
  * Parses the plain text output into section cards.
  */
 function renderEnhancedSections(grid, text, mode) {
+    // Strip Province Logs bullet characters so card rendering uses plain indentation
+    text = text.split('\n').map(line => {
+        if (line.startsWith('\u2022 ')) return '  ' + line.slice(2);
+        if (line.startsWith('  \u00B7 ')) return '    ' + line.slice(4);
+        return line;
+    }).join('\n');
     const lines = text.split('\n');
     let headerLines = [];
     let sections = [];
@@ -2795,7 +2802,7 @@ function renderEnhancedSections(grid, text, mode) {
         // Section header: non-empty, no leading space, ends with ':'
         if (line.length > 0 && !line.startsWith(' ') && line.endsWith(':')) {
             inHeader = false;
-            currentSection = { title: line.slice(0, -1), lines: [] };
+            currentSection = { title: line.slice(0, -1).replace(/ \(\d+\/\d+ - \d+%\)$/, ''), lines: [] };
             sections.push(currentSection);
             continue;
         }
