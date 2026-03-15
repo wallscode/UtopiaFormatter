@@ -3089,6 +3089,15 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Dragon building damage (Uto-6clh, Uto-7thh, Uto-f8fp, Uto-vac7)
+    // Covers all variants: "destroyed and turned to ash", "destroyed", "reduced to rubble", "Oh the horror!"
+    if (eventText.includes('dragon ravaging our lands')) {
+        const m = eventText.match(/([\d,]+) of our (?:precious )?buildings/i);
+        if (m) data.dragonImpacts.totalBuildings += parseGameInt(m[1]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines are silently skipped)
     if (!/^Edition\w+ YR\d+/.test(eventText)) {
@@ -3238,6 +3247,16 @@ function formatProvinceNewsOutput(data) {
         if (data.storms.count > 0)        out.push(`  Storms: ${pluralize(data.storms.count, 'occurrence')}, ${data.storms.totalDays} days`);
     }
 
+    // -- Dragon building damage
+    // Dragon Impacts (Uto-6clh, Uto-7thh, Uto-f8fp, Uto-vac7)
+    if (data.dragonImpacts.count > 0) {
+        out.push('');
+        out.push('Dragon Impacts:');
+        out.push(`  ${pluralize(data.dragonImpacts.count, 'attack')}`);
+        if (data.dragonImpacts.totalBuildings > 0)
+            out.push(`  ${formatNumber(data.dragonImpacts.totalBuildings)} buildings destroyed`);
+    }
+
     // -- Shadowlight attacker identification
     // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
     if (data.shadowlightAttackers.length > 0) {
@@ -3336,6 +3355,7 @@ function accumulateProvinceNewsData(text, options = {}) {
             soldiers:     { total: 0, shipments: 0, senders: {} },
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
+        dragonImpacts:        { count: 0, totalBuildings: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         thieveryDetected:     0,
         thieveryUnknown:      0,
