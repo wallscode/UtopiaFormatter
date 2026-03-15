@@ -619,8 +619,9 @@ function accumulateProvinceLogsData(text) {
     const releaseCounts = {};
     
     // Per-operation records for target breakdowns
-    const thiefOps = [];  // { target, type, success, impact, impactUnit }
-    const spellOps = [];  // { target, spell, success, impact, impactUnit }
+    const thiefOps = [];     // { target, type, success, impact, impactUnit }
+    const spellOps = [];     // { target, spell, success, impact, impactUnit }
+    const attacksMade = [];  // { type, target, kingdom, acres, credits, peasants }
 
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -960,6 +961,22 @@ function accumulateProvinceLogsData(text) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
                 if (match) { warHorsesStolen += parseGameInt(match[1]); warHorsesCount++; }
             }
+        // Outgoing Traditional March result
+        } else if (line.startsWith('Your forces arrive at') && line.includes('has taken')) {
+            const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
+            const acresM  = line.match(/has taken ([\d,]+) acres/);
+            if (targetM && acresM) {
+                const creditsM  = line.match(/gained ([\d,]+) specialist training credits/);
+                const peasantsM = line.match(/([\d,]+) peasants settled/);
+                attacksMade.push({
+                    type: 'Traditional March',
+                    target:   targetM[1],
+                    kingdom:  targetM[2],
+                    acres:    parseGameInt(acresM[1]),
+                    credits:  creditsM  ? parseGameInt(creditsM[1])  : 0,
+                    peasants: peasantsM ? parseGameInt(peasantsM[1]) : 0,
+                });
+            }
         } else if (!line.includes("begin casting") &&
                    !line.includes("We have sent") &&
                    !line.includes("Early indications show that our operation was a success") &&
@@ -1002,7 +1019,7 @@ function accumulateProvinceLogsData(text) {
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
-        thiefOps, spellOps,
+        thiefOps, spellOps, attacksMade,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     };
@@ -1025,7 +1042,7 @@ function formatProvinceLogsFromData(data) {
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
-        thiefOps, spellOps,
+        thiefOps, spellOps, attacksMade,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     } = data;
@@ -1198,6 +1215,26 @@ function formatProvinceLogsFromData(data) {
         output += "\nExploration Summary:\n";
         output += `  ${formatNumber(exploreAcres)} acres explored\n`;
         output += `  ${formatNumber(exploreSoldiers)} soldiers sent at a cost of ${formatNumber(exploreCost)} gold coins\n`;
+    }
+
+    // Attacks Made
+    if (attacksMade.length > 0) {
+        output += "\nAttacks Made:\n";
+        const byType = {};
+        for (const atk of attacksMade) {
+            if (!byType[atk.type]) byType[atk.type] = [];
+            byType[atk.type].push(atk);
+        }
+        for (const [type, attacks] of Object.entries(byType)) {
+            const totalAcres = attacks.reduce((sum, a) => sum + a.acres, 0);
+            output += `  ${type}: ${attacks.length} (${formatNumber(totalAcres)} acres)\n`;
+            for (const atk of attacks) {
+                const supp = (atk.credits > 0 || atk.peasants > 0)
+                    ? `, ${formatNumber(atk.credits)} credits, ${formatNumber(atk.peasants)} peasants`
+                    : '';
+                output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.acres)} acres${supp}\n`;
+            }
+        }
     }
 
     // Military Training (omitted when no training, release, draft, or wage data detected)
@@ -3359,7 +3396,7 @@ function formatCombinedProvinceSummary(logsText, newsText) {
         'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type',
         'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province',
         'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary',
-        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'
+        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
     const newsSectionNames = [
         'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
@@ -3423,7 +3460,7 @@ function formatCombinedProvinceSummary(logsText, newsText) {
         'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type',
         'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province',
         'Spell Targets by Spell Type', 'Dragon Summary', 'Ritual Summary',
-        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'
+        'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
     for (const name of logsPassthrough) {
         if (logsSections[name]) out.push('\n' + logsSections[name]);

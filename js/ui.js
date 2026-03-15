@@ -39,7 +39,7 @@ const advSettings = {
         showAltCopy: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Military Training'],
+        sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'],
         sectionGroups: [
             { label: 'Thievery', children: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents'] },
             { label: 'Spells',   children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type'] },
@@ -49,6 +49,7 @@ const advSettings = {
             { label: 'Construction Summary', children: ['Construction Summary'] },
             { label: 'Science Summary',      children: ['Science Summary'] },
             { label: 'Exploration Summary',  children: ['Exploration Summary'] },
+            { label: 'Attacks Made',         children: ['Attacks Made'] },
             { label: 'Military Training',    children: ['Military Training'] },
         ],
         visible: {
@@ -65,6 +66,7 @@ const advSettings = {
             'Construction Summary': false,
             'Science Summary': false,
             'Exploration Summary': false,
+            'Attacks Made': true,
             'Military Training': false
         },
         showAverages: false,
@@ -77,6 +79,7 @@ const advSettings = {
         showDraftRate: false,
         showMilitaryWages: false,
         exploreDetails: false,
+        showAttackSupplementalStats: false,
         discordCopy: false,
         showAltCopy: false
     },
@@ -103,7 +106,7 @@ const advSettings = {
             'Thievery Impacts', 'Shadowlight Thief IDs',
             'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
             'Spell Impacts',
-            'Attacks Suffered', 'Military Training',
+            'Attacks Suffered', 'Attacks Made', 'Military Training',
             'Exploration Summary', 'Construction Summary', 'Science Summary',
             'Dragon Summary', 'Ritual Summary',
             'War Outcomes', 'Daily Login Bonus', 'Scientists Gained',
@@ -114,7 +117,7 @@ const advSettings = {
             { label: 'Defensive Thievery',       children: ['Thievery Impacts', 'Shadowlight Thief IDs'] },
             { label: 'Offensive Spells',         children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type'] },
             { label: 'Defensive Spells',         children: ['Spell Impacts'] },
-            { label: 'Military',                 children: ['Attacks Suffered', 'Military Training'] },
+            { label: 'Military',                 children: ['Attacks Suffered', 'Attacks Made', 'Military Training'] },
             { label: 'Exploration Summary',      children: ['Exploration Summary'] },
             { label: 'Construction Summary',     children: ['Construction Summary'] },
             { label: 'Science Summary',          children: ['Science Summary'] },
@@ -137,6 +140,7 @@ const advSettings = {
             'Spell Targets by Spell Type':   false,
             'Spell Impacts':                 true,
             'Attacks Suffered':              true,
+            'Attacks Made':                  true,
             'Military Training':             false,
             'Exploration Summary':           false,
             'Construction Summary':          false,
@@ -157,6 +161,7 @@ const advSettings = {
         showDraftRate:              false,
         showMilitaryWages:          false,
         exploreDetails:             false,
+        showAttackSupplementalStats: false,
         showSourceIdentifiers:      false,
         discordCopy: false,
         showAltCopy: false
@@ -1496,6 +1501,32 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     wagesGroup.appendChild(makeHint('Include military wage percentage changes in the Military Training section'));
     rightCol.appendChild(wagesGroup);
 
+    const attacksTitle = document.createElement('div');
+    attacksTitle.className = 'adv-subgroup-title';
+    attacksTitle.textContent = 'Attacks Made';
+    rightCol.appendChild(attacksTitle);
+
+    const attackSuppGroup = document.createElement('div');
+    attackSuppGroup.className = 'adv-group';
+
+    const attackSuppLabel = document.createElement('label');
+    attackSuppLabel.htmlFor = 'adv-pl-showAttackSupplementalStats';
+
+    const attackSuppCheckbox = document.createElement('input');
+    attackSuppCheckbox.type = 'checkbox';
+    attackSuppCheckbox.id = 'adv-pl-showAttackSupplementalStats';
+    attackSuppCheckbox.checked = advSettings.provinceLogs.showAttackSupplementalStats;
+    attackSuppCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showAttackSupplementalStats = attackSuppCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    attackSuppLabel.appendChild(attackSuppCheckbox);
+    attackSuppLabel.appendChild(document.createTextNode(' Show supplemental attack stats'));
+    attackSuppGroup.appendChild(attackSuppLabel);
+    attackSuppGroup.appendChild(makeHint('Show specialist training credits and peasants gained per attack alongside acres taken'));
+    rightCol.appendChild(attackSuppGroup);
+
     const miscTitle = document.createElement('div');
     miscTitle.className = 'adv-subgroup-title';
     miscTitle.textContent = 'Miscellaneous';
@@ -1671,7 +1702,7 @@ function applyProvinceLogsSettings(text) {
         'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
         'Aid Summary', 'Dragon Summary', 'Ritual Summary',
         'Construction Summary', 'Science Summary',
-        'Exploration Summary', 'Military Training'
+        'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
 
     // Find header (everything before the first section)
@@ -1773,6 +1804,12 @@ function applyProvinceLogsSettings(text) {
 
     if (!advSettings.provinceLogs.exploreDetails) {
         output = output.split('\n').filter(line => !/soldiers sent at a cost of/.test(line)).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showAttackSupplementalStats) {
+        output = output.split('\n').map(line =>
+            line.replace(/, [\d,]+ credits, [\d,]+ peasants$/, '')
+        ).join('\n');
     }
 
     if (advSettings.provinceLogs.showAverages) {
@@ -1995,7 +2032,7 @@ function applyCombinedProvinceSettings(text) {
         'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
         'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type',
         'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary',
-        'Exploration Summary', 'Military Training'
+        'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
     const newsSectionNames = [
         'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
@@ -2104,6 +2141,11 @@ function applyCombinedProvinceSettings(text) {
     }
     if (!s.exploreDetails) {
         output = output.split('\n').filter(line => !/soldiers sent at a cost of/.test(line)).join('\n');
+    }
+    if (!s.showAttackSupplementalStats) {
+        output = output.split('\n').map(line =>
+            line.replace(/, [\d,]+ credits, [\d,]+ peasants$/, '')
+        ).join('\n');
     }
 
     return output;
@@ -2232,6 +2274,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showDraftPercentage',        'Show draft percentage',              () => s.showDraftPercentage,       v => { s.showDraftPercentage = v; });
     addToggle('adv-cp-showDraftRate',              'Show draft rate',                    () => s.showDraftRate,             v => { s.showDraftRate = v; });
     addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
+    addToggle('adv-cp-showAttackSupplementalStats','Show supplemental attack stats',      () => s.showAttackSupplementalStats, v => { s.showAttackSupplementalStats = v; });
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 
     renderRawTextToggle(rightCol, elements);
