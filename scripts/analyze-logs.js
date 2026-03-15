@@ -755,13 +755,15 @@ async function main() {
                 }
                 console.log(`Archived ${archived} log file(s) to ./logs/archive/`);
 
-                // Remove processed logs from S3 so they are not re-downloaded on the next run.
+                // Move processed logs to S3 archive so they are not re-downloaded on the next
+                // run, but remain recoverable. The S3 lifecycle rule on logs/archive/ handles
+                // expiry after 7 days automatically.
                 if (!NO_SYNC && bucket) {
-                    console.log(`Deleting processed logs from s3://${bucket}/logs/ ...`);
+                    console.log(`Moving processed logs to s3://${bucket}/logs/archive/ ...`);
                     try {
-                        execSync(`aws s3 rm "s3://${bucket}/logs/" --recursive`, { stdio: 'inherit' });
+                        execSync(`aws s3 mv "s3://${bucket}/logs/" "s3://${bucket}/logs/archive/" --recursive`, { stdio: 'inherit' });
                     } catch (err) {
-                        console.warn(`  Warning: could not delete logs from S3: ${err.message}`);
+                        console.warn(`  Warning: could not move logs to S3 archive: ${err.message}`);
                     }
                 }
             }
