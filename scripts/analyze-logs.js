@@ -367,6 +367,121 @@ function saveAcknowledged(set) {
 }
 
 // ---------------------------------------------------------------------------
+// Cross-parser misclassification detection
+//
+// When the UI misdetects the input format (e.g. Province News paste treated as
+// Kingdom News), lines get logged as unrecognized in the wrong context.
+// These checks flag likely misclassifications so the analyst can skip them
+// instead of filing a spurious ticket.
+// ---------------------------------------------------------------------------
+
+// Province News event text patterns (after the date\t prefix is stripped)
+const PROVINCE_NEWS_INDICATORS = [
+    /Forces from .+? \(\d+:\d+\) came through/i,
+    /came through and (?:ravaged|razed|killed)/i,
+    /A successful (?:Traditional March|Conquest|Ambush|Massacre|Raze|Learn|Plunder)/i,
+    /invaded .+? and (?:captured|killed)/i,
+    /Our realm received a gift of/i,
+    /We gained .+ from our daily login/i,
+    /A (?:ceasefire|war|peace) (?:has|was)/i,
+    /our kingdom has (?:won|lost) the war/i,
+    /troops that were sent to aid/i,
+    /attempted (?:a|an) .+ on our (?:province|realm)/i,
+    /cast .+ on our (?:province|realm)/i,
+    /Our scientists (?:have|gained)/i,
+];
+
+// Province Logs event text patterns
+const PROVINCE_LOGS_INDICATORS = [
+    /^Our thieves (have|successfully|attempted)/i,
+    /^(?:January|February|March|April|May|June|July) \d{1,2} of YR\d+\s+(?:Our|Enemy|We|A spell|Cast)/i,
+    /^(?:Sent|Received) an aid shipment/i,
+    /^Our troops (?:have returned|were released)/i,
+    /^(?:A|Our) (?:dragon|ritual)/i,
+    /^(?:Construction|Exploration) (?:complete|in progress)/i,
+];
+
+// Kingdom News attack / event patterns
+const KINGDOM_NEWS_INDICATORS = [
+    /\(\d+:\d+\) (?:captured|invaded|ambushed|razed|killed|attacked|looted)/i,
+    /captured [\d,]+ acres of land from/i,
+    /invaded .+? and (?:captured|killed)/i,
+    /killed [\d,]+ people within/i,
+    /has (?:begun|completed) a (?:dragon|ritual)/i,
+    /has declared WAR/i,
+    /Our kingdom is now in a post-war period/i,
+    /has sent an aid shipment to/i,
+];
+
+/**
+ * Checks whether a line logged in `loggedContexts` actually looks like it
+ * belongs to a different parser, indicating a UI misclassification.
+ *
+ * @param {string} line       - Example line from the log
+ * @param {string} loggedContexts - Context(s) it was logged under (e.g. "kingdom-news")
+ * @returns {{ likelyContext: string, reason: string, alreadyHandled: boolean } | null}
+ */
+function checkMisclassification(line, loggedContexts) {
+    // Raw Province News format always uses tabs: "Month D of YRN\tevent text"
+    if (line.includes('\t')) {
+        const isLoggedAsKnOrPl = loggedContexts.includes('kingdom-news') ||
+                                  loggedContexts.includes('province-logs');
+        if (isLoggedAsKnOrPl) {
+            return {
+                likelyContext: 'province-news',
+                reason: 'Line contains a tab — Province News uses tab-delimited "date\\tevent" format',
+                alreadyHandled: true,
+            };
+        }
+    }
+
+    const notKN = !loggedContexts.includes('kingdom-news');
+    const notPN = !loggedContexts.includes('province-news');
+    const notPL = !loggedContexts.includes('province-logs');
+
+    // Check if a non-PN context logged a line that looks like Province News
+    if (notPN) {
+        for (const pat of PROVINCE_NEWS_INDICATORS) {
+            if (pat.test(line)) {
+                return {
+                    likelyContext: 'province-news',
+                    reason: `Matches Province News event pattern: ${pat}`,
+                    alreadyHandled: null, // can't confirm without running the PN parser
+                };
+            }
+        }
+    }
+
+    // Check if a non-PL context logged a line that looks like Province Logs
+    if (notPL) {
+        for (const pat of PROVINCE_LOGS_INDICATORS) {
+            if (pat.test(line)) {
+                return {
+                    likelyContext: 'province-logs',
+                    reason: `Matches Province Logs event pattern: ${pat}`,
+                    alreadyHandled: null,
+                };
+            }
+        }
+    }
+
+    // Check if a non-KN context logged a line that looks like Kingdom News
+    if (notKN) {
+        for (const pat of KINGDOM_NEWS_INDICATORS) {
+            if (pat.test(line)) {
+                return {
+                    likelyContext: 'kingdom-news',
+                    reason: `Matches Kingdom News event pattern: ${pat}`,
+                    alreadyHandled: null,
+                };
+            }
+        }
+    }
+
+    return null;
+}
+
+// ---------------------------------------------------------------------------
 // Auto-generate a human-readable ticket title from a normalised pattern
 // ---------------------------------------------------------------------------
 function makeTitle(pattern, contexts) {
@@ -453,7 +568,28 @@ async function interactive(groups, acknowledged, rl) {
         console.log(`  Example: "${g.example}"`);
         console.log(`  Pattern: "${g.pattern}"`);
 
-        const answer = (await question('\n  (c) create ticket  (s) skip  (q) quit  > ')).trim().toLowerCase();
+        // Check for cross-parser misclassification before prompting
+        const mis = checkMisclassification(g.example, g.contexts);
+        let defaultAction = 'c';
+
+        if (mis) {
+            console.log('');
+            console.log(`  ⚠  Possible misclassification: this line looks like ${mis.likelyContext} content`);
+            console.log(`     logged in: ${g.contexts}`);
+            console.log(`     Reason: ${mis.reason}`);
+            if (mis.alreadyHandled === true) {
+                console.log(`     The ${mis.likelyContext} parser handles this format — this is likely a`);
+                console.log(`     UI input-type detection issue, not a missing parser handler.`);
+            } else if (mis.alreadyHandled === null) {
+                console.log(`     Verify whether the ${mis.likelyContext} parser handles this before filing a ticket.`);
+            }
+            defaultAction = 's';
+        }
+
+        const defaultLabel = defaultAction === 's' ? '(s)*' : '(c)*';
+        const prompt = `\n  (c) create ticket  ${defaultLabel} skip  (a) acknowledge  (q) quit  [Enter=${defaultAction}] > `;
+        const raw = (await question(prompt)).trim().toLowerCase();
+        const answer = raw || defaultAction;
         console.log('');
 
         if (answer === 'q') {
@@ -469,6 +605,10 @@ async function interactive(groups, acknowledged, rl) {
             // Mark acknowledged even on error so we don't loop forever
             acknowledged.add(g.pattern);
             saveAcknowledged(acknowledged);
+        } else if (answer === 'a') {
+            acknowledged.add(g.pattern);
+            saveAcknowledged(acknowledged);
+            console.log('  Acknowledged (no ticket).');
         } else {
             console.log('  Skipped.');
             // Not added to acknowledged — will reappear on next run
