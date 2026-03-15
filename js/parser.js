@@ -2047,10 +2047,11 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
-    // "A [Type] Dragon, [Name], from Unnamed kingdom (X:Y) has begun ravaging our lands!"
+    // "A [Type] Dragon, [Name], from [Kingdom] (X:Y) has begun ravaging our lands!"
+    // Handles both "Unnamed kingdom (X:Y)" and named kingdoms e.g. "War Heroes and Generals (3:10)".
     // Enemy dragon completed development and is now attacking — counts as dragonsCompleted for enemy.
-    if (line.includes('Dragon') && line.includes('from Unnamed kingdom') && line.includes('has begun ravaging our lands')) {
-        const m = line.match(/from Unnamed kingdom \((\d+):(\d+)\)/);
+    if (line.includes('Dragon') && line.includes('has begun ravaging our lands')) {
+        const m = line.match(/from .+?\((\d+):(\d+)\)/);
         if (m) {
             const kId = m[1] + ':' + m[2];
             if (!data.kingdoms[kId]) {
