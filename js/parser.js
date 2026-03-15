@@ -1020,7 +1020,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("You have cancelled") &&
                    !line.includes("You have destroyed") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
-                   !(line.includes("We lost") && line.includes("thieves in the operation")) &&
+                   !(line.includes("We lost") && (line.includes("thieves in the operation") || line.includes("thief in the operation"))) &&
                    !line.includes("books allocated to") &&
                    !(line.includes("to explore") && line.includes("expedition")) &&
                    !(line.includes("You have ordered that") && line.includes("be trained")) &&
