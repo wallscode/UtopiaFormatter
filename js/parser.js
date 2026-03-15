@@ -574,10 +574,13 @@ function accumulateProvinceLogsData(text) {
         if (maxDateVal === null || dv > maxDateVal) { maxDateVal = dv; maxDateStr = dm[0]; }
     }
 
-    // Remove date prefix and time stamps
-    lines = lines.map(line => line.replace(/^.*?YR\d+\s*/, '').trim())
-                 .filter(line => !/^\d{2}:\d{2}\b/.test(line))
-                 .filter(Boolean);
+    // Remove date prefix and time stamps, but keep the original (raw) line alongside
+    // the stripped version so it can be included in unrecognized-line log entries.
+    const linePairs = lines
+        .map(line => ({ raw: line, stripped: line.replace(/^.*?YR\d+\s*/, '').trim() }))
+        .filter(p => !/^\d{2}:\d{2}\b/.test(p.stripped))
+        .filter(p => p.stripped);
+    lines = linePairs.map(p => p.stripped);
 
     // Initialize counters
     const spellCounts = {};
@@ -656,7 +659,7 @@ function accumulateProvinceLogsData(text) {
     PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
     // Main parsing loop
-    for (const line of lines) {
+    for (const { stripped: line, raw: rawLine } of linePairs) {
         // Parse spells
         if (line.includes("begin casting")) {
             const spellTargetM = line.match(/\(([^()]+\(\d+:\d+\))\)\s*$/);
@@ -983,7 +986,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Drawing from the ancient Mana Well") &&
                    !line.includes("The natural leyline energies surrounding your province") &&
                    !/^Edition\w+ YR\d+/.test(line)) {
-            logUnrecognizedLine(line, 'province-logs');
+            logUnrecognizedLine(line, 'province-logs', rawLine);
         }
     }
 
@@ -1447,15 +1450,18 @@ function formatProvinceLogs(text) {
  * Silently skips when running in Node.js (tests) or when logEndpoint is unset.
  * @param {string} line - The unrecognized line (will be truncated to 500 chars)
  * @param {string} context - Parser context: 'kingdom-news', 'province-logs', or 'province-news'
+ * @param {string} [rawLine] - Full original line including date prefix, for log analysis
  */
-function logUnrecognizedLine(line, context) {
+function logUnrecognizedLine(line, context, rawLine) {
     if (typeof window === 'undefined') return; // Node.js / test environment
     const endpoint = window.APP_CONFIG?.logEndpoint;
     if (!endpoint) return;
+    const payload = { line: line.substring(0, 500), context };
+    if (rawLine && rawLine !== line) payload.rawLine = rawLine.substring(0, 600);
     fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line.substring(0, 500), context }),
+        body: JSON.stringify(payload),
         keepalive: true
     }).catch(() => {}); // silently swallow all errors — never surface to user
 }
@@ -1602,7 +1608,7 @@ function parseKingdomNewsLog(inputText, options) {
                     if (isTruncated) {
                         data.truncatedLines.push(attackLine.trim());
                     } else if (!/^Edition\w+ YR\d+/.test(attackLine.trim())) {
-                        logUnrecognizedLine(attackLine.trim(), 'kingdom-news');
+                        logUnrecognizedLine(attackLine.trim(), 'kingdom-news', line);
                     }
                 }
             }
@@ -2586,8 +2592,9 @@ function pnMonthYear(dateStr) {
  * @param {string} eventText - Event text (date prefix removed)
  * @param {string} dateStr - Original date string e.g. "February 1 of YR1"
  * @param {Object} data - Accumulator object
+ * @param {string} [rawLine] - Full original tab-delimited line, for logging
  */
-function parseProvinceNewsLine(eventText, dateStr, data) {
+function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     // Strip Faery leyline prefix that can prepend spell attempt lines
     const faeryPrefix = "Your spell is disrupted by the natural leyline energies surrounding the target's Faery province, causing it to fail completely. ";
     if (eventText.startsWith(faeryPrefix)) eventText = eventText.slice(faeryPrefix.length);
@@ -2957,7 +2964,7 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
             data.loginBonus.impressive++;
         } else {
             data.loginBonus.unknown++;
-            logUnrecognizedLine(eventText, 'province-news'); // capture 1-hr tier text when seen
+            logUnrecognizedLine(eventText, 'province-news', rawLine); // capture 1-hr tier text when seen
         }
         const acresM = eventText.match(/([\d,]+)\s+acres/i);
         if (acresM) data.loginBonus.acres += parseGameInt(acresM[1]);
@@ -2994,7 +3001,7 @@ function parseProvinceNewsLine(eventText, dateStr, data) {
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines are silently skipped)
     if (!/^Edition\w+ YR\d+/.test(eventText)) {
-        logUnrecognizedLine(eventText, 'province-news');
+        logUnrecognizedLine(eventText, 'province-news', rawLine);
     }
 }
 
@@ -3288,7 +3295,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         if (data.minDateVal === null || dv < data.minDateVal) { data.minDateVal = dv; data.minDateStr = dateStr; }
         if (data.maxDateVal === null || dv > data.maxDateVal) { data.maxDateVal = dv; data.maxDateStr = dateStr; }
 
-        parseProvinceNewsLine(ev, dateStr, data);
+        parseProvinceNewsLine(ev, dateStr, data, line);
     }
 
     return data;

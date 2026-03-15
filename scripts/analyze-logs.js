@@ -364,6 +364,7 @@ function parseAllLogs(files) {
                     if (IGNORABLE_PATTERNS.some(p => p.test(line))) continue;
                     events.push({
                         line,
+                        rawLine: typeof obj.rawLine === 'string' ? obj.rawLine : null,
                         context: typeof obj.context === 'string' ? obj.context : 'unknown',
                     });
                 }
@@ -380,14 +381,16 @@ function parseAllLogs(files) {
 // ---------------------------------------------------------------------------
 function groupEvents(events) {
     const groups = new Map();
-    for (const { line, context } of events) {
+    for (const { line, rawLine, context } of events) {
         const norm = normalise(line);
         if (!groups.has(norm)) {
-            groups.set(norm, { count: 0, contexts: new Set(), example: line });
+            groups.set(norm, { count: 0, contexts: new Set(), example: line, rawLine: rawLine || null });
         }
         const g = groups.get(norm);
         g.count++;
         g.contexts.add(context);
+        // Prefer an entry that has a rawLine over one that doesn't
+        if (rawLine && !g.rawLine) g.rawLine = rawLine;
     }
     return [...groups.entries()]
         .sort((a, b) => b[1].count - a[1].count)
@@ -396,6 +399,7 @@ function groupEvents(events) {
             count: data.count,
             contexts: [...data.contexts].sort().join(', '),
             example: data.example,
+            rawLine: data.rawLine,
         }));
 }
 
@@ -625,7 +629,10 @@ async function interactive(groups, acknowledged, rl) {
     for (let i = 0; i < groups.length && !quit; i++) {
         const g = groups[i];
         console.log(`[${i + 1}/${groups.length}] ${g.count} occurrence(s) — context: ${g.contexts}`);
-        console.log(`  Example: "${g.example}"`);
+        if (g.rawLine) {
+            console.log(`  Raw:     "${g.rawLine}"`);
+        }
+        console.log(`  Parsed:  "${g.example}"`);
         console.log(`  Pattern: "${g.pattern}"`);
 
         // Check for cross-parser misclassification before prompting
