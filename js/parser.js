@@ -1037,6 +1037,7 @@ function accumulateProvinceLogsData(text) {
                    !/The power of .+ surges through your forces/.test(line) &&
                    !line.includes("Drawing from the ancient Mana Well") &&
                    !line.includes("The natural leyline energies surrounding your province") &&
+                   !line.includes("Chaotic energies amplify our actions") &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
         }
@@ -2717,6 +2718,31 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     }
 
     // -- Aid and resources received
+    // Aid Received — multi-resource shipment (Uto-vyit)
+    // "We have received a shipment of N gold coins and N runes from Province (K:K)."
+    if (eventText.startsWith('We have received a shipment of') && /\band\b/.test(eventText)) {
+        const senderM = eventText.match(/from (.+?) \((\d+:\d+)\)\.$/);
+        if (senderM) {
+            const sender = `${senderM[1]} (${senderM[2]})`;
+            const resourcePatterns = [
+                { re: /([\d,]+) gold coins/i,  key: 'gold' },
+                { re: /([\d,]+) runes/i,        key: 'runes' },
+                { re: /([\d,]+) bushels/i,      key: 'bushels' },
+                { re: /([\d,]+) soldiers/i,     key: 'soldiers' },
+            ];
+            for (const { re, key } of resourcePatterns) {
+                const m = eventText.match(re);
+                if (m) {
+                    const amount = parseGameInt(m[1]);
+                    data.aidByResource[key].total += amount;
+                    data.aidByResource[key].shipments++;
+                    data.aidByResource[key].senders[sender] = (data.aidByResource[key].senders[sender] || 0) + amount;
+                }
+            }
+            return;
+        }
+    }
+
     // Aid Received — Runes
     const aidRunesM = eventText.match(/We have received a shipment of ([\d,]+) runes from (.+?) \((.+?)\)\./);
     if (aidRunesM) {
@@ -3089,6 +3115,14 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Lightning Strike — "A sudden lightning storm struck our towers and destroyed N runes!" (Uto-ipcf)
+    if (eventText.startsWith('A sudden lightning storm struck our towers')) {
+        const m = eventText.match(/([\d,]+) runes/i);
+        if (m) data.lightningStrike.runesDestroyed += parseGameInt(m[1]);
+        data.lightningStrike.count++;
+        return;
+    }
+
     // Dragon building damage (Uto-6clh, Uto-7thh, Uto-f8fp, Uto-vac7)
     // Covers all variants: "destroyed and turned to ash", "destroyed", "reduced to rubble", "Oh the horror!"
     if (eventText.includes('dragon ravaging our lands')) {
@@ -3214,7 +3248,7 @@ function formatProvinceNewsOutput(data) {
         data.nightfall, data.sloth, data.storms
     ];
     const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
-        durationSpells.some(s => s.count > 0);
+        data.lightningStrike.count > 0 || durationSpells.some(s => s.count > 0);
     if (hasSpellImpacts) {
         out.push('');
         out.push('Spell Impacts:');
@@ -3233,6 +3267,8 @@ function formatProvinceNewsOutput(data) {
             if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
             out.push(`  Meteor shower damage: ${data.meteorDays} days${casParts.length ? ` (${casParts.join(', ')})` : ''}`);
         }
+        if (data.lightningStrike.count > 0)
+            out.push(`  Lightning Strike: ${pluralize(data.lightningStrike.count, 'occurrence')}, ${formatNumber(data.lightningStrike.runesDestroyed)} runes destroyed`);
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
         if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
@@ -3356,6 +3392,7 @@ function accumulateProvinceNewsData(text, options = {}) {
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
         dragonImpacts:        { count: 0, totalBuildings: 0 },
+        lightningStrike:      { count: 0, runesDestroyed: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         thieveryDetected:     0,
         thieveryUnknown:      0,
