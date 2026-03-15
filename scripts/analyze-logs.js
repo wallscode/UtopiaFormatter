@@ -13,6 +13,11 @@
  *   node scripts/analyze-logs.js --no-sync           # skip S3 sync
  *   node scripts/analyze-logs.js --no-issues         # skip GitHub Issues phase
  *   node scripts/analyze-logs.js --close-issues      # also prompt to comment/close resolved issues
+ *   node scripts/analyze-logs.js --reprocess-archive # review logs from the archive folder
+ *
+ * After a completed review, processed log files are moved to logs/archive/ rather than
+ * deleted. Archive files are automatically removed after 7 days. Use --reprocess-archive
+ * to re-examine archived logs (e.g. to re-evaluate patterns you previously skipped).
  *
  * Requires LOG_BUCKET in the environment or a .env file at the project root.
  * Requires `gh` CLI to be installed and authenticated for the GitHub Issues phase.
@@ -28,11 +33,14 @@ const { execSync, spawnSync } = require('child_process');
 // ---------------------------------------------------------------------------
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const LOGS_DIR = path.join(PROJECT_ROOT, 'logs');
+const ARCHIVE_DIR = path.join(LOGS_DIR, 'archive');
+const ARCHIVE_RETENTION_DAYS = 7;
 const PATTERNS_FILE = path.join(__dirname, '.analyzed-patterns.json');
 const ISSUE_MAP_FILE = path.join(__dirname, '.github-issue-map.json');
 const NO_SYNC = process.argv.includes('--no-sync');
 const NO_ISSUES = process.argv.includes('--no-issues');
 const CLOSE_ISSUES = process.argv.includes('--close-issues');
+const REPROCESS_ARCHIVE = process.argv.includes('--reprocess-archive');
 
 // ---------------------------------------------------------------------------
 // GitHub Issues — persistence
@@ -279,19 +287,62 @@ function normalise(line) {
 }
 
 // ---------------------------------------------------------------------------
-// Recursively find all *.jsonl files under a directory
+// Recursively find all *.jsonl files under a directory.
+// Skips the archive/ subdirectory so normal runs don't pick up archived logs.
 // ---------------------------------------------------------------------------
 function findJsonl(dir, results = []) {
     if (!fs.existsSync(dir)) return results;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) {
+            if (full === ARCHIVE_DIR) continue; // never recurse into archive during normal runs
             findJsonl(full, results);
         } else if (entry.name.endsWith('.jsonl')) {
             results.push(full);
         }
     }
     return results;
+}
+
+// ---------------------------------------------------------------------------
+// Archive helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Moves a log file into the archive directory.
+ * Appends a timestamp to the filename if a file with the same name already exists.
+ */
+function archiveFile(filePath) {
+    if (!fs.existsSync(ARCHIVE_DIR)) {
+        fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
+    }
+    const basename = path.basename(filePath);
+    let dest = path.join(ARCHIVE_DIR, basename);
+    if (fs.existsSync(dest)) {
+        const ext = path.extname(basename);
+        const base = path.basename(basename, ext);
+        dest = path.join(ARCHIVE_DIR, `${base}_${Date.now()}${ext}`);
+    }
+    fs.renameSync(filePath, dest);
+}
+
+/**
+ * Deletes archive files older than ARCHIVE_RETENTION_DAYS.
+ * Returns the number of files removed.
+ */
+function cleanExpiredArchive() {
+    if (!fs.existsSync(ARCHIVE_DIR)) return 0;
+    const cutoff = Date.now() - ARCHIVE_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    let deleted = 0;
+    for (const entry of fs.readdirSync(ARCHIVE_DIR, { withFileTypes: true })) {
+        if (!entry.isFile() || !entry.name.endsWith('.jsonl')) continue;
+        const full = path.join(ARCHIVE_DIR, entry.name);
+        if (fs.statSync(full).mtimeMs < cutoff) {
+            fs.unlinkSync(full);
+            deleted++;
+        }
+    }
+    return deleted;
 }
 
 // ---------------------------------------------------------------------------
@@ -663,10 +714,16 @@ async function main() {
     }
 
     // Phase 3: Unrecognized line analysis
-    const files = findJsonl(LOGS_DIR);
+    const sourceDir = REPROCESS_ARCHIVE ? ARCHIVE_DIR : LOGS_DIR;
+    const sourceLabel = REPROCESS_ARCHIVE ? './logs/archive/' : './logs/';
+    const files = REPROCESS_ARCHIVE ? findJsonl(ARCHIVE_DIR) : findJsonl(LOGS_DIR);
+
     if (files.length > 0) {
         const events = parseAllLogs(files);
         if (events.length > 0) {
+            if (REPROCESS_ARCHIVE) {
+                console.log(`Reprocessing ${files.length} archived file(s) from ${sourceLabel}\n`);
+            }
             const acknowledged = loadAcknowledged();
             const allGroups    = groupEvents(events);
             const newGroups    = allGroups.filter(g => !acknowledged.has(g.pattern));
@@ -680,21 +737,25 @@ async function main() {
             }
 
             if (quitEarly) {
-                console.log('Log files kept (quit early). Re-run to continue reviewing.');
-            } else {
-                // Delete processed log files so they are not re-analysed on the next run.
+                console.log(`Log files kept in ${sourceLabel} (quit early). Re-run to continue reviewing.`);
+            } else if (REPROCESS_ARCHIVE) {
+                // Archive files have already been reviewed — remove them now.
                 let deleted = 0;
                 for (const f of files) {
-                    try {
-                        fs.unlinkSync(f);
-                        deleted++;
-                    } catch (err) {
-                        console.warn(`  Warning: could not delete ${f}: ${err.message}`);
-                    }
+                    try { fs.unlinkSync(f); deleted++; }
+                    catch (err) { console.warn(`  Warning: could not delete ${f}: ${err.message}`); }
                 }
-                console.log(`Deleted ${deleted} log file(s) from ./logs/.`);
+                console.log(`Removed ${deleted} reviewed file(s) from ${sourceLabel}`);
+            } else {
+                // Move active log files to archive instead of deleting them.
+                let archived = 0;
+                for (const f of files) {
+                    try { archiveFile(f); archived++; }
+                    catch (err) { console.warn(`  Warning: could not archive ${f}: ${err.message}`); }
+                }
+                console.log(`Archived ${archived} log file(s) to ./logs/archive/`);
 
-                // Delete processed logs from S3 so they are not re-downloaded on the next run.
+                // Remove processed logs from S3 so they are not re-downloaded on the next run.
                 if (!NO_SYNC && bucket) {
                     console.log(`Deleting processed logs from s3://${bucket}/logs/ ...`);
                     try {
@@ -705,11 +766,23 @@ async function main() {
                 }
             }
         } else {
-            console.log('No log events found in ./logs/.');
+            console.log(`No log events found in ${sourceLabel}`);
         }
     } else {
-        console.log('No .jsonl files found under ./logs/.' +
-            (NO_SYNC ? ' Run without --no-sync to fetch from S3.' : ''));
+        if (REPROCESS_ARCHIVE) {
+            console.log('No archived .jsonl files found in ./logs/archive/');
+        } else {
+            console.log('No .jsonl files found under ./logs/.' +
+                (NO_SYNC ? ' Run without --no-sync to fetch from S3.' : ''));
+        }
+    }
+
+    // Clean up archive files older than the retention period (normal runs only).
+    if (!REPROCESS_ARCHIVE) {
+        const expired = cleanExpiredArchive();
+        if (expired > 0) {
+            console.log(`Removed ${expired} expired archive file(s) (older than ${ARCHIVE_RETENTION_DAYS} days).`);
+        }
     }
 
     // Phase 4: Close resolved GitHub Issues (if requested)
