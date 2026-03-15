@@ -2739,6 +2739,15 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
                     data.aidByResource[key].senders[sender] = (data.aidByResource[key].senders[sender] || 0) + amount;
                 }
             }
+            const exploreM = eventText.match(/([\d,]+) explore pool acres \((\d+) acres lost!\)/i);
+            if (exploreM) {
+                const gross = parseGameInt(exploreM[1]);
+                const lost  = parseGameInt(exploreM[2]);
+                data.aidByResource.exploreAcres.total += gross;
+                data.aidByResource.exploreAcres.lost += lost;
+                data.aidByResource.exploreAcres.shipments++;
+                data.aidByResource.exploreAcres.senders[sender] = (data.aidByResource.exploreAcres.senders[sender] || 0) + gross;
+            }
             return;
         }
     }
