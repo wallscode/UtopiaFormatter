@@ -557,43 +557,55 @@ function printSummary(groups, totalEvents, totalFiles) {
 
 // ---------------------------------------------------------------------------
 // Interactive loop
+// Returns true if the user quit early (so the caller can skip log deletion)
 // ---------------------------------------------------------------------------
 async function interactive(groups, acknowledged, rl) {
     const question = (q) => new Promise(resolve => rl.question(q, resolve));
 
+    // Print action legend once at the start
+    console.log('  Actions:');
+    console.log('    c  create ticket    — file a bug/feature ticket for this pattern');
+    console.log('    s  skip             — do nothing now; pattern will reappear next run');
+    console.log('    a  acknowledge      — mark as reviewed with no ticket needed; will NOT reappear again');
+    console.log('    q  quit             — stop reviewing; log files will NOT be deleted');
+    console.log('');
+
     let quit = false;
     for (let i = 0; i < groups.length && !quit; i++) {
         const g = groups[i];
-        console.log(`[${i + 1}/${groups.length}] ${g.count} occurrence(s) — ${g.contexts}`);
+        console.log(`[${i + 1}/${groups.length}] ${g.count} occurrence(s) — context: ${g.contexts}`);
         console.log(`  Example: "${g.example}"`);
         console.log(`  Pattern: "${g.pattern}"`);
 
         // Check for cross-parser misclassification before prompting
         const mis = checkMisclassification(g.example, g.contexts);
         let defaultAction = 'c';
+        let suggestionLine = '  Suggestion: create ticket — unrecognized line in its expected parser';
 
         if (mis) {
             console.log('');
-            console.log(`  ⚠  Possible misclassification: this line looks like ${mis.likelyContext} content`);
-            console.log(`     logged in: ${g.contexts}`);
+            console.log(`  ⚠  Possible misclassification detected`);
+            console.log(`     This line was logged by the ${g.contexts} parser but looks like ${mis.likelyContext} content.`);
             console.log(`     Reason: ${mis.reason}`);
             if (mis.alreadyHandled === true) {
-                console.log(`     The ${mis.likelyContext} parser handles this format — this is likely a`);
-                console.log(`     UI input-type detection issue, not a missing parser handler.`);
-            } else if (mis.alreadyHandled === null) {
+                console.log(`     The ${mis.likelyContext} parser already handles this format.`);
+                console.log(`     This is likely a UI input-type detection error, not a missing parser handler.`);
+                suggestionLine = `  Suggestion: skip or acknowledge — already handled by ${mis.likelyContext} parser`;
+            } else {
                 console.log(`     Verify whether the ${mis.likelyContext} parser handles this before filing a ticket.`);
+                suggestionLine = `  Suggestion: skip — verify in ${mis.likelyContext} parser first`;
             }
             defaultAction = 's';
         }
 
-        const defaultLabel = defaultAction === 's' ? '(s)*' : '(c)*';
-        const prompt = `\n  (c) create ticket  ${defaultLabel} skip  (a) acknowledge  (q) quit  [Enter=${defaultAction}] > `;
-        const raw = (await question(prompt)).trim().toLowerCase();
+        console.log('');
+        console.log(suggestionLine);
+        const raw = (await question(`  Choice — c / s / a / q  [default: ${defaultAction}] > `)).trim().toLowerCase();
         const answer = raw || defaultAction;
         console.log('');
 
         if (answer === 'q') {
-            console.log('Quitting.');
+            console.log('Quitting. Log files will NOT be deleted.');
             quit = true;
         } else if (answer === 'c') {
             const result = createTicket(g);
@@ -608,14 +620,15 @@ async function interactive(groups, acknowledged, rl) {
         } else if (answer === 'a') {
             acknowledged.add(g.pattern);
             saveAcknowledged(acknowledged);
-            console.log('  Acknowledged (no ticket).');
+            console.log('  Acknowledged — marked as reviewed, no ticket. Will not appear again.');
         } else {
-            console.log('  Skipped.');
+            console.log('  Skipped — will reappear on next run.');
             // Not added to acknowledged — will reappear on next run
         }
     }
 
     if (!quit) console.log('Done.');
+    return quit;
 }
 
 // ---------------------------------------------------------------------------
@@ -658,36 +671,41 @@ async function main() {
             const allGroups    = groupEvents(events);
             const newGroups    = allGroups.filter(g => !acknowledged.has(g.pattern));
 
+            let quitEarly = false;
             if (newGroups.length > 0) {
                 printSummary(newGroups, events.length, files.length);
-                await interactive(newGroups, acknowledged, rl);
+                quitEarly = await interactive(newGroups, acknowledged, rl);
             } else {
                 console.log(`All ${allGroups.length} pattern(s) already acknowledged. Nothing to do.`);
             }
+
+            if (quitEarly) {
+                console.log('Log files kept (quit early). Re-run to continue reviewing.');
+            } else {
+                // Delete processed log files so they are not re-analysed on the next run.
+                let deleted = 0;
+                for (const f of files) {
+                    try {
+                        fs.unlinkSync(f);
+                        deleted++;
+                    } catch (err) {
+                        console.warn(`  Warning: could not delete ${f}: ${err.message}`);
+                    }
+                }
+                console.log(`Deleted ${deleted} log file(s) from ./logs/.`);
+
+                // Delete processed logs from S3 so they are not re-downloaded on the next run.
+                if (!NO_SYNC && bucket) {
+                    console.log(`Deleting processed logs from s3://${bucket}/logs/ ...`);
+                    try {
+                        execSync(`aws s3 rm "s3://${bucket}/logs/" --recursive`, { stdio: 'inherit' });
+                    } catch (err) {
+                        console.warn(`  Warning: could not delete logs from S3: ${err.message}`);
+                    }
+                }
+            }
         } else {
             console.log('No log events found in ./logs/.');
-        }
-
-        // Delete processed log files so they are not re-analysed on the next run.
-        let deleted = 0;
-        for (const f of files) {
-            try {
-                fs.unlinkSync(f);
-                deleted++;
-            } catch (err) {
-                console.warn(`  Warning: could not delete ${f}: ${err.message}`);
-            }
-        }
-        console.log(`Deleted ${deleted} log file(s) from ./logs/.`);
-
-        // Delete processed logs from S3 so they are not re-downloaded on the next run.
-        if (!NO_SYNC && bucket) {
-            console.log(`Deleting processed logs from s3://${bucket}/logs/ ...`);
-            try {
-                execSync(`aws s3 rm "s3://${bucket}/logs/" --recursive`, { stdio: 'inherit' });
-            } catch (err) {
-                console.warn(`  Warning: could not delete logs from S3: ${err.message}`);
-            }
         }
     } else {
         console.log('No .jsonl files found under ./logs/.' +
