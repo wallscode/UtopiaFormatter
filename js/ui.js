@@ -1830,8 +1830,8 @@ function applyProvinceLogsSettings(text) {
 
     // Add bullet characters to indented list lines
     output = output.split('\n').map(line => {
-        if (line.startsWith('    ')) return '  \u00B7 ' + line.slice(4);
-        if (line.startsWith('  ')) return '\u2022 ' + line.slice(2);
+        if (line.startsWith('    ')) return '    \u00B7 ' + line.slice(4);
+        if (line.startsWith('  ')) return '  \u2022 ' + line.slice(2);
         return line;
     }).join('\n');
 
@@ -2785,8 +2785,8 @@ const EV_SECTION_COLORS = {
 function renderEnhancedSections(grid, text, mode) {
     // Strip Province Logs bullet characters so card rendering uses plain indentation
     text = text.split('\n').map(line => {
-        if (line.startsWith('\u2022 ')) return '  ' + line.slice(2);
-        if (line.startsWith('  \u00B7 ')) return '    ' + line.slice(4);
+        if (line.startsWith('  \u2022 ')) return '  ' + line.slice(4);
+        if (line.startsWith('    \u00B7 ')) return '    ' + line.slice(6);
         return line;
     }).join('\n');
     const lines = text.split('\n');
