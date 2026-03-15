@@ -623,6 +623,7 @@ function accumulateProvinceLogsData(text) {
     const thiefOps = [];     // { target, type, success, impact, impactUnit }
     const spellOps = [];     // { target, spell, success, impact, impactUnit }
     const attacksMade = [];  // { type, target, kingdom, acres, credits, peasants }
+    let attacksBounced = 0;
 
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -984,6 +985,9 @@ function accumulateProvinceLogsData(text) {
                 const match = line.match(/([\d,]+)\s+war horses/i);
                 if (match) { warHorsesStolen += parseGameInt(match[1]); warHorsesCount++; }
             }
+        // Bounced outgoing attack (type unknown)
+        } else if (line.includes('march onto the battlefield') && line.includes('driven back')) {
+            attacksBounced++;
         // Outgoing Traditional March result
         } else if (line.startsWith('Your forces arrive at') && line.includes('has taken')) {
             const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
@@ -1007,6 +1011,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("to the quest of launching a dragon") &&
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
                    !line.includes("You have voted for") &&
+                   !(line.includes("march onto the battlefield") && line.includes("driven back")) &&
                    !line.includes("You have given orders to commence work on") &&
                    !line.includes("You have cancelled") &&
                    !line.includes("You have destroyed") &&
@@ -1044,7 +1049,7 @@ function accumulateProvinceLogsData(text) {
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
-        thiefOps, spellOps, attacksMade,
+        thiefOps, spellOps, attacksMade, attacksBounced,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     };
@@ -1067,7 +1072,7 @@ function formatProvinceLogsFromData(data) {
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
-        thiefOps, spellOps, attacksMade,
+        thiefOps, spellOps, attacksMade, attacksBounced,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     } = data;
@@ -1248,7 +1253,7 @@ function formatProvinceLogsFromData(data) {
     }
 
     // Attacks Made
-    if (attacksMade.length > 0) {
+    if (attacksMade.length > 0 || attacksBounced > 0) {
         output += "\nAttacks Made:\n";
         const byType = {};
         for (const atk of attacksMade) {
@@ -1264,6 +1269,9 @@ function formatProvinceLogsFromData(data) {
                     : '';
                 output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.acres)} acres${supp}\n`;
             }
+        }
+        if (attacksBounced > 0) {
+            output += `  Bounced: ${attacksBounced}\n`;
         }
     }
 
