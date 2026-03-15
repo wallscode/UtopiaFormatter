@@ -613,6 +613,7 @@ function accumulateProvinceLogsData(text) {
     let exploreCost = 0;
 
     const constructionCounts = {};
+    const cancelledCounts = {};
     const razedCounts = {};
     const scienceCounts = {};
     const trainingCounts = {};
@@ -656,6 +657,7 @@ function accumulateProvinceLogsData(text) {
         aidTotals[r] = 0;
     });
     PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { constructionCounts[b] = 0; });
+    PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { cancelledCounts[b] = 0; });
     PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { razedCounts[b] = 0; });
     PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
@@ -858,6 +860,27 @@ function accumulateProvinceLogsData(text) {
             }
         }
 
+        // Parse cancelled construction orders (e.g. "You have cancelled 35 thieves' dens.")
+        if (line.includes("You have cancelled")) {
+            const after = line.replace(/^.*You have cancelled\s+/i, '').replace(/\.?\s*$/, '');
+            const segments = after.replace(/ and /gi, ', ').split(/,\s*/);
+            for (const seg of segments) {
+                const m = seg.match(/^([\d,]+)\s+(.+)$/);
+                if (!m) continue;
+                const count = parseGameInt(m[1]);
+                const buildingText = m[2].trim().toLowerCase();
+                for (const b of PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS) {
+                    const bl = b.toLowerCase();
+                    if (buildingText === bl ||
+                        buildingText + 's' === bl ||
+                        (bl.endsWith('ies') && buildingText === bl.slice(0, -3) + 'y')) {
+                        cancelledCounts[b] += count;
+                        break;
+                    }
+                }
+            }
+        }
+
         // Parse failed thievery attempts
         if (line.includes("Sources have indicated the mission was foiled")) {
             failedThieveryCount++;
@@ -984,6 +1007,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("to the quest of launching a dragon") &&
                    !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
                    !line.includes("You have given orders to commence work on") &&
+                   !line.includes("You have cancelled") &&
                    !line.includes("You have destroyed") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
                    !(line.includes("We lost") && line.includes("thieves in the operation")) &&
@@ -1018,7 +1042,7 @@ function accumulateProvinceLogsData(text) {
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
-        constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
+        constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps, attacksMade,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
@@ -1041,7 +1065,7 @@ function formatProvinceLogsFromData(data) {
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
         exploreAcres, exploreSoldiers, exploreCost,
-        constructionCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
+        constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps, attacksMade,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
@@ -1180,15 +1204,20 @@ function formatProvinceLogsFromData(data) {
         output += `  ${ritualCasts} successful ritual casts\n`;
     }
 
-    // Construction Summary (omitted when no construction or demolition detected)
+    // Construction Summary (omitted when no construction, cancellation, or demolition detected)
     const anyConstruction = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => constructionCounts[b] > 0);
-    const anyRazed = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => razedCounts[b] > 0);
-    if (anyConstruction || anyRazed) {
+    const anyCancelled    = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => cancelledCounts[b] > 0);
+    const anyRazed        = PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.some(b => razedCounts[b] > 0);
+    if (anyConstruction || anyCancelled || anyRazed) {
         output += "\nConstruction Summary:\n";
         PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
             .filter(b => constructionCounts[b] > 0)
             .sort((a, b) => constructionCounts[b] - constructionCounts[a])
             .forEach(b => { output += `  ${formatNumber(constructionCounts[b])} ${b}\n`; });
+        PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
+            .filter(b => cancelledCounts[b] > 0)
+            .sort((a, b) => cancelledCounts[b] - cancelledCounts[a])
+            .forEach(b => { output += `  ${formatNumber(cancelledCounts[b])} ${b} cancelled\n`; });
         PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS
             .filter(b => razedCounts[b] > 0)
             .sort((a, b) => razedCounts[b] - razedCounts[a])
