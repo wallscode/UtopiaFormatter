@@ -141,7 +141,7 @@ function runProvinceLogsTest() {
             },
             {
                 name: 'Contains Thievery Summary',
-                test: (text) => text.includes('Thievery Summary:'),
+                test: (text) => /Thievery Summary/.test(text),
                 expected: true
             },
             {
@@ -151,7 +151,7 @@ function runProvinceLogsTest() {
             },
             {
                 name: 'Contains Spell Summary',
-                test: (text) => text.includes('Spell Summary:'),
+                test: (text) => /Spell Summary/.test(text),
                 expected: true
             },
             {

@@ -600,6 +600,8 @@ function accumulateProvinceLogsData(text) {
     let greaterArsonOpsCount = 0;
     let ritualCasts = 0;
     let failedThieveryCount = 0;
+    let failedSpellCount = 0;
+    let spellSuccessCount = 0;
     let thiervesLostCount = 0;
     let successThiervesLostCount = 0;
     let stealHorsesOps = 0;
@@ -669,9 +671,11 @@ function accumulateProvinceLogsData(text) {
             const spellTargetM = line.match(/\(([^()]+\(\d+:\d+\))\)\s*$/);
             const spellTarget = spellTargetM ? spellTargetM[1] : null;
             const spellSuccess = !line.includes('but the spell fails');
+            if (!spellSuccess) failedSpellCount++;
             for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
                 if (line.includes(spell.text)) {
                     spellCounts[spell.name]++;
+                    if (spellSuccess) spellSuccessCount++;
                     let impactValue = null;
                     if (spell.impact) {
                         const re = spell.impactRegex || new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i");
@@ -1044,7 +1048,7 @@ function accumulateProvinceLogsData(text) {
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
-        greaterArsonOpsCount, ritualCasts, failedThieveryCount,
+        greaterArsonOpsCount, ritualCasts, failedThieveryCount, failedSpellCount, spellSuccessCount,
         thiervesLostCount, successThiervesLostCount,
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
@@ -1067,7 +1071,7 @@ function formatProvinceLogsFromData(data) {
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
-        greaterArsonOpsCount, ritualCasts, failedThieveryCount,
+        greaterArsonOpsCount, ritualCasts, failedThieveryCount, failedSpellCount, spellSuccessCount,
         thiervesLostCount, successThiervesLostCount,
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
@@ -1087,7 +1091,13 @@ function formatProvinceLogsFromData(data) {
     output += "-".repeat(40) + "\n";
 
     // Thievery Summary
-    output += "\nThievery Summary:\n";
+    const thieverySuccessful = Object.values(thieveryCounts).reduce((a, b) => a + b, 0)
+        + stealHorsesOps + vaultRobberyCount + granaryRobberyCount + towerRobberyCount + warHorsesCount;
+    const thieveryTotal = thieverySuccessful + failedThieveryCount;
+    const thieveryPct = thieveryTotal > 0 ? Math.round(thieverySuccessful / thieveryTotal * 100) : 0;
+    output += thieveryTotal > 0
+        ? `\nThievery Summary (${thieverySuccessful}/${thieveryTotal} - ${thieveryPct}%):\n`
+        : `\nThievery Summary:\n`;
     const opTotals = [];
     for (const op of PROVINCE_LOGS_CONFIG.OPERATIONS) {
         let count = thieveryCounts[op.name];
@@ -1162,7 +1172,11 @@ function formatProvinceLogsFromData(data) {
     if (warHorsesStolen > 0) output += `  ${formatNumber(warHorsesStolen)} war horses${robberyDetail(warHorsesStolen, warHorsesCount)}\n`;
 
     // Spell Summary
-    output += "\nSpell Summary:\n";
+    const spellTotal = spellSuccessCount + failedSpellCount;
+    const spellPct = spellTotal > 0 ? Math.round(spellSuccessCount / spellTotal * 100) : 0;
+    output += spellTotal > 0
+        ? `\nSpell Summary (${spellSuccessCount}/${spellTotal} - ${spellPct}%):\n`
+        : `\nSpell Summary:\n`;
     const spellTotals = [];
     for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
         const count = spellCounts[spell.name];
