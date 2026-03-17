@@ -37,7 +37,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Lightning Strike", text: "Lightning strikes the Towers", impact: "runes", impactRegex: /incinerates ([\d,]+) runes/i },
         { name: "Land Lust", text: "Our Land Lust over", impact: "acres" },
         { name: "Magic Ward", text: "Magic Ward", impact: "" },
-        { name: "Meteor Showers", text: "Meteors will rain across the lands", impact: "days" },
+        { name: "Meteor Showers", text: "Meteors will rain across the lands", reflectText: "Meteors rain across", impact: "days" },
         { name: "Mystic Vortex", text: "A magic vortex overcomes", impact: "active spell" },
         { name: "Nightmares", text: "Some were forced into rehabilitation", impact: "of the men" },
         { name: "Nightfall", text: "Nightfall", impact: "days" },
@@ -602,6 +602,7 @@ function accumulateProvinceLogsData(text) {
     let failedThieveryCount = 0;
     let failedSpellCount = 0;
     let spellSuccessCount = 0;
+    const reflectedSpells = {};
     let thiervesLostCount = 0;
     let successThiervesLostCount = 0;
     let stealHorsesOps = 0;
@@ -638,9 +639,10 @@ function accumulateProvinceLogsData(text) {
     let warHorsesCount = 0;
 
     // Initialize all counters to zero
-    PROVINCE_LOGS_CONFIG.SPELLS.forEach(s => { 
-        spellCounts[s.name] = 0; 
-        spellImpacts[s.name] = 0; 
+    PROVINCE_LOGS_CONFIG.SPELLS.forEach(s => {
+        spellCounts[s.name] = 0;
+        spellImpacts[s.name] = 0;
+        reflectedSpells[s.name] = 0;
     });
     PROVINCE_LOGS_CONFIG.OPERATIONS.forEach(o => { 
         thieveryCounts[o.name] = 0; 
@@ -670,14 +672,20 @@ function accumulateProvinceLogsData(text) {
         if (line.includes("begin casting")) {
             const spellTargetM = line.match(/\(([^()]+\(\d+:\d+\))\)\s*$/);
             const spellTarget = spellTargetM ? spellTargetM[1] : null;
-            const spellSuccess = !line.includes('but the spell fails');
+            const isReflected = line.includes('reflected back upon ourselves');
+            const spellSuccess = !isReflected && !line.includes('but the spell fails');
             if (!spellSuccess) failedSpellCount++;
             for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
-                if (line.includes(spell.text)) {
-                    spellCounts[spell.name]++;
+                const matchText = isReflected && spell.reflectText ? spell.reflectText : spell.text;
+                if (line.includes(matchText)) {
+                    if (isReflected) {
+                        reflectedSpells[spell.name]++;
+                    } else {
+                        spellCounts[spell.name]++;
+                    }
                     if (spellSuccess) spellSuccessCount++;
                     let impactValue = null;
-                    if (spell.impact) {
+                    if (spell.impact && !isReflected) {
                         const re = spell.impactRegex || new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, "i");
                         const match = line.match(re);
                         if (match) {
@@ -689,13 +697,13 @@ function accumulateProvinceLogsData(text) {
                         let unit = spell.impact || null;
                         if (unit === 'of the men') unit = 'troops';
                         else if (unit === 'active spell') unit = 'active spells';
-                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, impact: spellSuccess ? impactValue : null, impactUnit: unit });
+                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, reflected: isReflected, impact: spellSuccess ? impactValue : null, impactUnit: unit });
                     }
                 }
             }
             // Capture failed casts where no spell text matched (unrecognised spell type)
-            if (spellTarget && !spellSuccess && !PROVINCE_LOGS_CONFIG.SPELLS.some(s => line.includes(s.text))) {
-                spellOps.push({ target: spellTarget, spell: null, success: false, impact: null, impactUnit: null });
+            if (spellTarget && !spellSuccess && !isReflected && !PROVINCE_LOGS_CONFIG.SPELLS.some(s => line.includes(s.text))) {
+                spellOps.push({ target: spellTarget, spell: null, success: false, reflected: false, impact: null, impactUnit: null });
             }
         }
         
@@ -1050,6 +1058,7 @@ function accumulateProvinceLogsData(text) {
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
         greaterArsonOpsCount, ritualCasts, failedThieveryCount, failedSpellCount, spellSuccessCount,
+        reflectedSpells,
         thiervesLostCount, successThiervesLostCount,
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
@@ -1073,6 +1082,7 @@ function formatProvinceLogsFromData(data) {
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
         greaterArsonOpsCount, ritualCasts, failedThieveryCount, failedSpellCount, spellSuccessCount,
+        reflectedSpells,
         thiervesLostCount, successThiervesLostCount,
         stealHorsesOps, stealHorsesReleased, stealHorsesBroughtBack,
         draftPercent, draftRate, militaryWagesPercent,
@@ -1201,6 +1211,19 @@ function formatProvinceLogsFromData(data) {
         } else {
             output += `  ${count} ${spell.name}\n`;
         }
+    }
+    // Reflected spells (counted as failures, not added to impact)
+    for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
+        const count = reflectedSpells[spell.name];
+        if (count > 0) {
+            output += `  ${count} ${spell.name} (reflected)\n`;
+        }
+    }
+    // Pure failures (excludes reflected, which are shown above by type)
+    const totalReflected = Object.values(reflectedSpells).reduce((a, b) => a + b, 0);
+    const purelyFailed = failedSpellCount - totalReflected;
+    if (purelyFailed > 0) {
+        output += `  ${purelyFailed} failed\n`;
     }
 
     // Aid Summary
@@ -1374,9 +1397,14 @@ function formatProvinceLogsFromData(data) {
         const sorted = [...byTarget.entries()].sort((a, b) => b[1].length - a[1].length);
         let stOut = '\nSpell Targets by Province:\n';
         for (const [target, ops] of sorted) {
-            const successes = ops.filter(o => o.success);
-            const failures  = ops.filter(o => !o.success);
-            const failLabel = failures.length ? ` (${failures.length} failed)` : '';
+            const successes  = ops.filter(o => o.success);
+            const reflected  = ops.filter(o => o.reflected);
+            const failures   = ops.filter(o => !o.success && !o.reflected);
+            const notesArr   = [
+                failures.length  ? `${failures.length} failed`    : '',
+                reflected.length ? `${reflected.length} reflected` : ''
+            ].filter(Boolean);
+            const failLabel  = notesArr.length ? ` (${notesArr.join(', ')})` : '';
             stOut += `  ${target} \u2014 ${ops.length} cast${ops.length !== 1 ? 's' : ''}${failLabel}:\n`;
             // Aggregate successes by spell name
             const spellMap = new Map();
@@ -1395,6 +1423,9 @@ function formatProvinceLogsFromData(data) {
                 });
             if (failures.length > 0) {
                 stOut += `    Failed: ${failures.length}\n`;
+            }
+            if (reflected.length > 0) {
+                stOut += `    Reflected: ${reflected.length}\n`;
             }
         }
         output += stOut;
@@ -1506,7 +1537,7 @@ function formatProvinceLogsFromData(data) {
             });
         }
         // Failed spells grouped by province
-        const failedSpellOps = spellOps.filter(o => !o.success);
+        const failedSpellOps = spellOps.filter(o => !o.success && !o.reflected);
         if (failedSpellOps.length > 0) {
             sbsOut += `  Failed \u2014 ${failedSpellOps.length} cast${failedSpellOps.length !== 1 ? 's' : ''}:\n`;
             const byProvFail = new Map();
@@ -1517,6 +1548,27 @@ function formatProvinceLogsFromData(data) {
             [...byProvFail.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
                 sbsOut += `    ${prov}: ${provOps.length}\n`;
             });
+        }
+        // Reflected spells grouped by type and province
+        const reflectedSpellOps = spellOps.filter(o => o.reflected);
+        if (reflectedSpellOps.length > 0) {
+            const bySpellRefl = new Map();
+            for (const op of reflectedSpellOps) {
+                const key = op.spell || 'Unknown';
+                if (!bySpellRefl.has(key)) bySpellRefl.set(key, []);
+                bySpellRefl.get(key).push(op);
+            }
+            for (const [spell, ops] of [...bySpellRefl.entries()].sort((a, b) => b[1].length - a[1].length)) {
+                sbsOut += `  ${spell} (reflected) \u2014 ${ops.length} cast${ops.length !== 1 ? 's' : ''}:\n`;
+                const byProvRefl = new Map();
+                for (const op of ops) {
+                    if (!byProvRefl.has(op.target)) byProvRefl.set(op.target, []);
+                    byProvRefl.get(op.target).push(op);
+                }
+                [...byProvRefl.entries()].sort((a, b) => b[1].length - a[1].length).forEach(([prov, provOps]) => {
+                    sbsOut += `    ${prov}: ${provOps.length}\n`;
+                });
+            }
         }
         output += sbsOut;
     }

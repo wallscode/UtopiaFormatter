@@ -1766,6 +1766,8 @@ function applyProvinceLogsSettings(text) {
     }
 
     if (!advSettings.provinceLogs.showFailedSpellAttempts) {
+        // Spell Summary: remove "  N failed" footer line
+        output = output.split('\n').filter(line => !/^  \d+ failed$/.test(line)).join('\n');
         // Spell Targets: remove "    Failed: N" lines (no trailing content, unlike thievery)
         output = output.split('\n').filter(line => !/^    Failed: \d+$/.test(line)).join('\n');
         // Spell Targets: strip "(N failed)" annotation from province header lines
@@ -2114,6 +2116,8 @@ function applyCombinedProvinceSettings(text) {
         }).join('\n');
     }
     if (!s.showFailedSpellAttempts) {
+        // Spell Summary: remove "  N failed" footer line
+        output = output.split('\n').filter(line => !/^  \d+ failed$/.test(line)).join('\n');
         output = output.split('\n').filter(line => !/^    Failed: \d+$/.test(line)).join('\n');
         output = output.split('\n').map(line => line.replace(/ \(\d+ failed\)(?=:$)/, '')).join('\n');
         let skipSpellBlock = false;
@@ -2854,23 +2858,49 @@ function renderEnhancedSections(grid, text, mode) {
         grid.appendChild(hdr);
     }
 
-    // Render each section as a card
+    // Bin-pack non-empty sections into columns.
+    // A column accumulates sections until adding the next would exceed the line threshold.
+    // Line height = 1 (card title) + non-empty content lines.
+    const COLUMN_LINE_THRESHOLD = 20;
+    const columnGroups = [];
+    let currentGroup = [];
+    let currentGroupHeight = 0;
+
     for (const section of sections) {
-        // Skip entirely empty sections
         if (section.lines.every(l => l.trim() === '')) continue;
+        const sectionHeight = 1 + section.lines.filter(l => l.trim() !== '').length;
+        if (currentGroup.length > 0 && currentGroupHeight + sectionHeight > COLUMN_LINE_THRESHOLD) {
+            columnGroups.push(currentGroup);
+            currentGroup = [];
+            currentGroupHeight = 0;
+        }
+        currentGroup.push({ section, sectionHeight });
+        currentGroupHeight += sectionHeight;
+    }
+    if (currentGroup.length > 0) columnGroups.push(currentGroup);
 
-        const card = document.createElement('div');
-        card.className = 'ev-card';
-        const accentColor = EV_SECTION_COLORS[section.title];
-        if (accentColor) card.style.borderLeftColor = accentColor;
+    // Render each column group as an ev-column div containing stacked cards.
+    // Cards inside a column stretch to match the widest card via CSS align-items: stretch.
+    for (const group of columnGroups) {
+        const col = document.createElement('div');
+        col.className = 'ev-column';
 
-        const cardTitle = document.createElement('div');
-        cardTitle.className = 'ev-card-title';
-        cardTitle.textContent = section.title;
-        card.appendChild(cardTitle);
+        for (const { section } of group) {
+            const card = document.createElement('div');
+            card.className = 'ev-card';
+            const accentColor = EV_SECTION_COLORS[section.title];
+            if (accentColor) card.style.borderLeftColor = accentColor;
 
-        renderSectionLines(card, section.lines);
-        grid.appendChild(card);
+            const cardTitle = document.createElement('div');
+            cardTitle.className = 'ev-card-title';
+            cardTitle.textContent = section.title;
+            card.appendChild(cardTitle);
+
+            renderSectionLines(card, section.lines);
+            col.appendChild(card);
+        }
+
+        grid.appendChild(col);
     }
 }
 

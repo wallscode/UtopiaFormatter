@@ -31,7 +31,7 @@ Resources Stolen from Opponents:
   746,273 runes (51 ops, avg 15k)
   50 war horses
 
-Spell Summary:
+Spell Summary (189/274 - 69%):
   62 Meteor Showers (493 days)
   50 Mystic Vortex (107 active spells)
   33 Chastity (185 days)
@@ -47,6 +47,7 @@ Spell Summary:
   3 Tornadoes (1,025 acres of buildings)
   2 Expose Thieves (12 days)
   1 Explosions (12 days)
+  85 failed
 
 Aid Summary:
   5,072,494 gold coins
