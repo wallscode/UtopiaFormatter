@@ -1664,6 +1664,7 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireDeclinedByUs: [],   // kingdoms whose proposals we declined
         ceasefireDeclinedByThem: [], // kingdoms that declined our proposals
         ceasefireCancelledByUs: [],  // kingdoms whose active ceasefire we cancelled
+        ceasefireBrokenByThem: [],   // kingdoms that broke an active ceasefire with us
         aidShipments: { sent: {}, received: {} },
         warDeclarations: [],
         warOutcomes: 0,
@@ -2291,6 +2292,13 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "busy dnd pls (5:5) has broken their ceasefire agreement with us!"
+    if (line.includes('has broken their ceasefire agreement with us')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireBrokenByThem.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
     // "We have withdrawn our ceasefire proposal to Unnamed kingdom (5:3)."
     if (line.includes('have withdrawn our ceasefire proposal')) {
         const m = line.match(/\((\d+):(\d+)\)/);
@@ -2685,6 +2693,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}${krIds(data.ceasefireWithdrawals)}`);
     if (data.ceasefireCancelledByUs.length > 0)
         krLines.push(`-- Ceasefires Cancelled by Us: ${data.ceasefireCancelledByUs.length}${krIds(data.ceasefireCancelledByUs)}`);
+    if (data.ceasefireBrokenByThem.length > 0)
+        krLines.push(`-- Ceasefires Broken by Them: ${data.ceasefireBrokenByThem.length}${krIds(data.ceasefireBrokenByThem)}`);
     if (data.ceasefireDeclinedByUs.length > 0)
         krLines.push(`-- Ceasefires Declined by Us: ${data.ceasefireDeclinedByUs.length}${krIds(data.ceasefireDeclinedByUs)}`);
     if (data.ceasefireDeclinedByThem.length > 0)
