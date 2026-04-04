@@ -330,6 +330,8 @@ function handleParse(elements) {
             lastRawInput = inputText;
             lastDetectedMode = 'combined-province';
             elements.outputText.value = parsedText;
+            elements.outputText.style.color = '';
+            if (elements.parseStatus) elements.parseStatus.textContent = '';
             updateOutputView(elements);
             autoResizeOutput(elements.outputText);
             showAdvancedPanel(elements);
@@ -342,7 +344,7 @@ function handleParse(elements) {
             collapseInputOnMobile(elements);
         } catch (error) {
             console.error('Parsing error:', error);
-            showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
+            showMessage(elements.outputText, `${error.message || 'Unknown error'} — check your input.`, 'error', elements.parseStatus);
         }
         return;
     }
@@ -391,6 +393,8 @@ function handleParse(elements) {
         lastRawInput = effectiveInput;
         lastDetectedMode = detectedMode;
         elements.outputText.value = parsedText;
+        elements.outputText.style.color = '';
+        if (elements.parseStatus) elements.parseStatus.textContent = '';
         updateOutputView(elements);
         autoResizeOutput(elements.outputText);
         showAdvancedPanel(elements);
@@ -406,7 +410,7 @@ function handleParse(elements) {
 
     } catch (error) {
         console.error('Parsing error:', error);
-        showMessage(elements.outputText, 'Error parsing text. Please check your input.', 'error', elements.parseStatus);
+        showMessage(elements.outputText, `${error.message || 'Unknown error'} — check your input.`, 'error', elements.parseStatus);
     }
 }
 
@@ -689,12 +693,15 @@ function showMessage(target, message, type, parseStatusEl) {
         parseStatusEl.textContent = prefix + message;
     }
 
-    setTimeout(() => {
-        target.value = originalValue;
-        target.placeholder = originalPlaceholder;
-        target.style.color = '';
-        if (parseStatusEl) parseStatusEl.textContent = '';
-    }, 2000);
+    // Errors stay on screen until the next parse; success messages auto-dismiss.
+    if (type !== 'error') {
+        setTimeout(() => {
+            target.value = originalValue;
+            target.placeholder = originalPlaceholder;
+            target.style.color = '';
+            if (parseStatusEl) parseStatusEl.textContent = '';
+        }, 2000);
+    }
 }
 
 /**

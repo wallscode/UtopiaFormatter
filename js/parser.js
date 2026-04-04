@@ -666,8 +666,11 @@ function accumulateProvinceLogsData(text) {
     PROVINCE_LOGS_CONFIG.CONSTRUCTION_BUILDINGS.forEach(b => { razedCounts[b] = 0; });
     PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
+    const parseErrors = [];
+
     // Main parsing loop
     for (const { stripped: line, raw: rawLine } of linePairs) {
+        try {
         // Parse spells
         if (line.includes("begin casting")) {
             const spellTargetM = line.match(/\(([^()]+\(\d+:\d+\))\)\s*$/);
@@ -1049,6 +1052,9 @@ function accumulateProvinceLogsData(text) {
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
         }
+        } catch (err) {
+            parseErrors.push({ line: rawLine, error: err.message });
+        }
     }
 
     return {
@@ -1066,7 +1072,8 @@ function accumulateProvinceLogsData(text) {
         constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps, attacksMade, attacksBounced,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
-        vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
+        vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount,
+        parseErrors
     };
 }
 
@@ -1573,6 +1580,15 @@ function formatProvinceLogsFromData(data) {
         output += sbsOut;
     }
 
+    if (data.parseErrors && data.parseErrors.length > 0) {
+        output += '\n\n' + '-'.repeat(40) + '\n';
+        output += `Skipped Lines (${data.parseErrors.length} parse error${data.parseErrors.length !== 1 ? 's' : ''}):\n`;
+        for (const { line, error } of data.parseErrors) {
+            const preview = line.length > 120 ? line.substring(0, 120) + '…' : line;
+            output += `  "${preview}" — ${error}\n`;
+        }
+    }
+
     return output.trim();
 }
 
@@ -1669,6 +1685,7 @@ function parseKingdomNewsLog(inputText, options) {
         warDeclarations: [],
         warOutcomes: 0,
         truncatedLines: [],
+        parseErrors: [],
         highlights: {
             mostLandGainedTrad: { province: '', acres: 0 },
             mostLandLostTrad: { province: '', acres: 0 },
@@ -1713,11 +1730,22 @@ function parseKingdomNewsLog(inputText, options) {
                 if (dateMatch) {
                     lastAttackDate = currentDate;
                 }
-                parseAttackLine(line, data, lastAttackDate);
+                try {
+                    parseAttackLine(line, data, lastAttackDate);
+                } catch (err) {
+                    data.parseErrors.push({ line, error: err.message });
+                    continue;
+                }
             }
 
             // Always parse special lines (dragons, rituals, etc.)
-            const handledBySpecial = parseSpecialLine(line, data);
+            let handledBySpecial;
+            try {
+                handledBySpecial = parseSpecialLine(line, data);
+            } catch (err) {
+                data.parseErrors.push({ line, error: err.message });
+                continue;
+            }
 
             // Log lines that are neither attacks nor any recognised special pattern.
             // Known informational sentinels (war notices) are excluded — they're not
@@ -2720,6 +2748,16 @@ function formatKingdomNewsOutput(data, windowDays) {
         }
     }
 
+    if (data.parseErrors && data.parseErrors.length > 0) {
+        output.push('');
+        output.push('-'.repeat(40));
+        output.push(`Skipped Lines (${data.parseErrors.length} parse error${data.parseErrors.length !== 1 ? 's' : ''}):`);
+        for (const { line, error } of data.parseErrors) {
+            const preview = line.length > 120 ? line.substring(0, 120) + '…' : line;
+            output.push(`  "${preview}" — ${error}`);
+        }
+    }
+
     return output.join('\n');
 }
 
@@ -3423,6 +3461,16 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    if (data.parseErrors && data.parseErrors.length > 0) {
+        out.push('');
+        out.push('-'.repeat(40));
+        out.push(`Skipped Lines (${data.parseErrors.length} parse error${data.parseErrors.length !== 1 ? 's' : ''}):`);
+        for (const { line, error } of data.parseErrors) {
+            const preview = line.length > 120 ? line.substring(0, 120) + '…' : line;
+            out.push(`  "${preview}" — ${error}`);
+        }
+    }
+
     return out.join('\n');
 }
 
@@ -3495,7 +3543,8 @@ function accumulateProvinceNewsData(text, options = {}) {
         failedPropaganda:     0,
         warLandPenalty:       null,
         warResourceBonus:     null,
-        starvation:           { count: 0, total: 0, byType: {} }
+        starvation:           { count: 0, total: 0, byType: {} },
+        parseErrors:          []
     };
 
     const dateLineRe = /^((?:January|February|March|April|May|June|July) \d{1,2} of YR\d+)\t(.+)$/;
@@ -3511,7 +3560,11 @@ function accumulateProvinceNewsData(text, options = {}) {
         if (data.minDateVal === null || dv < data.minDateVal) { data.minDateVal = dv; data.minDateStr = dateStr; }
         if (data.maxDateVal === null || dv > data.maxDateVal) { data.maxDateVal = dv; data.maxDateStr = dateStr; }
 
-        parseProvinceNewsLine(ev, dateStr, data, line);
+        try {
+            parseProvinceNewsLine(ev, dateStr, data, line);
+        } catch (err) {
+            data.parseErrors.push({ line, error: err.message });
+        }
     }
 
     return data;
