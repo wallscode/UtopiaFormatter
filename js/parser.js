@@ -2074,11 +2074,8 @@ function parseAttackLine(line, data, dateStr) {
             // Update attacker kingdom stats
             if (attackerKingdom === data.ownKingdomId) {
                 data.kingdoms[attackerKingdom][attackType].count++;
-                // For raze attacks, use raze acres for the raze summary, not acres (which is 0)
-                if (attackType === 'raze') {
-                    const razeAcres = parseInt(line.match(/razed (\d+) acres/)[1]);
-                    data.kingdoms[attackerKingdom][attackType].acres += razeAcres;
-                } else if (attackType === 'massacre' && people > 0) {
+                // raze.acres is already updated in the razeInvadedPattern/razePattern branches above.
+                if (attackType === 'massacre' && people > 0) {
                     data.kingdoms[attackerKingdom].massacre.people += people;
                 } else if (acres > 0) {
                     data.kingdoms[attackerKingdom][attackType].acres += acres;
