@@ -1699,7 +1699,7 @@ function parseKingdomNewsLog(inputText, options) {
             const attackLine = line.replace(/^(January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/, '');
 
             // Check if this is actually an attack line
-            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed [\d,]+ people|razed \d+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
+            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed [\d,]+ people|razed [\d,]+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
 
             // War Only filter: skip events that don't involve the war opponent in the war window
             if (warOnly && warPeriods.length > 0) {
@@ -1790,8 +1790,8 @@ function parseAttackLine(line, data, dateStr) {
     const ambushReceivedPattern = /ambushed armies.*and took (\d+) acres of land/;  // Made into our kingdom
     const massacrePattern = /killed ([\d,]+) people within/;        // "X killed N people within Y" (our massacre on them)
     const massacreInvadedPattern = /invaded.*?killed ([\d,]+) people/; // "X invaded Y and killed N people" (their massacre on us)
-    const razePattern = /razed (\d+) acres/;
-    const razeInvadedPattern = /invaded.*razed (\d+) acres/;  // Suffered raze with "invaded"
+    const razePattern = /razed ([\d,]+) acres/;
+    const razeInvadedPattern = /invaded.*razed ([\d,]+) acres/;  // Suffered raze with "invaded"
     const plunderPattern = /attacked and pillaged|invaded and pillaged/;
     const learnPattern = /invaded and looted|attacked and looted/;
     
@@ -1867,7 +1867,7 @@ function parseAttackLine(line, data, dateStr) {
             dragonsKilled: [],
             dragonsCancelled: 0,
             ritualsStarted: [],
-            ritualsCompleted: 0,
+            ritualsCompleted: [],
             ritualsFailed: 0
         };
     }
@@ -1895,7 +1895,7 @@ function parseAttackLine(line, data, dateStr) {
             dragonsKilled: [],
             dragonsCancelled: 0,
             ritualsStarted: [],
-            ritualsCompleted: 0,
+            ritualsCompleted: [],
             ritualsFailed: 0
         };
     }
@@ -1938,7 +1938,7 @@ function parseAttackLine(line, data, dateStr) {
     let isActualAttack = false;
     
     // Check for conquest first (has comma after province name)
-    if (line.includes(',') && (tradMarchPattern.test(line) || razePattern.test(line) || tradMarchInvadedPattern.test(line) || razeInvadedPattern.test(line))) {
+    if (/\(\d+:\d+\),/.test(line) && (tradMarchPattern.test(line) || razePattern.test(line) || tradMarchInvadedPattern.test(line) || razeInvadedPattern.test(line))) {
         attackType = 'conquest';
         isActualAttack = true;
         if (tradMarchPattern.test(line)) {
@@ -1946,12 +1946,12 @@ function parseAttackLine(line, data, dateStr) {
         } else if (tradMarchInvadedPattern.test(line)) {
             acres = parseInt(line.match(tradMarchInvadedPattern)[1]);
         } else if (razePattern.test(line)) {
-            const razeAcres = parseInt(line.match(razePattern)[1]);
+            const razeAcres = parseGameInt(line.match(razePattern)[1]);
             acres = 0; // Conquest raze attacks don't capture land either
             // Store raze acres separately for raze summary (only once per attack)
             data.kingdoms[attackerKingdom].raze.acres += razeAcres;
         } else if (razeInvadedPattern.test(line)) {
-            const razeAcres = parseInt(line.match(razeInvadedPattern)[1]);
+            const razeAcres = parseGameInt(line.match(razeInvadedPattern)[1]);
             acres = 0; // Conquest raze attacks don't capture land either
             // Store raze acres separately for raze summary (only once per attack)
             data.kingdoms[attackerKingdom].raze.acres += razeAcres;
@@ -1982,7 +1982,7 @@ function parseAttackLine(line, data, dateStr) {
         isActualAttack = false; // Don't count massacres as attacks for war summary
     } else if (razeInvadedPattern.test(line)) {
         attackType = 'raze';
-        const razeAcres = parseInt(line.match(razeInvadedPattern)[1]);
+        const razeAcres = parseGameInt(line.match(razeInvadedPattern)[1]);
         isActualAttack = true;
         acres = 0; // Raze attacks don't capture land for total acres
         // Store raze acres separately for raze summary (only once per attack)
@@ -2002,7 +2002,7 @@ function parseAttackLine(line, data, dateStr) {
         }
     } else if (razePattern.test(line)) {
         attackType = 'raze';
-        const razeAcres = parseInt(line.match(razePattern)[1]);
+        const razeAcres = parseGameInt(line.match(razePattern)[1]);
         isActualAttack = true;
         acres = 0; // Raze attacks don't capture land for total acres
         // Store raze acres separately for raze summary (only once per attack)
