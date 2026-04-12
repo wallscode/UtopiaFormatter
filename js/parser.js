@@ -309,7 +309,7 @@ function dateToNumber(dateStr) {
  */
 function detectOwnKingdom(lines) {
     const provincePattern = /\((\d+):(\d+)\)/g;
-    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed \d+ acres|invaded and looted|attacked and looted|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
+    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed [\d,]+ acres|invaded and looted|attacked and looted|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
 
     // First pass: identify kingdoms that are explicitly enemies via war/dragon markers.
     // "X (K:K) has declared WAR with our kingdom!" and "X (K:K) has begun ... against us!"
@@ -2074,11 +2074,7 @@ function parseAttackLine(line, data, dateStr) {
             // Update attacker kingdom stats
             if (attackerKingdom === data.ownKingdomId) {
                 data.kingdoms[attackerKingdom][attackType].count++;
-                // For raze attacks, use raze acres for the raze summary, not acres (which is 0)
-                if (attackType === 'raze') {
-                    const razeAcres = parseInt(line.match(/razed (\d+) acres/)[1]);
-                    data.kingdoms[attackerKingdom][attackType].acres += razeAcres;
-                } else if (attackType === 'massacre' && people > 0) {
+                if (attackType === 'massacre' && people > 0) {
                     data.kingdoms[attackerKingdom].massacre.people += people;
                 } else if (acres > 0) {
                     data.kingdoms[attackerKingdom][attackType].acres += acres;
