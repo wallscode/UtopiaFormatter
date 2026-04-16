@@ -2954,6 +2954,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const stolenRunesM = eventText.match(/([\d,]+) runes of our runes were stolen!/);
     if (stolenRunesM) {
         data.stolen.runes += parseGameInt(stolenRunesM[1]);
+        data.stolenOps.runes++;
         return;
     }
 
@@ -2961,6 +2962,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const stolenGoldM = eventText.match(/([\d,]+) gold coins were stolen from our coffers!/);
     if (stolenGoldM) {
         data.stolen.gold += parseGameInt(stolenGoldM[1]);
+        data.stolenOps.gold++;
         return;
     }
 
@@ -2968,6 +2970,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const stolenBushelsM = eventText.match(/([\d,]+) bushels.*stolen/i);
     if (stolenBushelsM) {
         data.stolen.bushels += parseGameInt(stolenBushelsM[1]);
+        data.stolenOps.bushels++;
         return;
     }
 
@@ -3166,6 +3169,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         const count = parseInt(desertionWizardsM[1]);
         data.desertions.total += count;
         data.desertions.byType['wizards'] = (data.desertions.byType['wizards'] || 0) + count;
+        data.propagandaOps++;
         return;
     }
 
@@ -3175,6 +3179,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         const count = parseInt(desertionSpecialistM[1]);
         data.desertions.total += count;
         data.desertions.byType['specialist troops'] = (data.desertions.byType['specialist troops'] || 0) + count;
+        data.propagandaOps++;
         return;
     }
 
@@ -3185,6 +3190,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         const type = desertionNamedM[2];
         data.desertions.total += count;
         data.desertions.byType[type] = (data.desertions.byType[type] || 0) + count;
+        data.propagandaOps++;
         return;
     }
 
@@ -3192,6 +3198,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const kidnappingM = eventText.match(/^([\d,]+) peasants were kidnapped!$/);
     if (kidnappingM) {
         data.kidnappedPeasants += parseGameInt(kidnappingM[1]);
+        data.kidnappingOps++;
         return;
     }
 
@@ -3357,6 +3364,74 @@ function formatProvinceNewsOutput(data) {
         if (ar.runes.total > 0)        out.push(`  ${formatNumber(ar.runes.total)} runes`);
         if (ar.soldiers.total > 0)     out.push(`  ${formatNumber(ar.soldiers.total)} soldiers`);
         if (ar.exploreAcres.total > 0) out.push(`  ${formatNumber(ar.exploreAcres.total)} explore pool acres (${formatNumber(ar.exploreAcres.lost)} lost in transit)`);
+    }
+
+    // -- Operation Summary: per-type counts with success/fail and overall percentage
+    const successfulThievery = data.rioting.count + data.manaDis.count + data.kidnappingOps +
+        data.turncoatGenerals + data.propagandaOps +
+        data.stolenOps.gold + data.stolenOps.bushels + data.stolenOps.runes + data.stolenOps.warHorses;
+    const failedThievery = data.thieveryIntercepted + data.failedPropaganda;
+    const successfulSpells = data.meteorShower.count + data.lightningStrike.count +
+        data.pitfalls.count + data.greed.count + data.blizzard.count + data.chastity.count +
+        data.droughts.count + data.explosions.count + data.exposeThieves.count + data.gluttony.count +
+        data.magicWard.count + data.nightfall.count + data.sloth.count + data.storms.count;
+    const totalSuccessful = successfulThievery + successfulSpells;
+    const totalFailed = failedThievery;
+    const totalKnown = totalSuccessful + totalFailed;
+    const hasOpSummary = totalSuccessful > 0 || totalFailed > 0 || data.spellAttempts > 0;
+    if (hasOpSummary) {
+        out.push('');
+        out.push('Operation Summary:');
+        const pct = totalKnown > 0 ? ` (${Math.round(totalSuccessful / totalKnown * 100)}%)` : '';
+        let overallParts = [];
+        if (totalSuccessful > 0 || totalFailed > 0) overallParts.push(`${totalSuccessful} successful, ${totalFailed} failed${pct}`);
+        if (data.spellAttempts > 0) overallParts.push(`${pluralize(data.spellAttempts, 'spell attempt')} detected`);
+        out.push(`  ${overallParts.join(' | ')}`);
+
+        // Thievery breakdown
+        if (successfulThievery > 0 || failedThievery > 0) {
+            const thievPct = (successfulThievery + failedThievery) > 0
+                ? ` (${Math.round(successfulThievery / (successfulThievery + failedThievery) * 100)}%)`
+                : '';
+            out.push(`  Thievery: ${successfulThievery} successful, ${failedThievery} failed${thievPct}`);
+            const tt = [];
+            if (data.rioting.count > 0)      tt.push(`Incite Riots: ${data.rioting.count}`);
+            if (data.manaDis.count > 0)      tt.push(`Sabotage Wizards: ${data.manaDis.count}`);
+            if (data.kidnappingOps > 0)      tt.push(`Kidnapping: ${data.kidnappingOps}`);
+            if (data.propagandaOps > 0)      tt.push(`Propaganda: ${data.propagandaOps}`);
+            if (data.turncoatGenerals > 0)   tt.push(`Bribe General: ${data.turncoatGenerals}`);
+            if (data.stolenOps.gold > 0)     tt.push(`Steal Gold: ${data.stolenOps.gold}`);
+            if (data.stolenOps.bushels > 0)  tt.push(`Steal Bushels: ${data.stolenOps.bushels}`);
+            if (data.stolenOps.runes > 0)    tt.push(`Steal Runes: ${data.stolenOps.runes}`);
+            if (data.stolenOps.warHorses > 0) tt.push(`Steal War Horses: ${data.stolenOps.warHorses}`);
+            if (tt.length > 0) out.push(`    ${tt.join(', ')}`);
+            if (data.thieveryIntercepted > 0) out.push(`    Intercepted (failed): ${data.thieveryIntercepted}`);
+            if (data.failedPropaganda > 0)    out.push(`    Failed propaganda: ${data.failedPropaganda}`);
+        }
+
+        // Spells breakdown
+        if (successfulSpells > 0 || data.spellAttempts > 0) {
+            const spellLine = successfulSpells > 0
+                ? `${successfulSpells} successful${data.spellAttempts > 0 ? `, ${pluralize(data.spellAttempts, 'attempt')} detected` : ''}`
+                : `${pluralize(data.spellAttempts, 'attempt')} detected`;
+            out.push(`  Spells: ${spellLine}`);
+            const st = [];
+            if (data.meteorShower.count > 0)   st.push(`Meteor Shower: ${data.meteorShower.count}`);
+            if (data.lightningStrike.count > 0) st.push(`Lightning Strike: ${data.lightningStrike.count}`);
+            if (data.pitfalls.count > 0)        st.push(`Pitfalls: ${data.pitfalls.count}`);
+            if (data.greed.count > 0)           st.push(`Greed: ${data.greed.count}`);
+            if (data.blizzard.count > 0)        st.push(`Blizzard: ${data.blizzard.count}`);
+            if (data.chastity.count > 0)        st.push(`Chastity: ${data.chastity.count}`);
+            if (data.droughts.count > 0)        st.push(`Droughts: ${data.droughts.count}`);
+            if (data.explosions.count > 0)      st.push(`Explosions: ${data.explosions.count}`);
+            if (data.exposeThieves.count > 0)   st.push(`Expose Thieves: ${data.exposeThieves.count}`);
+            if (data.gluttony.count > 0)        st.push(`Gluttony: ${data.gluttony.count}`);
+            if (data.magicWard.count > 0)       st.push(`Magic Ward: ${data.magicWard.count}`);
+            if (data.nightfall.count > 0)       st.push(`Nightfall: ${data.nightfall.count}`);
+            if (data.sloth.count > 0)           st.push(`Sloth: ${data.sloth.count}`);
+            if (data.storms.count > 0)          st.push(`Storms: ${data.storms.count}`);
+            if (st.length > 0) out.push(`    ${st.join(', ')}`);
+        }
     }
 
     // -- Thievery impacts: stolen resources, detected/intercepted ops
@@ -3562,6 +3637,9 @@ function accumulateProvinceNewsData(text, options = {}) {
         dragonImpacts:        { count: 0, totalBuildings: 0 },
         lightningStrike:      { count: 0, runesDestroyed: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
+        stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
+        kidnappingOps:        0,
+        propagandaOps:        0,
         thieveryDetected:     0,
         thieveryUnknown:      0,
         thieveryIntercepted:  0,
@@ -3683,7 +3761,7 @@ function formatCombinedProvinceSummary(logsText, newsText) {
         'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
     const newsSectionNames = [
-        'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
+        'Attacks Suffered', 'Operation Summary', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
         'Aid Received', 'Daily Login Bonus', 'Scientists Gained', 'War Outcomes', 'Starvation'
     ];
 
@@ -3752,7 +3830,7 @@ function formatCombinedProvinceSummary(logsText, newsText) {
 
     // Province News pass-through sections (excluding Aid Received — replaced above)
     const newsPassthrough = [
-        'Attacks Suffered', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
+        'Attacks Suffered', 'Operation Summary', 'Thievery Impacts', 'Shadowlight Thief IDs', 'Spell Impacts',
         'Daily Login Bonus', 'Scientists Gained', 'War Outcomes', 'Starvation'
     ];
     for (const name of newsPassthrough) {
