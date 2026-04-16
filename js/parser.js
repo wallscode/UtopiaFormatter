@@ -309,7 +309,7 @@ function dateToNumber(dateStr) {
  */
 function detectOwnKingdom(lines) {
     const provincePattern = /\((\d+):(\d+)\)/g;
-    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed \d+ acres|invaded and looted|attacked and looted|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
+    const hasAttack = /captured \d+ acres|recaptured \d+ acres|ambushed armies|razed [\d,]+ acres|invaded and looted|attacked and looted|disrupted the scientists ability|killed [\d,]+ people|invaded and pillaged|attacked and pillaged|attempted an invasion|attempted to invade|but was repelled/i;
 
     // First pass: identify kingdoms that are explicitly enemies via war/dragon markers.
     // "X (K:K) has declared WAR with our kingdom!" and "X (K:K) has begun ... against us!"
@@ -1019,6 +1019,20 @@ function accumulateProvinceLogsData(text) {
                     peasants: peasantsM ? parseGameInt(peasantsM[1]) : 0,
                 });
             }
+        // Outgoing Ambush result
+        } else if (line.startsWith('Your forces arrive at') && line.includes('recaptured')) {
+            const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
+            const acresM  = line.match(/recaptured ([\d,]+) acres/);
+            if (targetM && acresM) {
+                attacksMade.push({
+                    type: 'Ambush',
+                    target:   targetM[1],
+                    kingdom:  targetM[2],
+                    acres:    parseGameInt(acresM[1]),
+                    credits:  0,
+                    peasants: 0,
+                });
+            }
         } else if (!line.includes("begin casting") &&
                    !line.includes("We have sent") &&
                    !line.includes("Early indications show that our operation was a success") &&
@@ -1048,6 +1062,7 @@ function accumulateProvinceLogsData(text) {
                    !/The power of .+ surges through your forces/.test(line) &&
                    !line.includes("Drawing from the ancient Mana Well") &&
                    !line.includes("The natural leyline energies surrounding your province") &&
+                   !line.includes("Your spell is disrupted by the natural leyline energies") &&
                    !line.includes("Chaotic energies amplify our actions") &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
@@ -1674,6 +1689,7 @@ function parseKingdomNewsLog(inputText, options) {
         warOnly,
         ceasefireProposals: [],      // kingdoms that proposed to us
         ceasefireWithdrawals: [],    // kingdoms we withdrew our proposal from
+        ceasefireWithdrawnByThem: [], // kingdoms that withdrew their proposal to us
         ceasefireEntered: [],        // kingdoms we entered a formal ceasefire with
         ceasefireAccepted: [],       // kingdoms that accepted our proposal
         ceasefireProposedByUs: [],   // kingdoms we proposed to
@@ -1684,6 +1700,7 @@ function parseKingdomNewsLog(inputText, options) {
         aidShipments: { sent: {}, received: {} },
         warDeclarations: [],
         warOutcomes: 0,
+        warsForced: [],          // kingdoms the Lords of Utopia forced to withdraw
         truncatedLines: [],
         parseErrors: [],
         highlights: {
@@ -1716,7 +1733,7 @@ function parseKingdomNewsLog(inputText, options) {
             const attackLine = line.replace(/^(January|February|March|April|May|June|July) \d{1,2} of YR\d+\s*/, '');
 
             // Check if this is actually an attack line
-            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed [\d,]+ people|razed [\d,]+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|attempted to invade|attempted an invasion/.test(attackLine);
+            const isAttack = /captured \d+ acres of land|ambushed armies.*and took \d+ acres of land|recaptured \d+ acres of land|killed [\d,]+ people|razed [\d,]+ acres|attacked and pillaged|invaded and pillaged|invaded and looted|attacked and looted|disrupted the scientists ability|attempted to invade|attempted an invasion/.test(attackLine);
 
             // War Only filter: skip events that don't involve the war opponent in the war window
             if (warOnly && warPeriods.length > 0) {
@@ -1821,7 +1838,7 @@ function parseAttackLine(line, data, dateStr) {
     const razePattern = /razed ([\d,]+) acres/;
     const razeInvadedPattern = /invaded.*razed ([\d,]+) acres/;  // Suffered raze with "invaded"
     const plunderPattern = /attacked and pillaged|invaded and pillaged/;
-    const learnPattern = /invaded and looted|attacked and looted/;
+    const learnPattern = /invaded and looted|attacked and looted|disrupted the scientists ability/;
     
     // Check for unknown province attacks
     const unknownPattern = /An unknown province from ([^(]+) \((\d+):(\d+)\)/;
@@ -1965,7 +1982,7 @@ function parseAttackLine(line, data, dateStr) {
     let people = 0;
     let isActualAttack = false;
     
-    // Check for conquest first (has comma after province name)
+    // Check for conquest first (has comma immediately after attacker's kingdom identifier)
     if (/\(\d+:\d+\),/.test(line) && (tradMarchPattern.test(line) || razePattern.test(line) || tradMarchInvadedPattern.test(line) || razeInvadedPattern.test(line))) {
         attackType = 'conquest';
         isActualAttack = true;
@@ -2269,6 +2286,14 @@ function parseSpecialLine(line, data) {
         return true;
     }
 
+    // "The ritual covering our lands has been lifted!" — ritual expired
+    if (line.includes('The ritual covering our lands has been lifted')) {
+        if (own && data.kingdoms[own]) {
+            data.kingdoms[own].ritualsExpired = (data.kingdoms[own].ritualsExpired || 0) + 1;
+        }
+        return true;
+    }
+
     // "Unnamed kingdom (5:3) has cancelled their dragon project targeted at us."
     if (line.includes('has cancelled their dragon project')) {
         const m = line.match(/\((\d+):(\d+)\)/);
@@ -2294,6 +2319,13 @@ function parseSpecialLine(line, data) {
     // "Our kingdom is now in a post-war period." — war ended
     if (line.includes('Our kingdom is now in a post-war period')) {
         data.warOutcomes++;
+        return true;
+    }
+
+    // "The Lords of Utopia have forced Time for Nerds (3:11) to withdraw from war..."
+    if (line.includes('The Lords of Utopia have forced') && line.includes('to withdraw from war')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.warsForced.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
@@ -2328,6 +2360,13 @@ function parseSpecialLine(line, data) {
     if (line.includes('have withdrawn our ceasefire proposal')) {
         const m = line.match(/\((\d+):(\d+)\)/);
         data.ceasefireWithdrawals.push(m ? m[1] + ':' + m[2] : null);
+        return true;
+    }
+
+    // "Chakat Ma At (2:1) has withdrawn their ceasefire proposal."
+    if (line.includes('has withdrawn their ceasefire proposal')) {
+        const m = line.match(/\((\d+):(\d+)\)/);
+        data.ceasefireWithdrawnByThem.push(m ? m[1] + ':' + m[2] : null);
         return true;
     }
 
@@ -2525,6 +2564,7 @@ function formatKingdomNewsOutput(data, windowDays) {
         if (ownKingdom.ritualsStarted.length > 0)
             output.push(`-- Rituals Started: ${ownKingdom.ritualsStarted.length}${dragonTypeSuffix(ownKingdom.ritualsStarted)}`);
         if (ownKingdom.ritualsCompleted.length > 0)  output.push(`-- Rituals Completed: ${ownKingdom.ritualsCompleted.length}${dragonTypeSuffix(ownKingdom.ritualsCompleted)}`);
+        if ((ownKingdom.ritualsExpired || 0) > 0) output.push(`-- Rituals Expired: ${ownKingdom.ritualsExpired}`);
         if ((ownKingdom.ritualsFailed || 0) > 0) output.push(`-- Rituals Failed: ${ownKingdom.ritualsFailed}`);
 
         output.push(`Total Attacks Suffered: ${ownKingdom.attacksSuffered} (${ownKingdom.acresLost} acres)`);
@@ -2706,6 +2746,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         krLines.push(`-- War Declared by Us: ${warByUs.length}${krIds(warByUs.map(w => w.kingdom))}`);
     if (data.warOutcomes > 0)
         krLines.push(`-- War Outcomes: ${data.warOutcomes}`);
+    if (data.warsForced.length > 0)
+        krLines.push(`-- Wars Won (Forced Withdrawal): ${data.warsForced.length}${krIds(data.warsForced)}`);
     if (data.ceasefireProposedByUs.length > 0)
         krLines.push(`-- Ceasefires Proposed by Us: ${data.ceasefireProposedByUs.length}${krIds(data.ceasefireProposedByUs)}`);
     if (data.ceasefireProposals.length > 0)
@@ -2716,6 +2758,8 @@ function formatKingdomNewsOutput(data, windowDays) {
         krLines.push(`-- Formal Ceasefires Entered: ${data.ceasefireEntered.length}${krIds(data.ceasefireEntered)}`);
     if (data.ceasefireWithdrawals.length > 0)
         krLines.push(`-- Ceasefire Withdrawals Made: ${data.ceasefireWithdrawals.length}${krIds(data.ceasefireWithdrawals)}`);
+    if (data.ceasefireWithdrawnByThem.length > 0)
+        krLines.push(`-- Ceasefire Withdrawals by Them: ${data.ceasefireWithdrawnByThem.length}${krIds(data.ceasefireWithdrawnByThem)}`);
     if (data.ceasefireCancelledByUs.length > 0)
         krLines.push(`-- Ceasefires Cancelled by Us: ${data.ceasefireCancelledByUs.length}${krIds(data.ceasefireCancelledByUs)}`);
     if (data.ceasefireBrokenByThem.length > 0)
@@ -3144,6 +3188,13 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Kidnapping
+    const kidnappingM = eventText.match(/^([\d,]+) peasants were kidnapped!$/);
+    if (kidnappingM) {
+        data.kidnappedPeasants += parseGameInt(kidnappingM[1]);
+        return;
+    }
+
     // Turncoat general discovered
     if (eventText.indexOf('We have discovered a turncoat general leading our military. He has been executed for treason!') !== -1) {
         data.turncoatGenerals++;
@@ -3313,7 +3364,7 @@ function formatProvinceNewsOutput(data) {
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
         data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
         data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
-        data.turncoatGenerals > 0 || data.failedPropaganda > 0;
+        data.turncoatGenerals > 0 || data.failedPropaganda > 0 || data.kidnappedPeasants > 0;
     if (hasThieveryImpacts) {
         out.push('');
         out.push('Thievery Impacts:');
@@ -3340,6 +3391,7 @@ function formatProvinceNewsOutput(data) {
             const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
             out.push(`  Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
         }
+        if (data.kidnappedPeasants > 0) out.push(`  Kidnapping: ${formatNumber(data.kidnappedPeasants)} peasants kidnapped`);
         if (data.failedPropaganda > 0)  out.push(`  Failed propaganda: ${data.failedPropaganda}`);
         if (data.turncoatGenerals > 0)  out.push(`  Bribe General: ${data.turncoatGenerals}`);
     }
@@ -3539,6 +3591,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         sloth:                { count: 0, totalDays: 0 },
         storms:               { count: 0, totalDays: 0 },
         desertions:           { total: 0, byType: {} },
+        kidnappedPeasants:    0,
         turncoatGenerals:     0,
         failedPropaganda:     0,
         warLandPenalty:       null,

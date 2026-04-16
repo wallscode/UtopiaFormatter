@@ -378,6 +378,7 @@ try {
         '-- Dragons Cancelled: 1',
         '-- Rituals Started: 3',
         '-- Rituals Completed: 2 (Haste, Barrier)',
+        '-- Rituals Expired: 1',
         '-- Rituals Failed: 1',
         '-- War Declared Against Us: 1 (4:1)',
         '-- Formal Ceasefires Entered: 1 (5:2)'
@@ -388,7 +389,7 @@ try {
             showAttacks: true, showTradMarch: true, showLearn: true,
             showMassacre: true, showPlunder: true,
             showDragons: true, showDragonCancellations: true,
-            showRituals: true, showRitualsFailed: true,
+            showRituals: true, showRitualsExpired: true, showRitualsFailed: true,
             uniqueWindow: 6, uniquesWithKingdoms: false, warOnly: false, warDetected: false,
             sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations'],
             visible: {
@@ -443,6 +444,13 @@ try {
     r = applyKingdomNewsSettings(synth);
     assert('showRitualsFailed=false removes Rituals Failed', r.includes('-- Rituals Failed:'), false);
     assert('showRitualsFailed=false keeps Rituals Started', r.includes('-- Rituals Started:'), true);
+
+    // showRitualsExpired = false removes Rituals Expired, keeps Rituals Completed
+    resetKN();
+    advSettings.kingdomNews.showRitualsExpired = false;
+    r = applyKingdomNewsSettings(synth);
+    assert('showRitualsExpired=false removes Rituals Expired', r.includes('-- Rituals Expired:'), false);
+    assert('showRitualsExpired=false keeps Rituals Completed', r.includes('-- Rituals Completed:'), true);
 
     // Section visibility — use a synth with full section blocks
     const sectionSynth = [

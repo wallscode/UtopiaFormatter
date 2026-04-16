@@ -21,6 +21,7 @@ const advSettings = {
         showDragons: true,
         showDragonCancellations: false,
         showRituals: true,
+        showRitualsExpired: true,
         showRitualsFailed: false,
         uniqueWindow: 6,
         sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations', 'Aid Shipments'],
@@ -931,8 +932,9 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
                 { key: 'showDragonCancellations', label: 'Dragon Cancellations', hint: 'Show when a kingdom cancels their dragon project' },
             ]
         },
-        { key: 'showRituals',        label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions. Completions include the ritual type name (e.g. Haste, Barrier).' },
-        { key: 'showRitualsFailed',  label: 'Rituals failed',               hint: 'Show failed ritual summoning attempts' },
+        { key: 'showRituals',         label: 'Rituals started/completed',    hint: 'Show ritual project starts and completions. Completions include the ritual type name (e.g. Haste, Barrier).' },
+        { key: 'showRitualsExpired',  label: 'Rituals expired',              hint: 'Show when an active ritual covering our lands has expired' },
+        { key: 'showRitualsFailed',   label: 'Rituals failed',               hint: 'Show failed ritual summoning attempts' },
     ];
 
     function makeCheckbox(key, id) {
@@ -1606,6 +1608,7 @@ function applyKingdomNewsSettings(text) {
         if (!s.showDragons                              && /^-- Enemy Dragons Killed:/.test(line))                  return false;
         if ((!s.showDragons || !s.showDragonCancellations) && /^-- (Enemy )?Dragons Cancelled:/.test(line))        return false;
         if (!s.showRituals             && /^-- Rituals (Started|Completed):/.test(line))            return false;
+        if (!s.showRitualsExpired      && /^-- Rituals Expired:/.test(line))                        return false;
         if (!s.showRitualsFailed       && /^-- Rituals Failed:/.test(line))                         return false;
 
         return true;
