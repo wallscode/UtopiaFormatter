@@ -358,11 +358,34 @@ function handleParse(elements) {
         return;
     }
 
-    const detectedMode = detectInputType(effectiveInput);
+    const detectionEvidence = detectInputTypeWithEvidence(effectiveInput);
+    const detectedMode = detectionEvidence.type;
 
     if (!detectedMode) {
         showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error', elements.parseStatus);
         return;
+    }
+
+    // Log whenever both province-logs and kingdom-news patterns matched in the same paste.
+    // This fires even on the first parse — catching misclassification attempts that the
+    // type-switch logging in autoDetectMode would miss.
+    if (detectionEvidence.plCount > 0 && detectionEvidence.knCount > 0) {
+        const endpoint = window.APP_CONFIG?.logEndpoint;
+        if (endpoint) {
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    context: 'competing-patterns-detected',
+                    detectedAs: detectedMode,
+                    plCount: detectionEvidence.plCount,
+                    knCount: detectionEvidence.knCount,
+                    matchedPattern: detectionEvidence.matchedPattern ? detectionEvidence.matchedPattern.toString() : null,
+                    matchedLine: detectionEvidence.matchedLine ? detectionEvidence.matchedLine.substring(0, 300) : null,
+                }),
+                keepalive: true
+            }).catch(() => {});
+        }
     }
 
     const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };

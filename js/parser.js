@@ -3820,15 +3820,21 @@ const _PROVINCE_LOGS_PATTERNS = [
 
 /**
  * Detects whether pasted text is Kingdom News, Province Logs, or Province News.
+ * When both province-logs and kingdom-news patterns match (e.g. Province Logs containing
+ * a bounced-attack line), the type with more matching lines wins; province-logs wins ties.
  * @param {string} text - Raw input text
  * @returns {'kingdom-news-log'|'province-logs'|'province-news'|null} - Detected type, or null if unknown
  */
 function detectInputType(text) {
-    const isKingdom = _KINGDOM_NEWS_PATTERNS.some(p => p.test(text));
-    const isProvince = _PROVINCE_LOGS_PATTERNS.some(p => p.test(text));
-
-    if (isProvince && !isKingdom) return 'province-logs';
-    if (isKingdom) return 'kingdom-news-log'; // kingdom takes priority if both match
+    const lines = text.split('\n');
+    let plCount = 0, knCount = 0;
+    for (const line of lines) {
+        if (_PROVINCE_LOGS_PATTERNS.some(p => p.test(line))) plCount++;
+        if (_KINGDOM_NEWS_PATTERNS.some(p => p.test(line))) knCount++;
+    }
+    if (plCount > 0 && knCount === 0) return 'province-logs';
+    if (knCount > 0 && plCount === 0) return 'kingdom-news-log';
+    if (plCount > 0 && knCount > 0) return plCount >= knCount ? 'province-logs' : 'kingdom-news-log';
 
     // Province News: "Month Day of YR##<tab>" format — checked last because province logs
     // also use this date format; only reached when no operation/spell markers were found.
@@ -3837,35 +3843,35 @@ function detectInputType(text) {
 }
 
 /**
- * Like detectInputType but also returns the specific pattern and line that drove the decision.
- * Used for diagnostic logging when a paste changes the detected input type unexpectedly.
+ * Like detectInputType but also returns the specific pattern and line that drove the decision,
+ * plus the line counts for each type (useful for diagnostic logging).
  * @param {string} text - Raw input text
- * @returns {{ type: string|null, matchedPattern: RegExp|null, matchedLine: string|null }}
+ * @returns {{ type: string|null, matchedPattern: RegExp|null, matchedLine: string|null, plCount: number, knCount: number }}
  */
 function detectInputTypeWithEvidence(text) {
     const lines = text.split('\n');
+    let plCount = 0, knCount = 0;
+    let kingdomPattern = null, kingdomLine = null;
 
-    let kingdomPattern = null;
-    let kingdomLine = null;
-    for (const p of _KINGDOM_NEWS_PATTERNS) {
-        for (const line of lines) {
-            if (p.test(line)) { kingdomPattern = p; kingdomLine = line.trim(); break; }
+    for (const line of lines) {
+        if (_PROVINCE_LOGS_PATTERNS.some(p => p.test(line))) plCount++;
+        for (const p of _KINGDOM_NEWS_PATTERNS) {
+            if (p.test(line)) {
+                knCount++;
+                if (!kingdomPattern) { kingdomPattern = p; kingdomLine = line.trim(); }
+                break;
+            }
         }
-        if (kingdomPattern) break;
     }
 
-    let provincePattern = null;
-    for (const p of _PROVINCE_LOGS_PATTERNS) {
-        if (p.test(text)) { provincePattern = p; break; }
-    }
+    let type;
+    if (plCount > 0 && knCount === 0) type = 'province-logs';
+    else if (knCount > 0 && plCount === 0) type = 'kingdom-news-log';
+    else if (plCount > 0 && knCount > 0) type = plCount >= knCount ? 'province-logs' : 'kingdom-news-log';
+    else if (/\bof YR\d+\t/.test(text)) type = 'province-news';
+    else type = null;
 
-    const isKingdom = !!kingdomPattern;
-    const isProvince = !!provincePattern;
-
-    if (isProvince && !isKingdom) return { type: 'province-logs', matchedPattern: null, matchedLine: null };
-    if (isKingdom) return { type: 'kingdom-news-log', matchedPattern: kingdomPattern, matchedLine: kingdomLine };
-    if (/\bof YR\d+\t/.test(text)) return { type: 'province-news', matchedPattern: null, matchedLine: null };
-    return { type: null, matchedPattern: null, matchedLine: null };
+    return { type, matchedPattern: kingdomPattern, matchedLine: kingdomLine, plCount, knCount };
 }
 
 // =============================================================================

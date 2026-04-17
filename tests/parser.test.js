@@ -178,11 +178,35 @@ dAssert('empty-ish text → null',
     detectInputType('   '),
     null);
 
-// Kingdom News takes priority over Province Logs when both markers are present
-const bothMarkers = 'begin casting Meteor Shower\nFebruary 1 of YR0\t15 - Province (5:1) captured 100 acres of land from 20 - Target (4:1).';
-dAssert('kingdom-news takes priority over province-logs',
-    detectInputType(bothMarkers),
+// When both types match, line count decides — province-logs wins ties
+const tiePLvsKN = 'begin casting Meteor Shower\nFebruary 1 of YR0\t15 - Province (5:1) captured 100 acres of land from 20 - Target (4:1).';
+dAssert('province-logs wins tie (1 PL line vs 1 KN line)',
+    detectInputType(tiePLvsKN),
+    'province-logs');
+
+// Many KN lines + one PL line → kingdom-news wins by count
+const manyKN = [
+    '15 - Province (5:1) captured 100 acres of land from 20 - Target (4:1).',
+    '3 - Province (5:1) razed 50 acres of 4:1',
+    '8 - Province (5:1) invaded and looted 4:1',
+    '9 - Province (5:1) killed 500 people',
+    'begin casting Meteor Shower',
+].join('\n');
+dAssert('kingdom-news wins when KN line count exceeds PL line count',
+    detectInputType(manyKN),
     'kingdom-news-log');
+
+// Many PL lines + one KN-matching line (e.g. bounced attack) → province-logs wins by count
+const plWithBounce = [
+    'Your wizards gather 1,402 runes and begin casting, and the spell succeeds.',
+    'Your wizards gather 3,505 runes and begin casting, but the spell fails.',
+    'Early indications show that our operation was a success. Our thieves caused rioting.',
+    'You have given orders to commence work on 5 guilds.',
+    'Your forces attempted an invasion of Justice (3:11) but was repelled.',
+].join('\n');
+dAssert('province-logs wins when PL line count exceeds KN line count (bounce in PL data)',
+    detectInputType(plWithBounce),
+    'province-logs');
 
 // Province Logs takes priority over Province News (province-news detection reached only if no ops/spells)
 const logsAndNews = 'February 1 of YR1\tOur people decided to explore\nMarch 5 of YR0 Your wizards gather their power';
