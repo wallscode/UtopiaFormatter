@@ -3836,6 +3836,38 @@ function detectInputType(text) {
     return null;
 }
 
+/**
+ * Like detectInputType but also returns the specific pattern and line that drove the decision.
+ * Used for diagnostic logging when a paste changes the detected input type unexpectedly.
+ * @param {string} text - Raw input text
+ * @returns {{ type: string|null, matchedPattern: RegExp|null, matchedLine: string|null }}
+ */
+function detectInputTypeWithEvidence(text) {
+    const lines = text.split('\n');
+
+    let kingdomPattern = null;
+    let kingdomLine = null;
+    for (const p of _KINGDOM_NEWS_PATTERNS) {
+        for (const line of lines) {
+            if (p.test(line)) { kingdomPattern = p; kingdomLine = line.trim(); break; }
+        }
+        if (kingdomPattern) break;
+    }
+
+    let provincePattern = null;
+    for (const p of _PROVINCE_LOGS_PATTERNS) {
+        if (p.test(text)) { provincePattern = p; break; }
+    }
+
+    const isKingdom = !!kingdomPattern;
+    const isProvince = !!provincePattern;
+
+    if (isProvince && !isKingdom) return { type: 'province-logs', matchedPattern: null, matchedLine: null };
+    if (isKingdom) return { type: 'kingdom-news-log', matchedPattern: kingdomPattern, matchedLine: kingdomLine };
+    if (/\bof YR\d+\t/.test(text)) return { type: 'province-news', matchedPattern: null, matchedLine: null };
+    return { type: null, matchedPattern: null, matchedLine: null };
+}
+
 // =============================================================================
 // MODULE EXPORTS
 // =============================================================================
@@ -3866,6 +3898,7 @@ module.exports = {
 
     // Detection
     detectInputType,
+    detectInputTypeWithEvidence,
     detectOwnKingdom,
     hasWarEvents,
     detectWarPeriods,

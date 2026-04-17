@@ -9,6 +9,7 @@ let lastDetectedMode = null;
 let lastRawParsed = null; // Parser output before settings are applied
 let secondaryInputVisible = false;
 let showRawText = false;
+let _lastAutoDetectedType = null; // tracks type from most recent paste for type-switch detection
 
 let _hintCounter = 0;
 const advSettings = {
@@ -437,6 +438,7 @@ function handleClear(elements) {
     lastRawInput = null;
     lastDetectedMode = null;
     lastRawParsed = null;
+    _lastAutoDetectedType = null;
     if (elements.enhancedOutput) {
         elements.enhancedOutput.innerHTML = '';
         elements.enhancedOutput.classList.add('hidden');
@@ -647,8 +649,32 @@ function autoDetectMode(elements) {
 
     const effective = text.trim() || newsText.trim();
     if (!effective) return;
-    const detected = detectInputType(effective);
+    const evidence = detectInputTypeWithEvidence(effective);
+    const detected = evidence.type;
     if (!detected) return;
+
+    // Log when a paste switches the detected type — this helps diagnose false positives
+    // where province logs content triggers a kingdom-news match.
+    if (_lastAutoDetectedType && _lastAutoDetectedType !== detected) {
+        const endpoint = window.APP_CONFIG?.logEndpoint;
+        if (endpoint) {
+            const payload = {
+                context: 'type-switch-detected',
+                previousType: _lastAutoDetectedType,
+                newType: detected,
+                matchedPattern: evidence.matchedPattern ? evidence.matchedPattern.toString() : null,
+                matchedLine: evidence.matchedLine ? evidence.matchedLine.substring(0, 300) : null,
+            };
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(() => {});
+        }
+    }
+    _lastAutoDetectedType = detected;
+
     const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };
     elements.detectBadge.textContent = `Auto-detected: ${modeLabels[detected]}`;
     elements.detectBadge.classList.remove('hidden');
