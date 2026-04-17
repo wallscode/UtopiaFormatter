@@ -346,6 +346,170 @@ function cleanExpiredArchive() {
 }
 
 // ---------------------------------------------------------------------------
+// Parse diagnostic events (type-switch-detected, competing-patterns-detected)
+// from JSONL files.  These entries have no 'line' field and are handled
+// separately from the unrecognized-line flow.
+// ---------------------------------------------------------------------------
+function parseAllDiagnosticLogs(files) {
+    const entries = [];
+    for (const file of files) {
+        const raw = fs.readFileSync(file, 'utf8').split('\n');
+        for (const raw_line of raw) {
+            if (!raw_line.trim()) continue;
+            try {
+                const obj = JSON.parse(raw_line);
+                if (!obj) continue;
+                if (obj.context === 'type-switch-detected' || obj.context === 'competing-patterns-detected') {
+                    entries.push(obj);
+                }
+            } catch { /* skip malformed */ }
+        }
+    }
+    return entries;
+}
+
+/**
+ * Group diagnostic entries by (context + normalised matchedLine).
+ * Returns array sorted by descending count.
+ */
+function groupDiagnosticEvents(entries) {
+    const groups = new Map();
+    for (const entry of entries) {
+        const normLine = normalise(entry.matchedLine || '(no matching line)');
+        const key = `${entry.context}::${normLine}`;
+        if (!groups.has(key)) {
+            groups.set(key, { context: entry.context, count: 0, example: entry, normLine });
+        }
+        const g = groups.get(key);
+        g.count++;
+        // Prefer an example that includes inputText
+        if (entry.inputText && !g.example.inputText) g.example = entry;
+    }
+    return [...groups.values()].sort((a, b) => b.count - a.count);
+}
+
+function createDiagnosticTicket(group) {
+    const e = group.example;
+    const isSwitch     = group.context === 'type-switch-detected';
+    const isCompeting  = group.context === 'competing-patterns-detected';
+
+    const title = isSwitch
+        ? `Input type switched ${e.previousType} → ${e.newType} on second paste`
+        : `Input type detection: competing patterns caused ambiguous classification`;
+
+    const inputSnippet = e.inputText
+        ? e.inputText.substring(0, 1000) + (e.inputText.length > 1000 ? '\n  [truncated]' : '')
+        : '(not captured)';
+
+    const lines = [
+        `Diagnostic event reported ${group.count} time(s) in context: ${group.context}.`,
+        '',
+    ];
+
+    if (isSwitch) {
+        lines.push(`Previous type: ${e.previousType}`);
+        lines.push(`New type:      ${e.newType}`);
+    } else {
+        lines.push(`Detected as:   ${e.detectedAs}`);
+        lines.push(`Province Logs matching lines: ${e.plCount}`);
+        lines.push(`Kingdom News  matching lines: ${e.knCount}`);
+    }
+
+    lines.push('');
+    lines.push(`Kingdom News pattern matched: ${e.matchedPattern || '(unknown)'}`);
+    lines.push(`Matching line:`);
+    lines.push(`  ${e.matchedLine || '(not captured)'}`);
+    lines.push('');
+    lines.push('Input text snippet:');
+    lines.push(`  ${inputSnippet.replace(/\n/g, '\n  ')}`);
+    lines.push('');
+    lines.push('This is a detection anomaly — investigate what line in the input caused the');
+    lines.push('parser to misclassify or produce competing signals, and either add it to the');
+    lines.push('Province Logs ignore list or strengthen the detection patterns.');
+
+    const tags = ['parser', 'detection', group.context].join(',');
+
+    const result = spawnSync(
+        'tk',
+        ['create', title, '--type', 'bug', '--priority', '1', '--tags', tags, '--description', lines.join('\n')],
+        { encoding: 'utf8' }
+    );
+
+    if (result.status === 0) return result.stdout.trim();
+    return { error: (result.stderr || '').trim() || 'tk create failed' };
+}
+
+// ---------------------------------------------------------------------------
+// Interactive phase for diagnostic events
+// ---------------------------------------------------------------------------
+async function diagnosticPhase(groups, acknowledged, rl) {
+    const question = (q) => new Promise(resolve => rl.question(q, resolve));
+
+    const DIAG_PREFIX = 'DIAG::';
+    const unreviewed = groups.filter(g => !acknowledged.has(DIAG_PREFIX + g.normLine + '::' + g.context));
+    if (unreviewed.length === 0) return;
+
+    console.log(`\n=== Detection Anomalies (${unreviewed.length} pattern(s)) ===`);
+    console.log('  These entries indicate the input type detector fired abnormally.\n');
+    console.log('  Actions:');
+    console.log('    c  create ticket    — file a bug ticket for this detection issue');
+    console.log('    s  skip             — do nothing now; will reappear next run');
+    console.log('    a  acknowledge      — mark reviewed, no ticket; will not reappear');
+    console.log('    q  quit             — stop reviewing anomalies');
+    console.log('');
+
+    for (let i = 0; i < unreviewed.length; i++) {
+        const g = unreviewed[i];
+        const e = g.example;
+        const ackKey = DIAG_PREFIX + g.normLine + '::' + g.context;
+
+        console.log(`[${i + 1}/${unreviewed.length}] ${g.count} occurrence(s) — ${g.context}`);
+
+        if (g.context === 'type-switch-detected') {
+            console.log(`  Switch:  ${e.previousType}  →  ${e.newType}`);
+        } else {
+            console.log(`  Detected as: ${e.detectedAs}   (PL lines: ${e.plCount}, KN lines: ${e.knCount})`);
+        }
+
+        console.log(`  KN pattern:    ${e.matchedPattern || '(unknown)'}`);
+        console.log(`  Matched line:  ${(e.matchedLine || '(not captured)').substring(0, 120)}`);
+
+        if (e.inputText) {
+            const snippet = e.inputText.substring(0, 300).replace(/\n/g, '↵');
+            const trunc = (e.inputTextTruncated || e.inputText.length > 300) ? ' [truncated]' : '';
+            console.log(`  Input text:    ${snippet}${trunc}`);
+        } else {
+            console.log('  Input text:    (not captured — deploy latest ui.js to enable)');
+        }
+
+        console.log('');
+        const raw = (await question('  Choice — c / s / a / q  [default: c] > ')).trim().toLowerCase();
+        const answer = raw || 'c';
+        console.log('');
+
+        if (answer === 'q') {
+            console.log('Stopping anomaly review.\n');
+            break;
+        } else if (answer === 'c') {
+            const result = createDiagnosticTicket(g);
+            if (typeof result === 'string') {
+                console.log(`  Created: ${result}`);
+            } else {
+                console.log(`  Error: ${result.error}`);
+            }
+            acknowledged.add(ackKey);
+            saveAcknowledged(acknowledged);
+        } else if (answer === 'a') {
+            acknowledged.add(ackKey);
+            saveAcknowledged(acknowledged);
+            console.log('  Acknowledged — will not reappear.');
+        } else {
+            console.log('  Skipped — will reappear on next run.');
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Parse every JSONL file; each line is { ts, context, line }
 // ---------------------------------------------------------------------------
 function parseAllLogs(files) {
@@ -720,11 +884,21 @@ async function main() {
         }
     }
 
-    // Phase 3: Unrecognized line analysis
+    // Phase 3: Detection anomaly review (type-switch and competing-patterns events)
     const sourceDir = REPROCESS_ARCHIVE ? ARCHIVE_DIR : LOGS_DIR;
     const sourceLabel = REPROCESS_ARCHIVE ? './logs/archive/' : './logs/';
     const files = REPROCESS_ARCHIVE ? findJsonl(ARCHIVE_DIR) : findJsonl(LOGS_DIR);
 
+    if (files.length > 0) {
+        const diagEntries = parseAllDiagnosticLogs(files);
+        if (diagEntries.length > 0) {
+            const acknowledged = loadAcknowledged();
+            const diagGroups = groupDiagnosticEvents(diagEntries);
+            await diagnosticPhase(diagGroups, acknowledged, rl);
+        }
+    }
+
+    // Phase 4: Unrecognized line analysis
     if (files.length > 0) {
         const events = parseAllLogs(files);
         if (events.length > 0) {
@@ -794,7 +968,7 @@ async function main() {
         }
     }
 
-    // Phase 4: Close resolved GitHub Issues (if requested)
+    // Phase 5: Close resolved GitHub Issues (if requested)
     if (CLOSE_ISSUES) {
         await closeResolvedIssuesPhase(rl);
     }

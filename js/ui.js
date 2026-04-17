@@ -11,6 +11,29 @@ let secondaryInputVisible = false;
 let showRawText = false;
 let _lastAutoDetectedType = null; // tracks type from most recent paste for type-switch detection
 
+/**
+ * Sends a diagnostic event to the log endpoint.
+ * inputText (if present in payload) is truncated to 20 000 chars so Lambda
+ * request bodies stay well within API Gateway's 6 MB limit.
+ */
+function logDiagnosticEvent(payload) {
+    const endpoint = window.APP_CONFIG?.logEndpoint;
+    if (!endpoint) return;
+    const out = Object.assign({}, payload);
+    if (typeof out.inputText === 'string') {
+        if (out.inputText.length > 20000) {
+            out.inputText = out.inputText.substring(0, 20000);
+            out.inputTextTruncated = true;
+        }
+    }
+    fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(out),
+        keepalive: true,
+    }).catch(() => {});
+}
+
 let _hintCounter = 0;
 const advSettings = {
     kingdomNews: {
@@ -370,22 +393,15 @@ function handleParse(elements) {
     // This fires even on the first parse — catching misclassification attempts that the
     // type-switch logging in autoDetectMode would miss.
     if (detectionEvidence.plCount > 0 && detectionEvidence.knCount > 0) {
-        const endpoint = window.APP_CONFIG?.logEndpoint;
-        if (endpoint) {
-            fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    context: 'competing-patterns-detected',
-                    detectedAs: detectedMode,
-                    plCount: detectionEvidence.plCount,
-                    knCount: detectionEvidence.knCount,
-                    matchedPattern: detectionEvidence.matchedPattern ? detectionEvidence.matchedPattern.toString() : null,
-                    matchedLine: detectionEvidence.matchedLine ? detectionEvidence.matchedLine.substring(0, 300) : null,
-                }),
-                keepalive: true
-            }).catch(() => {});
-        }
+        logDiagnosticEvent({
+            context: 'competing-patterns-detected',
+            detectedAs: detectedMode,
+            plCount: detectionEvidence.plCount,
+            knCount: detectionEvidence.knCount,
+            matchedPattern: detectionEvidence.matchedPattern ? detectionEvidence.matchedPattern.toString() : null,
+            matchedLine: detectionEvidence.matchedLine ? detectionEvidence.matchedLine.substring(0, 300) : null,
+            inputText: effectiveInput,
+        });
     }
 
     const modeLabels = { 'kingdom-news-log': 'Kingdom News', 'province-logs': 'Province Logs', 'province-news': 'Province News' };
@@ -679,22 +695,16 @@ function autoDetectMode(elements) {
     // Log when a paste switches the detected type — this helps diagnose false positives
     // where province logs content triggers a kingdom-news match.
     if (_lastAutoDetectedType && _lastAutoDetectedType !== detected) {
-        const endpoint = window.APP_CONFIG?.logEndpoint;
-        if (endpoint) {
-            const payload = {
-                context: 'type-switch-detected',
-                previousType: _lastAutoDetectedType,
-                newType: detected,
-                matchedPattern: evidence.matchedPattern ? evidence.matchedPattern.toString() : null,
-                matchedLine: evidence.matchedLine ? evidence.matchedLine.substring(0, 300) : null,
-            };
-            fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                keepalive: true
-            }).catch(() => {});
-        }
+        logDiagnosticEvent({
+            context: 'type-switch-detected',
+            previousType: _lastAutoDetectedType,
+            newType: detected,
+            matchedPattern: evidence.matchedPattern ? evidence.matchedPattern.toString() : null,
+            matchedLine: evidence.matchedLine ? evidence.matchedLine.substring(0, 300) : null,
+            plCount: evidence.plCount,
+            knCount: evidence.knCount,
+            inputText: effective,
+        });
     }
     _lastAutoDetectedType = detected;
 
