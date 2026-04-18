@@ -899,6 +899,7 @@ async function main() {
     }
 
     // Phase 4: Unrecognized line analysis
+    let quitEarly = false;
     if (files.length > 0) {
         const events = parseAllLogs(files);
         if (events.length > 0) {
@@ -909,47 +910,46 @@ async function main() {
             const allGroups    = groupEvents(events);
             const newGroups    = allGroups.filter(g => !acknowledged.has(g.pattern));
 
-            let quitEarly = false;
             if (newGroups.length > 0) {
                 printSummary(newGroups, events.length, files.length);
                 quitEarly = await interactive(newGroups, acknowledged, rl);
             } else {
                 console.log(`All ${allGroups.length} pattern(s) already acknowledged. Nothing to do.`);
             }
+        } else {
+            console.log(`No unrecognized-line events found in ${sourceLabel}`);
+        }
 
-            if (quitEarly) {
-                console.log(`Log files kept in ${sourceLabel} (quit early). Re-run to continue reviewing.`);
-            } else if (REPROCESS_ARCHIVE) {
-                // Archive files have already been reviewed — remove them now.
-                let deleted = 0;
-                for (const f of files) {
-                    try { fs.unlinkSync(f); deleted++; }
-                    catch (err) { console.warn(`  Warning: could not delete ${f}: ${err.message}`); }
-                }
-                console.log(`Removed ${deleted} reviewed file(s) from ${sourceLabel}`);
-            } else {
-                // Move active log files to archive instead of deleting them.
-                let archived = 0;
-                for (const f of files) {
-                    try { archiveFile(f); archived++; }
-                    catch (err) { console.warn(`  Warning: could not archive ${f}: ${err.message}`); }
-                }
-                console.log(`Archived ${archived} log file(s) to ./logs/archive/`);
+        if (quitEarly) {
+            console.log(`Log files kept in ${sourceLabel} (quit early). Re-run to continue reviewing.`);
+        } else if (REPROCESS_ARCHIVE) {
+            // Archive files have already been reviewed — remove them now.
+            let deleted = 0;
+            for (const f of files) {
+                try { fs.unlinkSync(f); deleted++; }
+                catch (err) { console.warn(`  Warning: could not delete ${f}: ${err.message}`); }
+            }
+            console.log(`Removed ${deleted} reviewed file(s) from ${sourceLabel}`);
+        } else {
+            // Move active log files to archive instead of deleting them.
+            let archived = 0;
+            for (const f of files) {
+                try { archiveFile(f); archived++; }
+                catch (err) { console.warn(`  Warning: could not archive ${f}: ${err.message}`); }
+            }
+            console.log(`Archived ${archived} log file(s) to ./logs/archive/`);
 
-                // Move processed logs to S3 archive so they are not re-downloaded on the next
-                // run, but remain recoverable. The S3 lifecycle rule on logs/archive/ handles
-                // expiry after 7 days automatically.
-                if (!NO_SYNC && bucket) {
-                    console.log(`Moving processed logs to s3://${bucket}/logs/archive/ ...`);
-                    try {
-                        execSync(`aws s3 mv "s3://${bucket}/logs/" "s3://${bucket}/logs/archive/" --recursive`, { stdio: 'inherit' });
-                    } catch (err) {
-                        console.warn(`  Warning: could not move logs to S3 archive: ${err.message}`);
-                    }
+            // Move processed logs to S3 archive so they are not re-downloaded on the next
+            // run, but remain recoverable. The S3 lifecycle rule on logs/archive/ handles
+            // expiry after 7 days automatically.
+            if (!NO_SYNC && bucket) {
+                console.log(`Moving processed logs to s3://${bucket}/logs/archive/ ...`);
+                try {
+                    execSync(`aws s3 mv "s3://${bucket}/logs/" "s3://${bucket}/logs/archive/" --recursive`, { stdio: 'inherit' });
+                } catch (err) {
+                    console.warn(`  Warning: could not move logs to S3 archive: ${err.message}`);
                 }
             }
-        } else {
-            console.log(`No log events found in ${sourceLabel}`);
         }
     } else {
         if (REPROCESS_ARCHIVE) {
