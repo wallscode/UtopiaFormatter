@@ -3623,7 +3623,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         parseErrors:          []
     };
 
-    const dateLineRe = /^((?:January|February|March|April|May|June|July) \d{1,2} of YR\d+)\t(.+)$/;
+    const dateLineRe = /^((?:January|February|March|April|May|June|July) \d{1,2} of YR\d+)[ \t](.+)$/;
 
     for (const line of cleaned.split('\n')) {
         const match = line.match(dateLineRe);
@@ -3838,7 +3838,7 @@ function detectInputType(text) {
 
     // Province News: "Month Day of YR##<tab>" format — checked last because province logs
     // also use this date format; only reached when no operation/spell markers were found.
-    if (/\bof YR\d+\t/.test(text)) return 'province-news';
+    if (/\bof YR\d+[ \t]/.test(text)) return 'province-news';
     return null;
 }
 
@@ -3868,7 +3868,7 @@ function detectInputTypeWithEvidence(text) {
     if (plCount > 0 && knCount === 0) type = 'province-logs';
     else if (knCount > 0 && plCount === 0) type = 'kingdom-news-log';
     else if (plCount > 0 && knCount > 0) type = plCount >= knCount ? 'province-logs' : 'kingdom-news-log';
-    else if (/\bof YR\d+\t/.test(text)) type = 'province-news';
+    else if (/\bof YR\d+[ \t]/.test(text)) type = 'province-news';
     else type = null;
 
     return { type, matchedPattern: kingdomPattern, matchedLine: kingdomLine, plCount, knCount };

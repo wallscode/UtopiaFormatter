@@ -165,9 +165,12 @@ dAssert('but was repelled → kingdom-news-log',
     detectInputType('January 1 of YR3\t4 - Province (5:1) attempted an invasion but was repelled'),
     'kingdom-news-log');
 
-// Province News marker (tab-delimited date format)
+// Province News marker (tab-delimited and space-delimited date format)
 dAssert('tab-delimited date → province-news',
     detectInputType('February 1 of YR1\tOur people decided to explore new territories'),
+    'province-news');
+dAssert('space-delimited date → province-news',
+    detectInputType('February 1 of YR1 Our people decided to explore new territories'),
     'province-news');
 
 // Null for unrecognized input
