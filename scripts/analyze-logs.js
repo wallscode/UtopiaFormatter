@@ -876,7 +876,7 @@ async function main() {
         }
         console.log(`Syncing s3://${bucket}/logs/ → ./logs/ ...`);
         try {
-            execSync(`aws s3 sync "s3://${bucket}/logs/" "${LOGS_DIR}/"`, { stdio: 'inherit' });
+            execSync(`aws s3 sync "s3://${bucket}/logs/" "${LOGS_DIR}/" --exclude "archive/*"`, { stdio: 'inherit' });
         } catch {
             console.error('aws s3 sync failed. Check your credentials and bucket name.');
             rl.close();
@@ -945,7 +945,7 @@ async function main() {
             if (!NO_SYNC && bucket) {
                 console.log(`Moving processed logs to s3://${bucket}/logs/archive/ ...`);
                 try {
-                    execSync(`aws s3 mv "s3://${bucket}/logs/" "s3://${bucket}/logs/archive/" --recursive`, { stdio: 'inherit' });
+                    execSync(`aws s3 mv "s3://${bucket}/logs/" "s3://${bucket}/logs/archive/" --recursive --exclude "archive/*"`, { stdio: 'inherit' });
                 } catch (err) {
                     console.warn(`  Warning: could not move logs to S3 archive: ${err.message}`);
                 }
