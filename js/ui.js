@@ -106,6 +106,7 @@ const advSettings = {
         showDraftRate: false,
         showMilitaryWages: false,
         exploreDetails: false,
+        showAttackedProvinces: false,
         showAttackSupplementalStats: false,
         discordCopy: false,
         showAltCopy: false
@@ -192,6 +193,7 @@ const advSettings = {
         showDraftRate:              false,
         showMilitaryWages:          false,
         exploreDetails:             false,
+        showAttackedProvinces:      false,
         showAttackSupplementalStats: false,
         showSourceIdentifiers:      false,
         discordCopy: false,
@@ -1601,6 +1603,27 @@ function renderProvinceLogsSettings(leftCol, rightCol, elements) {
     attackSuppGroup.appendChild(makeHint('Show specialist training credits and peasants gained per attack alongside acres taken'));
     rightCol.appendChild(attackSuppGroup);
 
+    const attackedProvGroup = document.createElement('div');
+    attackedProvGroup.className = 'adv-group';
+
+    const attackedProvLabel = document.createElement('label');
+    attackedProvLabel.htmlFor = 'adv-pl-showAttackedProvinces';
+
+    const attackedProvCheckbox = document.createElement('input');
+    attackedProvCheckbox.type = 'checkbox';
+    attackedProvCheckbox.id = 'adv-pl-showAttackedProvinces';
+    attackedProvCheckbox.checked = advSettings.provinceLogs.showAttackedProvinces;
+    attackedProvCheckbox.addEventListener('change', () => {
+        advSettings.provinceLogs.showAttackedProvinces = attackedProvCheckbox.checked;
+        applyAndRerender(elements);
+    });
+
+    attackedProvLabel.appendChild(attackedProvCheckbox);
+    attackedProvLabel.appendChild(document.createTextNode(' Show list of attacked provinces'));
+    attackedProvGroup.appendChild(attackedProvLabel);
+    attackedProvGroup.appendChild(makeHint('Show each province attacked with acres taken in the Attacks Made section'));
+    rightCol.appendChild(attackedProvGroup);
+
     const miscTitle = document.createElement('div');
     miscTitle.className = 'adv-subgroup-title';
     miscTitle.textContent = 'Miscellaneous';
@@ -1887,6 +1910,17 @@ function applyProvinceLogsSettings(text) {
         output = output.split('\n').map(line =>
             line.replace(/, [\d,]+ credits, [\d,]+ peasants$/, '')
         ).join('\n');
+    }
+
+    if (!advSettings.provinceLogs.showAttackedProvinces) {
+        // Strip 4-space-indented province lines from the Attacks Made section only
+        let inAttacksMade = false;
+        output = output.split('\n').filter(line => {
+            if (/^Attacks Made:$/.test(line)) { inAttacksMade = true; return true; }
+            if (inAttacksMade && /^    /.test(line)) { return false; }
+            if (inAttacksMade && !/^  /.test(line)) { inAttacksMade = false; }
+            return true;
+        }).join('\n');
     }
 
     if (advSettings.provinceLogs.showAverages) {
@@ -2227,6 +2261,15 @@ function applyCombinedProvinceSettings(text) {
             line.replace(/, [\d,]+ credits, [\d,]+ peasants$/, '')
         ).join('\n');
     }
+    if (!s.showAttackedProvinces) {
+        let inAttacksMade = false;
+        output = output.split('\n').filter(line => {
+            if (/^Attacks Made:$/.test(line)) { inAttacksMade = true; return true; }
+            if (inAttacksMade && /^    /.test(line)) { return false; }
+            if (inAttacksMade && !/^  /.test(line)) { inAttacksMade = false; }
+            return true;
+        }).join('\n');
+    }
 
     return output;
 }
@@ -2354,6 +2397,7 @@ function renderCombinedProvincePanel(elements) {
     addToggle('adv-cp-showDraftPercentage',        'Show draft percentage',              () => s.showDraftPercentage,       v => { s.showDraftPercentage = v; });
     addToggle('adv-cp-showDraftRate',              'Show draft rate',                    () => s.showDraftRate,             v => { s.showDraftRate = v; });
     addToggle('adv-cp-showMilitaryWages',          'Show military wages',                () => s.showMilitaryWages,         v => { s.showMilitaryWages = v; });
+    addToggle('adv-cp-showAttackedProvinces',      'Show list of attacked provinces',     () => s.showAttackedProvinces,       v => { s.showAttackedProvinces = v; });
     addToggle('adv-cp-showAttackSupplementalStats','Show supplemental attack stats',      () => s.showAttackSupplementalStats, v => { s.showAttackSupplementalStats = v; });
     addToggle('adv-cp-showSourceIdentifiers',      'Show thief/spell source identifiers', () => s.showSourceIdentifiers,    v => { s.showSourceIdentifiers = v; });
 

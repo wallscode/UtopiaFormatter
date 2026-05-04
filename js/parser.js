@@ -31,11 +31,11 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Explosions", text: "Explosions will rock aid shipments", impact: "days" },
         { name: "Expose Thieves", text: "exposed the thieves", impact: "days" },
         { name: "Fireball", text: "A fireball burns through the skies", impact: "peasants" },
-        { name: "Soul Blight", text: "Darkness consumes", impact: "peasants killed", impactRegex: /([\d,]+) peasants fall/i, secondaryImpact: "captured", secondaryImpactRegex: /raises an army of ([\d,]+) from the dead/i },
+        { name: "Soul Blight", text: "Darkness consumes", impact: "peasants killed", impactRegex: /([\d,]+) peasants? falls?/i, secondaryImpact: "captured", secondaryImpactRegex: /raises an army of ([\d,]+) from the dead/i },
         { name: "Fool's Gold", text: "to worthless lead", impact: "gold coins" },
         { name: "Gluttony", text: "The gluttony of", impact: "days" },
         { name: "Greed", text: "soldiers to turn greedy", impact: "days" },
-        { name: "Lightning Strike", text: "Lightning strikes the Towers", impact: "runes", impactRegex: /incinerates ([\d,]+) runes/i },
+        { name: "Lightning Strike", text: "Lightning strikes the Towers", impact: "runes", impactRegex: /incinerates ([\d,]+) runes?/i },
         { name: "Land Lust", text: "Our Land Lust over", impact: "acres" },
         { name: "Magic Ward", text: "Magic Ward", impact: "" },
         { name: "Meteor Showers", text: "Meteors will rain across the lands", reflectText: "Meteors rain across", impact: "days" },
@@ -246,14 +246,20 @@ function escapeRegExp(string) {
 // Precompute impact-extraction regexes for SPELLS and OPERATIONS so that the
 // per-line parse loops in accumulateProvinceLogsData never create RegExp objects
 // at runtime. Also freeze SCIENCES as a plain array (replaces the flatMap getter).
+function makePluralFlexPattern(impact) {
+    let pat = escapeRegExp(impact);
+    // Make trailing 's' optional so singular forms match (e.g. "acre" matches "acres")
+    if (pat.endsWith('s')) pat = pat.slice(0, -1) + 's?';
+    return pat;
+}
 PROVINCE_LOGS_CONFIG.SPELLS.forEach(spell => {
     if (spell.impact && !spell.impactRegex) {
-        spell.impactRegex = new RegExp(`([\\d,]+)\\s+${escapeRegExp(spell.impact)}`, 'i');
+        spell.impactRegex = new RegExp(`([\\d,]+)\\s+${makePluralFlexPattern(spell.impact)}`, 'i');
     }
 });
 PROVINCE_LOGS_CONFIG.OPERATIONS.forEach(op => {
     if (op.impact) {
-        op.impactRegex = new RegExp(`([\\d,]+)\\s+${escapeRegExp(op.impact)}`, 'i');
+        op.impactRegex = new RegExp(`([\\d,]+)\\s+${makePluralFlexPattern(op.impact)}`, 'i');
     }
 });
 PROVINCE_LOGS_CONFIG.SCIENCES = PROVINCE_LOGS_CONFIG.SCIENCE_GROUPS.flatMap(
