@@ -3228,6 +3228,22 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Military desertion due to housing shortage / overpopulation
+    const overpopM = eventText.match(/^([\d,]+) men deserted our military due to housing shortages! This included ([\d,]+) soldiers, ([\d,]+) elites, ([\d,]+) offensive specialists, ([\d,]+) defensive specialists and ([\d,]+) thieves/i);
+    if (overpopM) {
+        const d = data.overpopDesertion;
+        d.events++;
+        d.total    += parseGameInt(overpopM[1]);
+        d.soldiers += parseGameInt(overpopM[2]);
+        d.elites   += parseGameInt(overpopM[3]);
+        d.offSpec  += parseGameInt(overpopM[4]);
+        d.defSpec  += parseGameInt(overpopM[5]);
+        d.thieves  += parseGameInt(overpopM[6]);
+        const capturedM = eventText.match(/we were able to capture ([\d,]+) and throw them into our dungeons/i);
+        if (capturedM) d.captured += parseGameInt(capturedM[1]);
+        return;
+    }
+
     // Turncoat general discovered
     if (eventText.indexOf('We have discovered a turncoat general leading our military. He has been executed for treason!') !== -1) {
         data.turncoatGenerals++;
@@ -3497,6 +3513,23 @@ function formatProvinceNewsOutput(data) {
             out.push(`  ${formatNumber(data.dragonImpacts.totalBuildings)} buildings destroyed`);
     }
 
+    // -- Military desertion due to overpopulation
+    if (data.overpopDesertion.events > 0) {
+        const d = data.overpopDesertion;
+        out.push('');
+        out.push('Military Desertion due to Overpop:');
+        out.push(`  ${formatNumber(d.total)} men deserted across ${pluralize(d.events, 'event')}`);
+        const breakdown = [
+            d.soldiers > 0 ? `Soldiers: ${formatNumber(d.soldiers)}` : '',
+            d.elites   > 0 ? `Elites: ${formatNumber(d.elites)}`     : '',
+            d.offSpec  > 0 ? `Off. Spec.: ${formatNumber(d.offSpec)}` : '',
+            d.defSpec  > 0 ? `Def. Spec.: ${formatNumber(d.defSpec)}` : '',
+            d.thieves  > 0 ? `Thieves: ${formatNumber(d.thieves)}`    : '',
+        ].filter(Boolean);
+        if (breakdown.length > 0) out.push(`  ${breakdown.join(' | ')}`);
+        if (d.captured > 0) out.push(`  ${formatNumber(d.captured)} deserters captured`);
+    }
+
     // -- Shadowlight attacker identification
     // Shadowlight Thief IDs (Uto-hb3m: renamed from Shadowlight Attacker IDs)
     if (data.shadowlightAttackers.length > 0) {
@@ -3640,6 +3673,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         sloth:                { count: 0, totalDays: 0 },
         storms:               { count: 0, totalDays: 0 },
         desertions:           { total: 0, byType: {} },
+        overpopDesertion:     { events: 0, total: 0, soldiers: 0, elites: 0, offSpec: 0, defSpec: 0, thieves: 0, captured: 0 },
         kidnappedPeasants:    0,
         turncoatGenerals:     0,
         failedPropaganda:     0,
