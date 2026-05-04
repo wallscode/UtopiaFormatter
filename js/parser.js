@@ -31,7 +31,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Explosions", text: "Explosions will rock aid shipments", impact: "days" },
         { name: "Expose Thieves", text: "exposed the thieves", impact: "days" },
         { name: "Fireball", text: "A fireball burns through the skies", impact: "peasants" },
-        { name: "Soul Blight", text: "Darkness consumes", impact: "peasants killed", impactRegex: /([\d,]+) peasants? falls?/i, secondaryImpact: "captured", secondaryImpactRegex: /raises an army of ([\d,]+) from the dead/i },
+        { name: "Soul Blight", text: "Darkness consumes", altTexts: ["Death's embrace takes hold of"], impact: "peasants killed", impactRegex: /(?:killing )?([\d,]+) peasants?/i, secondaryImpact: "captured", secondaryImpactRegex: /(?:raises an army of )?([\d,]+)(?= (?:from the dead|of their spirits))/i },
         { name: "Fool's Gold", text: "to worthless lead", impact: "gold coins" },
         { name: "Gluttony", text: "The gluttony of", impact: "days" },
         { name: "Greed", text: "soldiers to turn greedy", impact: "days" },
@@ -690,8 +690,10 @@ function accumulateProvinceLogsData(text) {
             const spellSuccess = !isReflected && !line.includes('but the spell fails');
             if (!spellSuccess) failedSpellCount++;
             for (const spell of PROVINCE_LOGS_CONFIG.SPELLS) {
-                const matchText = isReflected && spell.reflectText ? spell.reflectText : spell.text;
-                if (line.includes(matchText)) {
+                const matchTexts = isReflected && spell.reflectText
+                    ? [spell.reflectText]
+                    : [spell.text, ...(spell.altTexts || [])];
+                if (matchTexts.some(t => line.includes(t))) {
                     if (isReflected) {
                         reflectedSpells[spell.name]++;
                     } else {
