@@ -3051,7 +3051,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         data.fireball.count++;
         data.fireball.peasantsKilled += parseGameInt(fireballM[1]);
         const necroM = eventText.match(/killing ([\d,]+) peasants with necrotic fallout/);
-        if (necroM) data.fireball.necroticFallout += parseGameInt(necroM[1]);
+        if (necroM) data.fireball.peasantsKilled += parseGameInt(necroM[1]);
         return;
     }
 
@@ -3499,11 +3499,8 @@ function formatProvinceNewsOutput(data) {
         }
         if (data.lightningStrike.count > 0)
             out.push(`  Lightning Strike: ${pluralize(data.lightningStrike.count, 'occurrence')}, ${formatNumber(data.lightningStrike.runesDestroyed)} runes destroyed`);
-        if (data.fireball.count > 0) {
-            const fbParts = [`${formatNumber(data.fireball.peasantsKilled)} peasants killed`];
-            if (data.fireball.necroticFallout > 0) fbParts.push(`${formatNumber(data.fireball.necroticFallout)} necrotic fallout`);
-            out.push(`  Fireball: ${pluralize(data.fireball.count, 'occurrence')} (${fbParts.join(', ')})`);
-        }
+        if (data.fireball.count > 0)
+            out.push(`  Fireball: ${pluralize(data.fireball.count, 'occurrence')} (${formatNumber(data.fireball.peasantsKilled)} peasants killed)`);
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
         if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
@@ -3655,7 +3652,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         },
         dragonImpacts:        { count: 0, totalBuildings: 0 },
         lightningStrike:      { count: 0, runesDestroyed: 0 },
-        fireball:             { count: 0, peasantsKilled: 0, necroticFallout: 0 },
+        fireball:             { count: 0, peasantsKilled: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
         kidnappingOps:        0,
