@@ -587,6 +587,7 @@ function accumulateProvinceLogsData(text) {
     const spellCounts = {};
     const spellImpacts = {};
     const spellSecondaryImpacts = {};
+    const runeRecovery = { total: 0, count: 0 };
     const aidTotals = {};
     const thieveryCounts = {};
     const thieveryImpacts = {};
@@ -721,6 +722,13 @@ function accumulateProvinceLogsData(text) {
             }
         }
         
+        // Dark Elf rune recovery from spell casting
+        const runeRecoveryM = line.match(/recover ([\d,]+) runes from the spell casting/i);
+        if (runeRecoveryM) {
+            runeRecovery.count++;
+            runeRecovery.total += parseGameInt(runeRecoveryM[1]);
+        }
+
         // Parse aid
         if (line.includes("We have sent")) {
             const match = line.match(/We have sent\s+([\d,]+)\s+(soldiers|gold coins|bushels|runes|explore pool acres)/i);
@@ -1086,7 +1094,7 @@ function accumulateProvinceLogsData(text) {
 
     return {
         minDateStr, minDateVal, maxDateStr, maxDateVal,
-        spellCounts, spellImpacts, spellSecondaryImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1111,7 +1119,7 @@ function accumulateProvinceLogsData(text) {
  */
 function formatProvinceLogsFromData(data) {
     const {
-        spellCounts, spellImpacts, spellSecondaryImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1620,6 +1628,11 @@ function formatProvinceLogsFromData(data) {
             }
         }
         output += sbsOut;
+    }
+
+    if (runeRecovery.count > 0) {
+        output += `\n\nRune Recovery:\n`;
+        output += `  ${runeRecovery.count} ${runeRecovery.count === 1 ? 'event' : 'events'}, ${formatNumber(runeRecovery.total)} runes recovered\n`;
     }
 
     if (data.parseErrors && data.parseErrors.length > 0) {
