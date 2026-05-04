@@ -31,6 +31,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Explosions", text: "Explosions will rock aid shipments", impact: "days" },
         { name: "Expose Thieves", text: "exposed the thieves", impact: "days" },
         { name: "Fireball", text: "A fireball burns through the skies", impact: "peasants" },
+        { name: "Soul Blight", text: "Darkness consumes", impact: "peasants killed", impactRegex: /([\d,]+) peasants fall/i, secondaryImpact: "captured", secondaryImpactRegex: /raises an army of ([\d,]+) from the dead/i },
         { name: "Fool's Gold", text: "to worthless lead", impact: "gold coins" },
         { name: "Gluttony", text: "The gluttony of", impact: "days" },
         { name: "Greed", text: "soldiers to turn greedy", impact: "days" },
@@ -585,6 +586,7 @@ function accumulateProvinceLogsData(text) {
     // Initialize counters
     const spellCounts = {};
     const spellImpacts = {};
+    const spellSecondaryImpacts = {};
     const aidTotals = {};
     const thieveryCounts = {};
     const thieveryImpacts = {};
@@ -642,6 +644,7 @@ function accumulateProvinceLogsData(text) {
     PROVINCE_LOGS_CONFIG.SPELLS.forEach(s => {
         spellCounts[s.name] = 0;
         spellImpacts[s.name] = 0;
+        spellSecondaryImpacts[s.name] = 0;
         reflectedSpells[s.name] = 0;
     });
     PROVINCE_LOGS_CONFIG.OPERATIONS.forEach(o => { 
@@ -696,11 +699,19 @@ function accumulateProvinceLogsData(text) {
                             spellImpacts[spell.name] += impactValue;
                         }
                     }
+                    let secondaryImpactValue = null;
+                    if (spell.secondaryImpact && spellSuccess && !isReflected) {
+                        const m2 = line.match(spell.secondaryImpactRegex);
+                        if (m2) {
+                            secondaryImpactValue = parseGameInt(m2[1]);
+                            spellSecondaryImpacts[spell.name] += secondaryImpactValue;
+                        }
+                    }
                     if (spellTarget) {
                         let unit = spell.impact || null;
                         if (unit === 'of the men') unit = 'troops';
                         else if (unit === 'active spell') unit = 'active spells';
-                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, reflected: isReflected, impact: spellSuccess ? impactValue : null, impactUnit: unit });
+                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, reflected: isReflected, impact: spellSuccess ? impactValue : null, impactUnit: unit, secondaryImpact: spellSuccess ? secondaryImpactValue : null, secondaryImpactUnit: spell.secondaryImpact || null });
                     }
                 }
             }
@@ -1074,7 +1085,7 @@ function accumulateProvinceLogsData(text) {
 
     return {
         minDateStr, minDateVal, maxDateStr, maxDateVal,
-        spellCounts, spellImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1099,7 +1110,7 @@ function accumulateProvinceLogsData(text) {
  */
 function formatProvinceLogsFromData(data) {
     const {
-        spellCounts, spellImpacts, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1229,7 +1240,10 @@ function formatProvinceLogsFromData(data) {
             impact = "active spells";
         }
         if (impact) {
-            output += `  ${count} ${spell.name} (${formatNumber(totalImpact)} ${impact})\n`;
+            const secTotal = spellSecondaryImpacts[spell.name];
+            const secUnit  = spell.secondaryImpact;
+            const secStr   = secUnit && secTotal > 0 ? `, ${formatNumber(secTotal)} ${secUnit}` : '';
+            output += `  ${count} ${spell.name} (${formatNumber(totalImpact)} ${impact}${secStr})\n`;
         } else {
             output += `  ${count} ${spell.name}\n`;
         }
@@ -1432,15 +1446,18 @@ function formatProvinceLogsFromData(data) {
             const spellMap = new Map();
             for (const op of successes) {
                 const key = op.spell || 'Unknown';
-                if (!spellMap.has(key)) spellMap.set(key, { count: 0, impact: 0, unit: op.impactUnit });
+                if (!spellMap.has(key)) spellMap.set(key, { count: 0, impact: 0, unit: op.impactUnit, secondaryImpact: 0, secondaryUnit: op.secondaryImpactUnit });
                 const entry = spellMap.get(key);
                 entry.count++;
                 if (op.impact) entry.impact += op.impact;
+                if (op.secondaryImpact) entry.secondaryImpact += op.secondaryImpact;
             }
             [...spellMap.entries()]
                 .sort((a, b) => b[1].count - a[1].count)
                 .forEach(([spell, data]) => {
-                    const impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit})` : '';
+                    let impactStr = data.impact > 0 ? ` (${formatNumber(data.impact)} ${data.unit}` : '';
+                    if (impactStr && data.secondaryImpact > 0) impactStr += `, ${formatNumber(data.secondaryImpact)} ${data.secondaryUnit}`;
+                    if (impactStr) impactStr += ')';
                     stOut += `    ${spell}: ${data.count}${impactStr}\n`;
                 });
             if (failures.length > 0) {
@@ -1537,11 +1554,17 @@ function formatProvinceLogsFromData(data) {
         for (const [spell, ops] of sortedSpells) {
             let totalImpact = 0;
             let impactUnit = null;
+            let totalSecondary = 0;
+            let secondaryUnit = null;
             for (const op of ops) {
                 totalImpact += op.impact || 0;
+                totalSecondary += op.secondaryImpact || 0;
                 if (!impactUnit && op.impactUnit) impactUnit = op.impactUnit;
+                if (!secondaryUnit && op.secondaryImpactUnit) secondaryUnit = op.secondaryImpactUnit;
             }
-            const headerImpact = totalImpact > 0 && impactUnit ? ` (${formatNumber(totalImpact)} ${impactUnit})` : '';
+            let headerImpact = totalImpact > 0 && impactUnit ? ` (${formatNumber(totalImpact)} ${impactUnit}` : '';
+            if (headerImpact && totalSecondary > 0) headerImpact += `, ${formatNumber(totalSecondary)} ${secondaryUnit}`;
+            if (headerImpact) headerImpact += ')';
             sbsOut += `  ${spell} \u2014 ${ops.length} cast${ops.length !== 1 ? 's' : ''}${headerImpact}:\n`;
             const byProv = new Map();
             for (const op of ops) {
@@ -1553,8 +1576,11 @@ function formatProvinceLogsFromData(data) {
                 const impB = b[1].reduce((s, o) => s + (o.impact || 0), 0);
                 return impB - impA || b[1].length - a[1].length;
             }).forEach(([prov, provOps]) => {
-                const provImpact = provOps.reduce((s, o) => s + (o.impact || 0), 0);
-                const provStr = provImpact > 0 && impactUnit ? ` (${formatNumber(provImpact)} ${impactUnit})` : '';
+                const provImpact    = provOps.reduce((s, o) => s + (o.impact || 0), 0);
+                const provSecondary = provOps.reduce((s, o) => s + (o.secondaryImpact || 0), 0);
+                let provStr = provImpact > 0 && impactUnit ? ` (${formatNumber(provImpact)} ${impactUnit}` : '';
+                if (provStr && provSecondary > 0) provStr += `, ${formatNumber(provSecondary)} ${secondaryUnit}`;
+                if (provStr) provStr += ')';
                 sbsOut += `    ${prov}: ${provOps.length}${provStr}\n`;
             });
         }
