@@ -3099,6 +3099,25 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Failed attack attempt (enemy bounced off our defenses)
+    const failedAtkM = eventText.match(/^Forces from (.+?) \((\d+:\d+)\) attempted to attack us, but failed miserably! We lost (.+) in this battle/);
+    if (failedAtkM) {
+        let attacker = failedAtkM[1].trim();
+        if (/^An unknown province from /i.test(attacker)) attacker = `An unknown province`;
+        const kingdom = failedAtkM[2];
+        const losses = {};
+        const lossParts = failedAtkM[3].split(/,\s*|\s+and\s+/);
+        for (const part of lossParts) {
+            const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
+            if (m) {
+                const type = m[2].trim();
+                losses[type] = (losses[type] || 0) + parseGameInt(m[1]);
+            }
+        }
+        data.failedAttacks.push({ attacker, kingdom, losses });
+        return;
+    }
+
     // Meteor shower — damage ticks (count days of damage and casualties)
     const meteorM = eventText.match(/Meteors rain across the lands and kill (.+)!/);
     if (meteorM) {
@@ -3579,6 +3598,23 @@ function formatProvinceNewsOutput(data) {
         }
     }
 
+    // -- Failed attack attempts
+    if (data.failedAttacks.length > 0) {
+        const totalLosses = {};
+        for (const atk of data.failedAttacks) {
+            for (const [type, n] of Object.entries(atk.losses)) {
+                totalLosses[type] = (totalLosses[type] || 0) + n;
+            }
+        }
+        const lossStr = Object.entries(totalLosses).map(([t, n]) => `${formatNumber(n)} ${t}`).join(', ');
+        out.push('');
+        out.push(`Failed Attacks: ${pluralize(data.failedAttacks.length, 'attempt')}${lossStr ? ` (losses: ${lossStr})` : ''}`);
+        for (const atk of data.failedAttacks) {
+            const atkLosses = Object.entries(atk.losses).map(([t, n]) => `${formatNumber(n)} ${t}`).join(', ');
+            out.push(`  ${atk.attacker} (${atk.kingdom})${atkLosses ? `: ${atkLosses}` : ''}`);
+        }
+    }
+
     // -- Starvation losses
     // Starvation
     if (data.starvation.count > 0) {
@@ -3668,6 +3704,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         spellsBySource:       {},
         shadowlightAttackers: [],
         attacks:              [],
+        failedAttacks:        [],
         meteorDays:           0,
         meteorCasualties:     { peasants: 0, soldiers: 0, Magicians: 0, Beastmasters: 0 },
         meteorShower:         { count: 0, totalDays: 0 },
