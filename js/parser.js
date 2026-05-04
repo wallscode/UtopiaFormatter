@@ -1075,6 +1075,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("The natural leyline energies surrounding your province") &&
                    !line.includes("Your spell is disrupted by the natural leyline energies") &&
                    !line.includes("Chaotic energies amplify our actions") &&
+                   line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
         }
@@ -3349,8 +3350,9 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     }
 
     // -- Unrecognised event (logged for future pattern addition)
-    // No pattern matched — log for analysis (Edition header lines are silently skipped)
-    if (!/^Edition\w+ YR\d+/.test(eventText)) {
+    // No pattern matched — log for analysis (Edition header lines and short copy-paste
+    // artifacts like truncated words are silently skipped)
+    if (!/^Edition\w+ YR\d+/.test(eventText) && eventText.length >= 5) {
         logUnrecognizedLine(eventText, 'province-news', rawLine);
     }
 }
