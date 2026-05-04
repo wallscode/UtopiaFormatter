@@ -588,6 +588,7 @@ function accumulateProvinceLogsData(text) {
     const spellImpacts = {};
     const spellSecondaryImpacts = {};
     const runeRecovery = { total: 0, count: 0 };
+    const darkPactReanimation = { count: 0, total: 0, byType: {} };
     const aidTotals = {};
     const thieveryCounts = {};
     const thieveryImpacts = {};
@@ -727,6 +728,22 @@ function accumulateProvinceLogsData(text) {
         if (runeRecoveryM) {
             runeRecovery.count++;
             runeRecovery.total += parseGameInt(runeRecoveryM[1]);
+        }
+
+        // Necromancer Dark Pact reanimation
+        const darkPactM = line.match(/The Dark Pact takes hold, reanimating (.+) from the enemy's fallen forces/i);
+        if (darkPactM) {
+            darkPactReanimation.count++;
+            const parts = darkPactM[1].split(/,\s*|\s+and\s+/);
+            for (const part of parts) {
+                const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
+                if (m) {
+                    const n = parseGameInt(m[1]);
+                    const type = m[2].trim();
+                    darkPactReanimation.byType[type] = (darkPactReanimation.byType[type] || 0) + n;
+                    darkPactReanimation.total += n;
+                }
+            }
         }
 
         // Parse aid
@@ -1094,7 +1111,7 @@ function accumulateProvinceLogsData(text) {
 
     return {
         minDateStr, minDateVal, maxDateStr, maxDateVal,
-        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, darkPactReanimation, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1119,7 +1136,7 @@ function accumulateProvinceLogsData(text) {
  */
 function formatProvinceLogsFromData(data) {
     const {
-        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, aidTotals, thieveryCounts, thieveryImpacts,
+        spellCounts, spellImpacts, spellSecondaryImpacts, runeRecovery, darkPactReanimation, aidTotals, thieveryCounts, thieveryImpacts,
         greaterArsonBuildingCounts, greaterArsonBuildingOpCounts,
         propagandaCounts, propagandaOpCounts,
         dragonTroopsTotal, dragonPointsTotal, dragonGoldDonated, dragonBushelsDonated,
@@ -1633,6 +1650,14 @@ function formatProvinceLogsFromData(data) {
     if (runeRecovery.count > 0) {
         output += `\n\nRune Recovery:\n`;
         output += `  ${runeRecovery.count} ${runeRecovery.count === 1 ? 'event' : 'events'}, ${formatNumber(runeRecovery.total)} runes recovered\n`;
+    }
+
+    if (darkPactReanimation.count > 0) {
+        output += `\n\nDark Pact Reanimation:\n`;
+        output += `  ${darkPactReanimation.count} ${darkPactReanimation.count === 1 ? 'event' : 'events'}, ${formatNumber(darkPactReanimation.total)} total reanimated\n`;
+        for (const [type, n] of Object.entries(darkPactReanimation.byType)) {
+            output += `  ${formatNumber(n)} ${type}\n`;
+        }
     }
 
     if (data.parseErrors && data.parseErrors.length > 0) {

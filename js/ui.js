@@ -64,10 +64,10 @@ const advSettings = {
         showAltCopy: false
     },
     provinceLogs: {
-        sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'],
+        sectionOrder: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents', 'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Dark Pact Reanimation', 'Aid Summary', 'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary', 'Exploration Summary', 'Attacks Made', 'Military Training'],
         sectionGroups: [
             { label: 'Thievery', children: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents'] },
-            { label: 'Spells',   children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery'] },
+            { label: 'Spells',   children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Dark Pact Reanimation'] },
             { label: 'Aid Summary',          children: ['Aid Summary'] },
             { label: 'Dragon Summary',       children: ['Dragon Summary'] },
             { label: 'Ritual Summary',       children: ['Ritual Summary'] },
@@ -86,6 +86,7 @@ const advSettings = {
             'Spell Targets by Province': false,
             'Spell Targets by Spell Type': false,
             'Rune Recovery': false,
+            'Dark Pact Reanimation': false,
             'Aid Summary': true,
             'Dragon Summary': true,
             'Ritual Summary': false,
@@ -131,7 +132,7 @@ const advSettings = {
             'Aid Summary',
             'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
             'Thievery Impacts', 'Shadowlight Thief IDs',
-            'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery',
+            'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Dark Pact Reanimation',
             'Spell Impacts',
             'Attacks Suffered', 'Dragon Impacts', 'Attacks Made', 'Military Training',
             'Exploration Summary', 'Construction Summary', 'Science Summary',
@@ -142,7 +143,7 @@ const advSettings = {
             { label: 'Aid Summary',              children: ['Aid Summary'] },
             { label: 'Offensive Thievery',       children: ['Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents'] },
             { label: 'Defensive Thievery',       children: ['Thievery Impacts', 'Shadowlight Thief IDs'] },
-            { label: 'Offensive Spells',         children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery'] },
+            { label: 'Offensive Spells',         children: ['Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Dark Pact Reanimation'] },
             { label: 'Defensive Spells',         children: ['Spell Impacts'] },
             { label: 'Military',                 children: ['Attacks Suffered', 'Dragon Impacts', 'Attacks Made', 'Military Training'] },
             { label: 'Exploration Summary',      children: ['Exploration Summary'] },
@@ -166,6 +167,7 @@ const advSettings = {
             'Spell Targets by Province':     false,
             'Spell Targets by Spell Type':   false,
             'Rune Recovery':                 false,
+            'Dark Pact Reanimation':         false,
             'Spell Impacts':                 true,
             'Attacks Suffered':              true,
             'Dragon Impacts':                true,
@@ -2112,7 +2114,7 @@ function applyCombinedProvinceSettings(text) {
     const logsSectionNames = [
         'Aid Summary',
         'Thievery Summary', 'Thievery Targets by Province', 'Thievery Targets by Op Type', 'Resources Stolen from Opponents',
-        'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery',
+        'Spell Summary', 'Spell Targets by Province', 'Spell Targets by Spell Type', 'Rune Recovery', 'Dark Pact Reanimation',
         'Dragon Summary', 'Ritual Summary', 'Construction Summary', 'Science Summary',
         'Exploration Summary', 'Attacks Made', 'Military Training'
     ];
