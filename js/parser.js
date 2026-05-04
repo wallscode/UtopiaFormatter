@@ -862,8 +862,8 @@ function accumulateProvinceLogsData(text) {
         }
         
         // Parse dragon troops/points
-        if (line.includes("the dragon is weakened by") && line.includes("troops")) {
-            const troopsMatch = line.match(/([\d,]+)\s+troops/i);
+        if (line.includes("the dragon is weakened by") && line.includes("troop")) {
+            const troopsMatch = line.match(/([\d,]+)\s+troops?/i);
             if (troopsMatch) dragonTroopsTotal += parseGameInt(troopsMatch[1]);
             
             const pointsMatch = line.match(/([\d,]+)\s+points/i);
@@ -1074,7 +1074,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Early indications show that our operation was a success") &&
                    !line.includes("We are now closer to completing our ritual project") &&
                    !line.includes("to the quest of launching a dragon") &&
-                   !(line.includes("the dragon is weakened by") && line.includes("troops")) &&
+                   !(line.includes("the dragon is weakened by") && line.includes("troop")) &&
                    !line.includes("You have voted for") &&
                    !(line.includes("march onto the battlefield") && line.includes("driven back")) &&
                    !line.includes("You have given orders to commence work on") &&
@@ -1100,6 +1100,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("The natural leyline energies surrounding your province") &&
                    !line.includes("Your spell is disrupted by the natural leyline energies") &&
                    !line.includes("Chaotic energies amplify our actions") &&
+                   !line.includes("Your soldiers have slain the dragon!") &&
                    line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
@@ -3406,10 +3407,42 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Topaz Dragon building damage (descends in flames)
+    const topazM = eventText.match(/Topaz Dragon descends in flames! ([\d,]+) buildings are reduced to ash/);
+    if (topazM) {
+        data.dragonImpacts.totalBuildings += parseGameInt(topazM[1]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
+    // Dragon rune destruction — "hungers for magic" variant
+    const dragonRunesHungerM = eventText.match(/hungers for magic\. ([\d,]+) runes consumed/i);
+    if (dragonRunesHungerM) {
+        data.dragonImpacts.runesDestroyed += parseGameInt(dragonRunesHungerM[1]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
+    // Dragon rune destruction — "disrupts the arcane" variant
+    const dragonRunesArcaneM = eventText.match(/disrupts the arcane! ([\d,]+) runes dissipate/i);
+    if (dragonRunesArcaneM) {
+        data.dragonImpacts.runesDestroyed += parseGameInt(dragonRunesArcaneM[1]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
+    // Night Strike received — troops found dead
+    const nightStrikeM = eventText.match(/^([\d,]+) of our troops were found dead today!/i);
+    if (nightStrikeM) {
+        data.nightStrike.count++;
+        data.nightStrike.totalTroopsLost += parseGameInt(nightStrikeM[1]);
+        return;
+    }
+
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines and short copy-paste
     // artifacts like truncated words are silently skipped)
-    if (!/^Edition\w+ YR\d+/.test(eventText) && eventText.length >= 5) {
+    if (!/^Edition\w+ YR\d+/.test(eventText) && eventText.length >= 5 && !eventText.startsWith('Alas, our war has ended')) {
         logUnrecognizedLine(eventText, 'province-news', rawLine);
     }
 }
@@ -3482,11 +3515,13 @@ function formatProvinceNewsOutput(data) {
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
         data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
         data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
-        data.turncoatGenerals > 0 || data.failedPropaganda > 0 || data.kidnappedPeasants > 0;
+        data.turncoatGenerals > 0 || data.failedPropaganda > 0 || data.kidnappedPeasants > 0 ||
+        data.nightStrike.count > 0;
     if (hasThieveryImpacts) {
         const thievSuccesses = data.rioting.count + data.manaDis.count + data.kidnappingOps +
             data.turncoatGenerals + data.propagandaOps +
-            data.stolenOps.gold + data.stolenOps.bushels + data.stolenOps.runes + data.stolenOps.warHorses;
+            data.stolenOps.gold + data.stolenOps.bushels + data.stolenOps.runes + data.stolenOps.warHorses +
+            data.nightStrike.count;
         const thievFailures = data.thieveryDetected + data.thieveryIntercepted + data.failedPropaganda;
         const thievTotal = thievSuccesses + thievFailures;
         const thievPct = thievTotal > 0 ? ` (${Math.round(thievSuccesses / thievTotal * 100)}%)` : '';
@@ -3519,6 +3554,7 @@ function formatProvinceNewsOutput(data) {
         if (data.kidnappedPeasants > 0) out.push(`  Kidnapping: ${formatNumber(data.kidnappedPeasants)} peasants kidnapped`);
         if (data.failedPropaganda > 0)  out.push(`  Failed propaganda: ${data.failedPropaganda}`);
         if (data.turncoatGenerals > 0)  out.push(`  Bribe General: ${data.turncoatGenerals}`);
+        if (data.nightStrike.count > 0) out.push(`  Night Strike: ${pluralize(data.nightStrike.count, 'occurrence')}, ${formatNumber(data.nightStrike.totalTroopsLost)} troops lost`);
     }
 
     // -- Spell impacts: attempts, meteor shower, and duration spells
@@ -3582,6 +3618,8 @@ function formatProvinceNewsOutput(data) {
         out.push(`  ${pluralize(data.dragonImpacts.count, 'attack')}`);
         if (data.dragonImpacts.totalBuildings > 0)
             out.push(`  ${formatNumber(data.dragonImpacts.totalBuildings)} buildings destroyed`);
+        if (data.dragonImpacts.runesDestroyed > 0)
+            out.push(`  ${formatNumber(data.dragonImpacts.runesDestroyed)} runes destroyed`);
     }
 
     // -- Military desertion due to overpopulation
@@ -3726,13 +3764,14 @@ function accumulateProvinceNewsData(text, options = {}) {
             soldiers:     { total: 0, shipments: 0, senders: {} },
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
-        dragonImpacts:        { count: 0, totalBuildings: 0 },
+        dragonImpacts:        { count: 0, totalBuildings: 0, runesDestroyed: 0 },
         lightningStrike:      { count: 0, runesDestroyed: 0 },
         fireball:             { count: 0, peasantsKilled: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
         kidnappingOps:        0,
         propagandaOps:        0,
+        nightStrike:          { count: 0, totalTroopsLost: 0 },
         thieveryDetected:     0,
         thieveryUnknown:      0,
         thieveryIntercepted:  0,
