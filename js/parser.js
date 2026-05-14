@@ -2592,33 +2592,49 @@ function formatAttackerImpactRanking(data, weights) {
     const wRazeCount       = w.razeCount       != null ? Number(w.razeCount)       : 0;
     const wMassacreCount   = w.massacreCount   != null ? Number(w.massacreCount)   : 0;
 
-    const attackers = [];
-    for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
-        if (kingdomId === data.ownKingdomId) continue;
-        for (const [provName, provData] of Object.entries(kingdomData.provinces)) {
+    function rankProvinces(provinces) {
+        const list = [];
+        for (const [provName, provData] of Object.entries(provinces)) {
             if (provData.attacksMade === 0) continue;
             const captureCount = provData.tradMarchCount + provData.ambushCount + provData.conquestCount;
             const score =
-                provData.acresGained   * wAcresCaptured +
-                provData.razeAcres     * wAcresRazed +
+                provData.acresGained    * wAcresCaptured +
+                provData.razeAcres      * wAcresRazed +
                 provData.massacrePeople * wPeopleMassacred +
-                captureCount           * wCaptureCount +
-                provData.razeCount     * wRazeCount +
-                provData.massacreCount * wMassacreCount;
-            attackers.push({ name: provName, kingdom: kingdomId, score });
+                captureCount            * wCaptureCount +
+                provData.razeCount      * wRazeCount +
+                provData.massacreCount  * wMassacreCount;
+            list.push({ name: provName, score });
         }
+        list.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+        return list;
     }
-
-    if (attackers.length === 0) return null;
-
-    attackers.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 
     const scoreStr = s => Number.isInteger(s) ? s.toString() : s.toFixed(2).replace(/\.?0+$/, '');
     const lines = ['** Attacker Impact Rankings **'];
-    attackers.forEach((a, i) => {
-        lines.push(`${i + 1}. ${a.name} (${a.kingdom}) — ${scoreStr(a.score)}`);
-    });
-    return lines.join('\n');
+    let hasAny = false;
+
+    if (data.ownKingdomId && data.kingdoms[data.ownKingdomId]) {
+        const ranked = rankProvinces(data.kingdoms[data.ownKingdomId].provinces);
+        if (ranked.length > 0) {
+            hasAny = true;
+            lines.push(`Own Kingdom (${data.ownKingdomId}):`);
+            ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
+        }
+    }
+
+    for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
+        if (kingdomId === data.ownKingdomId) continue;
+        const ranked = rankProvinces(kingdomData.provinces);
+        if (ranked.length > 0) {
+            if (hasAny) lines.push('');
+            hasAny = true;
+            lines.push(`The Kingdom of (${kingdomId}):`);
+            ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
+        }
+    }
+
+    return hasAny ? lines.join('\n') : null;
 }
 
 function formatKingdomNewsOutput(data, windowDays, impactWeights) {
