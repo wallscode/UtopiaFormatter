@@ -1776,7 +1776,7 @@ function applyKingdomNewsSettings(text) {
         if (/^\*\* Highlights \*\*/.test(firstLine))                     return 'Highlights';
         if (/^\*\* Kingdom Relations \*\*/.test(firstLine))              return 'Kingdom Relations';
         if (/^\*\* Aid Shipments \*\*/.test(firstLine))                  return 'Aid Shipments';
-        if (/^\*\* Attacker Impact Rankings \*\*/.test(firstLine))       return 'Attacker Impact Rankings';
+        if (/^\*\* Attacker Impact Rankings for .+ \*\*/.test(firstLine)) return 'Attacker Impact Rankings';
         return 'Per-Kingdom Summaries';
     }
 
@@ -3269,7 +3269,7 @@ function renderEnhancedKingdomNews(grid, text) {
         card.appendChild(titleEl);
 
         // Apply left-border color by kingdom (all kingdoms now in map)
-        const knIdM = block.title.match(/(?:^Own Kingdom |^The Kingdom of |^Uniques for )(\d+:\d+)/);
+        const knIdM = block.title.match(/(?:^Own Kingdom |^The Kingdom of |^Uniques for |^Attacker Impact Rankings for )(\d+:\d+)/);
         if (knIdM && kingdomColors.has(knIdM[1])) {
             card.style.borderLeftColor = kingdomColors.get(knIdM[1]);
         }

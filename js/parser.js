@@ -2611,15 +2611,14 @@ function formatAttackerImpactRanking(data, weights) {
     }
 
     const scoreStr = s => Number.isInteger(s) ? s.toString() : s.toFixed(2).replace(/\.?0+$/, '');
-    const lines = ['** Attacker Impact Rankings **'];
-    let hasAny = false;
+    const blocks = [];
 
     if (data.ownKingdomId && data.kingdoms[data.ownKingdomId]) {
         const ranked = rankProvinces(data.kingdoms[data.ownKingdomId].provinces);
         if (ranked.length > 0) {
-            hasAny = true;
-            lines.push(`Own Kingdom (${data.ownKingdomId}):`);
+            const lines = [`** Attacker Impact Rankings for ${data.ownKingdomId} **`];
             ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
+            blocks.push(lines.join('\n'));
         }
     }
 
@@ -2627,14 +2626,13 @@ function formatAttackerImpactRanking(data, weights) {
         if (kingdomId === data.ownKingdomId) continue;
         const ranked = rankProvinces(kingdomData.provinces);
         if (ranked.length > 0) {
-            if (hasAny) lines.push('');
-            hasAny = true;
-            lines.push(`The Kingdom of (${kingdomId}):`);
+            const lines = [`** Attacker Impact Rankings for ${kingdomId} **`];
             ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
+            blocks.push(lines.join('\n'));
         }
     }
 
-    return hasAny ? lines.join('\n') : null;
+    return blocks.length > 0 ? blocks.join('\n') : null;
 }
 
 function formatKingdomNewsOutput(data, windowDays, impactWeights) {
