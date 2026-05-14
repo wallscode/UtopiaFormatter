@@ -1885,7 +1885,7 @@ function parseKingdomNewsLog(inputText, options) {
     
     // Generate formatted output
     const windowDays = (options && options.uniqueWindow != null) ? parseInt(options.uniqueWindow, 10) : UNIQUE_WINDOW_DAYS;
-    return formatKingdomNewsOutput(data, windowDays);
+    return formatKingdomNewsOutput(data, windowDays, options && options.impactWeights);
 }
 
 /**
@@ -2035,7 +2035,14 @@ function parseAttackLine(line, data, dateStr) {
             acresGained: 0,
             acresLost: 0,
             bouncesMade: 0,
-            bouncesReceived: 0
+            bouncesReceived: 0,
+            tradMarchCount: 0,
+            ambushCount: 0,
+            conquestCount: 0,
+            razeCount: 0,
+            massacreCount: 0,
+            razeAcres: 0,
+            massacrePeople: 0
         };
     }
 
@@ -2046,7 +2053,14 @@ function parseAttackLine(line, data, dateStr) {
             acresGained: 0,
             acresLost: 0,
             bouncesMade: 0,
-            bouncesReceived: 0
+            bouncesReceived: 0,
+            tradMarchCount: 0,
+            ambushCount: 0,
+            conquestCount: 0,
+            razeCount: 0,
+            massacreCount: 0,
+            razeAcres: 0,
+            massacrePeople: 0
         };
     }
     
@@ -2055,6 +2069,7 @@ function parseAttackLine(line, data, dateStr) {
     let acres = 0;
     let people = 0;
     let isActualAttack = false;
+    let perProvinceRazeAcres = 0;
     
     // Check for conquest first (has comma immediately after attacker's kingdom identifier)
     if (/\(\d+:\d+\),/.test(line) && (tradMarchPattern.test(line) || razePattern.test(line) || tradMarchInvadedPattern.test(line) || razeInvadedPattern.test(line))) {
@@ -2069,11 +2084,13 @@ function parseAttackLine(line, data, dateStr) {
             acres = 0; // Conquest raze attacks don't capture land either
             // Store raze acres separately for raze summary (only once per attack)
             data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+            perProvinceRazeAcres = razeAcres;
         } else if (razeInvadedPattern.test(line)) {
             const razeAcres = parseGameInt(line.match(razeInvadedPattern)[1]);
             acres = 0; // Conquest raze attacks don't capture land either
             // Store raze acres separately for raze summary (only once per attack)
             data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+            perProvinceRazeAcres = razeAcres;
         }
     } else if (ambushMadePattern.test(line)) {
         attackType = 'ambush';
@@ -2106,6 +2123,7 @@ function parseAttackLine(line, data, dateStr) {
         acres = 0; // Raze attacks don't capture land for total acres
         // Store raze acres separately for raze summary (only once per attack)
         data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        perProvinceRazeAcres = razeAcres;
         // Also track raze acres by direction for proper reporting
         if (!data.kingdoms[attackerKingdom].razeAcresMade) {
             data.kingdoms[attackerKingdom].razeAcresMade = 0;
@@ -2126,6 +2144,7 @@ function parseAttackLine(line, data, dateStr) {
         acres = 0; // Raze attacks don't capture land for total acres
         // Store raze acres separately for raze summary (only once per attack)
         data.kingdoms[attackerKingdom].raze.acres += razeAcres;
+        perProvinceRazeAcres = razeAcres;
         // Regular raze pattern (without "invaded") means this is a raze attack suffered by our kingdom
         if (!data.kingdoms[defenderKingdom].razeAcresSuffered) {
             data.kingdoms[defenderKingdom].razeAcresSuffered = 0;
@@ -2167,6 +2186,22 @@ function parseAttackLine(line, data, dateStr) {
         data.kingdoms[attackerKingdom].provinces[attackerKey].attacksMade++;
         data.kingdoms[defenderKingdom].attacksSuffered++;
         data.kingdoms[defenderKingdom].provinces[defenderKey].attacksSuffered++;
+
+        // Per-province attack-type tracking for impact ranking (all kingdoms)
+        const atkProv = data.kingdoms[attackerKingdom].provinces[attackerKey];
+        if (attackType === 'tradMarch') {
+            atkProv.tradMarchCount++;
+        } else if (attackType === 'ambush') {
+            atkProv.ambushCount++;
+        } else if (attackType === 'conquest') {
+            atkProv.conquestCount++;
+        } else if (attackType === 'raze') {
+            atkProv.razeCount++;
+        } else if (attackType === 'massacre') {
+            atkProv.massacreCount++;
+            atkProv.massacrePeople += people;
+        }
+        atkProv.razeAcres += perProvinceRazeAcres;
 
         // Only process successful attacks for land and acres statistics
         if (isActualAttack) {
@@ -2541,7 +2576,52 @@ function updateHighlights(data, attackType, attacker, defender, acres, people, i
 /**
  * Formats the final Kingdom News output
  */
-function formatKingdomNewsOutput(data, windowDays) {
+/**
+ * Builds the Attacker Impact Rankings block from parsed data.
+ * Ranks all enemy provinces by weighted score across 6 impact metrics.
+ * @param {Object} data - Parsed kingdom news data
+ * @param {Object} weights - { acresCaptured, acresRazed, peopleMassacred, captureCount, razeCount, massacreCount }
+ * @returns {string|null} Formatted block, or null if no attackers found
+ */
+function formatAttackerImpactRanking(data, weights) {
+    const w = weights || {};
+    const wAcresCaptured   = w.acresCaptured   != null ? Number(w.acresCaptured)   : 1;
+    const wAcresRazed      = w.acresRazed      != null ? Number(w.acresRazed)      : 1;
+    const wPeopleMassacred = w.peopleMassacred != null ? Number(w.peopleMassacred) : 1;
+    const wCaptureCount    = w.captureCount    != null ? Number(w.captureCount)    : 0;
+    const wRazeCount       = w.razeCount       != null ? Number(w.razeCount)       : 0;
+    const wMassacreCount   = w.massacreCount   != null ? Number(w.massacreCount)   : 0;
+
+    const attackers = [];
+    for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
+        if (kingdomId === data.ownKingdomId) continue;
+        for (const [provName, provData] of Object.entries(kingdomData.provinces)) {
+            if (provData.attacksMade === 0) continue;
+            const captureCount = provData.tradMarchCount + provData.ambushCount + provData.conquestCount;
+            const score =
+                provData.acresGained   * wAcresCaptured +
+                provData.razeAcres     * wAcresRazed +
+                provData.massacrePeople * wPeopleMassacred +
+                captureCount           * wCaptureCount +
+                provData.razeCount     * wRazeCount +
+                provData.massacreCount * wMassacreCount;
+            attackers.push({ name: provName, kingdom: kingdomId, score });
+        }
+    }
+
+    if (attackers.length === 0) return null;
+
+    attackers.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+
+    const scoreStr = s => Number.isInteger(s) ? s.toString() : s.toFixed(2).replace(/\.?0+$/, '');
+    const lines = ['** Attacker Impact Rankings **'];
+    attackers.forEach((a, i) => {
+        lines.push(`${i + 1}. ${a.name} (${a.kingdom}) — ${scoreStr(a.score)}`);
+    });
+    return lines.join('\n');
+}
+
+function formatKingdomNewsOutput(data, windowDays, impactWeights) {
     if (windowDays == null) windowDays = UNIQUE_WINDOW_DAYS;
     const output = [];
 
@@ -2864,6 +2944,13 @@ function formatKingdomNewsOutput(data, windowDays) {
             for (const [name, count] of receivedEntries)
                 output.push(`-- ${name}: ${count}`);
         }
+    }
+
+    // ── Attacker Impact Rankings ──────────────────────────────────────────────
+    const impactBlock = formatAttackerImpactRanking(data, impactWeights);
+    if (impactBlock) {
+        output.push('');
+        output.push(impactBlock);
     }
 
     if (data.parseErrors && data.parseErrors.length > 0) {

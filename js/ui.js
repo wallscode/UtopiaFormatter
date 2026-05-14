@@ -48,18 +48,27 @@ const advSettings = {
         showRitualsExpired: true,
         showRitualsFailed: false,
         uniqueWindow: 6,
-        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations', 'Aid Shipments'],
+        sectionOrder: ['Own Kingdom Summary', 'Per-Kingdom Summaries', 'Uniques', 'Highlights', 'Kingdom Relations', 'Aid Shipments', 'Attacker Impact Rankings'],
         visible: {
-            'Own Kingdom Summary':  true,
-            'Per-Kingdom Summaries': true,
-            'Uniques':               true,
-            'Highlights':            true,
-            'Kingdom Relations':     false,
-            'Aid Shipments':         false,
+            'Own Kingdom Summary':       true,
+            'Per-Kingdom Summaries':     true,
+            'Uniques':                   true,
+            'Highlights':                true,
+            'Kingdom Relations':         false,
+            'Aid Shipments':             false,
+            'Attacker Impact Rankings':  false,
         },
         uniquesWithKingdoms: false,
         warOnly: false,
         warDetected: false,
+        impactWeights: {
+            acresCaptured:   1,
+            acresRazed:      1,
+            peopleMassacred: 1,
+            captureCount:    0,
+            razeCount:       0,
+            massacreCount:   0,
+        },
         discordCopy: false,
         showAltCopy: false
     },
@@ -423,7 +432,8 @@ function handleParse(elements) {
             }
             parsedText = parseKingdomNewsLog(effectiveInput, {
                 uniqueWindow: advSettings.kingdomNews.uniqueWindow,
-                warOnly: advSettings.kingdomNews.warOnly
+                warOnly: advSettings.kingdomNews.warOnly,
+                impactWeights: advSettings.kingdomNews.impactWeights
             });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
@@ -1156,6 +1166,52 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         rightCol.appendChild(warGroup);
     }
 
+    // ── Impact Ranking Weights ────────────────────────────────────────────────
+    const impactTitle = document.createElement('div');
+    impactTitle.className = 'adv-subgroup-title';
+    impactTitle.textContent = 'Impact Ranking Weights';
+    rightCol.appendChild(impactTitle);
+
+    rightCol.appendChild(makeHint('Weights used to compute the Attacker Impact Rankings score. Enable the section via the Sections list on the left. Set a weight to 0 to exclude that metric.'));
+
+    const weightFields = [
+        { key: 'acresCaptured',   label: 'Acres Captured',          hint: 'Weight applied to total land acres captured from your kingdom' },
+        { key: 'acresRazed',      label: 'Acres Razed',             hint: 'Weight applied to total land acres razed in your kingdom' },
+        { key: 'peopleMassacred', label: 'People Massacred',        hint: 'Weight applied to total peasants killed via massacre attacks' },
+        { key: 'captureCount',    label: 'Count: Land Captures',    hint: 'Weight applied to the number of land-capturing attacks (trad march, ambush, conquest)' },
+        { key: 'razeCount',       label: 'Count: Raze Attacks',     hint: 'Weight applied to the number of raze attacks' },
+        { key: 'massacreCount',   label: 'Count: Massacre Attacks', hint: 'Weight applied to the number of massacre attacks' },
+    ];
+
+    for (const field of weightFields) {
+        const group = document.createElement('div');
+        group.className = 'adv-group';
+
+        const label = document.createElement('label');
+        label.htmlFor = `adv-kn-weight-${field.key}`;
+        label.textContent = field.label + ': ';
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.id = `adv-kn-weight-${field.key}`;
+        input.min = '0';
+        input.step = '0.1';
+        input.style.width = '5em';
+        input.value = advSettings.kingdomNews.impactWeights[field.key];
+        input.addEventListener('change', () => {
+            const val = parseFloat(input.value);
+            if (!isNaN(val) && val >= 0) {
+                advSettings.kingdomNews.impactWeights[field.key] = val;
+                applyAndRerender(elements);
+            }
+        });
+
+        label.appendChild(input);
+        group.appendChild(label);
+        if (field.hint) group.appendChild(makeHint(field.hint));
+        rightCol.appendChild(group);
+    }
+
     renderRawTextToggle(rightCol, elements);
 
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
@@ -1647,7 +1703,8 @@ function applyAndRerender(elements) {
         if (lastDetectedMode === 'kingdom-news-log') {
             parsedText = parseKingdomNewsLog(lastRawInput, {
                 uniqueWindow: advSettings.kingdomNews.uniqueWindow,
-                warOnly: advSettings.kingdomNews.warOnly
+                warOnly: advSettings.kingdomNews.warOnly,
+                impactWeights: advSettings.kingdomNews.impactWeights
             });
             lastRawParsed = parsedText;
             parsedText = applyKingdomNewsSettings(parsedText);
@@ -1714,11 +1771,12 @@ function applyKingdomNewsSettings(text) {
     // Step 4: Categorize and pair each Per-Kingdom block with its Uniques block
     function getCategory(block) {
         const firstLine = block.split('\n')[0];
-        if (/^\*\* Own Kingdom .+ Summary \*\*/.test(firstLine))  return 'Own Kingdom Summary';
-        if (/^\*\* Uniques for .+ \*\*/.test(firstLine))          return 'Uniques';
-        if (/^\*\* Highlights \*\*/.test(firstLine))               return 'Highlights';
-        if (/^\*\* Kingdom Relations \*\*/.test(firstLine))        return 'Kingdom Relations';
-        if (/^\*\* Aid Shipments \*\*/.test(firstLine))            return 'Aid Shipments';
+        if (/^\*\* Own Kingdom .+ Summary \*\*/.test(firstLine))        return 'Own Kingdom Summary';
+        if (/^\*\* Uniques for .+ \*\*/.test(firstLine))                return 'Uniques';
+        if (/^\*\* Highlights \*\*/.test(firstLine))                     return 'Highlights';
+        if (/^\*\* Kingdom Relations \*\*/.test(firstLine))              return 'Kingdom Relations';
+        if (/^\*\* Aid Shipments \*\*/.test(firstLine))                  return 'Aid Shipments';
+        if (/^\*\* Attacker Impact Rankings \*\*/.test(firstLine))       return 'Attacker Impact Rankings';
         return 'Per-Kingdom Summaries';
     }
 
@@ -1727,6 +1785,7 @@ function applyKingdomNewsSettings(text) {
     const highlightsBlocks = [];
     const kingdomRelationsBlocks = [];
     const aidShipmentsBlocks = [];
+    const attackerImpactBlocks = [];
     let currentPair = null;
 
     for (const block of rawBlocks) {
@@ -1753,6 +1812,8 @@ function applyKingdomNewsSettings(text) {
             kingdomRelationsBlocks.push(block);
         } else if (cat === 'Aid Shipments') {
             aidShipmentsBlocks.push(block);
+        } else if (cat === 'Attacker Impact Rankings') {
+            attackerImpactBlocks.push(block);
         }
     }
 
@@ -1783,6 +1844,8 @@ function applyKingdomNewsSettings(text) {
             resultBlocks.push(...kingdomRelationsBlocks);
         } else if (section === 'Aid Shipments') {
             resultBlocks.push(...aidShipmentsBlocks);
+        } else if (section === 'Attacker Impact Rankings') {
+            resultBlocks.push(...attackerImpactBlocks);
         }
     }
 

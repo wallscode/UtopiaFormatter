@@ -106,6 +106,10 @@ Most bounces received - {province}: N
 -- War Declarations Against Us: N
 -- Ceasefires Proposed: N
 -- Ceasefires Accepted: N
+
+** Attacker Impact Rankings **
+1. {province} ({K:K}) — {score}
+2. ...
 ```
 
 Zero-count rows are suppressed. Rows without data (e.g. no ambushes) do not appear. The Highlights section is omitted if there is no data to show. Kingdom Relations is hidden by default (toggle in Advanced Settings).
@@ -210,11 +214,26 @@ Settings persist for the duration of the page session (reset on page reload).
 - Kingdom Relations (default off); children: War Declarations, Ceasefires
 
 **Sections (right column, reorderable):**
-Own Kingdom Summary, Per-Kingdom Summaries, Uniques, Highlights, Kingdom Relations
+Own Kingdom Summary, Per-Kingdom Summaries, Uniques, Highlights, Kingdom Relations, Aid Shipments, Attacker Impact Rankings
 
 - **Unique Window:** numeric input (default 6). Setting to 0 counts every attack as a unique.
 - **War Only:** when checked, filters output to only the war between own kingdom and detected enemy. Appears only when war events are detected in the input.
 - **Uniques grouped with kingdoms:** when checked, the Uniques block for each kingdom appears directly below that kingdom's summary rather than as a separate section.
+- **Attacker Impact Rankings** (default off): ranks enemy provinces by weighted impact score. Section appears in the Sections list; enable by toggling its visibility checkbox.
+
+**Impact Ranking Weights (right column):**
+Six numeric inputs control the weight of each metric in the score formula. Default: Acres Captured = 1, Acres Razed = 1, People Massacred = 1, all count-based weights = 0. Set any weight to 0 to exclude that metric.
+
+| Metric | Description |
+|---|---|
+| Acres Captured | Total land acres captured from your kingdom |
+| Acres Razed | Total land acres razed in your kingdom |
+| People Massacred | Total peasants killed via massacre attacks |
+| Count: Land Captures | Number of land-capturing attacks (trad march, ambush, conquest) |
+| Count: Raze Attacks | Number of raze attacks |
+| Count: Massacre Attacks | Number of massacre attacks |
+
+Score formula: `acresGained × wAcresCaptured + razeAcres × wAcresRazed + peopleMassacred × wPeopleMassacred + captureCount × wCaptureCount + razeCount × wRazeCount + massacreCount × wMassacreCount`
 
 **Copy Buttons (right column):**
 - Copy for Discord (default off)
