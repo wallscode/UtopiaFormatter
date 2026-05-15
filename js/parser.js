@@ -31,7 +31,7 @@ const PROVINCE_LOGS_CONFIG = {
         { name: "Explosions", text: "Explosions will rock aid shipments", impact: "days" },
         { name: "Expose Thieves", text: "exposed the thieves", impact: "days" },
         { name: "Fireball", text: "A fireball burns through the skies", impact: "peasants" },
-        { name: "Soul Blight", text: "Darkness consumes", altTexts: ["Death's embrace takes hold of", "The essence of death permeates", "A pall of death descends upon", "A dark cloud engulfs", "A Necromancer's curse sweeps through", "The air turns cold in"], impact: "peasants killed", impactRegex: /(?:killing |claiming\s*)?([\d,]+)\s*peasants?/i, secondaryImpact: "captured", secondaryImpactRegex: /(?:raises an army of |gains |reinforced by |grows stronger with )?([\d,]+)(?= (?:from the dead|of their spirits|new soldiers|of the fallen|of the dead))/i },
+        { name: "Soul Blight", text: "Darkness consumes", altTexts: ["Death's embrace takes hold of", "The essence of death permeates", "A pall of death descends upon", "A dark cloud engulfs", "A Necromancer's curse sweeps through", "The air turns cold in", "A plague of death strikes", "Shadows sweep through"], impact: "peasants killed", impactRegex: /(?:killing |claiming\s*)?([\d,]+)\s*peasants?/i, secondaryImpact: "captured", secondaryImpactRegex: /(?:raises an army of |gains |reinforced by |grows stronger with )?([\d,]+)(?= (?:from the dead|of their spirits|new soldiers|of the fallen|of the dead|of their souls|of the undead))/i },
         { name: "Fool's Gold", text: "to worthless lead", impact: "gold coins" },
         { name: "Gluttony", text: "The gluttony of", impact: "days" },
         { name: "Greed", text: "soldiers to turn greedy", impact: "days" },
