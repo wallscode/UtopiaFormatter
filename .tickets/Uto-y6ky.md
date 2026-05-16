@@ -1,6 +1,6 @@
 ---
 id: Uto-y6ky
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-16T12:25:31Z
@@ -10,7 +10,7 @@ assignee: Jamie Walls
 ---
 # Post-massacre land attack penalty in Attacker Impact Rankings
 
-Land captures on a province within N in-game days of it receiving a massacre attack should receive a reduced impact score. When an attacker massacres a thief/mage province and then another attacker takes land from it shortly after, the land capture is considered counterproductive (land attacks on a T/M province shrink it, increasing their mages/thieves-per-acre ratio). This penalty should be configurable via a new weight (e.g. postMassacreLandMultiplier, default ~0.3) and a window setting (e.g. postMassacreWindow, default 3 in-game days). Requires end-of-war detection (see linked ticket) to avoid penalising legitimate late-war land captures on T/M provinces.
+Land captures on a province within N in-game days of it receiving a massacre attack should receive a reduced impact score. When an attacker massacres a thief/mage province and then another attacker takes land from it shortly after, the land capture is considered counterproductive (land attacks on a T/M province shrink it, increasing their mages/thieves-per-acre ratio). This penalty should be configurable via a new weight (e.g. postMassacreLandMultiplier, default ~0.3) and a window setting (e.g. postMassacreWindow, default 12 in-game days). Requires end-of-war detection (see linked ticket) to avoid penalising legitimate late-war land captures on T/M provinces.
 
 ## Design
 

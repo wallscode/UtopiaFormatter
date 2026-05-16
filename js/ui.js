@@ -74,6 +74,8 @@ const advSettings = {
             clusteredAttackMultiplier:  1.5,
             failedAttackPenalty:        50,
             lateWarWindow:              8,
+            postMassacreWindow:         12,
+            postMassacreLandMultiplier: 0.3,
         },
         discordCopy: false,
         showAltCopy: false
@@ -1194,7 +1196,9 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         { key: 'chainTargetWindow',         label: 'Chain Target Window (days)', hint: 'In-game days. An attack on a chain target gets the cluster bonus if another successful attack on the same defender lands within this window.', step: 1, min: 1, integer: true },
         { key: 'clusteredAttackMultiplier', label: 'Clustered Attack Multiplier', hint: 'Extra multiplier on top of the chain bonus when an attack on a chain target is clustered within the window. Default 1.5.' },
         { key: 'failedAttackPenalty',       label: 'Failed Attack Penalty',      hint: 'Points subtracted from an attacker\'s score for each bounce (failed invasion attempt)' },
-        { key: 'lateWarWindow',             label: 'Late-War Window (days)',      hint: 'In-game days before the end of the parsed data to treat as the late-war phase. Used by the post-massacre land penalty to exempt late-war land captures from scoring reductions.', step: 1, min: 0, integer: true },
+        { key: 'lateWarWindow',             label: 'Late-War Window (days)',      hint: 'In-game days before the end of the parsed data to treat as the late-war phase. Land captures in this window are exempt from the post-massacre land penalty.', step: 1, min: 0, integer: true },
+        { key: 'postMassacreWindow',        label: 'Post-Massacre Window (days)', hint: 'In-game days after a massacre during which land captures on that province receive a reduced score. Reflects that land attacks on a massacred T/M province are counterproductive.', step: 1, min: 0, integer: true },
+        { key: 'postMassacreLandMultiplier', label: 'Post-Massacre Land Multiplier', hint: 'Score multiplier applied to land captures on a province within the post-massacre window. Default 0.3 reduces their value to 30%. Set to 1.0 to disable the penalty.' },
     ];
 
     for (const field of weightFields) {

@@ -718,6 +718,63 @@ try {
         assert('Top-ranked attacker has a non-zero score on real data', firstEntry != null && firstEntry > 0, true);
     }
 
+    // — Scenario I: post-massacre land penalty within window reduces capture score.
+    {
+        // Defender receives a massacre on day 100, then a land capture on day 108 (8 days later, within window 12).
+        // postMassacreLandMultiplier = 0.3, province not chain target.
+        const records = [
+            { attackerKey: 'Massacrer', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'massacre', acres: 0, razeAcres: 0, people: 100, success: true, dateVal: 100 },
+            { attackerKey: 'LandGrabber', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 108 },
+        ];
+        const data = makeSyntheticData(records);
+        const w = { ...defaults, chainThreshold: 99 }; // disable chain bonus
+        const out = parser.formatAttackerImpactRanking(data, w);
+        // 40 acres × 1.0 × 0.3 penalty = 12
+        assert('Land capture within post-massacre window scores 12 (40 × 0.3)', parseScore(out, '5:7', 'LandGrabber'), 12);
+    }
+
+    // — Scenario J: capture outside the post-massacre window gets no penalty.
+    {
+        const records = [
+            { attackerKey: 'Massacrer', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'massacre', acres: 0, razeAcres: 0, people: 100, success: true, dateVal: 100 },
+            { attackerKey: 'LandGrabber', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 113 }, // 13 days later, outside window 12
+        ];
+        const data = makeSyntheticData(records);
+        const w = { ...defaults, chainThreshold: 99 };
+        const out = parser.formatAttackerImpactRanking(data, w);
+        // 40 acres × 1.0 = 40 (no penalty)
+        assert('Land capture outside post-massacre window scores 40 (no penalty)', parseScore(out, '5:7', 'LandGrabber'), 40);
+    }
+
+    // — Scenario K: late-war capture within post-massacre window is NOT penalised.
+    {
+        // maxDateVal drives lateWarCutoff. We simulate by constructing data with maxDateVal set.
+        // Massacre day 100, capture day 108. maxDateVal = 115, lateWarWindow = 8 → cutoff = 108.
+        // Capture at 108 >= 108 → late-war → no penalty.
+        const records = [
+            { attackerKey: 'Massacrer', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'massacre', acres: 0, razeAcres: 0, people: 100, success: true, dateVal: 100 },
+            { attackerKey: 'LandGrabber', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 108 },
+        ];
+        const data = makeSyntheticData(records);
+        data.maxDateVal = 115; // cutoff = 115 - 8 + 1 = 108
+        const w = { ...defaults, chainThreshold: 99, lateWarWindow: 8 };
+        const out = parser.formatAttackerImpactRanking(data, w);
+        // Late-war → penalty skipped → 40 × 1.0 = 40
+        assert('Late-war land capture within post-massacre window is NOT penalised', parseScore(out, '5:7', 'LandGrabber'), 40);
+    }
+
+    // — Scenario L: setting postMassacreLandMultiplier to 1.0 disables the penalty.
+    {
+        const records = [
+            { attackerKey: 'Massacrer', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'massacre', acres: 0, razeAcres: 0, people: 100, success: true, dateVal: 100 },
+            { attackerKey: 'LandGrabber', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 108 },
+        ];
+        const data = makeSyntheticData(records);
+        const w = { ...defaults, chainThreshold: 99, postMassacreLandMultiplier: 1.0 };
+        const out = parser.formatAttackerImpactRanking(data, w);
+        assert('postMassacreLandMultiplier=1.0 disables the penalty', parseScore(out, '5:7', 'LandGrabber'), 40);
+    }
+
     const { passed, failed } = summary();
     console.log(`${failed === 0 ? '✅' : '❌'} Attacker Impact Ranking tests — ${passed} passed, ${failed} failed`);
 } catch (error) {

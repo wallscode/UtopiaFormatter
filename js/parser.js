@@ -2611,12 +2611,13 @@ function formatAttackerImpactRanking(data, weights) {
     const chainTargetMultiplier     = w.chainTargetMultiplier    != null ? Number(w.chainTargetMultiplier)    : 2.0;
     const chainTargetWindow         = w.chainTargetWindow        != null ? Number(w.chainTargetWindow)        : 4;
     const clusteredAttackMultiplier = w.clusteredAttackMultiplier != null ? Number(w.clusteredAttackMultiplier) : 1.5;
-    const failedAttackPenalty       = w.failedAttackPenalty      != null ? Number(w.failedAttackPenalty)      : 50;
-    const lateWarWindow             = w.lateWarWindow            != null ? Number(w.lateWarWindow)            : 8;
+    const failedAttackPenalty           = w.failedAttackPenalty           != null ? Number(w.failedAttackPenalty)           : 50;
+    const lateWarWindow                 = w.lateWarWindow                 != null ? Number(w.lateWarWindow)                 : 8;
+    const postMassacreWindow            = w.postMassacreWindow            != null ? Number(w.postMassacreWindow)            : 12;
+    const postMassacreLandMultiplier    = w.postMassacreLandMultiplier    != null ? Number(w.postMassacreLandMultiplier)    : 0.3;
 
     // Late-war cutoff: attacks at or after this dateVal are in the late-war phase.
-    // Used by the post-massacre land penalty (Uto-y6ky) to skip penalising late-war captures.
-    // eslint-disable-next-line no-unused-vars
+    // Land captures in late-war are exempt from the post-massacre land penalty.
     const lateWarCutoff = data.maxDateVal != null ? data.maxDateVal - lateWarWindow + 1 : null;
 
     const records = Array.isArray(data.attackRecords) ? data.attackRecords : [];
@@ -2657,6 +2658,15 @@ function formatAttackerImpactRanking(data, weights) {
         return false;
     }
 
+    // Step 2b — per-defender massacre dates for post-massacre land penalty.
+    const defenderMassacreDates = {};
+    for (const r of records) {
+        if (!r.success) continue;
+        if (r.attackType !== 'massacre' || r.dateVal == null) continue;
+        if (!defenderMassacreDates[r.defenderKey]) defenderMassacreDates[r.defenderKey] = [];
+        defenderMassacreDates[r.defenderKey].push(r.dateVal);
+    }
+
     // Step 3 — per-attacker scoring from attack records.
     const attackerScores = {}; // attackerKey -> { kingdom, score }
     for (const r of records) {
@@ -2678,6 +2688,22 @@ function formatAttackerImpactRanking(data, weights) {
             attackValue *= chainTargetMultiplier;
             if (isClustered(r.defenderKey, r.dateVal)) {
                 attackValue *= clusteredAttackMultiplier;
+            }
+        }
+
+        // Post-massacre land penalty: land captures on a province that was recently
+        // massacred score lower (land attacks shrink T/M provinces, helping them).
+        // Skipped during the late-war phase when the war is nearly over anyway.
+        if (r.acres > 0 && postMassacreLandMultiplier < 1.0) {
+            const isLateWar = lateWarCutoff != null && r.dateVal != null && r.dateVal >= lateWarCutoff;
+            if (!isLateWar) {
+                const massacreDates = defenderMassacreDates[r.defenderKey];
+                if (massacreDates) {
+                    const inWindow = massacreDates.some(
+                        md => r.dateVal != null && r.dateVal >= md && r.dateVal - md <= postMassacreWindow
+                    );
+                    if (inWindow) attackValue *= postMassacreLandMultiplier;
+                }
             }
         }
 
