@@ -1772,6 +1772,7 @@ function parseKingdomNewsLog(inputText, options) {
         ceasefireCancelledByUs: [],  // kingdoms whose active ceasefire we cancelled
         ceasefireBrokenByThem: [],   // kingdoms that broke an active ceasefire with us
         aidShipments: { sent: {}, received: {} },
+        attackRecords: [],
         warDeclarations: [],
         warOutcomes: 0,
         warsForced: [],          // kingdoms the Lords of Utopia forced to withdraw
@@ -2169,15 +2170,30 @@ function parseAttackLine(line, data, dateStr) {
     
     // Process all attacks for attack statistics (both successful and unsuccessful)
     if (attackType) {
+        const recordDateVal = dateStr ? dateToNumber(dateStr) : null;
+
+        // Per-attack record for Attacker Impact Ranking (chain detection + cluster window)
+        data.attackRecords.push({
+            attackerKey,
+            attackerKingdom,
+            defenderKey,
+            defenderKingdom,
+            attackType,
+            acres,
+            razeAcres: perProvinceRazeAcres,
+            people,
+            success: attackType !== 'bounce',
+            dateVal: recordDateVal
+        });
+
         // Track attack for uniques calculation (all attacks including bounces)
-        if (dateStr && data.ownKingdomId) {
-            const dateVal = dateToNumber(dateStr);
+        if (recordDateVal !== null && data.ownKingdomId) {
             if (attackerKingdom === data.ownKingdomId) {
-                data.kingdoms[attackerKingdom].attacksMadeLog.push({ dateVal, attackerKey });
+                data.kingdoms[attackerKingdom].attacksMadeLog.push({ dateVal: recordDateVal, attackerKey });
             }
             if (defenderKingdom === data.ownKingdomId && attackerProvince.number !== 0) {
                 // Skip unknown provinces (number === 0) from uniques — can't attribute to a specific province
-                data.kingdoms[defenderKingdom].attacksSufferedLog.push({ dateVal, attackerKey });
+                data.kingdoms[defenderKingdom].attacksSufferedLog.push({ dateVal: recordDateVal, attackerKey });
             }
         }
 
@@ -2585,25 +2601,107 @@ function updateHighlights(data, attackType, attacker, defender, acres, people, i
  */
 function formatAttackerImpactRanking(data, weights) {
     const w = weights || {};
-    const wAcresCaptured   = w.acresCaptured   != null ? Number(w.acresCaptured)   : 1;
-    const wAcresRazed      = w.acresRazed      != null ? Number(w.acresRazed)      : 1;
-    const wPeopleMassacred = w.peopleMassacred != null ? Number(w.peopleMassacred) : 1;
-    const wCaptureCount    = w.captureCount    != null ? Number(w.captureCount)    : 0;
-    const wRazeCount       = w.razeCount       != null ? Number(w.razeCount)       : 0;
-    const wMassacreCount   = w.massacreCount   != null ? Number(w.massacreCount)   : 0;
+    const wAcresCaptured            = w.acresCaptured            != null ? Number(w.acresCaptured)            : 1;
+    const wAcresRazed               = w.acresRazed               != null ? Number(w.acresRazed)               : 0.7;
+    const wPeopleMassacred          = w.peopleMassacred          != null ? Number(w.peopleMassacred)          : 0.05;
+    const wCaptureCount             = w.captureCount             != null ? Number(w.captureCount)             : 0;
+    const wRazeCount                = w.razeCount                != null ? Number(w.razeCount)                : 0;
+    const wMassacreCount            = w.massacreCount            != null ? Number(w.massacreCount)            : 50;
+    const chainThreshold            = w.chainThreshold           != null ? Number(w.chainThreshold)           : 10;
+    const chainTargetMultiplier     = w.chainTargetMultiplier    != null ? Number(w.chainTargetMultiplier)    : 2.0;
+    const chainTargetWindow         = w.chainTargetWindow        != null ? Number(w.chainTargetWindow)        : 2;
+    const clusteredAttackMultiplier = w.clusteredAttackMultiplier != null ? Number(w.clusteredAttackMultiplier) : 1.5;
+    const failedAttackPenalty       = w.failedAttackPenalty      != null ? Number(w.failedAttackPenalty)      : 50;
 
-    function rankProvinces(provinces) {
+    const records = Array.isArray(data.attackRecords) ? data.attackRecords : [];
+
+    // Step 1 — chain target set: defenders that received ≥ chainThreshold successful attacks.
+    const successfulAttacksByDefender = {};
+    for (const r of records) {
+        if (!r.success) continue;
+        if (!r.defenderKey) continue;
+        successfulAttacksByDefender[r.defenderKey] = (successfulAttacksByDefender[r.defenderKey] || 0) + 1;
+    }
+    const chainTargets = new Set();
+    for (const [defKey, count] of Object.entries(successfulAttacksByDefender)) {
+        if (count >= chainThreshold) chainTargets.add(defKey);
+    }
+
+    // Step 2 — per-defender timeline of successful attack dates (sorted) for cluster detection.
+    const defenderTimelines = {};
+    for (const r of records) {
+        if (!r.success) continue;
+        if (r.dateVal == null) continue;
+        if (!chainTargets.has(r.defenderKey)) continue;
+        if (!defenderTimelines[r.defenderKey]) defenderTimelines[r.defenderKey] = [];
+        defenderTimelines[r.defenderKey].push(r.dateVal);
+    }
+    for (const key of Object.keys(defenderTimelines)) {
+        defenderTimelines[key].sort((a, b) => a - b);
+    }
+
+    function isClustered(defenderKey, dateVal) {
+        if (dateVal == null) return false;
+        const tl = defenderTimelines[defenderKey];
+        if (!tl) return false;
+        for (const other of tl) {
+            if (other === dateVal) continue;
+            if (Math.abs(other - dateVal) <= chainTargetWindow) return true;
+        }
+        return false;
+    }
+
+    // Step 3 — per-attacker scoring from attack records.
+    const attackerScores = {}; // attackerKey -> { kingdom, score }
+    for (const r of records) {
+        if (!r.success) continue;
+        if (!r.attackerKey) continue;
+
+        let attackValue = 0;
+        if (r.razeAcres > 0) {
+            attackValue = r.razeAcres * wAcresRazed + wRazeCount;
+        } else if (r.attackType === 'massacre' && r.people > 0) {
+            attackValue = r.people * wPeopleMassacred + wMassacreCount;
+        } else if (r.acres > 0) {
+            attackValue = r.acres * wAcresCaptured + wCaptureCount;
+        } else {
+            continue; // plunder/learn/no-impact rows
+        }
+
+        if (chainTargets.has(r.defenderKey)) {
+            attackValue *= chainTargetMultiplier;
+            if (isClustered(r.defenderKey, r.dateVal)) {
+                attackValue *= clusteredAttackMultiplier;
+            }
+        }
+
+        if (!attackerScores[r.attackerKey]) {
+            attackerScores[r.attackerKey] = { kingdom: r.attackerKingdom, score: 0 };
+        }
+        attackerScores[r.attackerKey].score += attackValue;
+    }
+
+    // Step 4 — bounce penalty (use already-aggregated bouncesMade per attacker province).
+    for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
+        if (!kingdomData.provinces) continue;
+        for (const [provName, provData] of Object.entries(kingdomData.provinces)) {
+            const bounces = provData.bouncesMade || 0;
+            if (bounces === 0 && !attackerScores[provName]) continue;
+            if (!attackerScores[provName]) {
+                attackerScores[provName] = { kingdom: kingdomId, score: 0 };
+            }
+            attackerScores[provName].score -= bounces * failedAttackPenalty;
+        }
+    }
+
+    // Step 5 — render per-kingdom blocks. Province must have made at least one attack.
+    function rankKingdom(kingdomId, kingdomData) {
         const list = [];
-        for (const [provName, provData] of Object.entries(provinces)) {
+        for (const [provName, provData] of Object.entries(kingdomData.provinces || {})) {
             if (provData.attacksMade === 0) continue;
-            const captureCount = provData.tradMarchCount + provData.ambushCount + provData.conquestCount;
-            const score =
-                provData.acresGained    * wAcresCaptured +
-                provData.razeAcres      * wAcresRazed +
-                provData.massacrePeople * wPeopleMassacred +
-                captureCount            * wCaptureCount +
-                provData.razeCount      * wRazeCount +
-                provData.massacreCount  * wMassacreCount;
+            const score = (attackerScores[provName] && attackerScores[provName].kingdom === kingdomId)
+                ? attackerScores[provName].score
+                : 0;
             list.push({ name: provName, score });
         }
         list.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
@@ -2614,7 +2712,7 @@ function formatAttackerImpactRanking(data, weights) {
     const blocks = [];
 
     if (data.ownKingdomId && data.kingdoms[data.ownKingdomId]) {
-        const ranked = rankProvinces(data.kingdoms[data.ownKingdomId].provinces);
+        const ranked = rankKingdom(data.ownKingdomId, data.kingdoms[data.ownKingdomId]);
         if (ranked.length > 0) {
             const lines = [`** Attacker Impact Rankings for ${data.ownKingdomId} **`];
             ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
@@ -2624,7 +2722,7 @@ function formatAttackerImpactRanking(data, weights) {
 
     for (const [kingdomId, kingdomData] of Object.entries(data.kingdoms)) {
         if (kingdomId === data.ownKingdomId) continue;
-        const ranked = rankProvinces(kingdomData.provinces);
+        const ranked = rankKingdom(kingdomId, kingdomData);
         if (ranked.length > 0) {
             const lines = [`** Attacker Impact Rankings for ${kingdomId} **`];
             ranked.forEach((a, i) => lines.push(`${i + 1}. ${a.name} — ${scoreStr(a.score)}`));
@@ -4186,7 +4284,8 @@ module.exports = {
     formatProvinceLogsFromData,
     accumulateProvinceNewsData,
     formatCombinedProvinceSummary,
-    
+    formatAttackerImpactRanking,
+
     // Text cleaning utilities
     removeHtmlTags,
     removeHtmlEntities,

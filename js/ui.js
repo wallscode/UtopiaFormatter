@@ -62,12 +62,17 @@ const advSettings = {
         warOnly: false,
         warDetected: false,
         impactWeights: {
-            acresCaptured:   1,
-            acresRazed:      1,
-            peopleMassacred: 1,
-            captureCount:    0,
-            razeCount:       0,
-            massacreCount:   0,
+            acresCaptured:              1,
+            acresRazed:                 0.7,
+            peopleMassacred:            0.05,
+            captureCount:               0,
+            razeCount:                  0,
+            massacreCount:              50,
+            chainThreshold:             10,
+            chainTargetMultiplier:      2.0,
+            chainTargetWindow:          2,
+            clusteredAttackMultiplier:  1.5,
+            failedAttackPenalty:        50,
         },
         discordCopy: false,
         showAltCopy: false
@@ -1175,12 +1180,17 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
     rightCol.appendChild(makeHint('Weights used to compute the Attacker Impact Rankings score. Enable the section via the Sections list on the left. Set a weight to 0 to exclude that metric.'));
 
     const weightFields = [
-        { key: 'acresCaptured',   label: 'Acres Captured',          hint: 'Weight applied to total land acres captured from your kingdom' },
-        { key: 'acresRazed',      label: 'Acres Razed',             hint: 'Weight applied to total land acres razed in your kingdom' },
-        { key: 'peopleMassacred', label: 'People Massacred',        hint: 'Weight applied to total peasants killed via massacre attacks' },
-        { key: 'captureCount',    label: 'Count: Land Captures',    hint: 'Weight applied to the number of land-capturing attacks (trad march, ambush, conquest)' },
-        { key: 'razeCount',       label: 'Count: Raze Attacks',     hint: 'Weight applied to the number of raze attacks' },
-        { key: 'massacreCount',   label: 'Count: Massacre Attacks', hint: 'Weight applied to the number of massacre attacks' },
+        { key: 'acresCaptured',             label: 'Acres Captured',             hint: 'Per-acre weight for land captured from a defender (trad march, ambush, conquest)' },
+        { key: 'acresRazed',                label: 'Acres Razed',                hint: 'Per-acre weight for buildings razed off a defender. Default lower than acres captured because razes leave the land intact.' },
+        { key: 'peopleMassacred',           label: 'People Massacred',           hint: 'Per-person weight for peasants killed via massacre attacks' },
+        { key: 'captureCount',              label: 'Count: Land Captures',       hint: 'Flat bonus added per land-capturing attack (on top of per-acre value)' },
+        { key: 'razeCount',                 label: 'Count: Raze Attacks',        hint: 'Flat bonus added per raze attack (on top of per-acre value)' },
+        { key: 'massacreCount',             label: 'Count: Massacre Attacks',    hint: 'Flat bonus added per massacre attack — reflects the high offensive investment a massacre requires' },
+        { key: 'chainThreshold',            label: 'Chain Threshold',            hint: 'A defender becomes a chain target once it has received this many successful attacks. All of its incoming attacks then get the chain multiplier (retroactively).', step: 1, min: 1, integer: true },
+        { key: 'chainTargetMultiplier',     label: 'Chain Target Multiplier',    hint: 'Multiplier applied to attacks on chain-target defenders. Default 2.0 doubles their value.' },
+        { key: 'chainTargetWindow',         label: 'Chain Target Window (days)', hint: 'In-game days. An attack on a chain target gets the cluster bonus if another successful attack on the same defender lands within this window.', step: 1, min: 1, integer: true },
+        { key: 'clusteredAttackMultiplier', label: 'Clustered Attack Multiplier', hint: 'Extra multiplier on top of the chain bonus when an attack on a chain target is clustered within the window. Default 1.5.' },
+        { key: 'failedAttackPenalty',       label: 'Failed Attack Penalty',      hint: 'Points subtracted from an attacker\'s score for each bounce (failed invasion attempt)' },
     ];
 
     for (const field of weightFields) {
@@ -1194,14 +1204,15 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         const input = document.createElement('input');
         input.type = 'number';
         input.id = `adv-kn-weight-${field.key}`;
-        input.min = '0';
-        input.step = '0.1';
+        input.min = field.min != null ? String(field.min) : '0';
+        input.step = field.step != null ? String(field.step) : '0.1';
         input.style.width = '5em';
         input.value = advSettings.kingdomNews.impactWeights[field.key];
         input.addEventListener('change', () => {
-            const val = parseFloat(input.value);
-            if (!isNaN(val) && val >= 0) {
-                advSettings.kingdomNews.impactWeights[field.key] = val;
+            const raw = field.integer ? parseInt(input.value, 10) : parseFloat(input.value);
+            const min = field.min != null ? field.min : 0;
+            if (!isNaN(raw) && raw >= min) {
+                advSettings.kingdomNews.impactWeights[field.key] = raw;
                 applyAndRerender(elements);
             }
         });

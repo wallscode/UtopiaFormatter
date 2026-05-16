@@ -499,4 +499,230 @@ try {
     console.log('❌ Test 9 failed with error:', error.message);
 }
 
+// =============================================================================
+// Test 10: Attacker Impact Ranking — chain detection, multipliers, cluster, bounce
+// =============================================================================
+console.log('\n🧪 Test 10: Attacker Impact Ranking scoring...');
+try {
+    const { assert, summary } = makeAssert();
+
+    function makeSyntheticData(records, provinceOverrides) {
+        // Build minimal data shape that formatAttackerImpactRanking consumes.
+        const data = {
+            ownKingdomId: '5:7',
+            kingdoms: {},
+            attackRecords: records,
+        };
+        // Auto-register every attacker/defender province seen.
+        for (const r of records) {
+            for (const side of [
+                { key: r.attackerKey, kingdom: r.attackerKingdom, made: true },
+                { key: r.defenderKey, kingdom: r.defenderKingdom, made: false },
+            ]) {
+                if (!data.kingdoms[side.kingdom]) data.kingdoms[side.kingdom] = { provinces: {} };
+                if (!data.kingdoms[side.kingdom].provinces[side.key]) {
+                    data.kingdoms[side.kingdom].provinces[side.key] = {
+                        attacksMade: 0, attacksSuffered: 0, bouncesMade: 0,
+                    };
+                }
+                if (side.made) data.kingdoms[side.kingdom].provinces[side.key].attacksMade++;
+                else           data.kingdoms[side.kingdom].provinces[side.key].attacksSuffered++;
+            }
+        }
+        // Apply manual overrides (e.g. set bouncesMade explicitly).
+        if (provinceOverrides) {
+            for (const [kingdom, provs] of Object.entries(provinceOverrides)) {
+                for (const [provName, fields] of Object.entries(provs)) {
+                    if (!data.kingdoms[kingdom]) data.kingdoms[kingdom] = { provinces: {} };
+                    if (!data.kingdoms[kingdom].provinces[provName]) {
+                        data.kingdoms[kingdom].provinces[provName] = {
+                            attacksMade: 0, attacksSuffered: 0, bouncesMade: 0,
+                        };
+                    }
+                    Object.assign(data.kingdoms[kingdom].provinces[provName], fields);
+                }
+            }
+        }
+        return data;
+    }
+
+    function parseScore(output, kingdomId, provName) {
+        const lines = output.split('\n');
+        let inBlock = false;
+        for (const line of lines) {
+            if (line.startsWith('** Attacker Impact Rankings for ')) {
+                inBlock = line.includes(`for ${kingdomId} `);
+                continue;
+            }
+            if (inBlock) {
+                const m = line.match(/^\d+\.\s+(.+?)\s+—\s+(-?[\d.]+)$/);
+                if (m && m[1] === provName) return parseFloat(m[2]);
+            }
+        }
+        return null;
+    }
+
+    // Defaults used throughout this test block (must mirror parser.js defaults).
+    const defaults = {
+        acresCaptured: 1, acresRazed: 0.7, peopleMassacred: 0.05,
+        captureCount: 0, razeCount: 0, massacreCount: 50,
+        chainThreshold: 10, chainTargetMultiplier: 2.0,
+        chainTargetWindow: 2, clusteredAttackMultiplier: 1.5,
+        failedAttackPenalty: 50,
+    };
+
+    // — Scenario A: chain target detection at the threshold (10 hits vs 9 hits).
+    {
+        const records = [];
+        for (let i = 0; i < 10; i++) {
+            records.push({
+                attackerKey: 'A', attackerKingdom: '5:7',
+                defenderKey: 'Heavy (2:6)', defenderKingdom: '2:6',
+                attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0,
+                success: true, dateVal: 100 + i * 10, // spread far apart, no clustering
+            });
+        }
+        for (let i = 0; i < 9; i++) {
+            records.push({
+                attackerKey: 'B', attackerKingdom: '5:7',
+                defenderKey: 'Light (2:6)', defenderKingdom: '2:6',
+                attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0,
+                success: true, dateVal: 200 + i * 10,
+            });
+        }
+        const data = makeSyntheticData(records);
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        // A: 10 attacks on chain target, 40 acres each, ×2 chain = 800
+        // B: 9 attacks on non-chain target, 40 acres each, ×1 = 360
+        assert('Chain target attacker (10 hits) scores 800', parseScore(out, '5:7', 'A'), 800);
+        assert('Non-chain attacker (9-hit defender) scores 360', parseScore(out, '5:7', 'B'), 360);
+    }
+
+    // — Scenario B: chain bonus applies retroactively to all attacks (first 10 included).
+    {
+        // Single attacker hits a chain target exactly 10 times. All 10 attacks get the ×2 bonus.
+        const records = [];
+        for (let i = 0; i < 10; i++) {
+            records.push({
+                attackerKey: 'Solo', attackerKingdom: '5:7',
+                defenderKey: 'Chain (2:6)', defenderKingdom: '2:6',
+                attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0,
+                success: true, dateVal: 100 + i * 10,
+            });
+        }
+        const data = makeSyntheticData(records);
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        assert('All 10 attacks scored with chain multiplier', parseScore(out, '5:7', 'Solo'), 800);
+    }
+
+    // — Scenario C: time clustering inside the 2-day window.
+    {
+        // 11 attacks needed so defender qualifies as chain target.
+        // 2 of them clustered 1 day apart; remaining 9 spread far apart.
+        const records = [];
+        // Clustered pair: same defender, dates 1 day apart.
+        records.push({ attackerKey: 'Clusterer', attackerKingdom: '5:7', defenderKey: 'Cluster (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 100 });
+        records.push({ attackerKey: 'Clusterer', attackerKingdom: '5:7', defenderKey: 'Cluster (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 101 });
+        // 9 padding attacks far apart from each other and the pair.
+        for (let i = 0; i < 9; i++) {
+            records.push({ attackerKey: 'Padder', attackerKingdom: '5:7', defenderKey: 'Cluster (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 200 + i * 10 });
+        }
+        const data = makeSyntheticData(records);
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        // Clusterer: 2 × 40 × 2.0 (chain) × 1.5 (cluster) = 240
+        assert('Clustered attacks (1 day apart) get cluster multiplier', parseScore(out, '5:7', 'Clusterer'), 240);
+        // Padder: 9 × 40 × 2.0 = 720 (chain only; far apart so no cluster)
+        assert('Far-apart attacks on chain target get no cluster bonus', parseScore(out, '5:7', 'Padder'), 720);
+    }
+
+    // — Scenario D: attacks outside the window do NOT cluster.
+    {
+        const records = [];
+        records.push({ attackerKey: 'X', attackerKingdom: '5:7', defenderKey: 'D (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 100 });
+        records.push({ attackerKey: 'X', attackerKingdom: '5:7', defenderKey: 'D (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 103 }); // 3 days apart > window 2
+        for (let i = 0; i < 8; i++) {
+            records.push({ attackerKey: 'Y', attackerKingdom: '5:7', defenderKey: 'D (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 200 + i * 10 });
+        }
+        const data = makeSyntheticData(records);
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        // X: 2 × 40 × 2.0 = 160 (chain only, outside cluster window)
+        assert('Attacks 3 days apart do not cluster (window=2)', parseScore(out, '5:7', 'X'), 160);
+    }
+
+    // — Scenario E: bounce penalty subtracts from successful score.
+    {
+        const records = [
+            { attackerKey: 'Bouncer', attackerKingdom: '5:7', defenderKey: 'V (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 100 },
+            { attackerKey: 'Bouncer', attackerKingdom: '5:7', defenderKey: 'V (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 200 },
+        ];
+        const data = makeSyntheticData(records, {
+            '5:7': { 'Bouncer': { bouncesMade: 3, attacksMade: 5 } }
+        });
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        // 2 captures × 40 = 80; minus 3 × 50 bounces = -70
+        assert('Bounce penalty produces negative score when it dominates', parseScore(out, '5:7', 'Bouncer'), -70);
+    }
+
+    // — Scenario F: every knob is wired — neutralising them collapses to base sum.
+    {
+        const records = [];
+        for (let i = 0; i < 11; i++) {
+            records.push({ attackerKey: 'Neutral', attackerKingdom: '5:7', defenderKey: 'Chain (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 100 + i });
+        }
+        const data = makeSyntheticData(records, {
+            '5:7': { 'Neutral': { bouncesMade: 4 } }
+        });
+        const neutralWeights = {
+            acresCaptured: 1, acresRazed: 1, peopleMassacred: 1,
+            captureCount: 0, razeCount: 0, massacreCount: 0,
+            chainThreshold: 10, chainTargetMultiplier: 1, // neutralised
+            chainTargetWindow: 2, clusteredAttackMultiplier: 1, // neutralised
+            failedAttackPenalty: 0, // neutralised
+        };
+        const out = parser.formatAttackerImpactRanking(data, neutralWeights);
+        // 11 × 40 × 1 = 440; bounces ignored; cluster/chain neutralised.
+        assert('Neutralising chain/cluster/bounce knobs collapses to base sum', parseScore(out, '5:7', 'Neutral'), 440);
+    }
+
+    // — Scenario G: massacre + raze contribute via correct buckets and weights.
+    {
+        const records = [
+            // 1 massacre on a non-chain defender: 800 people × 0.05 + 50 = 40 + 50 = 90
+            { attackerKey: 'Mage', attackerKingdom: '5:7', defenderKey: 'TM (2:6)', defenderKingdom: '2:6', attackType: 'massacre', acres: 0, razeAcres: 0, people: 800, success: true, dateVal: 100 },
+            // 1 raze on a non-chain defender: 50 raze acres × 0.7 = 35
+            { attackerKey: 'Razer', attackerKingdom: '5:7', defenderKey: 'R (2:6)', defenderKingdom: '2:6', attackType: 'raze', acres: 0, razeAcres: 50, people: 0, success: true, dateVal: 100 },
+        ];
+        const data = makeSyntheticData(records);
+        const out = parser.formatAttackerImpactRanking(data, defaults);
+        assert('Massacre scores 800 × 0.05 + 50 = 90', parseScore(out, '5:7', 'Mage'), 90);
+        assert('Raze scores 50 × 0.7 = 35', parseScore(out, '5:7', 'Razer'), 35);
+    }
+
+    // — Scenario H: real fixture sanity check — Impact Rankings block produced with default weights.
+    {
+        const out = parser.parseKingdomNewsLog(originalText);
+        const hasOwn = out.includes('** Attacker Impact Rankings for ');
+        assert('Real fixture produces at least one Impact Rankings block', hasOwn, true);
+        // First entry of any Impact Rankings block must have a non-zero numeric score.
+        const lines = out.split('\n');
+        let inBlock = false;
+        let firstEntry = null;
+        for (const line of lines) {
+            if (line.startsWith('** Attacker Impact Rankings for ')) { inBlock = true; continue; }
+            if (inBlock) {
+                const m = line.match(/^1\.\s+.+?\s+—\s+(-?[\d.]+)$/);
+                if (m) { firstEntry = parseFloat(m[1]); break; }
+                if (line.startsWith('** ')) break;
+            }
+        }
+        assert('Top-ranked attacker has a non-zero score on real data', firstEntry != null && firstEntry > 0, true);
+    }
+
+    const { passed, failed } = summary();
+    console.log(`${failed === 0 ? '✅' : '❌'} Attacker Impact Ranking tests — ${passed} passed, ${failed} failed`);
+} catch (error) {
+    console.log('❌ Test 10 failed with error:', error.message);
+    console.log(error.stack);
+}
+
 console.log('\n=== KINGDOM NEWS LOG TESTS COMPLETE ===\n');
