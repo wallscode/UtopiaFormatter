@@ -2603,13 +2603,13 @@ function formatAttackerImpactRanking(data, weights) {
     const w = weights || {};
     const wAcresCaptured            = w.acresCaptured            != null ? Number(w.acresCaptured)            : 1;
     const wAcresRazed               = w.acresRazed               != null ? Number(w.acresRazed)               : 0.7;
-    const wPeopleMassacred          = w.peopleMassacred          != null ? Number(w.peopleMassacred)          : 0.05;
+    const wPeopleMassacred          = w.peopleMassacred          != null ? Number(w.peopleMassacred)          : 0.1;
     const wCaptureCount             = w.captureCount             != null ? Number(w.captureCount)             : 0;
     const wRazeCount                = w.razeCount                != null ? Number(w.razeCount)                : 0;
     const wMassacreCount            = w.massacreCount            != null ? Number(w.massacreCount)            : 50;
     const chainThreshold            = w.chainThreshold           != null ? Number(w.chainThreshold)           : 10;
     const chainTargetMultiplier     = w.chainTargetMultiplier    != null ? Number(w.chainTargetMultiplier)    : 2.0;
-    const chainTargetWindow         = w.chainTargetWindow        != null ? Number(w.chainTargetWindow)        : 2;
+    const chainTargetWindow         = w.chainTargetWindow        != null ? Number(w.chainTargetWindow)        : 4;
     const clusteredAttackMultiplier = w.clusteredAttackMultiplier != null ? Number(w.clusteredAttackMultiplier) : 1.5;
     const failedAttackPenalty       = w.failedAttackPenalty      != null ? Number(w.failedAttackPenalty)      : 50;
 
