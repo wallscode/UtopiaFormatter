@@ -64,10 +64,10 @@ const advSettings = {
         impactWeights: {
             acresCaptured:              1,
             acresRazed:                 0.7,
-            peopleMassacred:            0.1,
+            peopleMassacred:            0.3,
             captureCount:               0,
             razeCount:                  0,
-            massacreCount:              50,
+            massacreCount:              0,
             chainThreshold:             10,
             chainTargetMultiplier:      2.0,
             chainTargetWindow:          4,
