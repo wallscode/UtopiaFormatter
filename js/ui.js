@@ -105,7 +105,7 @@ const advSettings = {
             'Attacks Made': true,
             'Military Training': false
         },
-        showAverages: false,
+        showAverages: true,
         showFailedThievery: false,
         showFailedSpellAttempts: false,
         showSuccessThieveryLosses: false,
@@ -192,7 +192,7 @@ const advSettings = {
             'Daily Login Bonus':             true,
             'Scientists Gained':             false,
         },
-        showAverages:               false,
+        showAverages:               true,
         showFailedThievery:         false,
         showFailedSpellAttempts:    false,
         showSuccessThieveryLosses:  false,
