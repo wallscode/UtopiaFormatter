@@ -73,6 +73,7 @@ const advSettings = {
             chainTargetWindow:          4,
             clusteredAttackMultiplier:  1.5,
             failedAttackPenalty:        50,
+            lateWarWindow:              8,
         },
         discordCopy: false,
         showAltCopy: false
@@ -1193,6 +1194,7 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         { key: 'chainTargetWindow',         label: 'Chain Target Window (days)', hint: 'In-game days. An attack on a chain target gets the cluster bonus if another successful attack on the same defender lands within this window.', step: 1, min: 1, integer: true },
         { key: 'clusteredAttackMultiplier', label: 'Clustered Attack Multiplier', hint: 'Extra multiplier on top of the chain bonus when an attack on a chain target is clustered within the window. Default 1.5.' },
         { key: 'failedAttackPenalty',       label: 'Failed Attack Penalty',      hint: 'Points subtracted from an attacker\'s score for each bounce (failed invasion attempt)' },
+        { key: 'lateWarWindow',             label: 'Late-War Window (days)',      hint: 'In-game days before the end of the parsed data to treat as the late-war phase. Used by the post-massacre land penalty to exempt late-war land captures from scoring reductions.', step: 1, min: 0, integer: true },
     ];
 
     for (const field of weightFields) {

@@ -2612,6 +2612,12 @@ function formatAttackerImpactRanking(data, weights) {
     const chainTargetWindow         = w.chainTargetWindow        != null ? Number(w.chainTargetWindow)        : 4;
     const clusteredAttackMultiplier = w.clusteredAttackMultiplier != null ? Number(w.clusteredAttackMultiplier) : 1.5;
     const failedAttackPenalty       = w.failedAttackPenalty      != null ? Number(w.failedAttackPenalty)      : 50;
+    const lateWarWindow             = w.lateWarWindow            != null ? Number(w.lateWarWindow)            : 8;
+
+    // Late-war cutoff: attacks at or after this dateVal are in the late-war phase.
+    // Used by the post-massacre land penalty (Uto-y6ky) to skip penalising late-war captures.
+    // eslint-disable-next-line no-unused-vars
+    const lateWarCutoff = data.maxDateVal != null ? data.maxDateVal - lateWarWindow + 1 : null;
 
     const records = Array.isArray(data.attackRecords) ? data.attackRecords : [];
 
