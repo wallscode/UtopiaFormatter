@@ -1171,6 +1171,8 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         rightCol.appendChild(warGroup);
     }
 
+    renderRawTextToggle(rightCol, elements);
+
     // ── Impact Ranking Weights ────────────────────────────────────────────────
     const impactTitle = document.createElement('div');
     impactTitle.className = 'adv-subgroup-title';
@@ -1222,8 +1224,6 @@ function renderKingdomNewsSettings(leftCol, rightCol, elements) {
         if (field.hint) group.appendChild(makeHint(field.hint));
         rightCol.appendChild(group);
     }
-
-    renderRawTextToggle(rightCol, elements);
 
     renderCopyButtonsSection(rightCol, 'kingdomNews', 'kn', elements);
 }
