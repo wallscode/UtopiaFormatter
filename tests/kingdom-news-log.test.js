@@ -757,10 +757,24 @@ try {
         ];
         const data = makeSyntheticData(records);
         data.maxDateVal = 115; // cutoff = 115 - 8 + 1 = 108
-        const w = { ...defaults, chainThreshold: 99, lateWarWindow: 8 };
+        // Disable lateWarLandMultiplier to isolate the post-massacre exemption check.
+        const w = { ...defaults, chainThreshold: 99, lateWarWindow: 8, lateWarLandMultiplier: 1.0 };
         const out = parser.formatAttackerImpactRanking(data, w);
-        // Late-war → penalty skipped → 40 × 1.0 = 40
+        // Late-war → post-massacre penalty skipped → 40 × 1.0 = 40 (lateWarLandMultiplier neutralised)
         assert('Late-war land capture within post-massacre window is NOT penalised', parseScore(out, '5:7', 'LandGrabber'), 40);
+    }
+
+    // — Scenario K2: late-war land multiplier halves capture value in the late-war window.
+    {
+        const records = [
+            { attackerKey: 'LateAttacker', attackerKingdom: '5:7', defenderKey: 'V (2:6)', defenderKingdom: '2:6', attackType: 'tradMarch', acres: 40, razeAcres: 0, people: 0, success: true, dateVal: 108 },
+        ];
+        const data = makeSyntheticData(records);
+        data.maxDateVal = 115; // cutoff = 115 - 8 + 1 = 108 → capture at 108 is late-war
+        const w = { ...defaults, chainThreshold: 99, lateWarWindow: 8, lateWarLandMultiplier: 0.5 };
+        const out = parser.formatAttackerImpactRanking(data, w);
+        // 40 × 1.0 × 0.5 (late-war) = 20
+        assert('Late-war land capture scored at half value (lateWarLandMultiplier=0.5)', parseScore(out, '5:7', 'LateAttacker'), 20);
     }
 
     // — Scenario L: setting postMassacreLandMultiplier to 1.0 disables the penalty.

@@ -2615,9 +2615,11 @@ function formatAttackerImpactRanking(data, weights) {
     const lateWarWindow                 = w.lateWarWindow                 != null ? Number(w.lateWarWindow)                 : 8;
     const postMassacreWindow            = w.postMassacreWindow            != null ? Number(w.postMassacreWindow)            : 12;
     const postMassacreLandMultiplier    = w.postMassacreLandMultiplier    != null ? Number(w.postMassacreLandMultiplier)    : 0.3;
+    const lateWarLandMultiplier         = w.lateWarLandMultiplier         != null ? Number(w.lateWarLandMultiplier)         : 0.5;
 
     // Late-war cutoff: attacks at or after this dateVal are in the late-war phase.
-    // Land captures in late-war are exempt from the post-massacre land penalty.
+    // Land captures in this window are exempt from the post-massacre penalty and
+    // instead receive the lateWarLandMultiplier reduction.
     const lateWarCutoff = data.maxDateVal != null ? data.maxDateVal - lateWarWindow + 1 : null;
 
     const records = Array.isArray(data.attackRecords) ? data.attackRecords : [];
@@ -2704,6 +2706,14 @@ function formatAttackerImpactRanking(data, weights) {
                     );
                     if (inWindow) attackValue *= postMassacreLandMultiplier;
                 }
+            }
+        }
+
+        // Late-war land multiplier: captures in the final lateWarWindow days count less
+        // since those acres are returned or less strategically meaningful.
+        if (r.acres > 0 && lateWarLandMultiplier < 1.0) {
+            if (lateWarCutoff != null && r.dateVal != null && r.dateVal >= lateWarCutoff) {
+                attackValue *= lateWarLandMultiplier;
             }
         }
 
