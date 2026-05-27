@@ -1047,6 +1047,9 @@ function accumulateProvinceLogsData(text) {
         // Bounced outgoing attack (type unknown)
         } else if (line.includes('march onto the battlefield') && line.includes('driven back')) {
             attacksBounced++;
+        // Bounced outgoing attack — "no match for the defenses" variant
+        } else if (line.startsWith('Your army was no match for the defenses of') && line.includes('hastily retreat out of battle')) {
+            attacksBounced++;
         // Outgoing Traditional March result
         } else if (line.startsWith('Your forces arrive at') && line.includes('has taken')) {
             const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
@@ -3688,6 +3691,48 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Arson received — "N acres of buildings burned down!" (scr-k26y)
+    const arsonM = eventText.match(/^([\d,]+) acres of buildings burned down!$/i);
+    if (arsonM) {
+        data.arsonOps.count++;
+        data.arsonOps.totalAcres += parseGameInt(arsonM[1]);
+        return;
+    }
+
+    // Greater Arson received — "N [building type] burned down!" (scr-dh52)
+    const greaterArsonM = eventText.match(/^([\d,]+) (.+?) burned down!$/i);
+    if (greaterArsonM) {
+        const rawType = greaterArsonM[2].trim();
+        const normalized = PROVINCE_LOGS_CONFIG.BUILDINGS.find(
+            b => b.toLowerCase() === rawType.toLowerCase()
+        ) || rawType.replace(/\b\w/g, c => c.toUpperCase());
+        data.greaterArsonOps.count++;
+        data.greaterArsonOps.buildings[normalized] = (data.greaterArsonOps.buildings[normalized] || 0) + parseGameInt(greaterArsonM[1]);
+        return;
+    }
+
+    // Assassinate Wizards received — "N wizards were assassinated!" (scr-rwsg)
+    const assassinateWizardsM = eventText.match(/^([\d,]+) wizards? were assassinated!$/i);
+    if (assassinateWizardsM) {
+        data.assassinateWizards.count++;
+        data.assassinateWizards.totalWizards += parseGameInt(assassinateWizardsM[1]);
+        return;
+    }
+
+    // Bribe Thieves received — turncoats discovered in thieves' guild (scr-y45n)
+    if (eventText.includes("turncoats amongst our thieves' guild")) {
+        data.bribeThieves++;
+        return;
+    }
+
+    // Destabilize Guilds received — guilds disrupted for N days (scr-g522)
+    const destabilizeGuildsM = eventText.match(/Our Guilds have been disrupted.+?for the next (\d+) days?/i);
+    if (destabilizeGuildsM) {
+        data.destabilizeGuilds.count++;
+        data.destabilizeGuilds.totalDays += parseInt(destabilizeGuildsM[1]);
+        return;
+    }
+
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines and short copy-paste
     // artifacts like truncated words are silently skipped)
@@ -3765,12 +3810,14 @@ function formatProvinceNewsOutput(data) {
         data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
         data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
         data.turncoatGenerals > 0 || data.failedPropaganda > 0 || data.kidnappedPeasants > 0 ||
-        data.nightStrike.count > 0;
+        data.nightStrike.count > 0 || data.arsonOps.count > 0 || data.greaterArsonOps.count > 0 ||
+        data.assassinateWizards.count > 0 || data.bribeThieves > 0 || data.destabilizeGuilds.count > 0;
     if (hasThieveryImpacts) {
         const thievSuccesses = data.rioting.count + data.manaDis.count + data.kidnappingOps +
             data.turncoatGenerals + data.propagandaOps +
             data.stolenOps.gold + data.stolenOps.bushels + data.stolenOps.runes + data.stolenOps.warHorses +
-            data.nightStrike.count;
+            data.nightStrike.count + data.arsonOps.count + data.greaterArsonOps.count +
+            data.assassinateWizards.count + data.bribeThieves + data.destabilizeGuilds.count;
         const thievFailures = data.thieveryDetected + data.thieveryIntercepted + data.failedPropaganda;
         const thievTotal = thievSuccesses + thievFailures;
         const thievPct = thievTotal > 0 ? ` (${Math.round(thievSuccesses / thievTotal * 100)}%)` : '';
@@ -3804,6 +3851,16 @@ function formatProvinceNewsOutput(data) {
         if (data.failedPropaganda > 0)  out.push(`  Failed propaganda: ${data.failedPropaganda}`);
         if (data.turncoatGenerals > 0)  out.push(`  Bribe General: ${data.turncoatGenerals}`);
         if (data.nightStrike.count > 0) out.push(`  Night Strike: ${pluralize(data.nightStrike.count, 'occurrence')}, ${formatNumber(data.nightStrike.totalTroopsLost)} troops lost`);
+        if (data.arsonOps.count > 0) out.push(`  Arson: ${pluralize(data.arsonOps.count, 'occurrence')}, ${formatNumber(data.arsonOps.totalAcres)} acres burned`);
+        if (data.greaterArsonOps.count > 0) {
+            out.push(`  Greater Arson: ${pluralize(data.greaterArsonOps.count, 'occurrence')}`);
+            for (const [bld, n] of Object.entries(data.greaterArsonOps.buildings)) {
+                out.push(`    ${bld}: ${formatNumber(n)}`);
+            }
+        }
+        if (data.assassinateWizards.count > 0) out.push(`  Assassinate Wizards: ${pluralize(data.assassinateWizards.count, 'occurrence')}, ${formatNumber(data.assassinateWizards.totalWizards)} wizards killed`);
+        if (data.bribeThieves > 0) out.push(`  Bribe Thieves: ${data.bribeThieves}`);
+        if (data.destabilizeGuilds.count > 0) out.push(`  Destabilize Guilds: ${pluralize(data.destabilizeGuilds.count, 'occurrence')}, ${data.destabilizeGuilds.totalDays} days`);
     }
 
     // -- Spell impacts: attempts, meteor shower, and duration spells
@@ -4055,6 +4112,11 @@ function accumulateProvinceNewsData(text, options = {}) {
         kidnappedPeasants:    0,
         turncoatGenerals:     0,
         failedPropaganda:     0,
+        arsonOps:             { count: 0, totalAcres: 0 },
+        greaterArsonOps:      { count: 0, buildings: {} },
+        assassinateWizards:   { count: 0, totalWizards: 0 },
+        bribeThieves:         0,
+        destabilizeGuilds:    { count: 0, totalDays: 0 },
         warLandPenalty:       null,
         warResourceBonus:     null,
         starvation:           { count: 0, total: 0, byType: {} },

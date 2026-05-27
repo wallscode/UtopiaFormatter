@@ -1,6 +1,6 @@
 ---
 id: scr-hlj6
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-05-04T11:16:37Z
