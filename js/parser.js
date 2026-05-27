@@ -3571,9 +3571,9 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
-    // Failed propaganda
+    // Propaganda op that converted 0 troops — counts as a successful op, no desertion impact
     if (eventText.indexOf('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.') !== -1) {
-        data.failedPropaganda++;
+        data.propagandaOps++;
         return;
     }
 
@@ -3808,7 +3808,7 @@ function formatProvinceNewsOutput(data) {
     // Thievery Impacts — includes stolen resources (Uto-hb3m), source tracking, and op impacts
     const hasThieveryImpacts = data.thieveryDetected > 0 || data.thieveryIntercepted > 0 ||
         data.stolen.gold > 0 || data.stolen.bushels > 0 || data.stolen.runes > 0 || data.stolen.warHorses > 0 ||
-        data.rioting.count > 0 || data.manaDis.count > 0 || data.desertions.total > 0 ||
+        data.rioting.count > 0 || data.manaDis.count > 0 || data.propagandaOps > 0 ||
         data.turncoatGenerals > 0 || data.failedPropaganda > 0 || data.kidnappedPeasants > 0 ||
         data.nightStrike.count > 0 || data.arsonOps.count > 0 || data.greaterArsonOps.count > 0 ||
         data.assassinateWizards.count > 0 || data.bribeThieves > 0 || data.destabilizeGuilds.count > 0;
@@ -3842,10 +3842,11 @@ function formatProvinceNewsOutput(data) {
             out.push(`  Incite Riots: ${pluralize(data.rioting.count, 'occurrence')}, ${data.rioting.totalDays} days`);
         if (data.manaDis.count > 0)
             out.push(`  Sabotage Wizards: ${pluralize(data.manaDis.count, 'occurrence')}, ${data.manaDis.totalDays} days`);
-        if (data.desertions.total > 0) {
-            const types = Object.keys(data.desertions.byType);
-            const breakdown = types.map(t => `${t}: ${data.desertions.byType[t]}`).join(', ');
-            out.push(`  Propaganda: ${formatNumber(data.desertions.total)} troops deserted (${breakdown})`);
+        if (data.propagandaOps > 0) {
+            const desertionStr = data.desertions.total > 0
+                ? `, ${formatNumber(data.desertions.total)} troops deserted (${Object.entries(data.desertions.byType).map(([t, n]) => `${t}: ${n}`).join(', ')})`
+                : ', 0 troops deserted';
+            out.push(`  Propaganda: ${pluralize(data.propagandaOps, 'occurrence')}${desertionStr}`);
         }
         if (data.kidnappedPeasants > 0) out.push(`  Kidnapping: ${formatNumber(data.kidnappedPeasants)} peasants kidnapped`);
         if (data.failedPropaganda > 0)  out.push(`  Failed propaganda: ${data.failedPropaganda}`);

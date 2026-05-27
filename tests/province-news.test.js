@@ -122,8 +122,8 @@ assertContains(output, 'Sabotage Wizards:', 'Sabotage Wizards line present in Th
 assertContains(output, 'Sabotage Wizards: 12 occurrences', 'Correct Sabotage Wizards count (12)');
 // Propaganda (was Troop desertions)
 assertContains(output, 'Propaganda:', 'Propaganda line present');
-// Failed propaganda
-assertContains(output, 'Failed propaganda:', 'Failed propaganda line present');
+// Propaganda with 0 conversions — shows as successful op in Propaganda line
+assertContains(output, 'Propaganda:', 'Propaganda line present (includes 0-conversion ops)');
 // Bribe General (was Turncoat general)
 assertContains(output, 'Bribe General:', 'Bribe General line present');
 
@@ -384,10 +384,12 @@ function accum(lines) {
     assert(d.turncoatGenerals === 1, 'Turncoat general: counted');
 })();
 
-// Failed propaganda
+// Propaganda op with 0 conversions — successful op, propagandaOps incremented
 (function() {
     const d = accum(pnLine('Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them.'));
-    assert(d.failedPropaganda === 1, 'Failed propaganda: counted');
+    assert(d.propagandaOps === 1, 'Propaganda (0-conversion): propagandaOps = 1');
+    assert(d.failedPropaganda === 0, 'Propaganda (0-conversion): failedPropaganda = 0');
+    assert(d.desertions.total === 0, 'Propaganda (0-conversion): no troops deserted');
 })();
 
 // Received spells: Greed
