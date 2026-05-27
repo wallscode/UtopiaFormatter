@@ -3854,7 +3854,8 @@ function formatProvinceNewsOutput(data) {
         if (data.nightStrike.count > 0) out.push(`  Night Strike: ${pluralize(data.nightStrike.count, 'occurrence')}, ${formatNumber(data.nightStrike.totalTroopsLost)} troops lost`);
         if (data.arsonOps.count > 0) out.push(`  Arson: ${pluralize(data.arsonOps.count, 'occurrence')}, ${formatNumber(data.arsonOps.totalAcres)} acres burned`);
         if (data.greaterArsonOps.count > 0) {
-            out.push(`  Greater Arson: ${pluralize(data.greaterArsonOps.count, 'occurrence')}`);
+            const totalBldgs = Object.values(data.greaterArsonOps.buildings).reduce((s, n) => s + n, 0);
+            out.push(`  Greater Arson: ${pluralize(data.greaterArsonOps.count, 'occurrence')}, ${formatNumber(totalBldgs)} buildings burned`);
             for (const [bld, n] of Object.entries(data.greaterArsonOps.buildings)) {
                 out.push(`    ${bld}: ${formatNumber(n)}`);
             }
