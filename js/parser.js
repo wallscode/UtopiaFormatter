@@ -637,6 +637,8 @@ function accumulateProvinceLogsData(text) {
     const spellOps = [];     // { target, spell, success, impact, impactUnit }
     const attacksMade = [];  // { type, target, kingdom, acres, credits, peasants }
     let attacksBounced = 0;
+    let meteorDamageDays = 0;
+    const meteorCasualties = { total: 0, byType: {} };
 
     // Resources stolen counters
     let goldCoinsStolen = 0;
@@ -1050,6 +1052,20 @@ function accumulateProvinceLogsData(text) {
         // Bounced outgoing attack — "no match for the defenses" variant
         } else if (line.startsWith('Your army was no match for the defenses of') && line.includes('hastily retreat out of battle')) {
             attacksBounced++;
+        // Incoming meteor shower damage tick
+        } else if (line.startsWith('Meteors rain across the lands and kill')) {
+            meteorDamageDays++;
+            const killStr = line.replace(/^Meteors rain across the lands and kill\s+/i, '').replace(/!$/, '');
+            const parts = killStr.split(/,\s*|\s+and\s+/);
+            for (const part of parts) {
+                const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
+                if (m) {
+                    const count = parseGameInt(m[1]);
+                    const type = m[2].trim();
+                    meteorCasualties.byType[type] = (meteorCasualties.byType[type] || 0) + count;
+                    meteorCasualties.total += count;
+                }
+            }
         // Outgoing Traditional March result
         } else if (line.startsWith('Your forces arrive at') && line.includes('has taken')) {
             const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
@@ -1135,6 +1151,7 @@ function accumulateProvinceLogsData(text) {
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps, attacksMade, attacksBounced,
+        meteorDamageDays, meteorCasualties,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount,
         parseErrors
@@ -1160,6 +1177,7 @@ function formatProvinceLogsFromData(data) {
         exploreAcres, exploreSoldiers, exploreCost,
         constructionCounts, cancelledCounts, razedCounts, scienceCounts, trainingCounts, releaseCounts,
         thiefOps, spellOps, attacksMade, attacksBounced,
+        meteorDamageDays, meteorCasualties,
         goldCoinsStolen, bushelsStolen, runesStolen, warHorsesStolen,
         vaultRobberyCount, granaryRobberyCount, towerRobberyCount, warHorsesCount
     } = data;
@@ -1315,6 +1333,17 @@ function formatProvinceLogsFromData(data) {
     if (dragonBushelsDonated > 0) output += `  ${formatNumber(dragonBushelsDonated)} bushels donated\n`;
     if (dragonTroopsTotal > 0 || dragonPointsTotal > 0) {
         output += `  ${formatNumber(dragonTroopsTotal)} troops sent and weakened by ${formatNumber(dragonPointsTotal)} points\n`;
+    }
+
+    // Incoming Meteor Damage (omitted when no damage ticks detected)
+    if (meteorDamageDays > 0) {
+        output += "\nIncoming Meteor Damage:\n";
+        output += `  ${meteorDamageDays} day${meteorDamageDays !== 1 ? 's' : ''}, ${formatNumber(meteorCasualties.total)} total casualties\n`;
+        Object.entries(meteorCasualties.byType)
+            .sort((a, b) => b[1] - a[1])
+            .forEach(([type, count]) => {
+                output += `  ${type}: ${formatNumber(count)}\n`;
+            });
     }
 
     // Ritual Summary (omitted when no ritual casts detected)
@@ -3412,15 +3441,16 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     // Meteor shower — damage ticks (count days of damage and casualties)
     const meteorM = eventText.match(/Meteors rain across the lands and kill (.+)!/);
     if (meteorM) {
-        const casualtyStr = meteorM[1];
-        const peasantsM = casualtyStr.match(/(\d+) peasants?/);
-        const soldiersM  = casualtyStr.match(/(\d+) soldiers?/);
-        const magiciansM = casualtyStr.match(/(\d+) Magicians?/);
-        const beastsM = casualtyStr.match(/(\d+) Beastmasters?/);
-        if (peasantsM) data.meteorCasualties.peasants    += parseInt(peasantsM[1]);
-        if (soldiersM)  data.meteorCasualties.soldiers    += parseInt(soldiersM[1]);
-        if (magiciansM) data.meteorCasualties.Magicians   += parseInt(magiciansM[1]);
-        if (beastsM) data.meteorCasualties.Beastmasters += parseInt(beastsM[1]);
+        const parts = meteorM[1].split(/,\s*|\s+and\s+/);
+        for (const part of parts) {
+            const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
+            if (m) {
+                const count = parseGameInt(m[1]);
+                const type = m[2].trim();
+                data.meteorCasualties.byType[type] = (data.meteorCasualties.byType[type] || 0) + count;
+                data.meteorCasualties.total += count;
+            }
+        }
         data.meteorDays++;
         return;
     }
@@ -3893,11 +3923,8 @@ function formatProvinceNewsOutput(data) {
         if (data.meteorShower.count > 0)
             out.push(`  Meteor shower: ${pluralize(data.meteorShower.count, 'occurrence')}`);
         if (data.meteorDays > 0) {
-            const casParts = [];
-            if (data.meteorCasualties.peasants > 0)     casParts.push(`peasants: ${formatNumber(data.meteorCasualties.peasants)}`);
-            if (data.meteorCasualties.soldiers > 0)     casParts.push(`soldiers: ${formatNumber(data.meteorCasualties.soldiers)}`);
-            if (data.meteorCasualties.Magicians > 0)    casParts.push(`Magicians: ${formatNumber(data.meteorCasualties.Magicians)}`);
-            if (data.meteorCasualties.Beastmasters > 0) casParts.push(`Beastmasters: ${formatNumber(data.meteorCasualties.Beastmasters)}`);
+            const casParts = Object.entries(data.meteorCasualties.byType)
+                .map(([t, n]) => `${t}: ${formatNumber(n)}`);
             out.push(`  Meteor shower damage: ${data.meteorDays} days${casParts.length ? ` (${casParts.join(', ')})` : ''}`);
         }
         if (data.lightningStrike.count > 0)
@@ -4091,7 +4118,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         attacks:              [],
         failedAttacks:        [],
         meteorDays:           0,
-        meteorCasualties:     { peasants: 0, soldiers: 0, Magicians: 0, Beastmasters: 0 },
+        meteorCasualties:     { total: 0, byType: {} },
         meteorShower:         { count: 0, totalDays: 0 },
         rioting:              { count: 0, totalDays: 0 },
         pitfalls:             { count: 0, totalDays: 0 },

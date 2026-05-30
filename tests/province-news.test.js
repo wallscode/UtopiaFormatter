@@ -444,9 +444,10 @@ function accum(lines) {
         pnLine('Meteors rain across the lands and kill 10 Magicians!'),
     ].join('\n'));
     assert(d.meteorDays === 2, 'Meteor ticks: 2 days counted');
-    assert(d.meteorCasualties.peasants === 20, 'Meteor casualties: peasants = 20');
-    assert(d.meteorCasualties.soldiers === 5, 'Meteor casualties: soldiers = 5');
-    assert(d.meteorCasualties.Magicians === 10, 'Meteor casualties: Magicians = 10');
+    assert(d.meteorCasualties.byType['peasants'] === 20, 'Meteor casualties: peasants = 20');
+    assert(d.meteorCasualties.byType['soldiers'] === 5, 'Meteor casualties: soldiers = 5');
+    assert(d.meteorCasualties.byType['Magicians'] === 10, 'Meteor casualties: Magicians = 10');
+    assert(d.meteorCasualties.total === 35, 'Meteor casualties: total = 35');
 })();
 
 // Spell attempt accumulation from multiple sources
