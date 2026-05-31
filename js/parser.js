@@ -282,6 +282,22 @@ function pluralize(n, word) {
     return n === 1 ? `${n} ${word}` : `${n} ${word}s`;
 }
 
+// Irregular singular→plural mappings for troop names
+const UNIT_PLURAL_MAP = { thief: 'thieves', elf: 'elves', dwarf: 'dwarves' };
+
+/**
+ * Normalises a troop-type name to its plural canonical form so that "peasant"
+ * and "peasants" (or "Beastmaster" and "Beastmasters") merge to the same key.
+ * @param {string} name - Raw type string extracted from game text
+ * @returns {string} Canonical plural form
+ */
+function normalizeUnitName(name) {
+    const lower = name.toLowerCase();
+    if (UNIT_PLURAL_MAP[lower]) return UNIT_PLURAL_MAP[lower];
+    if (name.endsWith('s')) return name;
+    return name + 's';
+}
+
 /**
  * Parses a game number string (which may contain commas) to an integer.
  * @param {string} str - e.g. "1,234" or "500"
@@ -744,12 +760,12 @@ function accumulateProvinceLogsData(text) {
         const darkPactM = line.match(/The Dark Pact takes hold, reanimating (.+) from the enemy's fallen forces/i);
         if (darkPactM) {
             darkPactReanimation.count++;
-            const parts = darkPactM[1].split(/,\s*|\s+and\s+/);
+            const parts = darkPactM[1].replace(/,\s+and\s+/g, ', ').split(/,\s*|\s+and\s+/);
             for (const part of parts) {
                 const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
                 if (m) {
                     const n = parseGameInt(m[1]);
-                    const type = m[2].trim();
+                    const type = normalizeUnitName(m[2].trim());
                     darkPactReanimation.byType[type] = (darkPactReanimation.byType[type] || 0) + n;
                     darkPactReanimation.total += n;
                 }
@@ -1056,12 +1072,12 @@ function accumulateProvinceLogsData(text) {
         } else if (line.startsWith('Meteors rain across the lands and kill')) {
             meteorDamageDays++;
             const killStr = line.replace(/^Meteors rain across the lands and kill\s+/i, '').replace(/!$/, '');
-            const parts = killStr.split(/,\s*|\s+and\s+/);
+            const parts = killStr.replace(/,\s+and\s+/g, ', ').split(/,\s*|\s+and\s+/);
             for (const part of parts) {
                 const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
                 if (m) {
                     const count = parseGameInt(m[1]);
-                    const type = m[2].trim();
+                    const type = normalizeUnitName(m[2].trim());
                     meteorCasualties.byType[type] = (meteorCasualties.byType[type] || 0) + count;
                     meteorCasualties.total += count;
                 }
@@ -3426,11 +3442,11 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         if (/^An unknown province from /i.test(attacker)) attacker = `An unknown province`;
         const kingdom = failedAtkM[2];
         const losses = {};
-        const lossParts = failedAtkM[3].split(/,\s*|\s+and\s+/);
+        const lossParts = failedAtkM[3].replace(/,\s+and\s+/g, ', ').split(/,\s*|\s+and\s+/);
         for (const part of lossParts) {
             const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
             if (m) {
-                const type = m[2].trim();
+                const type = normalizeUnitName(m[2].trim());
                 losses[type] = (losses[type] || 0) + parseGameInt(m[1]);
             }
         }
@@ -3441,12 +3457,12 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     // Meteor shower — damage ticks (count days of damage and casualties)
     const meteorM = eventText.match(/Meteors rain across the lands and kill (.+)!/);
     if (meteorM) {
-        const parts = meteorM[1].split(/,\s*|\s+and\s+/);
+        const parts = meteorM[1].replace(/,\s+and\s+/g, ', ').split(/,\s*|\s+and\s+/);
         for (const part of parts) {
             const m = part.trim().match(/^([\d,]+)\s+(.+)$/);
             if (m) {
                 const count = parseGameInt(m[1]);
-                const type = m[2].trim();
+                const type = normalizeUnitName(m[2].trim());
                 data.meteorCasualties.byType[type] = (data.meteorCasualties.byType[type] || 0) + count;
                 data.meteorCasualties.total += count;
             }
@@ -3564,7 +3580,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const desertionNamedM = eventText.match(/^(\d+) (\w+) abandoned us hoping for a better life!/);
     if (desertionNamedM) {
         const count = parseInt(desertionNamedM[1]);
-        const type = desertionNamedM[2];
+        const type = normalizeUnitName(desertionNamedM[2]);
         data.desertions.total += count;
         data.desertions.byType[type] = (data.desertions.byType[type] || 0) + count;
         data.propagandaOps++;
