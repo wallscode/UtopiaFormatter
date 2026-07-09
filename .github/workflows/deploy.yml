@@ -70,6 +70,7 @@ jobs:
             --delete \
             --exclude "*" \
             --include "index.html" \
+            --include "age116-comparison.html" \
             --include "css/*" \
             --include "img/*" \
             --include "favicon.ico" \
