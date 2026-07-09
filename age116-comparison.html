@@ -1,0 +1,986 @@
+<title>Age 116 Change Report</title>
+<style>
+:root{
+  --bg:#f7f3ea;
+  --surface:#ffffff;
+  --surface-2:#f1ead9;
+  --border:#e4dcc8;
+  --text:#241f16;
+  --text-dim:#6b6250;
+  --accent:#a9822a;
+  --accent-soft:#f0e2c0;
+  --buff:#2f7d4f;
+  --buff-bg:#e3f2e7;
+  --nerf:#a83f3f;
+  --nerf-bg:#f6e6e6;
+  --new:#3a5fa0;
+  --new-bg:#e6ecf6;
+  --neutral:#8a7f66;
+  --neutral-bg:#efe9da;
+  --shadow: 0 1px 2px rgba(40,30,10,0.06), 0 8px 24px -12px rgba(40,30,10,0.18);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15130f;
+    --surface:#1c1914;
+    --surface-2:#221e17;
+    --border:#332c20;
+    --text:#ece5d4;
+    --text-dim:#a89d84;
+    --accent:#d3ac5c;
+    --accent-soft:#3a3020;
+    --buff:#6fbf8b;
+    --buff-bg:#1c2b20;
+    --nerf:#d3767a;
+    --nerf-bg:#2e1c1d;
+    --new:#8fb0e6;
+    --new-bg:#1c2433;
+    --neutral:#b4a98d;
+    --neutral-bg:#241f18;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15130f; --surface:#1c1914; --surface-2:#221e17; --border:#332c20;
+  --text:#ece5d4; --text-dim:#a89d84; --accent:#d3ac5c; --accent-soft:#3a3020;
+  --buff:#6fbf8b; --buff-bg:#1c2b20; --nerf:#d3767a; --nerf-bg:#2e1c1d;
+  --new:#8fb0e6; --new-bg:#1c2433; --neutral:#b4a98d; --neutral-bg:#241f18;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.5);
+}
+:root[data-theme="light"]{
+  --bg:#f7f3ea; --surface:#ffffff; --surface-2:#f1ead9; --border:#e4dcc8;
+  --text:#241f16; --text-dim:#6b6250; --accent:#a9822a; --accent-soft:#f0e2c0;
+  --buff:#2f7d4f; --buff-bg:#e3f2e7; --nerf:#a83f3f; --nerf-bg:#f6e6e6;
+  --new:#3a5fa0; --new-bg:#e6ecf6; --neutral:#8a7f66; --neutral-bg:#efe9da;
+  --shadow: 0 1px 2px rgba(40,30,10,0.06), 0 8px 24px -12px rgba(40,30,10,0.18);
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+
+/* ---------- Header ---------- */
+.masthead{
+  border-bottom:2px solid var(--accent);
+  padding-bottom:1.5rem;
+  margin-bottom:2.5rem;
+}
+.eyebrow{
+  font-size:0.72rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--accent);
+  font-weight:600;
+  margin:0 0 0.5rem;
+}
+h1.title{
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+  font-size:clamp(2rem,4.5vw,2.9rem);
+  font-weight:700;
+  margin:0 0 0.6rem;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.dek{
+  color:var(--text-dim);
+  font-size:1.02rem;
+  max-width:62ch;
+  margin:0;
+}
+.dek strong{color:var(--text);}
+
+/* ---------- Section headers ---------- */
+.section-head{
+  display:flex;
+  align-items:baseline;
+  gap:0.75rem;
+  margin:3rem 0 1.1rem;
+}
+.section-head:first-of-type{margin-top:0;}
+h2.section-title{
+  font-family:Georgia,"Iowan Old Style",serif;
+  font-size:1.5rem;
+  font-weight:700;
+  margin:0;
+  white-space:nowrap;
+}
+.section-rule{
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
+.section-note{
+  color:var(--text-dim);
+  font-size:0.88rem;
+  margin:-0.6rem 0 1.4rem;
+  max-width:70ch;
+}
+
+/* ---------- Legend ---------- */
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem 1.1rem;
+  margin-bottom:1.5rem;
+  font-size:0.8rem;
+  color:var(--text-dim);
+}
+.legend span{display:inline-flex;align-items:center;gap:0.4rem;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.dot.buff{background:var(--buff);}
+.dot.nerf{background:var(--nerf);}
+.dot.new{background:var(--new);}
+.dot.neutral{background:var(--neutral);}
+
+/* ---------- Category list ---------- */
+.category{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:1rem;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.category-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:0.9rem 1.2rem;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border);
+}
+.category-head h3{
+  margin:0;
+  font-size:1rem;
+  font-weight:700;
+}
+.count-chip{
+  font-size:0.72rem;
+  color:var(--text-dim);
+  font-variant-numeric:tabular-nums;
+}
+.change-list{
+  list-style:none;
+  margin:0;
+  padding:0.4rem 0.6rem 0.6rem;
+}
+.change-list li{
+  display:grid;
+  grid-template-columns:64px 1fr;
+  gap:0.75rem;
+  padding:0.55rem 0.6rem;
+  border-radius:6px;
+  align-items:start;
+}
+.change-list li:hover{background:var(--surface-2);}
+.tag{
+  font-size:0.66rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  padding:0.18rem 0.4rem;
+  border-radius:4px;
+  text-align:center;
+  height:fit-content;
+  white-space:nowrap;
+}
+.tag.buff{color:var(--buff);background:var(--buff-bg);}
+.tag.nerf{color:var(--nerf);background:var(--nerf-bg);}
+.tag.new{color:var(--new);background:var(--new-bg);}
+.tag.neutral{color:var(--neutral);background:var(--neutral-bg);}
+.change-text{font-size:0.92rem;}
+.change-text b{font-weight:600;}
+.change-text .from-to{
+  font-variant-numeric:tabular-nums;
+  color:var(--text-dim);
+}
+
+/* ---------- Race grid ---------- */
+.race-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1rem;
+}
+@media (max-width:720px){.race-grid{grid-template-columns:1fr;}}
+
+.race-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.race-card.is-new{border-color:var(--new);}
+.race-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0.85rem 1.1rem;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border);
+}
+.race-head h3{
+  font-family:Georgia,"Iowan Old Style",serif;
+  margin:0;
+  font-size:1.15rem;
+}
+.new-badge{
+  font-size:0.66rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--new);
+  background:var(--new-bg);
+  padding:0.2rem 0.5rem;
+  border-radius:4px;
+}
+.race-body{padding:0.9rem 1.1rem 1.1rem;}
+.race-row{margin-bottom:0.85rem;}
+.race-row:last-child{margin-bottom:0;}
+.race-row-label{
+  font-size:0.68rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  font-weight:600;
+  margin-bottom:0.3rem;
+}
+.diff-pair{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.6rem;
+}
+.diff-col{
+  font-size:0.82rem;
+  border-radius:6px;
+  padding:0.5rem 0.6rem;
+  line-height:1.45;
+}
+.diff-col.old{
+  background:var(--neutral-bg);
+  color:var(--text-dim);
+  text-decoration:line-through;
+  text-decoration-color:var(--nerf);
+  text-decoration-thickness:1px;
+}
+.diff-col.newv{
+  background:var(--buff-bg);
+  color:var(--text);
+}
+.diff-col ul{margin:0;padding-left:1.1rem;}
+.diff-col.single{
+  grid-column:1 / -1;
+  background:var(--surface-2);
+  color:var(--text);
+  text-decoration:none;
+}
+.diff-col.single ul{margin:0;padding-left:1.1rem;}
+.passive-box{
+  background:var(--accent-soft);
+  border-left:3px solid var(--accent);
+  padding:0.5rem 0.7rem;
+  font-size:0.82rem;
+  border-radius:0 6px 6px 0;
+}
+.passive-box .old-passive{
+  display:block;
+  color:var(--text-dim);
+  text-decoration:line-through;
+  text-decoration-color:var(--nerf);
+  margin-bottom:0.25rem;
+  font-size:0.78rem;
+}
+.unit-note{
+  font-size:0.78rem;
+  color:var(--text-dim);
+}
+.unit-note b{color:var(--text);font-weight:600;}
+
+footer{
+  margin-top:3rem;
+  padding-top:1.2rem;
+  border-top:1px solid var(--border);
+  font-size:0.78rem;
+  color:var(--text-dim);
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width:640px){
+  .wrap{padding:1.6rem 1rem 3.5rem;}
+  .masthead{margin-bottom:1.8rem;}
+  .section-head{
+    flex-wrap:wrap;
+    margin:2.2rem 0 1rem;
+  }
+  h2.section-title{
+    white-space:normal;
+    font-size:1.25rem;
+  }
+  .section-rule{
+    flex-basis:100%;
+    order:2;
+  }
+  .category-head{padding:0.8rem 0.9rem;}
+  .change-list li{
+    grid-template-columns:1fr;
+    gap:0.35rem;
+  }
+  .tag{justify-self:start;}
+  .race-head{padding:0.75rem 0.9rem;}
+  .race-body{padding:0.8rem 0.9rem 1rem;}
+  .diff-pair{grid-template-columns:1fr;}
+  .diff-col.old{text-decoration:none;border-left:3px solid var(--nerf);}
+  .diff-col.newv{border-left:3px solid var(--buff);}
+}
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <p class="eyebrow">Utopia &middot; Wheel of Life &middot; Comparison Report</p>
+    <h1 class="title">Age 116 vs. Age 115 — What's Actually Changing</h1>
+    <p class="dek">A diff of the two Final Changes announcements. Mechanics that carried over unchanged from Age 115 are omitted — this covers only what moves for <strong>Age 116</strong>.</p>
+  </div>
+
+  <div class="section-head">
+    <h2 class="section-title">Overall Changes by Category</h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="legend">
+    <span><i class="dot buff"></i>Buff / player-favorable</span>
+    <span><i class="dot nerf"></i>Nerf / harsher</span>
+    <span><i class="dot new"></i>New mechanic</span>
+    <span><i class="dot neutral"></i>Structural / neutral</span>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>War Doctrine</h3><span class="count-chip">2 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag nerf">Nerf</span><span class="change-text">Per-province doctrine growth cut for most races: <span class="from-to">+1.5% → +1%</span> per additional province beyond the first.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Exception carved out — <b>Elf, Faery, and Halfling</b> keep scaling at <span class="from-to">+2%</span> per additional province, well above the new baseline.</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Relations &amp; Hostility</h3><span class="count-chip">6 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag new">New</span><span class="change-text">Unfriendly/Hostile status (15/30 meter points) now unlocks a dedicated spell &amp; thievery kit against that kingdom: Fireball, Lightning Strike, Fools Gold, Meteor Showers, Nightstrike, Greater Arson.</span></li>
+      <li><span class="tag neutral">Rework</span><span class="change-text"><b>DFCF renamed to FCF</b> and loosened: activation threshold drops from <span class="from-to">45/30 → 30/15</span> meter points below the aggressor.</span></li>
+      <li><span class="tag nerf">Nerf</span><span class="change-text">FCF war-range penalty increased: <span class="from-to">1.75% → 2%</span> Honor &amp; Science loss.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">FCF minimum duration extended: <span class="from-to">48hr → 72hr (in-range) / 96hr (out-of-range)</span> before either side can cancel.</span></li>
+      <li><span class="tag neutral">Rework</span><span class="change-text">Hostile Meter decay reverts to pre-Age-111 rules: decays monthly by <b>20% or 3 points</b> (whichever is greater), instead of ramping after 48hrs.</span></li>
+      <li><span class="tag nerf">Nerf</span><span class="change-text">Hostile Meter no longer resets on Ceasefire or entering War — and Out-of-War attack gain penalty rises <span class="from-to">10% → 15%</span>.</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Buildings &amp; Science</h3><span class="count-chip">4 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag buff">Buff</span><span class="change-text">Watch Tower spy-catch chance up: <span class="from-to">2.0% → 2.2%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Cunning and Sorcery science trees are merged back into one tree, <b>Arcana</b>, governing instant spell and thief damage.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Shielding multiplier raised <span class="from-to">0.0314 → 0.0350</span>; Valor multiplier raised <span class="from-to">0.0582 → 0.0620</span>.</span></li>
+      <li><span class="tag neutral">Note</span><span class="change-text">No Castle base-percent or Resilience/Artisan/Finesse multiplier changes this age (those were 115-only shifts).</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Spells</h3><span class="count-chip">6 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag buff">Buff</span><span class="change-text">Fireball peasant damage: <span class="from-to">4–7% → 5–7%</span>. Storms peasant loss/tick: <span class="from-to">1.5% → 1.75%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Droughts strengthened — food reduction <span class="from-to">25% → 30%</span>, draft-rate reduction <span class="from-to">15% → 20%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Chastity, Sloth, and Magic Ward average duration shortened: <span class="from-to">6 days → 4 days</span>.</span></li>
+      <li><span class="tag nerf">Nerf</span><span class="change-text">Lightning Strike pulled from global access — now race/personality-gated only (Necromancer retains it).</span></li>
+      <li><span class="tag neutral">Note</span><span class="change-text">No new racial spell introduced this age (Age 115 added Soul Blight; 116 adds none).</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Thievery</h3><span class="count-chip">6 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag buff">Buff</span><span class="change-text">Incite Riots income hit: <span class="from-to">15% → 20%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Bribe Thieves TPA reduction: <span class="from-to">10% → 12.5%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Free Prisoners damage: <span class="from-to">17% → 25%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Destabilize Guilds duration reduction impact increased: <span class="from-to">20% → 25%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Arson damage: <span class="from-to">+5%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">War caps lifted — Rob the Vaults <span class="from-to">→ 16%</span>, Kidnap <span class="from-to">→ 5%</span>, opening more room for these ops during War.</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Attacking &amp; Combat</h3><span class="count-chip">3 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag new">New</span><span class="change-text">In War, successful Learn and Plunder attacks now also capture land — 20% of what a Traditional March would gain.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text">Massacre peasant damage in War increased +5% (additive); Thief/Wizard damage unchanged.</span></li>
+    </ul>
+  </div>
+
+  <div class="category">
+    <div class="category-head"><h3>Dragons</h3><span class="count-chip">7 changes</span></div>
+    <ul class="change-list">
+      <li><span class="tag buff">Buff</span><span class="change-text"><b>Amethyst</b> hits harder: spell/thievery success reduction <span class="from-to">−30% → −40%</span>; recurring wizard/thief kill <span class="from-to">2% → 5%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text"><b>Emerald</b> arrival troop loss up: <span class="from-to">1.5% → 3.5%</span> (recurring tick loss unchanged at 1.5%).</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text"><b>Ruby</b> arrival destroy up <span class="from-to">2.5% → 3.5%</span> and now hits <b>both offensive and defensive</b> specialists, not just offensive.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text"><b>Topaz</b> building-efficiency debuff eased: <span class="from-to">−30% → −25%</span>.</span></li>
+      <li><span class="tag buff">Buff</span><span class="change-text"><b>Sapphire</b> rune destruction up <span class="from-to">25% → 30%</span> on arrival, and recurring tick shortened <span class="from-to">every 6 ticks → every 3 ticks</span>.</span></li>
+      <li><span class="tag new">New</span><span class="change-text">Dragons started outside of War now cost 15% more Gold and Food to summon.</span></li>
+      <li><span class="tag neutral">Note</span><span class="change-text">No flat Dragon HP reduction this age (Age 115's −2% HP cut isn't repeated).</span></li>
+    </ul>
+  </div>
+
+  <div class="section-head">
+    <h2 class="section-title">Race Changes: Age 115 → Age 116</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="section-note">Struck-through text on the left is what Age 115 had; the right column is what replaces it in Age 116. Unchanged racial elements are omitted for brevity. <b>Dryad</b> is a wholly new race this age.</p>
+
+  <div class="race-grid">
+
+    <div class="race-card">
+      <div class="race-head"><h3>Avian</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−20% Attack Time<br>+25% Training Time</div>
+            <div class="diff-col newv">−25% Attack Time<br>+25% Training Time (unchanged)</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">War Doctrine</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−10% Attack Time, +12.5% Birth Rates to kingdom</div>
+            <div class="diff-col newv">−10% Attack Time, <b>−12.5% Military Wage Cost</b> to kingdom</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Dive Bomb — offensive specialists +2 offense (War only)</span>
+            <b>Aerial Supremacy</b> — successful attacks destroy 8% of target's current War Horses and 8% of current Prisoners.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−5% Building Efficiency</div>
+            <div class="diff-col newv">+30% Rune Cost <span style="opacity:.7">(BE penalty dropped)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit softened: <b>16/3 → 16/2</b>; NW trimmed <b>7.0 → 6.5</b>.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Dark Elf</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+35% Instant Spell Damage<br>−35% Rune Cost</div>
+            <div class="diff-col newv">+30% Offensive WPA (new)<br>+30% Instant Spell Damage<br><span style="opacity:.7">Rune cost reduction removed</span></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Mystic Enthusiasts — successful offensive instant spells refund 40% rune cost</span>
+            <b>Dark Ritual</b> — +20% Instant Spell Damage for 6 ticks after a successful attack; Traditional Marches generate 1 Wizard per 4 acres gained.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−15% Birth Rates</div>
+            <div class="diff-col newv">−15% Birth Rates<br><b>+30% sabotage damage taken (new)</b></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Offense/Defense specialists buffed: <b>15/0 → 14/0</b> off (NW <b>6.0 → 5.6</b>), <b>0/11 → 0/12</b> def (NW <b>5.5 → 6</b>). Loses War Horse access entirely.</div>
+      </div>
+    </div>
+
+    <div class="race-card is-new">
+      <div class="race-head"><h3>Dryad <span class="new-badge">New Race</span></h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-col single"><ul><li>+12.5% Defensive Military Efficiency</li><li>−40% Defensive Military Losses</li><li>+20% Birth Rate</li></ul></div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">War Doctrine / Passive</div>
+          <div class="diff-col single">+10% DME &amp; −12.5% Def. Casualties (kingdom). <b>Thick Bark</b>: +5% DME for 6 ticks after being attacked (refreshes, no stack).</div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-col single">+10% Attack Time, +1 cost to offensive spells, cannot use Forts.</div>
+        </div>
+        <div class="race-row unit-note">First dedicated defensive-specialist race added to the roster — fills the gap left as other races trend offensive.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Dwarf</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+30% BE, −50% Construction Time</div>
+            <div class="diff-col newv">+30% BE, −50% Construction Time, <b>+50% Construction Cost (new)</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Architect's Revenge — incoming Raze −15%, outgoing Raze +20%</span>
+            <b>Mountain Hold</b> — after being successfully attacked, Construction Time reduced an additional 30% for 6 ticks.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Cannot Accelerate Construction<br>+10% Attack Time</div>
+            <div class="diff-col newv">Cannot Accelerate Construction<br><b>+90% Food Consumption</b> <span style="opacity:.7">(Attack Time penalty dropped)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit gutted defensively then rebuilt: <b>15/5 (800gc) → 15/7 (900gc)</b>, NW 7.0 unchanged.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Elf</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+40% WPA, +1 Mana/tick in War, +40% Rune Production</div>
+            <div class="diff-col newv">+40% WPA, <b>+30% Offensive Spell Duration (new)</b>, +1 Mana/tick in War<br><span style="opacity:.7">Rune production bonus removed</span></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Arcane Surge — below 40% mana, spells deal +25% damage</span>
+            <b>Arcane Mastery</b> — Chastity cast by Elves cuts target Birth Rates by 70%; own offensive duration spells last +2 ticks.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−20% TPA</div>
+            <div class="diff-col newv">+35% Draft Costs <span style="opacity:.7">(TPA penalty removed)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit trimmed: <b>15/4 (750gc) → 14/4 (700gc)</b>, NW <b>6.0 → 7.0</b>.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Faery</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+25% Spell Duration, +20% WPA</div>
+            <div class="diff-col newv">+30% Self Spell Duration, <b>+20% WPA/TPA (TPA added)</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells</div>
+          <div class="diff-pair">
+            <div class="diff-col old">All Racial Spells</div>
+            <div class="diff-col newv">Curated list: Greater Protection, Reflect Magic, Illuminate Shadows, Tree of Gold, Revelation, Fountain of Knowledge</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Leyline Interference — enemy spells 20% chance to fail</span>
+            Leyline Interference — chance reduced to <b>15%</b>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−5% Population</div>
+            <div class="diff-col newv">−5% Population, <b>+15% Military Casualties (new)</b></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit cost up: <b>1000gc → 1150gc</b>, stats unchanged (4/16, 8.5nw).</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Halfling</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+10% Population, +20% TPA</div>
+            <div class="diff-col newv">+12.5% Population, +30% TPA</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Silent Assault — sabotage ops suffer 50% fewer thievery losses</span>
+            <b>Burrowed Networks</b> — repeat sabotage on the same target stacks +3% damage per hit, capped at +15%; resets on switching targets.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+10% Military Casualties</div>
+            <div class="diff-col newv">−25% Draft Speed <span style="opacity:.7">(swapped penalty type)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit reworked: <b>6/12 (700gc) → 10/13 (900gc)</b> — more offense, pricier, NW 7.5. Gains Invisibility spell.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Human</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Prisoners on all lands, −30% Learn Damage, +10% Science Eff.</div>
+            <div class="diff-col newv"><b>+30% Income, −30% Training Costs, +20% Draft Speed</b> — largely rebuilt around economy/training rather than science/prisoners</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Civil Administration — prisoners +2.0gc/tick, mercenary cost −40%</span>
+            <b>Muster the Realm</b> — successful attack grants Building Credits (25% of acres) and Specialist Credits (100% of acres); Training Time −20% for 6 ticks.
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Slow wage-increase application, +40% Rune Cost</div>
+            <div class="diff-col newv">+25% Military Wages <span style="opacity:.7">(rune-cost and wage-timing penalties dropped)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Offense buffed: <b>12/0 → 15/0</b>, NW <b>4.8 → 6.0</b>; War Horse strength unique at <b>3/0, 0.9nw</b> (all others 2/0, 0.6nw).</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Orc</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+5% Gains OOW, +15% Gains War, −50% Draft Cost</div>
+            <div class="diff-col newv">+10% Gains OOW, +15% Gains War, <b>+15% Enemy Military Casualties (new)</b>, −40% Draft Cost</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Carnage — random bonus per attack (resource destruction / wage spike / −30% losses)</span>
+            <b>Blood Spoils</b> — successful attacks convert 25% of enemy military casualties into Specialist Credits (simpler, deterministic).
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−15% Defensive Military Efficiency</div>
+            <div class="diff-col newv">+20% Instant Damage from Sabotage &amp; Sorcery <span style="opacity:.7">(DME penalty dropped)</span></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit price up: <b>750gc → 850gc</b>, stats hold at 18/3.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>Undead</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-col single">Unchanged — −45% Military Losses, Plague Immunity, always carries &amp; can spread Plague, No Food Requirement.</div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Death March — converts 45% of offensive losses into Soldiers instantly</span>
+            Death March — conversion rate cut to <b>25%</b>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells / Penalties</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Spells: Animate Dead, Aggression<br>Penalty: −10% Science Efficiency</div>
+            <div class="diff-col newv">Spells: Animate Dead, Vermin, Ghost Workers<br>Penalty: <b>Cannot build Hospitals</b></div>
+          </div>
+        </div>
+        <div class="race-row unit-note">Elite Unit reworked: <b>17/4 → 16/4</b> (800gc unchanged), NW 7.0 unchanged.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-head">
+    <h2 class="section-title">Personality Changes: Age 115 → Age 116</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="section-note">Same struck-through / replacement convention as the race grid above. <b>The Paladin was retired</b> for Age 116 — its holy/defensive kit was absorbed into the new <b>Cleric</b>, while its Strategy science lane spun off into the new <b>Sage</b>. <b>Cleric</b> and <b>Sage</b> are new; every other personality returns with adjustments.</p>
+
+  <div class="race-grid">
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Artisan</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+40% Building Capacity<br>+40% Building Production<br>Immune to Plunder, Greed, Incite Riots</div>
+            <div class="diff-col newv">+25% Building Capacity<br>+25% Building Production<br><b>−25% Construction Costs, incl. Raze (new)</b><br>Immune to Greed, Incite Riots, <b>Fool's Gold</b> (Plunder immunity dropped)</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Science / Start</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+15% Economy Science Efficiency</div>
+            <div class="diff-col newv">+25% Economy Science Efficiency</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Construction Delays — after a successful attack, target's building efficiency −10% for 3 ticks</span>
+            <b>Master Craftsmanship</b> — when razing buildings, recover 25% of buildings razed as Building Credits.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card is-new">
+      <div class="race-head"><h3>The Cleric <span class="new-badge">New</span></h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-col single"><ul><li>+1 Elite Defensive Value (affects NW)</li><li>+1 Defensive Specialist Strength (affects NW)</li><li>−40% Damage from Instant Spells</li><li>+25% Military Science Efficiency</li></ul></div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells / Start</div>
+          <div class="diff-col single">Salvation, Revelation, Divine Shield, Illuminate Shadows, Hero's Inspiration. Starts with +800 Soldiers and +800 Specialist Credits.</div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box"><b>Divine Favour</b> — self-spells cast by Clerics have their duration increased by 4 ticks.</div>
+        </div>
+        <div class="race-row unit-note">Inherits most of the old Paladin's holy/defensive spell list (Salvation, Divine Shield, Illuminate Shadows, Hero's Inspiration) minus the war-horse and plague-immunity kit.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The General</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−20% Training Cost &amp; Speed<br>+15% Military Science Efficiency</div>
+            <div class="diff-col newv"><b>+2 Offensive Elite Strength (affects NW) (new)</b><br>−25% Training Cost &amp; Speed<br>+25% Military Science Efficiency</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">General's Authority — +15% Enemy Military casualties when two or more generals are sent</span>
+            <b>Relentless Assault</b> — each successful attack grants +5% Enemy Military Defensive Casualties against that enemy for 3 ticks, stacking to +15%; resets after 3 ticks without an attack or against a new target.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Heretic</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+15% TPA / +15% WPA<br>+20% Sabotage Damage<br>+20% Spell Damage<br>+75% Guild Effectiveness<br>+15 Arcane Science Eff.</div>
+            <div class="diff-col newv"><b>+35% Offensive TPA / +35% Offensive WPA</b><br><b>Immunity to Expose Thieves (new)</b><br>+50% Guild Effectiveness<br>+25% Arcane Science Eff.<br><span style="opacity:.7">Flat Sabotage/Spell Damage bonuses folded into WPA/TPA</span></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Nightmares, Fools Gold, Mages Fury, Vermin</div>
+            <div class="diff-col newv">Nightmares, Fools Gold, Vermin, <b>Magic Ward</b> <span style="opacity:.7">(Mages Fury dropped)</span></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Blasphemous Might — after a failed offensive spell cast, recover 1% Stealth</span>
+            <b>Arcane Frenzy</b> — after each successful attack, +1 Mana, +1 Stealth, +10% Instant Spell &amp; Sabotage Damage for 6 ticks (refreshes, no stack).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Mystic</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+125% Guilds Effectiveness<br>+25% Offensive Spell Duration<br>+25% Channeling Science Eff.</div>
+            <div class="diff-col newv">+100% Guilds Effectiveness<br><b>+25% WPA (replaces Spell Duration bonus)</b><br>+40% Channeling Science Eff.</div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Pitfalls, Meteor Showers, Chastity</div>
+            <div class="diff-col newv">Pitfalls, Meteor Showers, Chastity, <b>Fools Gold</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Focused Channelling — above 40% mana, spells gain +20% WPA</span>
+            Focused Channelling — threshold raised to <b>above 60% mana</b> for the same +20% WPA.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Necromancer</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+35% WPA<br>+5% OME<br>−50% Rune Cost (not Ritual)<br>+25% Channeling Science Eff.</div>
+            <div class="diff-col newv"><b>+25% WPA</b><br><b>+7.5% ME</b><br><b>−40% Rune Cost</b> (not Ritual)<br><b>+40% Channeling Science Eff.</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells</div>
+          <div class="diff-pair">
+            <div class="diff-col old">Animate Dead, Mind Focus, Soul Blight, Guile, Nightmare</div>
+            <div class="diff-col newv">Animate Dead, Mind Focus, Soul Blight, Nightmare, Guile, <b>Lightning Strike</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive — Dark Pact</div>
+          <div class="passive-box">
+            <span class="old-passive">Old conversion: 10% Wizards / 20% Soldiers / 10% Peasants</span>
+            New conversion: <b>7.5% Wizards / 17.5% Soldiers</b> / 10% Peasants.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Rogue</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+20% TPA<br>+25% Crime Science Efficiency</div>
+            <div class="diff-col newv"><b>+25% TPA</b><br><b>+40% Crime Science Efficiency</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="diff-col single">Shadow Persistence — unchanged: Rogue provinces may perform thievery operations while overpopulated.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card is-new">
+      <div class="race-head"><h3>The Sage <span class="new-badge">New</span></h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-col single"><ul><li>+20% Book Generation</li><li>+20% Scientist Generation</li><li>+50% Learn Protection</li><li>+15% Science Efficiency</li></ul></div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Spells / Start</div>
+          <div class="diff-col single">Revelation, Fountain of Knowledge. Starts with +2 Scientists, +800 Soldiers and +800 Specialist Credits.</div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box"><b>Focused Resolve</b> — while in War, Science Effects increase 1% per tick, up to a max of +15%. Resets when war ends.</div>
+        </div>
+        <div class="race-row unit-note">Picks up the old Paladin's Strategy-science identity as a pure science/book specialist, with no combat or horse kit.</div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Tactician</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−15% Attack Time<br>+25% Draft Speed<br>−50% Ambush Losses<br>+25% Siege Science Eff.</div>
+            <div class="diff-col newv"><b>−20% Attack Time</b><br><b>+40% Draft Speed</b><br><span style="opacity:.7">Ambush-loss reduction removed</span><br><b>+40% Siege Science Eff.</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive — Interdiction</div>
+          <div class="passive-box">
+            <span class="old-passive">Successful War attacks destroy 10% gold / 25% runes / 20% food</span>
+            Evened out to <b>15% gold / 15% runes / 15% food</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The Warrior</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">−50% Mercenary Cost<br>+25% Tactics Science Efficiency</div>
+            <div class="diff-col newv"><span style="opacity:.7">Mercenary cost reduction removed</span><br><b>+35% Tactics Science Efficiency</b></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Battle Cry — successful attack destroys 1% of the entire population</span>
+            Battle Cry — population destruction raised to <b>1.5%</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="race-card">
+      <div class="race-head"><h3>The War Hero</h3></div>
+      <div class="race-body">
+        <div class="race-row">
+          <div class="race-row-label">Bonuses</div>
+          <div class="diff-pair">
+            <div class="diff-col old">+15% Honor Gains<br>+70% Honor Effects<br>+25% Siege Science Eff.</div>
+            <div class="diff-col newv"><b>+10% Battle Gains (War only) (new)</b><br><b>−25% Honor Loss (new)</b><br><b>+100% Honor Effects</b><br><b>+40% Valor Science Eff.</b> <span style="opacity:.7">(replaces Siege)</span></div>
+          </div>
+        </div>
+        <div class="race-row">
+          <div class="race-row-label">Unique Passive</div>
+          <div class="passive-box">
+            <span class="old-passive">Heroes Culling — Massacres kill +7% additional peons, +2.5% additional thieves/wizards</span>
+            <b>Rising Renown</b> — successful War attacks grant +5% Honour Effects for 6 ticks, stacking to +15%; refreshes on each attack, resets after 6 ticks without one.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    Source: <em>Utopia Final Changes — Age 115</em> and <em>Age 116</em> announcement documents.
+  </footer>
+
+</div>
