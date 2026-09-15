@@ -444,6 +444,13 @@ function accum(lines) {
     assert(d.tornadoes.acresDestroyed === 69, 'Tornadoes: acresDestroyed = 69');
 })();
 
+// Received spells: Fool's Gold
+(function() {
+    const d = accum(pnLine('10,072 gold coins have been turned into worthless lead.'));
+    assert(d.foolsGold.count === 1, "Fool's Gold: count = 1");
+    assert(d.foolsGold.goldDestroyed === 10072, "Fool's Gold: goldDestroyed = 10,072");
+})();
+
 // Received spells: Droughts (unconfirmed pattern, uses loose regex)
 (function() {
     const d = accum(pnLine('A drought will reign over our lands for 12 days!'));
