@@ -430,6 +430,13 @@ function accum(lines) {
     assert(d.chastity.totalDays === 8, 'Chastity: totalDays = 8');
 })();
 
+// Received spells: Expose Thieves
+(function() {
+    const d = accum(pnLine('Many of our thieves have been exposed by magic! This will result in slower recovery for 6 days.'));
+    assert(d.exposeThieves.count === 1, 'Expose Thieves: count = 1');
+    assert(d.exposeThieves.totalDays === 6, 'Expose Thieves: totalDays = 6');
+})();
+
 // Received spells: Droughts (unconfirmed pattern, uses loose regex)
 (function() {
     const d = accum(pnLine('A drought will reign over our lands for 12 days!'));

@@ -3532,8 +3532,8 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const explosionsM = eventText.match(/[Ee]xplosion.{0,80}?(\d+) days?/);
     if (explosionsM) { data.explosions.count++; data.explosions.totalDays += parseInt(explosionsM[1]); return; }
 
-    // Expose Thieves ("Enemies have exposed our thieves for N days!" or similar)
-    const exposeThievesM = eventText.match(/[Ee]xpos(?:e|ed).{0,80}?(?:thieves?|stealth).{0,80}?(\d+) days?/);
+    // Expose Thieves ("Many of our thieves have been exposed by magic! This will result in slower recovery for N days.")
+    const exposeThievesM = eventText.match(/thieves have been exposed.{0,80}?(\d+) days?/);
     if (exposeThievesM) { data.exposeThieves.count++; data.exposeThieves.totalDays += parseInt(exposeThievesM[1]); return; }
 
     // Gluttony ("A fit of gluttony has descended upon our people, and they will not be sated for N days.")
