@@ -437,6 +437,13 @@ function accum(lines) {
     assert(d.exposeThieves.totalDays === 6, 'Expose Thieves: totalDays = 6');
 })();
 
+// Received spells: Tornadoes
+(function() {
+    const d = accum(pnLine('Tornadoes scour the lands, causing the destruction of 69 acres of buildings!'));
+    assert(d.tornadoes.count === 1, 'Tornadoes: count = 1');
+    assert(d.tornadoes.acresDestroyed === 69, 'Tornadoes: acresDestroyed = 69');
+})();
+
 // Received spells: Droughts (unconfirmed pattern, uses loose regex)
 (function() {
     const d = accum(pnLine('A drought will reign over our lands for 12 days!'));
