@@ -3712,6 +3712,14 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Vermin — exact incoming text unknown; match the word and pull the bushel count
+    const verminM = eventText.match(/vermin.{0,120}?([\d,]+) bushels?/i);
+    if (verminM) {
+        data.vermin.count++;
+        data.vermin.bushelsDestroyed += parseGameInt(verminM[1]);
+        return;
+    }
+
     // Dragon building damage (Uto-6clh, Uto-7thh, Uto-f8fp, Uto-vac7)
     // Covers all variants: "destroyed and turned to ash", "destroyed", "reduced to rubble", "Oh the horror!"
     if (eventText.includes('dragon ravaging our lands')) {
@@ -3938,10 +3946,10 @@ function formatProvinceNewsOutput(data) {
     ];
     const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
         data.lightningStrike.count > 0 || data.fireball.count > 0 || data.tornadoes.count > 0 ||
-        data.foolsGold.count > 0 || durationSpells.some(s => s.count > 0);
+        data.foolsGold.count > 0 || data.vermin.count > 0 || durationSpells.some(s => s.count > 0);
     if (hasSpellImpacts) {
         const spellSuccesses = data.meteorShower.count + data.lightningStrike.count +
-            data.fireball.count + data.tornadoes.count + data.foolsGold.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
+            data.fireball.count + data.tornadoes.count + data.foolsGold.count + data.vermin.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
         const spellFailures = data.spellAttempts;
         const spellTotal = spellSuccesses + spellFailures;
         const spellPct = spellTotal > 0 ? ` (${Math.round(spellSuccesses / spellTotal * 100)}%)` : '';
@@ -3968,6 +3976,8 @@ function formatProvinceNewsOutput(data) {
             out.push(`  Tornadoes: ${pluralize(data.tornadoes.count, 'occurrence')}, ${formatNumber(data.tornadoes.acresDestroyed)} acres of buildings destroyed`);
         if (data.foolsGold.count > 0)
             out.push(`  Fool's Gold: ${pluralize(data.foolsGold.count, 'occurrence')}, ${formatNumber(data.foolsGold.goldDestroyed)} gold coins destroyed`);
+        if (data.vermin.count > 0)
+            out.push(`  Vermin: ${pluralize(data.vermin.count, 'occurrence')}, ${formatNumber(data.vermin.bushelsDestroyed)} bushels destroyed`);
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
         if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
@@ -4141,6 +4151,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         fireball:             { count: 0, peasantsKilled: 0 },
         tornadoes:            { count: 0, acresDestroyed: 0 },
         foolsGold:            { count: 0, goldDestroyed: 0 },
+        vermin:               { count: 0, bushelsDestroyed: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
         kidnappingOps:        0,

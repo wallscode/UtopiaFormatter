@@ -451,6 +451,13 @@ function accum(lines) {
     assert(d.foolsGold.goldDestroyed === 10072, "Fool's Gold: goldDestroyed = 10,072");
 })();
 
+// Received spells: Vermin (unconfirmed pattern, uses loose regex)
+(function() {
+    const d = accum(pnLine('Vermin have infested our granaries and devoured 4,512 bushels!'));
+    assert(d.vermin.count === 1, 'Vermin: count = 1');
+    assert(d.vermin.bushelsDestroyed === 4512, 'Vermin: bushelsDestroyed = 4,512');
+})();
+
 // Received spells: Droughts (unconfirmed pattern, uses loose regex)
 (function() {
     const d = accum(pnLine('A drought will reign over our lands for 12 days!'));
