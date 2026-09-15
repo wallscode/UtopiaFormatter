@@ -3520,8 +3520,8 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const blizzardM = eventText.match(/Blizzards are besetting our works.+?(\d+) days/i);
     if (blizzardM) { data.blizzard.count++; data.blizzard.totalDays += parseInt(blizzardM[1]); return; }
 
-    // Chastity ("womenfolk have taken a vow of chastity for N days!")
-    const chastityM = eventText.match(/vow of chastity for (\d+) days?/);
+    // Chastity ("The womenfolk's vow of chastity is reducing our population growth for N days!")
+    const chastityM = eventText.match(/vow of chastity.{0,80}?(\d+) days?/);
     if (chastityM) { data.chastity.count++; data.chastity.totalDays += parseInt(chastityM[1]); return; }
 
     // Droughts ("A drought will reign over our lands for N days!")

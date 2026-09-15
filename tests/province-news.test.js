@@ -423,9 +423,9 @@ function accum(lines) {
     assert(d.storms.totalDays === 3, 'Storms: totalDays = 3');
 })();
 
-// Received spells: Chastity (unconfirmed pattern, uses loose regex)
+// Received spells: Chastity
 (function() {
-    const d = accum(pnLine('Our womenfolk have taken a vow of chastity for 8 days!'));
+    const d = accum(pnLine("The womenfolk's vow of chastity is reducing our population growth for 8 days!"));
     assert(d.chastity.count === 1, 'Chastity: count = 1');
     assert(d.chastity.totalDays === 8, 'Chastity: totalDays = 8');
 })();
