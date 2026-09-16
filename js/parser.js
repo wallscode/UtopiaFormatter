@@ -1197,6 +1197,10 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Our army appears to have failed") &&
                    !line.includes("The plague has finally been swept away from our lands") &&
                    !/You have ordered the academy to (?:start|stop) training/.test(line) &&
+                   !line.includes("The dragon is complete and has begun its flight") &&
+                   !line.includes("You have killed the abandoned province") &&
+                   !line.includes("The dead march on!") &&
+                   !line.includes("You have activated sitting mode") &&
                    line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);

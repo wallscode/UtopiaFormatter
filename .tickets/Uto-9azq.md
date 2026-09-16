@@ -1,6 +1,6 @@
 ---
 id: Uto-9azq
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:57:27Z

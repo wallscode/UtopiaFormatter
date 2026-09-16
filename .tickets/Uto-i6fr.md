@@ -1,6 +1,6 @@
 ---
 id: Uto-i6fr
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:56:57Z
