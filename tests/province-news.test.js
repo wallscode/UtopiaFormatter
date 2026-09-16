@@ -451,6 +451,18 @@ function accum(lines) {
     assert(d.foolsGold.goldDestroyed === 10072, "Fool's Gold: goldDestroyed = 10,072");
 })();
 
+// Aid received — truncated line with no kingdom suffix (Uto-3xdy)
+(function() {
+    const d = accum([
+        pnLine('We have received a shipment of 19,178 gold coins from Land Rover 110'),
+        pnLine('We have received a shipment of 1,000 gold coins from Ally Province (1:1).'),
+    ]);
+    assert(d.aidByResource.gold.total === 20178, 'Aid gold (truncated): total = 20,178');
+    assert(d.aidByResource.gold.shipments === 2, 'Aid gold (truncated): shipments = 2');
+    assert(d.aidByResource.gold.senders['Land Rover 110'] === 19178, 'Aid gold (truncated): sender without kingdom');
+    assert(d.aidByResource.gold.senders['Ally Province (1:1)'] === 1000, 'Aid gold (truncated): sender with kingdom unchanged');
+})();
+
 // Received spells: Mystic Vortex (Uto-6jtw, Uto-lp3z, Uto-yda1)
 (function() {
     const d = accum([

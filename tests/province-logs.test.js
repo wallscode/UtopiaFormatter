@@ -905,6 +905,12 @@ function runAccumulateUnitTests() {
         assert('Military wages: 150', d.militaryWagesPercent, 150);
     })();
 
+    // ── Science: singular "book allocated to" (Uto-t7yu) ───────────────────
+    (function() {
+        const d = accum([pl('1 book allocated to HEROISM'), pl('250 books allocated to HEROISM')]);
+        assert('Science: singular book allocation counted', d.scienceCounts.HEROISM, 251);
+    })();
+
     // ── Attacks Made: Massacre / Raze / Plunder (Uto-5bss, Uto-5tlf, Uto-tjzj) ──
     console.log('--- Attacks Made ---');
     (function() {

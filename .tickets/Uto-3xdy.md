@@ -1,6 +1,6 @@
 ---
 id: Uto-3xdy
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:57:56Z

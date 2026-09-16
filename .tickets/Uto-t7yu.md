@@ -1,6 +1,6 @@
 ---
 id: Uto-t7yu
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:55:27Z

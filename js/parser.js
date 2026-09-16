@@ -1036,8 +1036,8 @@ function accumulateProvinceLogsData(text) {
         }
 
         // Parse science book allocation
-        if (line.includes("books allocated to")) {
-            const match = line.match(/([\d,]+) books allocated to (\w+)/i);
+        if (/books? allocated to/i.test(line)) {
+            const match = line.match(/([\d,]+) books? allocated to (\w+)/i);
             if (match) {
                 const count = parseGameInt(match[1]);
                 const science = match[2].toUpperCase();
@@ -1174,7 +1174,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("You have destroyed") &&
                    !line.includes("Sources have indicated the mission was foiled") &&
                    !(line.includes("We lost") && (line.includes("thieves in the operation") || line.includes("thief in the operation"))) &&
-                   !line.includes("books allocated to") &&
+                   !/books? allocated to/i.test(line) &&
                    !(line.includes("to explore") && line.includes("expedition")) &&
                    !(line.includes("You have ordered that") && line.includes("be trained")) &&
                    !(line.includes("You have ordered that") && line.includes("be released from duty")) &&
@@ -3337,21 +3337,21 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     }
 
     // Aid Received — Runes
-    const aidRunesM = eventText.match(/We have received a shipment of ([\d,]+) runes from (.+?) \((.+?)\)\./);
+    const aidRunesM = eventText.match(/We have received a shipment of ([\d,]+) runes from (.+?)(?: \(([^()]+)\))?\.?$/);
     if (aidRunesM) {
         const amount = parseGameInt(aidRunesM[1]);
-        const sender = `${aidRunesM[2]} (${aidRunesM[3]})`;
+        const sender = aidRunesM[3] ? `${aidRunesM[2]} (${aidRunesM[3]})` : aidRunesM[2];
         data.aidByResource.runes.total += amount;
         data.aidByResource.runes.shipments++;
         data.aidByResource.runes.senders[sender] = (data.aidByResource.runes.senders[sender] || 0) + amount;
         return;
     }
 
-    // Aid Received — Gold coins
-    const aidGoldM = eventText.match(/We have received a shipment of ([\d,]+) gold coins from (.+?) \((.+?)\)\./);
+    // Aid Received — Gold coins (kingdom suffix optional: truncated copies omit it, Uto-3xdy)
+    const aidGoldM = eventText.match(/We have received a shipment of ([\d,]+) gold coins from (.+?)(?: \(([^()]+)\))?\.?$/);
     if (aidGoldM) {
         const amount = parseGameInt(aidGoldM[1]);
-        const sender = `${aidGoldM[2]} (${aidGoldM[3]})`;
+        const sender = aidGoldM[3] ? `${aidGoldM[2]} (${aidGoldM[3]})` : aidGoldM[2];
         data.aidByResource.gold.total += amount;
         data.aidByResource.gold.shipments++;
         data.aidByResource.gold.senders[sender] = (data.aidByResource.gold.senders[sender] || 0) + amount;
@@ -3359,10 +3359,10 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     }
 
     // Aid Received — Bushels
-    const aidBushelsM = eventText.match(/We have received a shipment of ([\d,]+) bushels from (.+?) \((.+?)\)\./);
+    const aidBushelsM = eventText.match(/We have received a shipment of ([\d,]+) bushels from (.+?)(?: \(([^()]+)\))?\.?$/);
     if (aidBushelsM) {
         const amount = parseGameInt(aidBushelsM[1]);
-        const sender = `${aidBushelsM[2]} (${aidBushelsM[3]})`;
+        const sender = aidBushelsM[3] ? `${aidBushelsM[2]} (${aidBushelsM[3]})` : aidBushelsM[2];
         data.aidByResource.bushels.total += amount;
         data.aidByResource.bushels.shipments++;
         data.aidByResource.bushels.senders[sender] = (data.aidByResource.bushels.senders[sender] || 0) + amount;
@@ -3383,10 +3383,10 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     }
 
     // Aid Received — Soldiers
-    const aidSoldiersM = eventText.match(/We have received a shipment of ([\d,]+) soldiers from (.+?) \((.+?)\)\./);
+    const aidSoldiersM = eventText.match(/We have received a shipment of ([\d,]+) soldiers from (.+?)(?: \(([^()]+)\))?\.?$/);
     if (aidSoldiersM) {
         const amount = parseGameInt(aidSoldiersM[1]);
-        const sender = `${aidSoldiersM[2]} (${aidSoldiersM[3]})`;
+        const sender = aidSoldiersM[3] ? `${aidSoldiersM[2]} (${aidSoldiersM[3]})` : aidSoldiersM[2];
         data.aidByResource.soldiers.total += amount;
         data.aidByResource.soldiers.shipments++;
         data.aidByResource.soldiers.senders[sender] = (data.aidByResource.soldiers.senders[sender] || 0) + amount;
