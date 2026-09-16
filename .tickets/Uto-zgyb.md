@@ -1,6 +1,6 @@
 ---
 id: Uto-zgyb
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:54:43Z

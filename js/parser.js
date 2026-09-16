@@ -1196,6 +1196,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Your generals coordinate brilliantly") &&
                    !line.includes("Our army appears to have failed") &&
                    !line.includes("The plague has finally been swept away from our lands") &&
+                   !/You have ordered the academy to (?:start|stop) training/.test(line) &&
                    line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
