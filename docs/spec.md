@@ -118,6 +118,10 @@ Zero-count rows are suppressed. Rows without data (e.g. no ambushes) do not appe
 
 A "unique" is counted per attacking province within a rolling window. Window starts at the first attack date. Any attack within `uniqueWindow` days of the window start (i.e. `date <= windowStart + uniqueWindow`) falls in the same unique. When `date > windowStart + uniqueWindow`, a new window starts and a new unique is counted. `UNIQUE_WINDOW_DAYS = 6` by default, meaning a window spans days 0–6 inclusive (7 calendar days).
 
+### Informational Lines (recognised, not counted)
+
+War notices (`declared WAR`, `withdrawn from war`, `post-war period`, `lords of Utopia pass over this kingdom`) and kingdom membership events are recognised so they are not logged as unrecognised, but produce no output. Membership events are deliberately untracked: monarch recruit slots (`extends a hand of friendship towards a recruit`, `grant this kingdom a new opportunity to recruit`), invitations accepted (`has accepted our invitation`), provinces leaving (`depart this kingdom forever`, `As the ultimate betrayal`), and truant/abandoned provinces removed (`has been a neglectful leader`, `order it destroyed and erased from our history books`).
+
 ### Own Kingdom Detection
 
 `detectOwnKingdom(text)` scans all attack lines to find the kingdom that appears most often on both sides (attacking and defending). It is dynamic — not hardcoded. The detected kingdom ID is used to label the "Own Kingdom" sections.
@@ -136,7 +140,11 @@ A "unique" is counted per attacking province within a rolling window. Window sta
 
 **Spells (22 types):** Includes Lightning Strike, Mystic Vortex, Meteor Shower, Pitfalls, Fireball, and others. Both offensive (cast on enemies) and self-cast spells are tracked separately.
 
-**Other:** Aid sent/received, resources stolen from opponents, dragon donations, ritual completions, construction orders, science allocations, exploration orders, military training.
+**Attacks made (`Your forces arrive at X (K:K) …`):** Traditional March (`has taken N acres`, plus training credits and peasants settled), Ambush (`recaptured N acres`), Massacre (`Your army massacred N peasants, thieves, and wizards`), Raze (`Your army burned and razed N acres of buildings` — buildings destroyed, no land captured), Plunder (`Your army looted N gold coins, N bushels and N runes`). Bounces are counted from `driven back` / `no match for the defenses` lines.
+
+**Other:** Aid sent/received, resources stolen from opponents, dragon donations, ritual completions, construction orders, science allocations (`N book(s) allocated to SCIENCE`), exploration orders, military training.
+
+**Ignored lines (recognised, no output):** attack flavour text (`Your generals coordinate brilliantly…`, `Our army appears to have failed…` — the latter accompanies a bounce line and is not itself counted as a bounce), `The plague has finally been swept away from our lands!`, academy wizard training start/stop orders, own dragon launch (`The dragon is complete and has begun its flight…` — only relevant in Kingdom News), `You have killed the abandoned province…`, `The dead march on!…`, sitting mode activation, forum/message confirmations.
 
 ### Output Sections (default visibility)
 
@@ -150,6 +158,7 @@ A "unique" is counted per attacking province within a rolling window. Window sta
 | Spell Targets by Province | off |
 | Spell Targets by Spell Type | off |
 | Aid Summary | ON |
+| Attacks Made | ON |
 | Dragon Summary | ON |
 | Ritual Summary | off |
 | Construction Summary | off |
@@ -167,6 +176,22 @@ Sections within the Thievery group and Spells group can be reordered only within
 
 **Input:** Raw province news text. Each line has a tab-delimited date prefix (`Month Day of YRN\t`). Lines are grouped and parsed by event type.
 
+### Tracked Events
+
+**Attacks suffered (`Forces from X (K:K) came through and ravaged our lands! …`):** Traditional March (`They captured N acres`), Learn (`They looted N books`), Raze (`Their armies razed N acres of buildings`), Massacre (`Their armies killed N of our peasants…`), Conquest (`They were able to capture N acres before we could turn them away!` — counted as an attack with acres toward total land lost, labelled `(conquest)`). Failed attacks (`attempted to attack us, but failed miserably`) are listed separately with our losses.
+
+**Spell Impacts:** failed attempts (`spellAttempts`, by source) plus successful incoming spells. Instant spells track count and impact: Lightning Strike (runes), Fireball (peasants), Tornadoes (acres of buildings), Fool's Gold (gold coins), Vermin (bushels — provisional pattern), Mystic Vortex (`A magic vortex encircled our lands, and rendered N of our spells (…) inactive!` — spells removed), Land Lust (`N acres of land have disappeared from our control!` — acres lost). Duration spells track count and total days: Pitfalls, Greed, Meteor Shower (start line; damage ticks counted separately), Blizzard, Chastity, Droughts, Explosions, Expose Thieves (`Many of our thieves have been exposed by magic…`), Gluttony, Magic Ward, Nightfall, Sloth (`Your peasants become unmotivated and less willing to join the army for N days`), Storms. The success percentage counts every successful spell above against failed attempts.
+
+**Thievery Impacts:** detected/intercepted ops by source, resources stolen, Incite Riots, Sabotage Wizards, Propaganda (desertions by troop type; `…failed to convert any of them` and `<Elite|Specialist> troops have been found with enemy propaganda, but so far none have defected` both count as a successful op with zero desertions), Kidnapping, Bribe General, Night Strike, Arson, Greater Arson, Assassinate Wizards, Bribe Thieves, Destabilize Guilds.
+
+**Dragon Impacts:** every dragon event counts as one attack. Tracks buildings destroyed (`<any dragon name> descends in flames! N buildings are reduced to ash and rubble.`, `…dragon ravaging our lands…`), runes destroyed (`hungers for magic`, `disrupts the arcane`), and troops killed (`<Name>'s arrival sears the sky! N <unit> burn to ash…`).
+
+**Aid Received:** per-resource totals and senders. The trailing `(K:K).` is optional so truncated copies still count; the sender is then recorded without a kingdom.
+
+**Always-on blocks (not toggleable):** `Military Desertion due to Overpop` (housing-shortage desertions) in Province News; `Incoming Meteor Damage` in Province Logs.
+
+**Ignored lines (recognised, no output):** `The plague has finally been swept away from our lands!`, `Alas, our war has ended…` (handled by War Outcomes), `Edition… YR…` headers.
+
 ### Output Sections (default visibility)
 
 | Section | Default |
@@ -175,6 +200,7 @@ Sections within the Thievery group and Spells group can be reordered only within
 | Thievery Impacts | ON |
 | Shadowlight Thief IDs | off |
 | Spell Impacts | ON |
+| Dragon Impacts | ON |
 | Aid Received | ON |
 | Daily Login Bonus | ON |
 | Scientists Gained | off |
