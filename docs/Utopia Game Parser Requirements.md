@@ -247,6 +247,7 @@ Province News input can be auto-detected by the presence of lines matching `Mont
 * Explore pool acres: `"We have received a shipment of X acres (Y acres lost!) from [Province] ([Kingdom])."`
   * Extract both the gross shipment and the acres-lost value separately
 * Extract for all: amount, resource type, sender province name, sender kingdom
+* The trailing `([Kingdom]).` may be missing when a line was copied truncated (e.g. `"We have received a shipment of 19,178 gold coins from Land Rover 110"`). Still count the shipment; record the sender without a kingdom.
 
 #### Resources Stolen
 
@@ -279,8 +280,11 @@ All attack lines begin with optional modifier text followed by the core battle r
 
 `"Forces from [Province/Number - Province] ([Kingdom]) came through and ravaged our lands! They [captured X acres | looted X,XXX books]! [Savages! ]We lost [troop counts] in this battle. [optional aftermath text]"`
 
-* **Land capture**: `"They captured X acres!"`
+* **Land capture** (Traditional March): `"They captured X acres!"`
 * **Learn attack** (books looted): `"They looted X,XXX books! Savages!"`
+* **Conquest** (partial capture): `"They were able to capture X acres before we could turn them away! We lost [troop counts] in this battle."` — count as an attack suffered; acres count toward total land lost
+* **Raze**: `"Their armies razed X acres of buildings!"` — buildings destroyed, no land captured
+* **Massacre**: `"Their armies killed X of our peasants, thieves, and wizards!"`
 * Extract: attacker province (with number prefix if present), attacker kingdom, acres captured or books looted (whichever applies), troop losses by type (soldiers, Druids, Beastmasters, Magicians, peasants)
 
 Optional modifiers that may prefix or append to the core line:
@@ -313,6 +317,41 @@ Optional modifiers that may prefix or append to the core line:
 * Pattern: `"Pitfalls are haunting our lands for X days, causing increased defensive losses during battle."`
 * Extract: duration in days; count occurrences
 
+#### Incoming Spells
+
+Successful enemy spells cast on our province. Each line is one successful cast. Instant spells record a count and an impact total; duration spells record a count and total days.
+
+Instant:
+* **Fireball**: `"A massive fireball crashed into our lands and killed X peasants!"` — peasants killed
+* **Lightning Strike**: `"A sudden lightning storm struck our towers and destroyed X runes!"` — runes destroyed
+* **Tornadoes**: `"Tornadoes scour the lands, causing the destruction of X acres of buildings!"` — acres of buildings destroyed
+* **Fool's Gold**: `"X gold coins have been turned into worthless lead."` — gold destroyed (a percentage of stockpile)
+* **Land Lust**: `"X acres of land have disappeared from our control!"` — acres lost
+* **Mystic Vortex**: `"A magic vortex encircled our lands, and rendered X of our spells (Spell A, Spell B and Spell C) inactive!"` — active spells removed (50% chance per spell)
+* **Vermin**: exact text unconfirmed — currently any line containing "vermin" with a bushel count; bushels destroyed
+
+Duration (extract days):
+* **Blizzard**: `"Blizzards are besetting our works, and our building efficiency will be crippled by 10% for X days!"`
+* **Chastity**: `"The womenfolk's vow of chastity is reducing our population growth for X days!"`
+* **Droughts**: `"A drought will reign over our lands for X days!"` (pattern unconfirmed)
+* **Explosions**: `"Explosions will rock our aid shipments for X days!"` (pattern unconfirmed)
+* **Expose Thieves**: `"Many of our thieves have been exposed by magic! This will result in slower recovery for X days."`
+* **Gluttony**: `"A fit of gluttony has descended upon our people, and they will not be sated for X days."`
+* **Greed**: see Soldier Upkeep Demands below
+* **Magic Ward**, **Nightfall**, **Storms**: patterns unconfirmed — matched loosely on the spell name plus a day count
+* **Meteor Shower**: see Meteor Shower above
+* **Pitfalls**: see Pitfalls above
+* **Sloth**: `"Your peasants become unmotivated and less willing to join the army for X days"`
+
+#### Dragon Attacks
+
+A dragon sent against our kingdom announces its arrival, then continues to damage the province every 6 ticks while it remains. Each line counts as one dragon attack; impact totals are aggregated.
+
+* **Arrival, buildings**: `"[Dragon name] descends in flames! X buildings are reduced to ash and rubble."` — the dragon name is player-chosen (e.g. `Topaz Dragon`, `SLOW SLOW`)
+* **Arrival, troops**: `"[Dragon name]'s arrival sears the sky! X [unit type] burn to ash, at home and abroad."`
+* **Ongoing, buildings**: lines containing `"dragon ravaging our lands"` with `"X of our [precious] buildings"`
+* **Ongoing, runes**: `"[Dragon name] hungers for magic. X runes consumed…"` / `"[Dragon name] disrupts the arcane! X runes dissipate…"`
+
 #### Soldier Upkeep Demands
 
 * Pattern: `"Enemies have convinced our soldiers to demand more money for upkeep for X days."`
@@ -331,10 +370,16 @@ Optional modifiers that may prefix or append to the core line:
 * Pattern: `"We have discovered a turncoat general leading our military. He has been executed for treason!"`
 * Count occurrences
 
-#### Failed Propaganda
+#### Propaganda With No Defections
 
-* Pattern: `"Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them."`
-* Count occurrences
+Both lines indicate a successful propaganda operation that had no impact. Count as a successful op; add nothing to troop desertion totals.
+
+* `"Enemies attempted to spread propaganda among our soldiers, but failed to convert any of them."`
+* `"[Elite|Specialist] troops have been found with enemy propaganda, but so far none have defected."` — the targeted troop type is one we have none of
+
+#### Ignored Lines
+
+Recognised but not tracked: `"The plague has finally been swept away from our lands!"`
 
 #### War Outcomes
 
@@ -504,6 +549,19 @@ The province logs parser will parse individual province log entries and extract 
     * **Bribe Thieves**: Counts successful bribery operations
     * **Propaganda**: Tracks conversion of different troop types (thieves, soldiers, wizards, specialist troops, elites)
 
+#### Attacks Made
+
+All outgoing attack results begin `"Your forces arrive at [Province] ([Kingdom]). A tough battle took place, but we have managed a victory!"` followed by the attack-type result:
+
+* **Traditional March**: `"…has taken X acres…"` (optionally `"gained X specialist training credits"`, `"X peasants settled"`)
+* **Ambush**: `"…recaptured X acres…"`
+* **Massacre**: `"Your army massacred X peasants, thieves, and wizards!"` — kills people, no land
+* **Raze**: `"Your army burned and razed X acres of buildings!"` — destroys buildings (land becomes barren), no land captured
+* **Plunder**: `"Your army looted X gold coins, X bushels and X runes!"` — steals resources
+* **Bounce**: `"…march onto the battlefield…driven back…"` or `"Your army was no match for the defenses of…hastily retreat out of battle"`
+
+Flavour lines that accompany attack results and are ignored: `"Your generals coordinate brilliantly, outmaneuvering the enemy at every turn and inflicting devastating casualties."`, `"Our army appears to have failed, [Title Name]. I am truly sorry."` (accompanies a bounce line; not itself a bounce).
+
 #### Resource Management
 
 * **Aid Sent**: Parses lines containing "We have sent" to track resources sent to other provinces
@@ -517,6 +575,11 @@ The province logs parser will parse individual province log entries and extract 
   * Tracks donations to dragon projects via "to the quest of launching a dragon" (gold coins and bushels)
   * Tracks troops sent to fight dragons via "the dragon is weakened by" (troops and points)
 * **Rituals**: Counts successful ritual casts via "We are now closer to completing our ritual project"
+* **Science**: `"X book(s) allocated to [SCIENCE]"` — singular `book` occurs for 1-book allocations
+
+#### Ignored Lines
+
+Recognised but not tracked (no material impact): `"The plague has finally been swept away from our lands!"`, `"You have ordered the academy to start training wizards."`, `"You have ordered the academy to stop training new wizards."`, `"The dragon is complete and has begun its flight to [Kingdom] (K:K)."` (own dragon launch — only relevant in Kingdom News), `"You have killed the abandoned province [Name]."`, `"The dead march on! X fallen warriors rise as soldiers, joining your unstoppable legion."`, `"You have activated sitting mode, with [Name] as the sitter. Sitting will end on…"`.
 
 ### Output Requirements for Province Logs
 
