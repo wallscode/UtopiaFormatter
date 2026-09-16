@@ -905,6 +905,34 @@ function runAccumulateUnitTests() {
         assert('Military wages: 150', d.militaryWagesPercent, 150);
     })();
 
+    // ── Attacks Made: Massacre / Raze / Plunder (Uto-5bss, Uto-5tlf, Uto-tjzj) ──
+    console.log('--- Attacks Made ---');
+    (function() {
+        const d = accum([
+            pl('Your forces arrive at They made me do this (4:12). A tough battle took place, but we have managed a victory! Your army massacred 198 peasants, thieves, and wizards!'),
+            pl('Your forces arrive at Slow poker (6:10). A tough battle took place, but we have managed a victory! Your army burned and razed 51 acres of buildings!'),
+            pl('Your forces arrive at Slow Elf Mystic (6:10). A tough battle took place, but we have managed a victory! Your army looted 217,169 gold coins, 43,612 bushels and 19,376 runes!'),
+            pl('Your generals coordinate brilliantly, outmaneuvering the enemy at every turn and inflicting devastating casualties.'),
+            pl('Our army appears to have failed, Knight Benni. I am truly sorry.'),
+        ]);
+        assert('Attacks made: 3 entries', d.attacksMade.length, 3);
+        const massacre = d.attacksMade.find(a => a.type === 'Massacre');
+        const raze     = d.attacksMade.find(a => a.type === 'Raze');
+        const plunder  = d.attacksMade.find(a => a.type === 'Plunder');
+        assert('Massacre: killed', massacre && massacre.killed, 198);
+        assert('Massacre: target', massacre && massacre.target, 'They made me do this');
+        assert('Raze: razed acres', raze && raze.razed, 51);
+        assert('Raze: acres captured is 0', raze && raze.acres, 0);
+        assert('Plunder: gold', plunder && plunder.gold, 217169);
+        assert('Plunder: bushels', plunder && plunder.bushels, 43612);
+        assert('Plunder: runes', plunder && plunder.runes, 19376);
+        assert('Attack flavour lines: no bounce counted', d.attacksBounced, 0);
+        const out = parser.formatProvinceLogsFromData(d);
+        assert('Output: Massacre line', out.includes('  Massacre: 1 (198 people killed)'), true);
+        assert('Output: Raze line', out.includes('  Raze: 1 (51 acres of buildings razed)'), true);
+        assert('Output: Plunder line', out.includes('  Plunder: 1 (217,169 gold coins, 43,612 bushels, 19,376 runes)'), true);
+    })();
+
     console.log(`\n${failed === 0 ? '✅' : '❌'} Accumulate unit tests: ${passed} passed, ${failed} failed`);
     return failed === 0;
 }

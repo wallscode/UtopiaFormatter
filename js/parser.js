@@ -1098,6 +1098,55 @@ function accumulateProvinceLogsData(text) {
                     peasants: peasantsM ? parseGameInt(peasantsM[1]) : 0,
                 });
             }
+        // Outgoing Massacre result (Uto-5bss)
+        } else if (line.startsWith('Your forces arrive at') && line.includes('Your army massacred')) {
+            const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
+            const killedM = line.match(/Your army massacred ([\d,]+) peasants, thieves, and wizards/);
+            if (targetM && killedM) {
+                attacksMade.push({
+                    type: 'Massacre',
+                    target:   targetM[1],
+                    kingdom:  targetM[2],
+                    acres:    0,
+                    credits:  0,
+                    peasants: 0,
+                    killed:   parseGameInt(killedM[1]),
+                });
+            }
+        // Outgoing Raze result (Uto-5tlf)
+        } else if (line.startsWith('Your forces arrive at') && line.includes('burned and razed')) {
+            const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
+            const razedM  = line.match(/burned and razed ([\d,]+) acres of buildings/);
+            if (targetM && razedM) {
+                attacksMade.push({
+                    type: 'Raze',
+                    target:   targetM[1],
+                    kingdom:  targetM[2],
+                    acres:    0,
+                    credits:  0,
+                    peasants: 0,
+                    razed:    parseGameInt(razedM[1]),
+                });
+            }
+        // Outgoing Plunder result (Uto-tjzj)
+        } else if (line.startsWith('Your forces arrive at') && line.includes('Your army looted')) {
+            const targetM  = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
+            const goldM    = line.match(/([\d,]+) gold coins/);
+            const bushelsM = line.match(/([\d,]+) bushels/);
+            const runesM   = line.match(/([\d,]+) runes/);
+            if (targetM) {
+                attacksMade.push({
+                    type: 'Plunder',
+                    target:   targetM[1],
+                    kingdom:  targetM[2],
+                    acres:    0,
+                    credits:  0,
+                    peasants: 0,
+                    gold:     goldM    ? parseGameInt(goldM[1])    : 0,
+                    bushels:  bushelsM ? parseGameInt(bushelsM[1]) : 0,
+                    runes:    runesM   ? parseGameInt(runesM[1])   : 0,
+                });
+            }
         // Outgoing Ambush result
         } else if (line.startsWith('Your forces arrive at') && line.includes('recaptured')) {
             const targetM = line.match(/Your forces arrive at (.+?) \((\d+:\d+)\)/);
@@ -1144,6 +1193,8 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Your spell is disrupted by the natural leyline energies") &&
                    !line.includes("Chaotic energies amplify our actions") &&
                    !line.includes("Your soldiers have slain the dragon!") &&
+                   !line.includes("Your generals coordinate brilliantly") &&
+                   !line.includes("Our army appears to have failed") &&
                    line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
@@ -1418,14 +1469,32 @@ function formatProvinceLogsFromData(data) {
             if (!byType[atk.type]) byType[atk.type] = [];
             byType[atk.type].push(atk);
         }
+        const sum = (arr, key) => arr.reduce((s, a) => s + (a[key] || 0), 0);
+        const plunderStr = a => {
+            const parts = [];
+            if (a.gold    > 0) parts.push(`${formatNumber(a.gold)} gold coins`);
+            if (a.bushels > 0) parts.push(`${formatNumber(a.bushels)} bushels`);
+            if (a.runes   > 0) parts.push(`${formatNumber(a.runes)} runes`);
+            return parts.join(', ') || 'nothing';
+        };
         for (const [type, attacks] of Object.entries(byType)) {
-            const totalAcres = attacks.reduce((sum, a) => sum + a.acres, 0);
-            output += `  ${type}: ${attacks.length} (${formatNumber(totalAcres)} acres)\n`;
-            for (const atk of attacks) {
-                const supp = (atk.credits > 0 || atk.peasants > 0)
-                    ? `, ${formatNumber(atk.credits)} credits, ${formatNumber(atk.peasants)} peasants`
-                    : '';
-                output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.acres)} acres${supp}\n`;
+            if (type === 'Massacre') {
+                output += `  ${type}: ${attacks.length} (${formatNumber(sum(attacks, 'killed'))} people killed)\n`;
+                for (const atk of attacks) output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.killed)} people killed\n`;
+            } else if (type === 'Raze') {
+                output += `  ${type}: ${attacks.length} (${formatNumber(sum(attacks, 'razed'))} acres of buildings razed)\n`;
+                for (const atk of attacks) output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.razed)} acres razed\n`;
+            } else if (type === 'Plunder') {
+                output += `  ${type}: ${attacks.length} (${plunderStr({ gold: sum(attacks, 'gold'), bushels: sum(attacks, 'bushels'), runes: sum(attacks, 'runes') })})\n`;
+                for (const atk of attacks) output += `    ${atk.target} (${atk.kingdom}): ${plunderStr(atk)}\n`;
+            } else {
+                output += `  ${type}: ${attacks.length} (${formatNumber(sum(attacks, 'acres'))} acres)\n`;
+                for (const atk of attacks) {
+                    const supp = (atk.credits > 0 || atk.peasants > 0)
+                        ? `, ${formatNumber(atk.credits)} credits, ${formatNumber(atk.peasants)} peasants`
+                        : '';
+                    output += `    ${atk.target} (${atk.kingdom}): ${formatNumber(atk.acres)} acres${supp}\n`;
+                }
             }
         }
         if (attacksBounced > 0) {
@@ -1892,10 +1961,21 @@ function parseKingdomNewsLog(inputText, options) {
             // parsing gaps, just events we intentionally don't count.
             if (!isAttack && !handledBySpecial) {
                 const isWarDeclaration = line.includes('declared WAR');
+                // Kingdom membership events (recruit slots, invitations, provinces joining/leaving,
+                // truant/abandoned provinces removed) are informational and not counted.
+                const isMembershipEvent =
+                    line.includes('extends a hand of friendship towards a recruit') ||
+                    line.includes('has accepted our invitation') ||
+                    line.includes('grant this kingdom a new opportunity to recruit') ||
+                    line.includes('depart this kingdom forever') ||
+                    line.includes('has been a neglectful leader') ||
+                    line.includes('order it destroyed and erased from our history books') ||
+                    line.includes('As the ultimate betrayal');
                 const isKnownSentinel = isWarDeclaration ||
                                         line.includes('withdrawn from war') ||
                                         line.includes('post-war period') ||
-                                        line.includes('lords of Utopia pass over this kingdom');
+                                        line.includes('lords of Utopia pass over this kingdom') ||
+                                        isMembershipEvent;
                 if (isWarDeclaration && currentDate) {
                     const isWeDeclared = /We have declared WAR/i.test(line);
                     const m = line.match(/\((\d+):(\d+)\)/);
@@ -3407,6 +3487,21 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Conquest received — "They were able to capture N acres before we could turn them away!" (Uto-orzj, Uto-vuc5)
+    const conquestM = eventText.match(/Forces from (.+?) \((\d+:\d+)\) came through and ravaged our lands! They were able to capture ([\d,]+) acres before we could turn them away/);
+    if (conquestM) {
+        data.attacks.push({
+            attacker: conquestM[1].trim(),
+            kingdom: conquestM[2],
+            type: 'conquest',
+            acresCaptured: parseGameInt(conquestM[3]),
+            booksLooted: 0,
+            acresRazed: 0,
+            peopleKilled: 0
+        });
+        return;
+    }
+
     // Raze attack received — "Their armies razed N acres of buildings!" (Uto-xsf3)
     const razeAttackM = eventText.match(/Forces from (.+?) \((\d+:\d+)\) came through and ravaged our lands! Their armies razed ([\d,]+) acres of buildings/);
     if (razeAttackM) {
@@ -3623,6 +3718,13 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Propaganda op that hit a troop type we have none of — successful op, no desertion impact (Uto-0kmq, Uto-d0n7)
+    // "Elite troops have been found with enemy propaganda, but so far none have defected."
+    if (/troops have been found with enemy propaganda, but so far none have defected/i.test(eventText)) {
+        data.propagandaOps++;
+        return;
+    }
+
     // War outcome — land penalty
     const warLandM = eventText.match(/as a result of our failed war .+ We have given up (\d+) acres .+ (\d+) acres has gone to our enemies .+ and (\d+) acres for our Kingdom/);
     if (warLandM) {
@@ -3712,6 +3814,14 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Mystic Vortex — "A magic vortex encircled our lands, and rendered N of our spells (...) inactive!" (Uto-6jtw, Uto-lp3z, Uto-yda1)
+    const mysticVortexM = eventText.match(/A magic vortex encircled our lands, and rendered ([\d,]+) of our spells/);
+    if (mysticVortexM) {
+        data.mysticVortex.count++;
+        data.mysticVortex.spellsRemoved += parseGameInt(mysticVortexM[1]);
+        return;
+    }
+
     // Vermin — exact incoming text unknown; match the word and pull the bushel count
     const verminM = eventText.match(/vermin.{0,120}?([\d,]+) bushels?/i);
     if (verminM) {
@@ -3729,10 +3839,20 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
-    // Topaz Dragon building damage (descends in flames)
-    const topazM = eventText.match(/Topaz Dragon descends in flames! ([\d,]+) buildings are reduced to ash/);
-    if (topazM) {
-        data.dragonImpacts.totalBuildings += parseGameInt(topazM[1]);
+    // Dragon arrival — building damage (Uto-djp1, Uto-t9yd)
+    // "Topaz Dragon descends in flames! N buildings are reduced to ash and rubble." — dragons may carry a custom name
+    const dragonFlamesM = eventText.match(/^(.+?) descends in flames! ([\d,]+) buildings are reduced to ash/);
+    if (dragonFlamesM) {
+        data.dragonImpacts.totalBuildings += parseGameInt(dragonFlamesM[2]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
+    // Dragon arrival — troop damage (Uto-t3rp)
+    // "<Name>'s arrival sears the sky! N offensive specialists burn to ash, at home and abroad."
+    const dragonSearsM = eventText.match(/'s arrival sears the sky! ([\d,]+) (.+?) burn to ash/);
+    if (dragonSearsM) {
+        data.dragonImpacts.troopsKilled += parseGameInt(dragonSearsM[1]);
         data.dragonImpacts.count++;
         return;
     }
@@ -3946,10 +4066,12 @@ function formatProvinceNewsOutput(data) {
     ];
     const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
         data.lightningStrike.count > 0 || data.fireball.count > 0 || data.tornadoes.count > 0 ||
-        data.foolsGold.count > 0 || data.vermin.count > 0 || durationSpells.some(s => s.count > 0);
+        data.foolsGold.count > 0 || data.vermin.count > 0 || data.mysticVortex.count > 0 ||
+        durationSpells.some(s => s.count > 0);
     if (hasSpellImpacts) {
         const spellSuccesses = data.meteorShower.count + data.lightningStrike.count +
-            data.fireball.count + data.tornadoes.count + data.foolsGold.count + data.vermin.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
+            data.fireball.count + data.tornadoes.count + data.foolsGold.count + data.vermin.count +
+            data.mysticVortex.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
         const spellFailures = data.spellAttempts;
         const spellTotal = spellSuccesses + spellFailures;
         const spellPct = spellTotal > 0 ? ` (${Math.round(spellSuccesses / spellTotal * 100)}%)` : '';
@@ -3978,6 +4100,8 @@ function formatProvinceNewsOutput(data) {
             out.push(`  Fool's Gold: ${pluralize(data.foolsGold.count, 'occurrence')}, ${formatNumber(data.foolsGold.goldDestroyed)} gold coins destroyed`);
         if (data.vermin.count > 0)
             out.push(`  Vermin: ${pluralize(data.vermin.count, 'occurrence')}, ${formatNumber(data.vermin.bushelsDestroyed)} bushels destroyed`);
+        if (data.mysticVortex.count > 0)
+            out.push(`  Mystic Vortex: ${pluralize(data.mysticVortex.count, 'occurrence')}, ${formatNumber(data.mysticVortex.spellsRemoved)} spells removed`);
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
         if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
@@ -4002,6 +4126,8 @@ function formatProvinceNewsOutput(data) {
             out.push(`  ${formatNumber(data.dragonImpacts.totalBuildings)} buildings destroyed`);
         if (data.dragonImpacts.runesDestroyed > 0)
             out.push(`  ${formatNumber(data.dragonImpacts.runesDestroyed)} runes destroyed`);
+        if (data.dragonImpacts.troopsKilled > 0)
+            out.push(`  ${formatNumber(data.dragonImpacts.troopsKilled)} troops killed`);
     }
 
     // -- Military desertion due to overpopulation
@@ -4045,7 +4171,8 @@ function formatProvinceNewsOutput(data) {
         out.push(`Attacks Suffered: ${data.attacks.length} (${headerParts.join(', ')})`);
         for (const atk of data.attacks) {
             if (atk.acresCaptured > 0) {
-                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresCaptured)} acres`);
+                const typeStr = atk.type === 'conquest' ? ' (conquest)' : '';
+                out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresCaptured)} acres${typeStr}`);
             } else if (atk.acresRazed > 0) {
                 out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresRazed)} acres razed`);
             } else if (atk.booksLooted > 0) {
@@ -4146,12 +4273,13 @@ function accumulateProvinceNewsData(text, options = {}) {
             soldiers:     { total: 0, shipments: 0, senders: {} },
             exploreAcres: { total: 0, lost: 0, shipments: 0, senders: {} }
         },
-        dragonImpacts:        { count: 0, totalBuildings: 0, runesDestroyed: 0 },
+        dragonImpacts:        { count: 0, totalBuildings: 0, runesDestroyed: 0, troopsKilled: 0 },
         lightningStrike:      { count: 0, runesDestroyed: 0 },
         fireball:             { count: 0, peasantsKilled: 0 },
         tornadoes:            { count: 0, acresDestroyed: 0 },
         foolsGold:            { count: 0, goldDestroyed: 0 },
         vermin:               { count: 0, bushelsDestroyed: 0 },
+        mysticVortex:         { count: 0, spellsRemoved: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
         kidnappingOps:        0,

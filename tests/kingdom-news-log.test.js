@@ -796,4 +796,34 @@ try {
     console.log(error.stack);
 }
 
+// ─── Test 11: Kingdom membership lines are recognised sentinels ──────────────
+// (Uto-et0e, Uto-gw4s, Uto-h54h, Uto-o9fd, Uto-v0at, Uto-x1i6, Uto-x493, Uto-yprp)
+console.log('\n🧪 Test 11: Kingdom membership sentinel lines...');
+try {
+    const { assert, summary } = makeAssert();
+    const logged = [];
+    global.window = { APP_CONFIG: { logEndpoint: 'test' } };
+    global.fetch = (url, opts) => { logged.push(JSON.parse(opts.body).line); return Promise.resolve(); };
+    const membershipLines = [
+        'Our monarch has forged an opportunity to enlarge our kingdom, and extends a hand of friendship towards a recruit.',
+        'A new recruit has accepted our invitation and assumes control of the abandoned Aston Martin DBS (5:7).',
+        'The truant xiv of Eckos has been a neglectful leader, and the peasants have risen up and cast them out. Maybe someday a new leader will reinvigorate this once mighty province.',
+        'As the ultimate betrayal, Jarack destroys all in the land of Chevy Razor before leaving for a new kingdom.',
+        'The lords of Utopia grant this kingdom a new opportunity to recruit a stalwart ally and boost their fortunes.',
+        'The leader of Proton Perdana has chosen to join recruting 1 active fighter (3:4). All in Proton Perdana gather their possessions and depart this kingdom forever.',
+        'Our monarch feels that this glorious kingdom is tarnished by the abandoned province of Eckos. They order it destroyed and erased from our history books.',
+    ];
+    const text = membershipLines.map(l => `February 1 of YR1\t${l}`).join('\n') +
+        '\nFebruary 2 of YR1\t15 - Father time (5:1) captured 44 acres of land from 20 - Fist (4:1).';
+    const out = parser.parseKingdomNewsLog(text);
+    assert('No membership line logged as unrecognized', logged.length, 0);
+    assert('Attack on same input still counted', /Total Attacks Made: 1 \(44 acres\)/.test(out), true);
+    delete global.window; delete global.fetch;
+
+    const { passed, failed } = summary();
+    console.log(`${failed === 0 ? '✅' : '❌'} Membership sentinel tests — ${passed} passed, ${failed} failed`);
+} catch (error) {
+    console.log('❌ Test 11 failed with error:', error.message);
+}
+
 console.log('\n=== KINGDOM NEWS LOG TESTS COMPLETE ===\n');

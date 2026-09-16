@@ -451,6 +451,47 @@ function accum(lines) {
     assert(d.foolsGold.goldDestroyed === 10072, "Fool's Gold: goldDestroyed = 10,072");
 })();
 
+// Received spells: Mystic Vortex (Uto-6jtw, Uto-lp3z, Uto-yda1)
+(function() {
+    const d = accum([
+        pnLine('A magic vortex encircled our lands, and rendered 9 of our spells (Animate Dead, Builders Boon, Inspire Army, Minor Protection, Magic Shield, Ghost Workers, Mind Focus, Love and Peace and Greed) inactive!'),
+        pnLine('A magic vortex encircled our lands, and rendered 1 of our spells (Meteor Showers) inactive!'),
+    ]);
+    assert(d.mysticVortex.count === 2, 'Mystic Vortex: count = 2');
+    assert(d.mysticVortex.spellsRemoved === 10, 'Mystic Vortex: spellsRemoved = 10');
+})();
+
+// Propaganda op against a troop type we have none of — successful op, no desertions (Uto-0kmq, Uto-d0n7)
+(function() {
+    const d = accum([
+        pnLine('Elite troops have been found with enemy propaganda, but so far none have defected.'),
+        pnLine('Specialist troops have been found with enemy propaganda, but so far none have defected.'),
+    ]);
+    assert(d.propagandaOps === 2, 'Propaganda (none defected): propagandaOps = 2');
+    assert(d.desertions.total === 0, 'Propaganda (none defected): desertions.total = 0');
+})();
+
+// Dragon arrival with custom name — buildings and troops (Uto-djp1, Uto-t9yd, Uto-t3rp)
+(function() {
+    const d = accum([
+        pnLine('SLOW SLOW descends in flames! 26 buildings are reduced to ash and rubble.'),
+        pnLine('SLOW descends in flames! 22 buildings are reduced to ash and rubble.'),
+        pnLine("Well crap that worked's arrival sears the sky! 83 offensive specialists burn to ash, at home and abroad."),
+    ]);
+    assert(d.dragonImpacts.count === 3, 'Dragon arrival: count = 3');
+    assert(d.dragonImpacts.totalBuildings === 48, 'Dragon arrival: totalBuildings = 48');
+    assert(d.dragonImpacts.troopsKilled === 83, 'Dragon arrival: troopsKilled = 83');
+})();
+
+// Conquest received — partial capture counts toward acres lost (Uto-orzj, Uto-vuc5)
+(function() {
+    const d = accum(pnLine('Forces from 23 - Slow Mother Father (6:10) came through and ravaged our lands! They were able to capture 24 acres before we could turn them away! We lost 4 soldiers, 41 Zombies and 1 Ghoul in this battle.'));
+    assert(d.attacks.length === 1, 'Conquest: 1 attack entry');
+    assert(d.attacks[0].type === 'conquest', 'Conquest: type = conquest');
+    assert(d.attacks[0].acresCaptured === 24, 'Conquest: acresCaptured = 24');
+    assert(d.attacks[0].kingdom === '6:10', 'Conquest: kingdom = 6:10');
+})();
+
 // Received spells: Vermin (unconfirmed pattern, uses loose regex)
 (function() {
     const d = accum(pnLine('Vermin have infested our granaries and devoured 4,512 bushels!'));
