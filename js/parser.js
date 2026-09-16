@@ -1195,6 +1195,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("Your soldiers have slain the dragon!") &&
                    !line.includes("Your generals coordinate brilliantly") &&
                    !line.includes("Our army appears to have failed") &&
+                   !line.includes("The plague has finally been swept away from our lands") &&
                    line !== ').' &&
                    !/^Edition\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
@@ -3930,6 +3931,9 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         data.destabilizeGuilds.totalDays += parseInt(destabilizeGuildsM[1]);
         return;
     }
+
+    // Plague ended — informational, nothing to track (Uto-vvd1)
+    if (eventText.startsWith('The plague has finally been swept away from our lands')) return;
 
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines and short copy-paste

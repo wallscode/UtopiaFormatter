@@ -1,6 +1,6 @@
 ---
 id: Uto-vvd1
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:49:03Z
