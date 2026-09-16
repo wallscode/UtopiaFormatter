@@ -398,8 +398,7 @@ try {
                 'Uniques':               true,
                 'Highlights':            true,
                 'Kingdom Relations':     true,
-            },
-            discordCopy: false
+            }
         });
     }
 

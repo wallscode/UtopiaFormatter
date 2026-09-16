@@ -261,9 +261,8 @@ Six numeric inputs control the weight of each metric in the score formula. Defau
 
 Score formula: `acresGained × wAcresCaptured + razeAcres × wAcresRazed + peopleMassacred × wPeopleMassacred + captureCount × wCaptureCount + razeCount × wRazeCount + massacreCount × wMassacreCount`
 
-**Copy Buttons (right column):**
-- Copy for Discord (default off)
-- Copy Text for KD Forum on Mobile / Copy Raw Text (default off, label is device-dynamic)
+**Copy Buttons (right column, desktop only):**
+- Copy for Mobile Forum (default off) — shows the `#alt-copy-btn` on desktop. On mobile this section is omitted because every copy button is always shown.
 
 ### Province Logs Advanced Settings
 
@@ -282,9 +281,8 @@ Groups: Thievery, Spells, Aid Summary, Dragon Summary, Ritual Summary, Construct
 - Show military wages (default off)
 - Show explore details (default off)
 
-**Copy Buttons (right column):**
-- Copy for Discord (default off)
-- Copy Text for KD Forum on Mobile / Copy Raw Text (default off)
+**Copy Buttons (right column, desktop only):**
+- Copy for Mobile Forum (default off)
 
 **Combined Summary (right column):**
 - Toggle to reveal secondary input for Province News (default off). When revealed, the secondary textarea accepts Province News to produce a Combined Province Summary.
@@ -297,9 +295,8 @@ Attacks Suffered, Thievery Impacts, Shadowlight Thief IDs, Spell Impacts, Aid Re
 **Display Options (right column):**
 - Show thief/spell source identifiers (default off)
 
-**Copy Buttons (right column):**
-- Copy for Discord (default off)
-- Copy Text for KD Forum on Mobile / Copy Raw Text (default off)
+**Copy Buttons (right column, desktop only):**
+- Copy for Mobile Forum (default off)
 
 **Combined Summary (right column):**
 - Toggle to reveal secondary input for Province Logs (default off). When revealed, the secondary textarea accepts Province Logs to produce a Combined Province Summary.
@@ -312,29 +309,28 @@ Groups: Aid Summary, Offensive Thievery, Defensive Thievery, Offensive Spells, D
 **Display Options (right column):**
 All Province Logs display toggles plus `showSourceIdentifiers` from Province News.
 
-**Copy Buttons (right column):**
-- Copy for Discord (default off)
-- Copy Text for KD Forum on Mobile / Copy Raw Text (default off)
+**Copy Buttons (right column, desktop only):**
+- Copy for Mobile Forum (default off)
 
 ---
 
 ## Copy Buttons
 
-Three copy button types exist. All appear in `#output-text`'s button group.
+The button row under the output is named by *destination*, because the three outputs differ: the mobile Utopia forum editor needs `<br>`/`&nbsp;` markup, Discord needs markdown, and everything else needs plain text. The row is set by `updateCopyButtons()` in `ui.js` whenever output appears, and the whole row (including the caption) is hidden when there is no output. Device detection: `isMobileDevice()` tests `navigator.userAgent` against `/Mobi|Android|iPhone|iPad|iPod/i`.
 
-### Copy to Clipboard (always visible after parse)
-- **Desktop:** copies plain text with real newlines. The desktop Utopia forum editor preserves newlines correctly.
-- **Mobile:** copies HTML-formatted text (`<br>` for newlines, `&nbsp;` for leading spaces). The mobile Utopia forum WYSIWYG editor strips real newlines on submit but preserves `<br>` and `&nbsp;`.
+| | Desktop | Mobile |
+|---|---|---|
+| Primary (`#copy-btn`, also `Ctrl+Shift+C`) | **Copy to Clipboard** — plain text with real newlines (the desktop forum editor preserves them) | **Copy for KD Forum** — `<br>` for newlines, `&nbsp;` for leading spaces (the mobile forum WYSIWYG editor strips real newlines on submit but keeps these) |
+| `#discord-copy-btn` | **Copy for Discord** — always shown | **Copy for Discord** — always shown |
+| `#alt-copy-btn` | **Copy for Mobile Forum** — the mobile markup, for drafting a mobile forum post from a desktop. Hidden unless enabled in Advanced Settings → Copy Buttons | **Copy Plain Text** — untouched output, always shown |
 
-Detection: `navigator.userAgent` tested against `/Mobi|Android|iPhone|iPad|iPod/i`.
+**Copy for Discord** transforms output into Discord markdown (section headings `**bold**`, indented items → bullets, Kingdom News province tables wrapped in code fences) and warns in the feedback toast if the result exceeds Discord's 2,000-character limit. It never applies the mobile forum markup, on any device.
 
-### Copy for Discord (hidden by default, toggle in Advanced Settings)
-Transforms output into Discord markdown: section headings become `**bold**`, list items become bullet points. Warns if output exceeds Discord's 2,000 character limit.
+**Caption (`#copy-hint`)** — a muted one-line note under the buttons, with the button names in bold:
+- Desktop: *Copy to Clipboard pastes cleanly into the KD forum and most other places · Discord converts to Discord formatting.*
+- Mobile: *KD Forum adds the line-break markup the mobile forum editor needs · Discord converts to Discord formatting · Plain Text for anywhere else.*
 
-### Alt Copy button (hidden by default, toggle in Advanced Settings)
-Device-dynamic — provides access to the opposite copy path from the standard button:
-- **On mobile:** button label is "Copy Raw Text". Copies plain text (the desktop path) — useful when the user wants to paste into a plain text context.
-- **On desktop:** button label is "Copy for Mobile". Copies HTML-formatted text (the mobile path) — useful when the user is preparing output to hand off to a mobile player.
+Feedback toasts: "Copied to clipboard!" / "Copied for KD Forum!" (primary), "Copied for Discord!" (with a character-count warning past 2,000), "Copied!" / "Copied for mobile forum!" (alt).
 
 ---
 

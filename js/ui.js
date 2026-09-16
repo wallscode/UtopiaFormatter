@@ -78,7 +78,6 @@ const advSettings = {
             postMassacreLandMultiplier: 0.3,
             lateWarLandMultiplier:      0.5,
         },
-        discordCopy: false,
         showAltCopy: false
     },
     provinceLogs: {
@@ -126,7 +125,6 @@ const advSettings = {
         exploreDetails: false,
         showAttackedProvinces: false,
         showAttackSupplementalStats: false,
-        discordCopy: false,
         showAltCopy: false
     },
     provinceNews: {
@@ -143,7 +141,6 @@ const advSettings = {
             'War Outcomes':         false
         },
         showSourceIdentifiers: false,
-        discordCopy: false,
         showAltCopy: false
     },
     combinedProvince: {
@@ -214,7 +211,6 @@ const advSettings = {
         showAttackedProvinces:      false,
         showAttackSupplementalStats: false,
         showSourceIdentifiers:      false,
-        discordCopy: false,
         showAltCopy: false
     }
 };
@@ -235,6 +231,7 @@ function getDomElements() {
         discordCopyFeedback: document.getElementById('discord-copy-feedback'),
         altCopyBtn: document.getElementById('alt-copy-btn'),
         altCopyFeedback: document.getElementById('alt-copy-feedback'),
+        copyHint: document.getElementById('copy-hint'),
         detectBadge: document.getElementById('detect-badge'),
         advPanel: document.getElementById('advanced-settings'),
         advContent: document.getElementById('adv-content'),
@@ -384,8 +381,7 @@ function handleParse(elements) {
             updateOutputView(elements);
             autoResizeOutput(elements.outputText);
             showAdvancedPanel(elements);
-            updateDiscordButtonVisibility(elements, 'combined-province');
-            updateAltCopyButtonVisibility(elements, 'combined-province');
+            updateCopyButtons(elements);
             if (window.innerWidth < 768) {
                 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
@@ -464,8 +460,7 @@ function handleParse(elements) {
         updateOutputView(elements);
         autoResizeOutput(elements.outputText);
         showAdvancedPanel(elements);
-        updateDiscordButtonVisibility(elements, detectedMode);
-        updateAltCopyButtonVisibility(elements, detectedMode);
+        updateCopyButtons(elements);
 
         if (window.innerWidth < 768) {
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -491,7 +486,6 @@ function handleClear(elements) {
     elements.detectBadge.classList.add('hidden');
     secondaryInputVisible = false;
     setSecondaryInputVisible(false, null, elements);
-    if (elements.altCopyBtn) elements.altCopyBtn.classList.add('hidden');
     updateParseButtonState(elements);
 
     // Reset war detection state
@@ -600,9 +594,10 @@ async function handleCopy(elements) {
         return;
     }
 
+    const mobile = isMobileDevice();
     try {
-        await writeToClipboard(outputText);
-        showCopyFeedback(elements.copyFeedback, 'Copied to clipboard!', 'success');
+        await writeToClipboard(mobile ? textToMobileHtml(outputText) : outputText);
+        showCopyFeedback(elements.copyFeedback, mobile ? 'Copied for KD Forum!' : 'Copied to clipboard!', 'success');
 
         // Select the text for visual feedback and manual copy fallback
         elements.outputText.select();
@@ -636,21 +631,24 @@ function textToMobileHtml(text) {
 }
 
 /**
- * Writes text to the clipboard.
- * On mobile: writes plain text containing <br> and &nbsp; markup. The mobile
- * Utopia forum editor interprets these as HTML, preserving line breaks and spacing.
- * Real newlines are stripped by the mobile editor on submit, so they cannot be used.
- * On desktop: writes plain text with real newlines — the desktop forum editor
- * preserves them correctly and treats <br> as literal text.
- * @param {string} text - Plain text to copy
+ * True on phones/tablets. The mobile Utopia forum editor interprets pasted text as
+ * HTML (real newlines are stripped on submit; <br> and &nbsp; are preserved), which
+ * is why the primary copy button produces markup on mobile — see textToMobileHtml.
+ */
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+/**
+ * Writes text to the clipboard exactly as given. Callers decide whether the text
+ * should be plain, mobile forum HTML, or Discord markdown.
+ * @param {string} text - Text to copy
  */
 async function writeToClipboard(text) {
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const mobileText = isMobile ? textToMobileHtml(text) : text;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(mobileText);
+        await navigator.clipboard.writeText(text);
     } else {
-        fallbackCopyToClipboard(mobileText);
+        fallbackCopyToClipboard(text);
     }
 }
 
@@ -1741,8 +1739,7 @@ function applyAndRerender(elements) {
         elements.outputText.value = parsedText;
         updateOutputView(elements);
         autoResizeOutput(elements.outputText);
-        updateDiscordButtonVisibility(elements, lastDetectedMode);
-        updateAltCopyButtonVisibility(elements, lastDetectedMode);
+        updateCopyButtons(elements);
     } catch (error) {
         console.error('Error re-rendering with settings:', error);
     }
@@ -2515,16 +2512,45 @@ function handleKeyboardShortcuts(event, elements) {
 }
 
 /**
- * Shows or hides the Discord copy button based on the current mode's discordCopy setting.
+ * Sets the copy button row and its caption for the current device and mode.
+ *
+ * Desktop:  Copy to Clipboard (plain) · Copy for Discord · [Copy for Mobile Forum — opt-in]
+ * Mobile:   Copy for KD Forum (HTML) · Copy for Discord · Copy Plain Text
+ *
+ * Buttons are named by destination because the three outputs differ: the mobile forum
+ * editor needs <br>/&nbsp; markup, Discord needs markdown, everything else needs plain text.
+ * @param {Object} elements - DOM elements object
+ * @param {boolean} [visible=true] - false hides the whole row (no output)
  */
-function updateDiscordButtonVisibility(elements, mode) {
-    if (!elements.discordCopyBtn) return;
-    const modeKey = mode === 'kingdom-news-log'    ? 'kingdomNews'
-                  : mode === 'province-news'        ? 'provinceNews'
-                  : mode === 'combined-province'    ? 'combinedProvince'
-                  :                                   'provinceLogs';
-    const show = mode && advSettings[modeKey] && advSettings[modeKey].discordCopy;
-    elements.discordCopyBtn.classList.toggle('hidden', !show);
+function updateCopyButtons(elements, visible = true) {
+    const { copyBtn, discordCopyBtn, altCopyBtn, copyHint } = elements;
+    if (!visible) {
+        [copyBtn, discordCopyBtn, altCopyBtn, copyHint].forEach(el => el && el.classList.add('hidden'));
+        return;
+    }
+    const mobile = isMobileDevice();
+    const modeKey = lastDetectedMode === 'kingdom-news-log'  ? 'kingdomNews'
+                  : lastDetectedMode === 'province-news'     ? 'provinceNews'
+                  : lastDetectedMode === 'combined-province' ? 'combinedProvince'
+                  :                                            'provinceLogs';
+    const showDesktopAlt = !mobile && !!(advSettings[modeKey] && advSettings[modeKey].showAltCopy);
+
+    copyBtn.textContent = mobile ? 'Copy for KD Forum' : 'Copy to Clipboard';
+    copyBtn.classList.remove('hidden');
+    if (discordCopyBtn) discordCopyBtn.classList.remove('hidden');
+    if (altCopyBtn) {
+        altCopyBtn.textContent = mobile ? 'Copy Plain Text' : 'Copy for Mobile Forum';
+        altCopyBtn.classList.toggle('hidden', !(mobile || showDesktopAlt));
+    }
+    if (copyHint) {
+        copyHint.innerHTML = mobile
+            ? '<strong>KD Forum</strong> adds the line-break markup the mobile forum editor needs \u00b7 ' +
+              '<strong>Discord</strong> converts to Discord formatting \u00b7 ' +
+              '<strong>Plain Text</strong> for anywhere else.'
+            : '<strong>Copy to Clipboard</strong> pastes cleanly into the KD forum and most other places \u00b7 ' +
+              '<strong>Discord</strong> converts to Discord formatting.';
+        copyHint.classList.remove('hidden');
+    }
 }
 
 /**
@@ -2556,8 +2582,7 @@ async function handleDiscordCopy(elements) {
  * Handles the alt copy button: plain text on mobile, mobile HTML on desktop.
  */
 async function handleAltCopy(elements) {
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
+    if (isMobileDevice()) {
         await copyPlainText(elements);
     } else {
         await copyMobileHtml(elements);
@@ -2606,7 +2631,7 @@ async function copyMobileHtml(elements) {
         } else {
             fallbackCopyToClipboard(mobileText);
         }
-        showCopyFeedback(elements.altCopyFeedback, 'Copied for mobile!', 'success');
+        showCopyFeedback(elements.altCopyFeedback, 'Copied for mobile forum!', 'success');
     } catch (err) {
         fallbackCopyToClipboard(mobileText);
         showCopyFeedback(elements.altCopyFeedback, 'Text selected — copy manually', 'warning');
@@ -2614,57 +2639,23 @@ async function copyMobileHtml(elements) {
 }
 
 /**
- * Shows or hides the alt copy button and sets its label based on device.
- */
-function updateAltCopyButtonVisibility(elements, mode) {
-    if (!elements.altCopyBtn) return;
-    const modeKey = mode === 'kingdom-news-log'    ? 'kingdomNews'
-                  : mode === 'province-news'        ? 'provinceNews'
-                  : mode === 'combined-province'    ? 'combinedProvince'
-                  :                                   'provinceLogs';
-    const show = mode && advSettings[modeKey] && advSettings[modeKey].showAltCopy;
-    if (show) {
-        const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        elements.altCopyBtn.textContent = isMobile ? 'Copy Raw Text' : 'Copy for Mobile';
-    }
-    elements.altCopyBtn.classList.toggle('hidden', !show);
-}
-
-/**
- * Renders the "Copy Buttons" section in Advanced Settings.
- * Includes the Discord toggle and the device-dynamic alt copy toggle.
+ * Renders the "Copy Buttons" section in Advanced Settings (desktop only).
+ * The only opt-in copy button is "Copy for Mobile Forum" — producing the mobile forum
+ * markup on a desktop. On mobile every copy button is always shown, so there is
+ * nothing to configure and the section is omitted.
  * @param {HTMLElement} container - Right column element to append into
  * @param {string} modeKey - advSettings key ('kingdomNews', 'provinceLogs', etc.)
  * @param {string} idPrefix - Short prefix for element IDs ('kn', 'pl', 'pn', 'cp')
  * @param {Object} elements - DOM elements object
  */
 function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
+    if (isMobileDevice()) return;
+
     const title = document.createElement('div');
     title.className = 'adv-group-title';
     title.textContent = 'Copy Buttons';
     container.appendChild(title);
 
-    // Discord toggle
-    const discordGroup = document.createElement('div');
-    discordGroup.className = 'adv-group';
-    const discordLabel = document.createElement('label');
-    discordLabel.htmlFor = `adv-${idPrefix}-discordCopy`;
-    const discordCheckbox = document.createElement('input');
-    discordCheckbox.type = 'checkbox';
-    discordCheckbox.id = `adv-${idPrefix}-discordCopy`;
-    discordCheckbox.checked = advSettings[modeKey].discordCopy;
-    discordCheckbox.addEventListener('change', () => {
-        advSettings[modeKey].discordCopy = discordCheckbox.checked;
-        applyAndRerender(elements);
-    });
-    discordLabel.appendChild(discordCheckbox);
-    discordLabel.appendChild(document.createTextNode(' Copy for Discord'));
-    discordGroup.appendChild(discordLabel);
-    discordGroup.appendChild(makeHint('Show a "Copy for Discord" button that formats the output with Discord markdown (bold headers, code blocks)'));
-    container.appendChild(discordGroup);
-
-    // Alt copy toggle (device-dynamic label)
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const altCopyGroup = document.createElement('div');
     altCopyGroup.className = 'adv-group';
     const altCopyLabel = document.createElement('label');
@@ -2673,19 +2664,14 @@ function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
     altCopyCheckbox.type = 'checkbox';
     altCopyCheckbox.id = `adv-${idPrefix}-altCopy`;
     altCopyCheckbox.checked = advSettings[modeKey].showAltCopy;
-    const altCopyLabelText = isMobile
-        ? 'Copy Raw Text'
-        : 'Copy Text for KD Forum on Mobile';
     altCopyCheckbox.addEventListener('change', () => {
         advSettings[modeKey].showAltCopy = altCopyCheckbox.checked;
-        updateAltCopyButtonVisibility(elements, lastDetectedMode);
+        updateCopyButtons(elements);
     });
     altCopyLabel.appendChild(altCopyCheckbox);
-    altCopyLabel.appendChild(document.createTextNode(' ' + altCopyLabelText));
+    altCopyLabel.appendChild(document.createTextNode(' Copy for Mobile Forum'));
     altCopyGroup.appendChild(altCopyLabel);
-    altCopyGroup.appendChild(makeHint(isMobile
-        ? 'Show a "Copy Raw Text" button that copies plain unformatted text'
-        : 'Show a "Copy for Mobile" button that copies text formatted for pasting on mobile browsers'));
+    altCopyGroup.appendChild(makeHint('Show a "Copy for Mobile Forum" button that copies the line-break markup the mobile KD forum editor needs \u2014 for drafting a mobile forum post from a desktop'));
     container.appendChild(altCopyGroup);
 }
 
@@ -2922,7 +2908,7 @@ function updateOutputView(elements) {
         // Hide empty state, show enhanced view and copy button
         if (elements.outputEmptyState) elements.outputEmptyState.classList.add('hidden');
         elements.enhancedOutput.classList.remove('hidden');
-        elements.copyBtn.classList.remove('hidden');
+        updateCopyButtons(elements);
         renderEnhancedView(elements);
         // Show/hide textarea based on showRawText
         elements.outputText.classList.toggle('hidden', !showRawText);
@@ -2933,7 +2919,7 @@ function updateOutputView(elements) {
         elements.enhancedOutput.classList.add('hidden');
         elements.enhancedOutput.innerHTML = '';
         elements.outputText.classList.add('hidden');
-        elements.copyBtn.classList.add('hidden');
+        updateCopyButtons(elements, false);
     }
 }
 

@@ -236,7 +236,6 @@ function resetPN() {
     advSettings.provinceNews.sectionOrder   = ['Thievery Impacts', 'Spell Impacts', 'Aid Received'];
     advSettings.provinceNews.visible        = { 'Thievery Impacts': true, 'Spell Impacts': true, 'Aid Received': true };
     advSettings.provinceNews.showSourceIdentifiers = true;
-    advSettings.provinceNews.discordCopy    = false;
 }
 
 // Synthetic province news output — sections separated by \n\n + name (no colon needed as marker)

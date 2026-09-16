@@ -591,6 +591,19 @@ button:active {
     color: #e0d9ff;
 }
 
+/* Caption under the copy buttons explaining which button suits which destination */
+.copy-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #a0aec0;
+}
+
+.copy-hint strong {
+    color: #cbd5e0;
+    font-weight: 600;
+}
+
 /* Feedback message */
 .feedback {
     margin-top: 1rem;
