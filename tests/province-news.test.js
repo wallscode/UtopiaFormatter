@@ -463,6 +463,13 @@ function accum(lines) {
     assert(d.aidByResource.gold.senders['Ally Province (1:1)'] === 1000, 'Aid gold (truncated): sender with kingdom unchanged');
 })();
 
+// Received spells: Sloth (Uto-lu5v)
+(function() {
+    const d = accum(pnLine('Your peasants become unmotivated and less willing to join the army for 8 days'));
+    assert(d.sloth.count === 1, 'Sloth: count = 1');
+    assert(d.sloth.totalDays === 8, 'Sloth: totalDays = 8');
+})();
+
 // Received spells: Land Lust (Uto-5qf3)
 (function() {
     const d = accum([

@@ -1,6 +1,6 @@
 ---
 id: Uto-lu5v
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-09-15T20:50:49Z

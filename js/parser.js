@@ -3644,8 +3644,8 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     const nightfallM = eventText.match(/[Nn]ightfall.{0,80}?(\d+) (?:days?|ticks?)/);
     if (nightfallM) { data.nightfall.count++; data.nightfall.totalDays += parseInt(nightfallM[1]); return; }
 
-    // Sloth ("Slothful behavior has gripped our province for N days!" or similar)
-    const slothM = eventText.match(/[Ss]loth.{0,80}?(\d+) days?/);
+    // Sloth ("Your peasants become unmotivated and less willing to join the army for N days") (Uto-lu5v)
+    const slothM = eventText.match(/peasants become unmotivated.{0,80}?(\d+) days?/);
     if (slothM) { data.sloth.count++; data.sloth.totalDays += parseInt(slothM[1]); return; }
 
     // Storms ("Storms will ravage our lands for N days!")
