@@ -463,6 +463,16 @@ function accum(lines) {
     assert(d.aidByResource.gold.senders['Ally Province (1:1)'] === 1000, 'Aid gold (truncated): sender with kingdom unchanged');
 })();
 
+// Received spells: Land Lust (Uto-5qf3)
+(function() {
+    const d = accum([
+        pnLine('12 acres of land have disappeared from our control!'),
+        pnLine('9 acres of land have disappeared from our control!'),
+    ]);
+    assert(d.landLust.count === 2, 'Land Lust: count = 2');
+    assert(d.landLust.acresLost === 21, 'Land Lust: acresLost = 21');
+})();
+
 // Received spells: Mystic Vortex (Uto-6jtw, Uto-lp3z, Uto-yda1)
 (function() {
     const d = accum([

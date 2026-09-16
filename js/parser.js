@@ -3814,6 +3814,14 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Land Lust — "N acres of land have disappeared from our control!" (Uto-5qf3)
+    const landLustM = eventText.match(/^([\d,]+) acres of land have disappeared from our control/);
+    if (landLustM) {
+        data.landLust.count++;
+        data.landLust.acresLost += parseGameInt(landLustM[1]);
+        return;
+    }
+
     // Mystic Vortex — "A magic vortex encircled our lands, and rendered N of our spells (...) inactive!" (Uto-6jtw, Uto-lp3z, Uto-yda1)
     const mysticVortexM = eventText.match(/A magic vortex encircled our lands, and rendered ([\d,]+) of our spells/);
     if (mysticVortexM) {
@@ -4067,11 +4075,11 @@ function formatProvinceNewsOutput(data) {
     const hasSpellImpacts = data.spellAttempts > 0 || data.meteorDays > 0 ||
         data.lightningStrike.count > 0 || data.fireball.count > 0 || data.tornadoes.count > 0 ||
         data.foolsGold.count > 0 || data.vermin.count > 0 || data.mysticVortex.count > 0 ||
-        durationSpells.some(s => s.count > 0);
+        data.landLust.count > 0 || durationSpells.some(s => s.count > 0);
     if (hasSpellImpacts) {
         const spellSuccesses = data.meteorShower.count + data.lightningStrike.count +
             data.fireball.count + data.tornadoes.count + data.foolsGold.count + data.vermin.count +
-            data.mysticVortex.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
+            data.mysticVortex.count + data.landLust.count + durationSpells.reduce((sum, s) => sum + s.count, 0);
         const spellFailures = data.spellAttempts;
         const spellTotal = spellSuccesses + spellFailures;
         const spellPct = spellTotal > 0 ? ` (${Math.round(spellSuccesses / spellTotal * 100)}%)` : '';
@@ -4102,6 +4110,8 @@ function formatProvinceNewsOutput(data) {
             out.push(`  Vermin: ${pluralize(data.vermin.count, 'occurrence')}, ${formatNumber(data.vermin.bushelsDestroyed)} bushels destroyed`);
         if (data.mysticVortex.count > 0)
             out.push(`  Mystic Vortex: ${pluralize(data.mysticVortex.count, 'occurrence')}, ${formatNumber(data.mysticVortex.spellsRemoved)} spells removed`);
+        if (data.landLust.count > 0)
+            out.push(`  Land Lust: ${pluralize(data.landLust.count, 'occurrence')}, ${formatNumber(data.landLust.acresLost)} acres lost`);
         if (data.pitfalls.count > 0)      out.push(`  Pitfalls: ${pluralize(data.pitfalls.count, 'occurrence')}, ${data.pitfalls.totalDays} days`);
         if (data.greed.count > 0)         out.push(`  Greed: ${pluralize(data.greed.count, 'occurrence')}, ${data.greed.totalDays} days`);
         if (data.blizzard.count > 0)      out.push(`  Blizzard: ${pluralize(data.blizzard.count, 'occurrence')}, ${data.blizzard.totalDays} days`);
@@ -4280,6 +4290,7 @@ function accumulateProvinceNewsData(text, options = {}) {
         foolsGold:            { count: 0, goldDestroyed: 0 },
         vermin:               { count: 0, bushelsDestroyed: 0 },
         mysticVortex:         { count: 0, spellsRemoved: 0 },
+        landLust:             { count: 0, acresLost: 0 },
         stolen:               { runes: 0, gold: 0, bushels: 0, warHorses: 0 },
         stolenOps:            { gold: 0, bushels: 0, runes: 0, warHorses: 0 },
         kidnappingOps:        0,
