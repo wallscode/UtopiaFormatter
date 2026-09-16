@@ -76,6 +76,24 @@ tk start <id>  # mark in progress
 tk close <id>  # mark done
 ```
 
+## Unrecognized-Line Log Review
+
+The site POSTs parser lines that match no handler to a logging endpoint; they land in S3. `scripts/analyze-logs.js` pulls them down and turns recurring patterns into `tk` tickets:
+
+```bash
+/opt/homebrew/bin/node scripts/analyze-logs.js               # GitHub issues → S3 sync → log analysis (interactive)
+/opt/homebrew/bin/node scripts/analyze-logs.js --no-issues   # skip the GitHub Issues phase
+/opt/homebrew/bin/node scripts/analyze-logs.js --no-sync     # analyze what is already in logs/
+/opt/homebrew/bin/node scripts/analyze-logs.js --reprocess-archive
+```
+
+Requires `LOG_BUCKET` in `.env`, AWS CLI credentials for the bucket, and `gh` if the issues phase runs. Processed files move to `logs/archive/` (purged after 7 days). The script is interactive, so the user runs it; Claude then works the resulting tickets.
+
+When working a ticket from this script:
+- Check whether the example line is already handled before changing anything — logs can be months old. In Node, shim `global.window = { APP_CONFIG: { logEndpoint: 'x' } }` and `global.fetch` to capture `logUnrecognizedLine` calls, then run the line through the relevant parser.
+- Ask the user what the line means if it isn't obvious; many lines are informational and belong in the parser's ignore list rather than a new handler (see `docs/spec.md` "Ignored lines").
+- Reference the ticket ID in the handler comment and commit message, add a test using the exact game text, and `tk close` the ticket.
+
 ## Key Specifications
 
 `docs/spec.md` — current-state behavioural specification covering all parser outputs, Advanced Settings toggles, copy button behaviours, UI interactions, and architectural constraints. **Read this first** when implementing any new feature or fixing a bug.
