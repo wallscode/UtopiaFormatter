@@ -148,5 +148,15 @@ test('throws ParseError on empty news text', () => {
     assert(threw, 'should throw on empty newsText');
 });
 
+test('applyCombinedProvinceSettings adds \u2022 / \u00B7 bullets to indented lines', () => {
+    const { applyCombinedProvinceSettings } = require('../js/ui.js');
+    const out = applyCombinedProvinceSettings(formatCombinedProvinceSummary(logsText, newsText));
+    const lines = out.split('\n');
+    const twoSpace = lines.filter(l => /^  \S/.test(l));
+    const fourSpace = lines.filter(l => /^    \S/.test(l));
+    assert(twoSpace.length > 0 && twoSpace.every(l => l.startsWith('  \u2022 ')), 'all 2-space lines start with \u2022');
+    assert(fourSpace.every(l => l.startsWith('    \u00B7 ')), 'all 4-space lines start with \u00B7');
+});
+
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`);
 if (failed > 0) process.exit(1);

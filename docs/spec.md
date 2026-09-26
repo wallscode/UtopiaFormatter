@@ -168,6 +168,8 @@ War notices (`declared WAR`, `withdrawn from war`, `post-war period`, `lords of 
 
 Sections within the Thievery group and Spells group can be reordered only within their group. Top-level groups can be reordered relative to each other.
 
+After settings are applied, 2-space indented lines are prefixed with `•` and 4-space lines with `·` (`addListBullets` in `ui.js`). The enhanced card view and Copy for Discord strip these first.
+
 ---
 
 ## Province News Parser
@@ -205,6 +207,8 @@ Sections within the Thievery group and Spells group can be reordered only within
 | Daily Login Bonus | ON |
 | Scientists Gained | off |
 | War Outcomes | off |
+
+Indented lines get the same `•` / `·` bullets as Province Logs. Combined Province Summary output gets them too.
 
 ---
 

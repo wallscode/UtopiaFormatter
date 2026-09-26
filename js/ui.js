@@ -2018,14 +2018,30 @@ function applyProvinceLogsSettings(text) {
         }).join('\n');
     }
 
-    // Add bullet characters to indented list lines
-    output = output.split('\n').map(line => {
+    return addListBullets(output);
+}
+
+/**
+ * Adds bullet characters to indented list lines (2-space → •, 4-space → ·).
+ * Used by Province Logs and Province News plain-text output.
+ */
+function addListBullets(text) {
+    return text.split('\n').map(line => {
         if (line.startsWith('    ')) return '    \u00B7 ' + line.slice(4);
         if (line.startsWith('  ')) return '  \u2022 ' + line.slice(2);
         return line;
     }).join('\n');
+}
 
-    return output;
+/**
+ * Reverses addListBullets, restoring plain indentation.
+ */
+function stripListBullets(text) {
+    return text.split('\n').map(line => {
+        if (line.startsWith('  \u2022 ')) return '  ' + line.slice(4);
+        if (line.startsWith('    \u00B7 ')) return '    ' + line.slice(6);
+        return line;
+    }).join('\n');
 }
 
 /**
@@ -2209,7 +2225,7 @@ function applyProvinceNewsSettings(text) {
         }
     }
 
-    return result.trim();
+    return addListBullets(result.trim());
 }
 
 /**
@@ -2350,7 +2366,7 @@ function applyCombinedProvinceSettings(text) {
         }).join('\n');
     }
 
-    return output;
+    return addListBullets(output);
 }
 
 /**
@@ -2679,6 +2695,8 @@ function renderCopyButtonsSection(container, modeKey, idPrefix, elements) {
  * Dispatches to a mode-specific Discord markdown transform helper.
  */
 function toDiscordFormat(text, mode) {
+    // Discord conversion adds its own list markers, so drop the plain-text bullets first
+    text = stripListBullets(text);
     if (mode === 'province-news')    return toDiscordProvinceNews(text);
     if (mode === 'kingdom-news-log') return toDiscordKingdomNews(text);
     return toDiscordProvinceLogs(text);
@@ -2975,12 +2993,8 @@ const EV_SECTION_COLORS = {
  * Parses the plain text output into section cards.
  */
 function renderEnhancedSections(grid, text, mode) {
-    // Strip Province Logs bullet characters so card rendering uses plain indentation
-    text = text.split('\n').map(line => {
-        if (line.startsWith('  \u2022 ')) return '  ' + line.slice(4);
-        if (line.startsWith('    \u00B7 ')) return '    ' + line.slice(6);
-        return line;
-    }).join('\n');
+    // Strip bullet characters so card rendering uses plain indentation
+    text = stripListBullets(text);
     const lines = text.split('\n');
     let headerLines = [];
     let sections = [];

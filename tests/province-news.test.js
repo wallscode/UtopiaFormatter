@@ -285,6 +285,13 @@ advSettings.provinceNews.sectionOrder = ['Aid Received', 'Thievery Impacts', 'Sp
 pnResult = applyProvinceNewsSettings(pnSynth);
 assert(pnResult.indexOf('Aid Received:') < pnResult.indexOf('Thievery Impacts:'), 'Aid Received before Thievery when reordered');
 
+// Bullets — 2-space lines get •, 4-space source lines get ·
+resetPN();
+pnResult = applyProvinceNewsSettings(pnSynth);
+assert(pnResult.includes('\n  \u2022 7 operations detected\n'), '2-space lines get \u2022 bullet');
+assert(pnResult.includes('\n    \u00B7 Attacker Province (1:1)\n'), '4-space source lines get \u00B7 bullet');
+assert(pnResult.includes('\nThievery Impacts:\n'), 'section headings are not bulleted');
+
 // Restore
 Object.assign(advSettings.provinceNews, origPN);
 
