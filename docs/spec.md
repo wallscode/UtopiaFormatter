@@ -84,7 +84,7 @@ Total land exchanged: +/-N (made/suffered)
 
 ** Uniques for {K:K} **
 {province} {unique-count}
-... (sorted by count descending, then name)
+... (sorted by count descending, then province number)
 
 ** The Kingdom of {K:K} **
 Total land exchanged: +/-N (suffered-by-us/made-by-us)
@@ -103,13 +103,15 @@ Most bounces made - {province}: N
 Most bounces received - {province}: N
 
 ** Kingdom Relations **
--- War Declarations Against Us: N
--- Ceasefires Proposed: N
--- Ceasefires Accepted: N
+-- War Declared Against Us: N ({K:K}, ...)
+-- Ceasefires Proposed to Us: N ({K:K}, ...)
+-- Ceasefires Accepted by Them: N ({K:K}, ...)
+... (one row per relation type that occurred)
 
-** Attacker Impact Rankings **
-1. {province} ({K:K}) — {score}
+** Attacker Impact Rankings for {K:K} **
+1. {province} — {score}
 2. ...
+... (one block per kingdom)
 ```
 
 Zero-count rows are suppressed. Rows without data (e.g. no ambushes) do not appear. The Highlights section is omitted if there is no data to show. Kingdom Relations is hidden by default (toggle in Advanced Settings).

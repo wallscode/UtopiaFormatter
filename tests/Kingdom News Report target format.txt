@@ -54,27 +54,27 @@ Total land exchanged: +1132 (279/196)
   -154 | 13 - Time (2/3)
 
 ** Uniques for 5:1 **
-12 - Misstress Of Time 6
 3 - RazorclawTime 6
 7 - Slow Attack times 6
+12 - Misstress Of Time 6
 1 - Time to Shine 5
+2 - your time is up Give in 5
+5 - Time to play 5
+9 - Fun times 5
 10 - Timeless Rock Band 5
 11 - Stewies Time Machine 5
 15 - Father time 5
 17 - Pee Time 5
 18 - Sushi Sampo Time 5
 19 - Tea time 5
-2 - your time is up Give in 5
-5 - Time to play 5
-9 - Fun times 5
+4 - Waste of Time 4
+6 - Slack Time 4
+8 - No Better Time 4
 14 - About time dude 4
 16 - Ill be there in a tick 4
 20 - Its 5 OClock Somewhere 4
 22 - Age of time 4
 23 - Time Manipulator 4
-4 - Waste of Time 4
-6 - Slack Time 4
-8 - No Better Time 4
 21 - ticking time 3
 13 - Time 2
 
@@ -105,8 +105,14 @@ Total land exchanged: -1194 (193/279)
   -227 | 22 - Thor (10/34)
 
 ** Uniques for 4:1 **
-23 - Blitzwaaagh 5
 4 - Legion ROC 5
+23 - Blitzwaaagh 5
+2 - Crash 4
+3 - Clampy 4
+5 - Briz 4
+6 - Ajarin 4
+7 - Jedimonk 4
+9 - The Resurected 4
 10 - Longtimeago 4
 11 - Jalubie 4
 13 - Phoria Scapes 4
@@ -116,13 +122,7 @@ Total land exchanged: -1194 (193/279)
 17 - Solo 4
 18 - Crimson 4
 19 - Alchemaria 4
-2 - Crash 4
 21 - Gilead 4
-3 - Clampy 4
-5 - Briz 4
-6 - Ajarin 4
-7 - Jedimonk 4
-9 - The Resurected 4
 12 - Pong 3
 22 - Thor 3
 
@@ -132,8 +132,8 @@ Total land exchanged: 62 (3/0)
      0 | 6 - THAT IS NOT MY COW (1/0)
 
 ** Uniques for 6:1 **
-20 - LEEROY JENKINS 1
 6 - THAT IS NOT MY COW 1
+20 - LEEROY JENKINS 1
 
 ** Highlights **
 Most land gained in a single trad march - 1 - Time to Shine: 67
@@ -144,4 +144,54 @@ Most bounces made - 17 - Pee Time: 1
 Most bounces received - 20 - Its 5 OClock Somewhere, 1 - Time to Shine, 12 - Misstress Of Time, 6 - Slack Time: 1
 
 ** Kingdom Relations **
--- War Declarations Against Us: 1
+-- War Declared Against Us: 1 (4:1)
+
+** Attacker Impact Rankings for 5:1 **
+1. 18 - Sushi Sampo Time — 1526.5
+2. 7 - Slow Attack times — 1272.5
+3. 22 - Age of time — 1029.5
+4. 1 - Time to Shine — 1000.5
+5. 10 - Timeless Rock Band — 898
+6. 12 - Misstress Of Time — 850.5
+7. 3 - RazorclawTime — 848
+8. 20 - Its 5 OClock Somewhere — 775
+9. 15 - Father time — 757.2
+10. 19 - Tea time — 743.4
+11. 17 - Pee Time — 724.5
+12. 23 - Time Manipulator — 597.5
+13. 5 - Time to play — 582
+14. 21 - ticking time — 567
+15. 8 - No Better Time — 552
+16. 2 - your time is up Give in — 464.5
+17. 6 - Slack Time — 443
+18. 11 - Stewies Time Machine — 441.5
+19. 4 - Waste of Time — 432
+20. 9 - Fun times — 405
+21. 14 - About time dude — 395.6
+22. 16 - Ill be there in a tick — 391.8
+23. 13 - Time — 37.5
+** Attacker Impact Rankings for 4:1 **
+1. 11 - Jalubie — 1379
+2. 15 - FutureState — 1183
+3. 10 - Longtimeago — 951.5
+4. 18 - Crimson — 945
+5. 2 - Crash — 787.5
+6. 19 - Alchemaria — 784.5
+7. 12 - Pong — 772
+8. 17 - Solo — 675.5
+9. 7 - Jedimonk — 669
+10. 22 - Thor — 663
+11. 23 - Blitzwaaagh — 636.5
+12. 14 - Aimia — 596
+13. 5 - Briz — 589
+14. 9 - The Resurected — 577
+15. 13 - Phoria Scapes — 446
+16. 16 - Enslaver — 418.5
+17. 6 - Ajarin — 412
+18. 4 - Legion ROC — 377
+19. 21 - Gilead — 325
+20. 3 - Clampy — 315
+21. An unknown province — 72
+** Attacker Impact Rankings for 6:1 **
+1. 20 - LEEROY JENKINS — 62
+2. 6 - THAT IS NOT MY COW — 0
