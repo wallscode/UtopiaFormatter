@@ -4405,19 +4405,19 @@ function formatCombinedProvinceSummary(logsText, newsText) {
     const newsOutput = formatProvinceNewsOutput(newsData);
 
     // Helper: extract named sections from a formatted text block.
-    // Province Logs sections use "SectionName:" markers; Province News use "SectionName" (no colon).
+    // Province Logs sections use "SectionName:" or "SectionName (N/M - P%):" markers;
+    // Province News use "SectionName" (no colon).
     // Returns: { sectionName: contentString (without leading \n\n) }
     function extractSections(text, names, useColon) {
+        const findMarker = name => text.search(new RegExp('\n\n' + name + (useColon ? '(?=:| \\()' : '')));
         const sections = {};
         for (const name of names) {
-            const marker = '\n\n' + name + (useColon ? ':' : '');
-            const start = text.indexOf(marker);
+            const start = findMarker(name);
             if (start === -1) continue;
             let end = text.length;
             for (const other of names) {
                 if (other === name) continue;
-                const otherMarker = '\n\n' + other + (useColon ? ':' : '');
-                const otherStart = text.indexOf(otherMarker);
+                const otherStart = findMarker(other);
                 if (otherStart > start && otherStart < end) end = otherStart;
             }
             // Also check cross-type boundaries

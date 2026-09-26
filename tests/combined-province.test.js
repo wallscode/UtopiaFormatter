@@ -99,7 +99,8 @@ test('Aid Summary shows Net label', () => {
 });
 
 test('contains Province Logs sections (Thievery Summary)', () => {
-    assert(combined.includes('Thievery Summary:'), 'should have Thievery Summary from Province Logs');
+    // Header carries a success rate when there are thievery ops, e.g. "Thievery Summary (148/224 - 66%):"
+    assert(/\n\nThievery Summary( \(\d+\/\d+ - \d+%\))?:/.test(combined), 'should have Thievery Summary from Province Logs');
 });
 
 test('contains Province News sections (Attacks Suffered)', () => {
