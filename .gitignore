@@ -2,6 +2,7 @@
 js/config.js
 infra/params.json
 infra/params.*.json
+!infra/params.example.json
 infra/*.auto.tfvars
 infra/terraform.tfvars
 .env
