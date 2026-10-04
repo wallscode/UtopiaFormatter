@@ -16,15 +16,23 @@ jobs:
   deploy:
     name: Deploy to ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
     runs-on: ubuntu-latest
+    # main runs in the "production" environment, which only the main branch may
+    # use (repo settings), and the prod AWS role trusts only that environment.
+    # Every other branch runs in "development", whose role can only touch dev.
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 
     steps:
+      # Actions are pinned to full commit SHAs so a moved tag can't change the
+      # code that runs with AWS credentials. Bump deliberately.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a  # v4.3.1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ROLE_ARN || secrets.AWS_ROLE_ARN_DEV }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Resolve which bucket + distribution to target based on branch.
