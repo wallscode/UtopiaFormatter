@@ -696,6 +696,9 @@ function accumulateProvinceLogsData(text) {
     PROVINCE_LOGS_CONFIG.SCIENCES.forEach(s => { scienceCounts[s] = 0; });
 
     const parseErrors = [];
+    // Most recent successful Fireball cast; its spellOps entry (if it had a target) or {}.
+    // Necrotic fallout lines that follow add their peasant kills to it (Uto-96vp).
+    let lastFireballOp = null;
 
     // Main parsing loop
     for (const { stripped: line, raw: rawLine } of linePairs) {
@@ -735,12 +738,15 @@ function accumulateProvinceLogsData(text) {
                             spellSecondaryImpacts[spell.name] += secondaryImpactValue;
                         }
                     }
+                    let op = null;
                     if (spellTarget) {
                         let unit = spell.impact || null;
                         if (unit === 'of the men') unit = 'troops';
                         else if (unit === 'active spell') unit = 'active spells';
-                        spellOps.push({ target: spellTarget, spell: spell.name, success: spellSuccess, reflected: isReflected, impact: spellSuccess ? impactValue : null, impactUnit: unit, secondaryImpact: spellSuccess ? secondaryImpactValue : null, secondaryImpactUnit: spell.secondaryImpact || null });
+                        op = { target: spellTarget, spell: spell.name, success: spellSuccess, reflected: isReflected, impact: spellSuccess ? impactValue : null, impactUnit: unit, secondaryImpact: spellSuccess ? secondaryImpactValue : null, secondaryImpactUnit: spell.secondaryImpact || null };
+                        spellOps.push(op);
                     }
+                    if (spell.name === 'Fireball' && spellSuccess && !isReflected) lastFireballOp = op || {};
                 }
             }
             // Capture failed casts where no spell text matched (unrecognised spell type)
@@ -749,6 +755,16 @@ function accumulateProvinceLogsData(text) {
             }
         }
         
+        // Necrotic fallout from our Fireball — "Your dark magic seeps into the enemy land,
+        // withering N peasants with necrotic fallout." Added to the preceding Fireball's
+        // peasants-killed total (Uto-96vp).
+        const necroticM = line.match(/withering ([\d,]+) peasants? with necrotic fallout/i);
+        if (necroticM) {
+            const n = parseGameInt(necroticM[1]);
+            spellImpacts['Fireball'] += n;
+            if (lastFireballOp && lastFireballOp.target) lastFireballOp.impact = (lastFireballOp.impact || 0) + n;
+        }
+
         // Dark Elf rune recovery from spell casting
         const runeRecoveryM = line.match(/recover ([\d,]+) runes from the spell casting/i);
         if (runeRecoveryM) {
@@ -1201,8 +1217,11 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("You have killed the abandoned province") &&
                    !line.includes("The dead march on!") &&
                    !line.includes("You have activated sitting mode") &&
+                   !line.includes("You have elected to stay with your kingdom mates") && // Uto-3dlo: next-age choice, informational
+                   !line.includes("Your dark magic seeps into the enemy land") && // Uto-96vp: handled above (Fireball necrotic fallout)
+                   !line.includes("Your righteous assault disrupts enemy scholars") && // Uto-7x7b: attack flavour, ignored
                    line !== ').' &&
-                   !/^Edition\w+ YR\d+/.test(line)) {
+                   !/^Edition\s*\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);
         }
         } catch (err) {
@@ -2007,7 +2026,7 @@ function parseKingdomNewsLog(inputText, options) {
                          /\d+ - [^()]+\(\d+:\d+\)/.test(attackLine));
                     if (isTruncated) {
                         data.truncatedLines.push(attackLine.trim());
-                    } else if (!/^Edition\w+ YR\d+/.test(attackLine.trim())) {
+                    } else if (!/^Edition\s*\w+ YR\d+/.test(attackLine.trim())) {
                         logUnrecognizedLine(attackLine.trim(), 'kingdom-news', line);
                     }
                 }
@@ -3538,6 +3557,21 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Ambush received — "Forces from X (K:K) ambushed one of our armies. They recaptured N acres from our army!" (Uto-3d9i)
+    const ambushAttackM = eventText.match(/^Forces from (.+?) \((\d+:\d+)\) ambushed one of our armies\. They recaptured ([\d,]+) acres/);
+    if (ambushAttackM) {
+        data.attacks.push({
+            attacker: ambushAttackM[1].trim(),
+            kingdom: ambushAttackM[2],
+            type: 'ambush',
+            acresCaptured: parseGameInt(ambushAttackM[3]),
+            booksLooted: 0,
+            acresRazed: 0,
+            peopleKilled: 0
+        });
+        return;
+    }
+
     // Failed attack attempt (enemy bounced off our defenses)
     const failedAtkM = eventText.match(/^Forces from (.+?) \((\d+:\d+)\) attempted to attack us, but failed miserably! We lost (.+) in this battle/);
     if (failedAtkM) {
@@ -3873,6 +3907,14 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
         return;
     }
 
+    // Dragon troop damage — "<Name> strikes! N soldiers at home fall to tooth and claw." (Uto-pehy)
+    const dragonClawM = eventText.match(/strikes! ([\d,]+) .+? at home fall to tooth and claw/);
+    if (dragonClawM) {
+        data.dragonImpacts.troopsKilled += parseGameInt(dragonClawM[1]);
+        data.dragonImpacts.count++;
+        return;
+    }
+
     // Dragon rune destruction — "hungers for magic" variant
     const dragonRunesHungerM = eventText.match(/hungers for magic\. ([\d,]+) runes consumed/i);
     if (dragonRunesHungerM) {
@@ -3945,7 +3987,7 @@ function parseProvinceNewsLine(eventText, dateStr, data, rawLine) {
     // -- Unrecognised event (logged for future pattern addition)
     // No pattern matched — log for analysis (Edition header lines and short copy-paste
     // artifacts like truncated words are silently skipped)
-    if (!/^Edition\w+ YR\d+/.test(eventText) && eventText.length >= 5 && !eventText.startsWith('Alas, our war has ended')) {
+    if (!/^Edition\s*\w+ YR\d+/.test(eventText) && eventText.length >= 5 && !eventText.startsWith('Alas, our war has ended')) {
         logUnrecognizedLine(eventText, 'province-news', rawLine);
     }
 }
@@ -4192,7 +4234,7 @@ function formatProvinceNewsOutput(data) {
         out.push(`Attacks Suffered: ${data.attacks.length} (${headerParts.join(', ')})`);
         for (const atk of data.attacks) {
             if (atk.acresCaptured > 0) {
-                const typeStr = atk.type === 'conquest' ? ' (conquest)' : '';
+                const typeStr = atk.type === 'conquest' ? ' (conquest)' : atk.type === 'ambush' ? ' (ambush)' : '';
                 out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresCaptured)} acres${typeStr}`);
             } else if (atk.acresRazed > 0) {
                 out.push(`  ${atk.attacker} (${atk.kingdom}): ${formatNumber(atk.acresRazed)} acres razed`);

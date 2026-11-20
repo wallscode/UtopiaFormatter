@@ -579,5 +579,22 @@ function accum(lines) {
     assert(booksAtk && booksAtk.booksLooted === 5000, 'Attacks suffered: books looted = 5,000');
 })();
 
+// Ambush received (Uto-3d9i)
+(function() {
+    const d = accum(pnLine('Forces from 13 - JustSayingHello (1:7) ambushed one of our armies. They recaptured 237 acres from our army! We lost 639 Knights in this battle.'));
+    assert(d.attacks.length === 1, 'Ambush received: 1 attack');
+    assert(d.attacks[0].type === 'ambush' && d.attacks[0].acresCaptured === 237, 'Ambush received: 237 acres, type ambush');
+    assert(d.attacks[0].attacker === '13 - JustSayingHello' && d.attacks[0].kingdom === '1:7', 'Ambush received: attacker parsed');
+    const out = parseProvinceNews(pnLine('Forces from 13 - JustSayingHello (1:7) ambushed one of our armies. They recaptured 237 acres from our army! We lost 639 Knights in this battle.'));
+    assertContains(out, '13 - JustSayingHello (1:7): 237 acres (ambush)', 'Ambush received: output line');
+})();
+
+// Dragon "tooth and claw" troop damage (Uto-pehy)
+(function() {
+    const d = accum(pnLine('D1E strikes! 998 soldiers at home fall to tooth and claw.'));
+    assert(d.dragonImpacts.count === 1, 'Dragon tooth and claw: 1 attack');
+    assert(d.dragonImpacts.troopsKilled === 998, 'Dragon tooth and claw: 998 troops killed');
+})();
+
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===`);
 if (failed > 0) process.exit(1);

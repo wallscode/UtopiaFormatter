@@ -939,6 +939,31 @@ function runAccumulateUnitTests() {
         assert('Output: Plunder line', out.includes('  Plunder: 1 (217,169 gold coins, 43,612 bushels, 19,376 runes)'), true);
     })();
 
+    // ── Fireball necrotic fallout, ignored lines, Edition header (Uto-96vp, Uto-7x7b, Uto-3dlo, Uto-8rec) ──
+    console.log('--- Fireball necrotic fallout / ignored lines ---');
+    (function() {
+        const sent = [];
+        global.window = { APP_CONFIG: { logEndpoint: 'x' } };
+        global.fetch = (u, o) => { sent.push(JSON.parse(o.body).line); return Promise.resolve(); };
+        let d;
+        try {
+            d = accum([
+                pl('Your wizards begin casting, and the spell succeeds. A fireball burns through the skies of Back From The Edge (4:8) 1,213 peasants were killed in the destruction! (Back From The Edge (4:8))'),
+                pl('Your dark magic seeps into the enemy land, withering 37 peasants with necrotic fallout.'),
+                pl('Your righteous assault disrupts enemy scholars! Their Science Effectiveness is suppressed by 15% and Book Generation reduced by 20% for 7 ticks.'),
+                pl('You have elected to stay with your kingdom mates when the next age begins.'),
+                pl('Edition April YR8 Edition'),
+            ]);
+        } finally {
+            delete global.window;
+            delete global.fetch;
+        }
+        assert('Fireball: necrotic fallout added to peasants killed', d.spellImpacts['Fireball'], 1250);
+        const op = d.spellOps.find(o => o.spell === 'Fireball');
+        assert('Fireball: necrotic fallout added to target impact', op && op.impact, 1250);
+        assert('No unrecognized lines logged', sent.length, 0);
+    })();
+
     console.log(`\n${failed === 0 ? '✅' : '❌'} Accumulate unit tests: ${passed} passed, ${failed} failed`);
     return failed === 0;
 }

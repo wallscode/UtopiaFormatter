@@ -1,6 +1,6 @@
 ---
 id: Uto-96vp
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-11-20T01:21:46Z
@@ -22,3 +22,9 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+
+## Notes
+
+**2026-11-20T01:45:07Z**
+
+Resolved — see commit; test added with the exact game text.
