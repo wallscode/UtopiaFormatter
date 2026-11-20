@@ -1220,6 +1220,7 @@ function accumulateProvinceLogsData(text) {
                    !line.includes("You have elected to stay with your kingdom mates") && // Uto-3dlo: next-age choice, informational
                    !line.includes("Your dark magic seeps into the enemy land") && // Uto-96vp: handled above (Fireball necrotic fallout)
                    !line.includes("Your righteous assault disrupts enemy scholars") && // Uto-7x7b: attack flavour, ignored
+                   !/^Alas, the relations to invoke .+ were not fulfilled/.test(line) && // Uto-n25g: flavour, ignored
                    line !== ').' &&
                    !/^Edition\s*\w+ YR\d+/.test(line)) {
             logUnrecognizedLine(line, 'province-logs', rawLine);

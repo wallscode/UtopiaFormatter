@@ -1,6 +1,6 @@
 ---
 id: Uto-n25g
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-11-20T01:22:39Z
@@ -22,3 +22,9 @@ Normalised pattern:
 `logUnrecognizedLine()` is already instrumented at the call site.
 This is a parsing gap to fill — add a handler for this line format.
 
+
+## Notes
+
+**2026-11-20T01:47:41Z**
+
+Flavour text per user; ignored in Province Logs (any ritual name). Test added.

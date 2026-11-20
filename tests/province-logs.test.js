@@ -939,7 +939,7 @@ function runAccumulateUnitTests() {
         assert('Output: Plunder line', out.includes('  Plunder: 1 (217,169 gold coins, 43,612 bushels, 19,376 runes)'), true);
     })();
 
-    // ── Fireball necrotic fallout, ignored lines, Edition header (Uto-96vp, Uto-7x7b, Uto-3dlo, Uto-8rec) ──
+    // ── Fireball necrotic fallout, ignored lines, Edition header (Uto-96vp, Uto-7x7b, Uto-3dlo, Uto-8rec, Uto-n25g) ──
     console.log('--- Fireball necrotic fallout / ignored lines ---');
     (function() {
         const sent = [];
@@ -953,6 +953,7 @@ function runAccumulateUnitTests() {
                 pl('Your righteous assault disrupts enemy scholars! Their Science Effectiveness is suppressed by 15% and Book Generation reduced by 20% for 7 ticks.'),
                 pl('You have elected to stay with your kingdom mates when the next age begins.'),
                 pl('Edition April YR8 Edition'),
+                pl('Alas, the relations to invoke Holy Inquisition were not fulfilled, and its power slipped beyond our grasp.'),
             ]);
         } finally {
             delete global.window;
