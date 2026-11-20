@@ -1824,6 +1824,8 @@ function formatProvinceLogs(text) {
  * @param {string} [rawLine] - Full original line including date prefix, for log analysis
  */
 function logUnrecognizedLine(line, context, rawLine) {
+    // While classifying lines (splitProvinceInput), capture instead of sending.
+    if (_unrecognizedSink) { _unrecognizedSink.push(line); return; }
     if (typeof window === 'undefined') return; // Node.js / test environment
     const endpoint = window.APP_CONFIG?.logEndpoint;
     if (!endpoint) return;
@@ -4545,6 +4547,81 @@ const _PROVINCE_LOGS_PATTERNS = [
     /our thieves were able to steal/i,
 ];
 
+// When non-null, logUnrecognizedLine pushes into this array instead of POSTing.
+let _unrecognizedSink = null;
+
+/**
+ * Runs fn with unrecognized-line logging captured; returns true if fn ran without
+ * reporting any unrecognized line or throwing.
+ */
+function _parsesCleanly(fn) {
+    const prev = _unrecognizedSink;
+    const sink = [];
+    _unrecognizedSink = sink;
+    try {
+        fn();
+    } catch (e) {
+        sink.push(e.message);
+    } finally {
+        _unrecognizedSink = prev;
+    }
+    return sink.length === 0;
+}
+
+/**
+ * Splits a single paste that mixes Province Logs and Province News into the two
+ * halves (Uto-zv6q). Each dated line is checked against both parsers; a line only
+ * one parser recognizes belongs to that side. Ambiguous lines — recognized by both
+ * (e.g. meteor casualties, which appear on both pages), by neither, undated, or
+ * Edition headers/fragments — follow the nearest preceding unambiguous line, since a
+ * mixed paste is normally one page's block followed by the other's. Leading
+ * ambiguous lines follow the first unambiguous line; with none at all they go to
+ * the primary (detected) side. A pure paste of either type is therefore unchanged.
+ * @param {string} text - Raw input text
+ * @param {'province-logs'|'province-news'} [primary='province-logs'] - Detected type
+ * @returns {{ logsText: string, newsText: string, logsOnly: number, newsOnly: number }}
+ *          logsOnly/newsOnly count lines recognized exclusively by each parser.
+ */
+function splitProvinceInput(text, primary = 'province-logs') {
+    const dateLineRe = /^((?:January|February|March|April|May|June|July) \d{1,2} of YR\d+)[ \t](.+)$/;
+    const rawLines = normalizeLineBreaks(text).split('\n');
+    let logsOnly = 0, newsOnly = 0;
+    // 'L' / 'N' for exclusive lines, null for ambiguous
+    const sides = rawLines.map(rawLine => {
+        const line = rawLine.trim();
+        const m = line.match(dateLineRe);
+        // Province News silently skips short fragments and Edition headers; those
+        // aren't evidence of either type.
+        const ev = m ? m[2].trim() : '';
+        if (!m || ev.length < 5 || /^Edition\b/.test(ev)) return null;
+        const inNews = _parsesCleanly(() => accumulateProvinceNewsData(line));
+        const inLogs = _parsesCleanly(() => accumulateProvinceLogsData(line));
+        if (inNews && !inLogs) { newsOnly++; return 'N'; }
+        if (inLogs && !inNews) { logsOnly++; return 'L'; }
+        return null;
+    });
+    let current = sides.find(s => s) || (primary === 'province-news' ? 'N' : 'L');
+    const logsLines = [], newsLines = [];
+    rawLines.forEach((rawLine, i) => {
+        if (sides[i]) current = sides[i];
+        (current === 'N' ? newsLines : logsLines).push(rawLine);
+    });
+    return { logsText: logsLines.join('\n'), newsText: newsLines.join('\n'), logsOnly, newsOnly };
+}
+
+/**
+ * Returns the split halves if a Province Logs / Province News paste actually
+ * contains lines exclusive to both kinds, otherwise null.
+ * @param {string} text - Raw input text
+ * @returns {{ logsText: string, newsText: string, logsOnly: number, newsOnly: number, primary: string }|null}
+ */
+function detectMixedProvinceInput(text) {
+    const primary = detectInputType(text);
+    if (primary !== 'province-logs' && primary !== 'province-news') return null;
+    const split = splitProvinceInput(text, primary);
+    return split.logsOnly > 0 && split.newsOnly > 0 ? { ...split, primary } : null;
+}
+
 /**
  * Detects whether pasted text is Kingdom News, Province Logs, or Province News.
  * When both province-logs and kingdom-news patterns match (e.g. Province Logs containing
@@ -4633,6 +4710,8 @@ module.exports = {
     // Detection
     detectInputType,
     detectInputTypeWithEvidence,
+    splitProvinceInput,
+    detectMixedProvinceInput,
     detectOwnKingdom,
     hasWarEvents,
     detectWarPeriods,

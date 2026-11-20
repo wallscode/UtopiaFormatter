@@ -16,6 +16,9 @@ const {
     accumulateProvinceNewsData,
     formatProvinceLogs,
     parseProvinceNews,
+    splitProvinceInput,
+    detectMixedProvinceInput,
+    logUnrecognizedLine,
 } = require('../js/parser.js');
 
 const logsPath = path.join(__dirname, 'provincelogs.txt');
@@ -157,6 +160,71 @@ test('applyCombinedProvinceSettings adds \u2022 / \u00B7 bullets to indented lin
     const fourSpace = lines.filter(l => /^    \S/.test(l));
     assert(twoSpace.length > 0 && twoSpace.every(l => l.startsWith('  \u2022 ')), 'all 2-space lines start with \u2022');
     assert(fourSpace.every(l => l.startsWith('    \u00B7 ')), 'all 4-space lines start with \u00B7');
+});
+
+console.log('\n--- Mixed single-box paste: Province Logs + Province News (Uto-zv6q) ---');
+
+test('pure Province Logs paste is not treated as mixed', () => {
+    assert.strictEqual(detectMixedProvinceInput(logsText), null);
+});
+
+test('pure Province News paste is not treated as mixed (meteor/Faery lines are shared)', () => {
+    assert.strictEqual(detectMixedProvinceInput(newsText), null);
+});
+
+test('Logs then News in one paste splits into the same Combined Summary as two boxes', () => {
+    const m = detectMixedProvinceInput(logsText + '\n' + newsText);
+    assert(m, 'should detect mixed input');
+    assert.strictEqual(formatCombinedProvinceSummary(m.logsText, m.newsText),
+                       formatCombinedProvinceSummary(logsText, newsText));
+});
+
+test('News then Logs in one paste splits into the same Combined Summary as two boxes', () => {
+    const m = detectMixedProvinceInput(newsText + '\n' + logsText);
+    assert(m, 'should detect mixed input');
+    assert.strictEqual(formatCombinedProvinceSummary(m.logsText, m.newsText),
+                       formatCombinedProvinceSummary(logsText, newsText));
+});
+
+test('Province News with a single Province Logs line is detected as mixed', () => {
+    const m = detectMixedProvinceInput(newsText + '\nMay 1 of YR8\tYou have ordered that 600 thieves be trained.');
+    assert(m, 'should detect mixed input');
+    assert.strictEqual(m.logsOnly, 1);
+});
+
+test('News lines from logged tickets route to the News side and are not reported unrecognized', () => {
+    // Exact game text from Uto-a2mt, Uto-exaf, Uto-hakd, Uto-k5zo, Uto-jf0z, Uto-xj92
+    const newsLines = [
+        'Forces from 12 - Youknowwho (1:7) came through and ravaged our lands! They captured 282 acres! We lost 702 Archers and 559 Knights in this battle.',
+        'Forces from 10 - Slurm (1:7) came through and ravaged our lands! Their armies razed 271 acres of buildings! We lost 146 Archers and 161 Knights in this battle.',
+        'Our mages noticed a possible spell attempt by Nebula Haven (1:7) causing trouble on our lands!',
+        'We have found thieves from New Beginnings (1:7) causing trouble within our lands!',
+        'We have received a shipment of 40,000 gold coins from 65 Ford Mustang Convertable (5:7).',
+        'We have received a shipment of 241 soldiers from Bugatti Chiron (5:7).',
+    ].map(l => 'May 2 of YR8\t' + l);
+    const input = 'May 1 of YR8\tYou have ordered that 600 thieves be trained.\n' + newsLines.join('\n');
+    const m = detectMixedProvinceInput(input);
+    assert(m, 'should detect mixed input');
+    assert.strictEqual(m.newsOnly, newsLines.length);
+    assert.strictEqual(m.newsText, newsLines.join('\n'));
+
+    // Capture unrecognized-line logging while parsing each half
+    const sent = [];
+    global.window = { APP_CONFIG: { logEndpoint: 'x' } };
+    global.fetch = (u, o) => { sent.push(JSON.parse(o.body)); return Promise.resolve(); };
+    try {
+        formatCombinedProvinceSummary(m.logsText, m.newsText);
+    } finally {
+        delete global.window;
+        delete global.fetch;
+    }
+    assert.deepStrictEqual(sent, [], 'no lines should be reported as unrecognized');
+});
+
+test('splitProvinceInput with no exclusive lines keeps everything on the primary side', () => {
+    const only = 'May 1 of YR8\tMeteors rain across the lands and kill 82 peasants!';
+    assert.strictEqual(splitProvinceInput(only, 'province-news').newsText, only);
+    assert.strictEqual(splitProvinceInput(only, 'province-logs').logsText, only);
 });
 
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`);

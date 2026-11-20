@@ -34,6 +34,8 @@ Detection order (first match wins):
 
 **Combined mode** triggers when both the primary textarea and the secondary textarea have content AND the primary is either Province Logs or Province News. The badge reads `Auto-detected: Province Logs + Province News` or `Auto-detected: Province News + Province Logs` accordingly.
 
+**Mixed single-box paste** (`detectMixedProvinceInput(text)` / `splitProvinceInput(text, primary)` in `parser.js`): when only one box has content and it is detected as Province Logs or Province News, each dated line is checked against both parsers (via a capture sink on `logUnrecognizedLine`, so nothing is POSTed). A line recognized only by the Province News parser is a News line; only by the Province Logs parser, a Logs line. Ambiguous lines (recognized by both, e.g. meteor casualties; by neither; undated; Edition headers or short fragments) follow the nearest preceding unambiguous line, since a mixed paste is normally one page's block followed by the other's; leading ambiguous lines follow the first unambiguous line. If the paste has at least one Logs-only and one News-only line, the two halves go to `formatCombinedProvinceSummary` and the badge reads `Auto-detected: Province Logs + Province News`. Otherwise single-type parsing is unchanged.
+
 ---
 
 ## Kingdom News Parser
@@ -218,7 +220,7 @@ Indented lines get the same `•` / `·` bullets as Province Logs. Combined Prov
 
 **Function:** `formatCombinedProvinceSummary(logsText, newsText)` in `parser.js`
 
-Triggered when both primary and secondary textareas have content and the primary is Province Logs or Province News (either direction works). The function always takes `(logsText, newsText)` — `ui.js` handles swapping arguments when Province News is in the primary textarea.
+Triggered when both primary and secondary textareas have content and the primary is Province Logs or Province News (either direction works), or when a single paste contains both Province Logs and Province News lines (see Input Detection → Mixed single-box paste). The function always takes `(logsText, newsText)` — `ui.js` handles swapping arguments when Province News is in the primary textarea.
 
 Merges sections from both parsers into a unified output using `advSettings.combinedProvince` section order. Sections from Province Logs and Province News are interleaved according to the configured section order.
 

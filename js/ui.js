@@ -344,6 +344,41 @@ function setupEventListeners(elements) {
 }
 
 /**
+ * Parses Province Logs + Province News into a Combined Province Summary and renders it.
+ * @param {Object} elements - DOM elements object
+ * @param {string} logsText - Province Logs text
+ * @param {string} newsText - Province News text
+ * @param {string} rawInput - Text stored as lastRawInput
+ * @param {string} badgeText - Detect badge label
+ */
+function renderCombinedProvince(elements, logsText, newsText, rawInput, badgeText) {
+    elements.detectBadge.textContent = badgeText;
+    elements.detectBadge.classList.remove('hidden');
+    try {
+        let parsedText = formatCombinedProvinceSummary(logsText, newsText);
+        lastRawParsed = parsedText;
+        parsedText = applyCombinedProvinceSettings(parsedText);
+        lastRawInput = rawInput;
+        lastDetectedMode = 'combined-province';
+        elements.outputText.value = parsedText;
+        elements.outputText.style.color = '';
+        if (elements.parseStatus) elements.parseStatus.textContent = '';
+        updateOutputView(elements);
+        autoResizeOutput(elements.outputText);
+        showAdvancedPanel(elements);
+        updateCopyButtons(elements);
+        if (window.innerWidth < 768) {
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+        }
+        collapseInputOnMobile(elements);
+    } catch (error) {
+        console.error('Parsing error:', error);
+        showMessage(elements.outputText, `${error.message || 'Unknown error'} — check your input.`, 'error', elements.parseStatus);
+    }
+}
+
+/**
  * Handles the parse button click
  * @param {Object} elements - DOM elements object
  */
@@ -365,32 +400,9 @@ function handleParse(elements) {
     if (isCombined) {
         const logsText = isCombinedLogsNews ? inputText : newsText;
         const pNewsText = isCombinedLogsNews ? newsText : inputText;
-        elements.detectBadge.textContent = isCombinedLogsNews
+        renderCombinedProvince(elements, logsText, pNewsText, inputText, isCombinedLogsNews
             ? 'Auto-detected: Province Logs + Province News'
-            : 'Auto-detected: Province News + Province Logs';
-        elements.detectBadge.classList.remove('hidden');
-        try {
-            let parsedText = formatCombinedProvinceSummary(logsText, pNewsText);
-            lastRawParsed = parsedText;
-            parsedText = applyCombinedProvinceSettings(parsedText);
-            lastRawInput = inputText;
-            lastDetectedMode = 'combined-province';
-            elements.outputText.value = parsedText;
-            elements.outputText.style.color = '';
-            if (elements.parseStatus) elements.parseStatus.textContent = '';
-            updateOutputView(elements);
-            autoResizeOutput(elements.outputText);
-            showAdvancedPanel(elements);
-            updateCopyButtons(elements);
-            if (window.innerWidth < 768) {
-                const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                elements.enhancedOutput.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
-            }
-            collapseInputOnMobile(elements);
-        } catch (error) {
-            console.error('Parsing error:', error);
-            showMessage(elements.outputText, `${error.message || 'Unknown error'} — check your input.`, 'error', elements.parseStatus);
-        }
+            : 'Auto-detected: Province News + Province Logs');
         return;
     }
 
@@ -403,6 +415,15 @@ function handleParse(elements) {
 
     const detectionEvidence = detectInputTypeWithEvidence(effectiveInput);
     const detectedMode = detectionEvidence.type;
+
+    // One paste containing both Province Logs and Province News (Uto-zv6q):
+    // split it and produce a Combined Province Summary.
+    const mixed = detectMixedProvinceInput(effectiveInput);
+    if (mixed) {
+        renderCombinedProvince(elements, mixed.logsText, mixed.newsText, effectiveInput,
+            'Auto-detected: Province Logs + Province News');
+        return;
+    }
 
     if (!detectedMode) {
         showMessage(elements.outputText, 'Could not detect input type — paste Kingdom News or Province Logs text.', 'error', elements.parseStatus);
@@ -711,6 +732,11 @@ function autoDetectMode(elements) {
 
     const effective = text.trim() || newsText.trim();
     if (!effective) return;
+    if (detectMixedProvinceInput(effective)) {
+        elements.detectBadge.textContent = 'Auto-detected: Province Logs + Province News';
+        elements.detectBadge.classList.remove('hidden');
+        return;
+    }
     const evidence = detectInputTypeWithEvidence(effective);
     const detected = evidence.type;
     if (!detected) return;
